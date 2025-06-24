@@ -1,5 +1,3 @@
-# WEPLANET STARTER WEB
-
 ### 개발 표준 정의서
 
 - prettier, eslint로 정의해 commit 시 자동 검증하도록 함.
