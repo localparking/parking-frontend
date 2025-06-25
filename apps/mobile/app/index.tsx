@@ -79,7 +79,6 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="dark-content" />
       <View style={{ height: showNative ? '33%' : 0 }}>
         <ScrollView contentContainerStyle={styles.nativeContentContainer}>
           <Text style={styles.headerTitle}>React Native UI</Text>
@@ -190,6 +189,8 @@ export default function App() {
               }, 1000) // 1초 딜레이 후 전달
             }
           }}
+          injectedJavaScript={`window.confirm = function(){ return true; }`}
+          hideKeyboardAccessoryView={true}
         />
       </View>
     </SafeAreaView>
@@ -200,7 +201,7 @@ export default function App() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F4F7FC',
+    backgroundColor: 'white',
   },
   nativeContentContainer: {
     padding: 16,
