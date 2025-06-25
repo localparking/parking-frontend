@@ -75,6 +75,7 @@ export default function App() {
           source={{ uri: 'http://localhost:3001' }}
           style={styles.webview}
           injectedJavaScript={`window.confirm = function(){ return true; }`}
+          hideKeyboardAccessoryView={true}
         />
       </View>
     </SafeAreaView>
@@ -85,7 +86,7 @@ export default function App() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F4F7FC',
+    backgroundColor: 'white',
   },
   nativeContentContainer: {
     padding: 16,
