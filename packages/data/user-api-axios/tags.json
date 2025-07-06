@@ -1,5 +1,4 @@
 {
-  "인증": "auth",
-  "OTP 인증": "verificatioins",
-  "파일": "files"
+  "인증 컨트롤러": "auth",
+  "관리자 인증 컨트롤러": "admin"
 }
