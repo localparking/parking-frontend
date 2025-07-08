@@ -6,7 +6,7 @@ import {
   initializeMap,
   loadNaverMapScript,
   updateMapWithNativeLocation,
-} from '../services/map.service'
+} from '../services'
 
 export const useMap = () => {
   const mapRef = useRef<NaverMap | null>(null)
@@ -14,21 +14,17 @@ export const useMap = () => {
   const [isMapLoaded, setIsMapLoaded] = useState(false)
   const [locationError, setLocationError] = useState<string | null>(null)
 
-  // 지도와 마커들을 정리하는 함수
   const cleanupMap = () => {
-    // 기존 마커들 제거
     markersRef.current.forEach((marker) => {
       marker.setMap(null)
     })
     markersRef.current = []
 
-    // 전역 위치 마커 정리
     if (window.currentLocationMarker) {
       window.currentLocationMarker.setMap(null)
       window.currentLocationMarker = undefined
     }
 
-    // 지도 객체 정리
     mapRef.current = null
     window.currentMap = undefined
 
@@ -37,7 +33,6 @@ export const useMap = () => {
     console.log('지도 리소스가 정리되었습니다.')
   }
 
-  // 지도 초기화 함수
   const initMap = async () => {
     cleanupMap()
 
@@ -48,12 +43,10 @@ export const useMap = () => {
       mapRef.current = map
       setIsMapLoaded(true)
 
-      // 네이티브 위치 정보가 이미 있다면 우선 사용
       if (window.nativeLocationData) {
         console.log('기존 네이티브 위치 정보 사용:', window.nativeLocationData)
         updateMapWithNativeLocation(window.nativeLocationData)
       } else {
-        // 네이티브 위치 정보가 없으면 웹 위치 정보로 fallback
         try {
           const position = await getCurrentLocation()
           const currentLocation = new window.naver!.maps.LatLng(position.coords.latitude, position.coords.longitude)
@@ -74,21 +67,18 @@ export const useMap = () => {
     }
   }
 
-  // 현재 위치로 돌아가는 함수
   const moveToCurrentLocation = async () => {
     if (!isMapLoaded || !window.currentMap || !window.naver) {
       console.warn('지도가 아직 로드되지 않았습니다.')
       return
     }
 
-    // 네이티브 위치 정보 우선 사용
     if (window.nativeLocationData) {
       updateMapWithNativeLocation(window.nativeLocationData)
       console.log('네이티브 현재 위치로 이동했습니다.')
       return
     }
 
-    // 네이티브 위치 정보가 없으면 웹 위치 정보 사용
     try {
       const position = await getCurrentLocation()
       const currentLocation = new window.naver.maps.LatLng(position.coords.latitude, position.coords.longitude)
@@ -96,7 +86,6 @@ export const useMap = () => {
       window.currentMap.setCenter(currentLocation)
       window.currentMap.setZoom(15)
 
-      // 기존 위치 마커 제거 후 새로 생성
       if (window.currentLocationMarker) {
         window.currentLocationMarker.setMap(null)
       }
@@ -116,7 +105,6 @@ export const useMap = () => {
     }
   }
 
-  // 웹뷰 메시지 수신 리스너 설정
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       try {
@@ -141,7 +129,6 @@ export const useMap = () => {
     return () => window.removeEventListener('message', handleMessage)
   }, [])
 
-  // 지도 초기화 효과
   useEffect(() => {
     const initializeMapWithScript = async () => {
       try {

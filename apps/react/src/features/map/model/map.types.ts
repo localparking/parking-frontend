@@ -1,10 +1,8 @@
+import { GeocodeResponse } from './geocoding.types'
+
 export interface NaverLatLng {
   lat(): number
   lng(): number
-}
-
-export interface NaverMarker {
-  setMap(map: NaverMap | null): void
 }
 
 export interface NaverPoint {
@@ -20,22 +18,20 @@ export interface NaverSize {
 export interface NaverMap {
   setCenter(center: NaverLatLng): void
   setZoom(level: number): void
+  getCenter(): NaverLatLng
+  getZoom(): number
+  panTo(position: NaverLatLng): void
+  fitBounds(bounds: NaverLatLngBounds, margin?: { top: number; right: number; bottom: number; left: number }): void
+}
+
+export interface NaverLatLngBounds {
+  extend(position: NaverLatLng): void
 }
 
 export interface NaverMaps {
   LatLng: new (lat: number, lng: number) => NaverLatLng
-  Marker: new (options: {
-    position: NaverLatLng
-    map: NaverMap | null
-    title?: string
-    icon?: {
-      url?: string
-      content?: string
-      size?: NaverSize
-      origin?: NaverPoint
-      anchor: NaverPoint
-    }
-  }) => NaverMarker
+  LatLngBounds: new () => NaverLatLngBounds
+  Marker: new (options: MarkerOptions) => NaverMarker
   Point: new (x: number, y: number) => NaverPoint
   Size: new (width: number, height: number) => NaverSize
   Map: new (
@@ -54,44 +50,32 @@ export interface NaverMaps {
   }
 }
 
-export type LocationData = {
-  latitude: number
-  longitude: number
-  accuracy: number
-}
-
-export type MarkerData = {
-  id: string
+export interface Coordinates {
   lat: number
   lng: number
-  title?: string
-  address?: string
-  iconUrl?: string
 }
 
-export interface GeocodeResponse {
-  v2: {
-    status: string
-    meta: {
-      totalCount: number
-      page: number
-      count: number
-    }
-    addresses: Array<{
-      roadAddress: string
-      jibunAddress: string
-      englishAddress: string
-      x: string // 경도
-      y: string // 위도
-      distance: number
-      addressElements: Array<{
-        types: string[]
-        longName: string
-        shortName: string
-        code: string
-      }>
-    }>
-    errorMessage: string
+export interface MapInitOptions {
+  center?: Coordinates
+  zoom?: number
+  mapDataControl?: boolean
+}
+
+// 임시로 필요한 타입들 (나중에 분리할 예정)
+export interface NaverMarker {
+  setMap(map: NaverMap | null): void
+}
+
+export interface MarkerOptions {
+  position: NaverLatLng
+  map: NaverMap | null
+  title?: string
+  icon?: {
+    url?: string
+    content?: string
+    size?: NaverSize
+    origin?: NaverPoint
+    anchor: NaverPoint
   }
 }
 
@@ -102,11 +86,5 @@ declare global {
     }
     currentMap?: NaverMap
     currentLocationMarker?: NaverMarker
-    nativeLocationData?: LocationData
   }
-}
-
-export interface WebViewMessage {
-  type: string
-  payload?: LocationData
 }
