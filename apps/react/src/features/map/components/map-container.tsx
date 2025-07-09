@@ -2,11 +2,12 @@ import React from 'react'
 import { useMap } from '../hooks/use-map'
 import { useMapNavigation } from '../hooks/use-map-navigation'
 import { useMarkers } from '../hooks/use-markers'
+import { geocodeAddress } from '../services'
 
 export const MapContainer: React.FC = () => {
   const { isMapLoaded, locationError, moveToCurrentLocation } = useMap()
   const { moveTo, getMapCenter, getMapZoom, fitToCoordinates } = useMapNavigation()
-  const { addMarkers, getMarkerCount } = useMarkers()
+  const { addMarkers, addMarkersFromAddresses, getMarkerCount } = useMarkers()
 
   // (지도 중심점에) 마커 추가 예시
   const addMarkerAtCenter = () => {
@@ -29,14 +30,51 @@ export const MapContainer: React.FC = () => {
     console.log('지도 중심점에 마커가 추가되었습니다:', center)
   }
 
+  // 여러 주소로 마커들 생성 예시
+  const addMultipleAddressMarkers = async () => {
+    const addressMarkers = [
+      {
+        id: `address-1-${Date.now()}`,
+        address: '서울특별시 중구 명동길 74',
+        title: '명동 성당',
+      },
+      {
+        id: `address-2-${Date.now()}`,
+        address: '서울특별시 중구 세종대로 110',
+        title: '서울시청 (주소 기반)',
+      },
+      {
+        id: `address-3-${Date.now()}`,
+        address: '서울특별시 종로구 사직로 161',
+        title: '경복궁 (주소 기반)',
+      },
+    ]
+
+    try {
+      await addMarkersFromAddresses(addressMarkers)
+      const coordinates = await Promise.all(
+        addressMarkers.map(async (marker) => {
+          const result = await geocodeAddress(marker.address)
+          return { lat: result.lat, lng: result.lng }
+        })
+      )
+
+      fitToCoordinates(coordinates, 50)
+      console.log('여러 주소 기반 마커들이 생성되었습니다.')
+    } catch (error) {
+      console.error('주소 기반 마커 생성 중 오류:', error)
+    }
+  }
+
   // 여러 좌표를 포함하는 fitToCoordinates 예시
   const showFitToCoordinatesExample = () => {
     const touristSpots = [
-      { lat: 37.5665, lng: 126.978 }, // 서울시청
+      { lat: 37.5666103, lng: 126.9783882 }, // 서울시청
       { lat: 37.4979, lng: 127.0276 }, // 강남역
-      { lat: 37.5547, lng: 126.9706 }, // 명동
-      { lat: 37.5796, lng: 126.977 }, // 경복궁
+      { lat: 37.5633352, lng: 126.9872743 }, // 명동
+      { lat: 37.5788408, lng: 126.9770162 }, // 경복궁
       { lat: 37.5208, lng: 127.1232 }, // 롯데월드타워
+      { lat: 37.5111111, lng: 127.1111111 }, // 롯데월드타워
     ]
 
     fitToCoordinates(touristSpots, 50)
@@ -142,6 +180,24 @@ export const MapContainer: React.FC = () => {
           }}
         >
           강남역
+        </button>
+
+        <button
+          onClick={addMultipleAddressMarkers}
+          disabled={!isMapLoaded}
+          style={{
+            padding: '8px 12px',
+            backgroundColor: isMapLoaded ? '#ff9800' : '#ccc',
+            color: 'white',
+            border: 'none',
+            borderRadius: '6px',
+            cursor: isMapLoaded ? 'pointer' : 'not-allowed',
+            boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
+            fontSize: '12px',
+            fontWeight: '500',
+          }}
+        >
+          주소 마커 생성 및 이동
         </button>
 
         <button
