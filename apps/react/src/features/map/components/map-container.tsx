@@ -6,29 +6,8 @@ import { geocodeAddress } from '../services'
 
 export const MapContainer: React.FC = () => {
   const { isMapLoaded, locationError, moveToCurrentLocation } = useMap()
-  const { moveTo, getMapCenter, getMapZoom, fitToCoordinates } = useMapNavigation()
-  const { addMarkers, addMarkersFromAddresses, getMarkerCount } = useMarkers()
-
-  // (지도 중심점에) 마커 추가 예시
-  const addMarkerAtCenter = () => {
-    const center = getMapCenter()
-    if (!center) {
-      console.warn('지도 중심점을 가져올 수 없습니다.')
-      return
-    }
-
-    const markerData = [
-      {
-        id: `center-marker-${Date.now()}`,
-        lat: center.lat,
-        lng: center.lng,
-        title: `마커 ${getMarkerCount() + 1} (${center.lat.toFixed(4)}, ${center.lng.toFixed(4)})`,
-      },
-    ]
-
-    addMarkers(markerData)
-    console.log('지도 중심점에 마커가 추가되었습니다:', center)
-  }
+  const { moveTo, fitToCoordinates } = useMapNavigation()
+  const { addMarkers, addMarkersFromAddresses } = useMarkers()
 
   // 여러 주소로 마커들 생성 예시
   const addMultipleAddressMarkers = async () => {
@@ -161,7 +140,7 @@ export const MapContainer: React.FC = () => {
             fontWeight: '500',
           }}
         >
-          서울시청
+          서울시청 이동
         </button>
 
         <button
@@ -179,7 +158,7 @@ export const MapContainer: React.FC = () => {
             fontWeight: '500',
           }}
         >
-          강남역
+          강남역 이동
         </button>
 
         <button
@@ -201,47 +180,6 @@ export const MapContainer: React.FC = () => {
         </button>
 
         <button
-          onClick={() => {
-            const center = getMapCenter()
-            const zoom = getMapZoom()
-            console.log('현재 지도 위치:', center, '줌:', zoom)
-            alert(`위도: ${center?.lat.toFixed(6)}\n경도: ${center?.lng.toFixed(6)}\n줌: ${zoom}`)
-          }}
-          disabled={!isMapLoaded}
-          style={{
-            padding: '8px 12px',
-            backgroundColor: isMapLoaded ? '#f57c00' : '#ccc',
-            color: 'white',
-            border: 'none',
-            borderRadius: '6px',
-            cursor: isMapLoaded ? 'pointer' : 'not-allowed',
-            boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
-            fontSize: '12px',
-            fontWeight: '500',
-          }}
-        >
-          현재 위치 정보
-        </button>
-
-        <button
-          onClick={addMarkerAtCenter}
-          disabled={!isMapLoaded}
-          style={{
-            padding: '8px 12px',
-            backgroundColor: isMapLoaded ? '#e91e63' : '#ccc',
-            color: 'white',
-            border: 'none',
-            borderRadius: '6px',
-            cursor: isMapLoaded ? 'pointer' : 'not-allowed',
-            boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
-            fontSize: '12px',
-            fontWeight: '500',
-          }}
-        >
-          중심점에 마커 추가
-        </button>
-
-        <button
           onClick={showFitToCoordinatesExample}
           disabled={!isMapLoaded}
           style={{
@@ -256,7 +194,7 @@ export const MapContainer: React.FC = () => {
             fontWeight: '500',
           }}
         >
-          서울 관광지 보기
+          관광지 마커 생성 및 이동
         </button>
       </div>
 

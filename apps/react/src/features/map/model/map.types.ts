@@ -18,9 +18,6 @@ export interface NaverSize {
 export interface NaverMap {
   setCenter(center: NaverLatLng): void
   setZoom(level: number): void
-  getCenter(): NaverLatLng
-  getZoom(): number
-  panTo(position: NaverLatLng): void
   fitBounds(bounds: NaverLatLngBounds, margin?: { top: number; right: number; bottom: number; left: number }): void
 }
 

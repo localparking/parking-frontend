@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { moveToCoordinates, getCurrentMapCenter, getCurrentMapZoom, fitToBounds } from '../services'
+import { moveToCoordinates, fitToBounds } from '../services'
 
 export const useMapNavigation = () => {
   const moveTo = useCallback((lat: number, lng: number, zoom?: number) => {
@@ -8,14 +8,6 @@ export const useMapNavigation = () => {
     } catch (error) {
       console.error('지도 이동 실패:', error)
     }
-  }, [])
-
-  const getMapCenter = useCallback(() => {
-    return getCurrentMapCenter()
-  }, [])
-
-  const getMapZoom = useCallback(() => {
-    return getCurrentMapZoom()
   }, [])
 
   // 여러 좌표를 모두 포함하도록 지도 영역 조정
@@ -29,8 +21,6 @@ export const useMapNavigation = () => {
 
   return {
     moveTo,
-    getMapCenter,
-    getMapZoom,
     fitToCoordinates,
   }
 }

@@ -22,38 +22,6 @@ export const moveToCoordinates = (lat: number, lng: number, zoom?: number) => {
   }
 }
 
-export const getCurrentMapCenter = (): Coordinates | null => {
-  if (!window.currentMap) {
-    console.warn('지도가 초기화되지 않았습니다.')
-    return null
-  }
-
-  try {
-    const center = window.currentMap.getCenter()
-    return {
-      lat: center.lat(),
-      lng: center.lng(),
-    }
-  } catch (error) {
-    console.error('지도 중심점 조회 중 오류 발생:', error)
-    return null
-  }
-}
-
-export const getCurrentMapZoom = (): number | null => {
-  if (!window.currentMap) {
-    console.warn('지도가 초기화되지 않았습니다.')
-    return null
-  }
-
-  try {
-    return window.currentMap.getZoom()
-  } catch (error) {
-    console.error('줌 레벨 조회 중 오류 발생:', error)
-    return null
-  }
-}
-
 // 지도 경계 영역 설정 (여러 좌표를 모두 포함하도록)
 export const fitToBounds = (coordinates: Coordinates[], padding?: number) => {
   if (!window.currentMap || !window.naver) {
