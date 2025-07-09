@@ -12,12 +12,8 @@
 
 import { Route as rootRoute } from './app/__root'
 import { Route as PageImport } from './app/page'
-import { Route as MypagePageImport } from './app/mypage/page'
 import { Route as MapPageImport } from './app/map/page'
-import { Route as ChatPageImport } from './app/chat/page'
-import { Route as CameraPageImport } from './app/camera/page'
-import { Route as authRegisterPageImport } from './app/(auth)/register/page'
-import { Route as authAuthPageImport } from './app/(auth)/auth/page'
+import { Route as authLoginPageImport } from './app/(auth)/login/page'
 import { Route as authLoginSuccessPageImport } from './app/(auth)/login/success/page'
 
 // Create/Update Routes
@@ -28,39 +24,15 @@ const PageRoute = PageImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const MypagePageRoute = MypagePageImport.update({
-  id: '/mypage/',
-  path: '/mypage/',
-  getParentRoute: () => rootRoute,
-} as any)
-
 const MapPageRoute = MapPageImport.update({
   id: '/map/',
   path: '/map/',
   getParentRoute: () => rootRoute,
 } as any)
 
-const ChatPageRoute = ChatPageImport.update({
-  id: '/chat/',
-  path: '/chat/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const CameraPageRoute = CameraPageImport.update({
-  id: '/camera/',
-  path: '/camera/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const authRegisterPageRoute = authRegisterPageImport.update({
-  id: '/(auth)/register/',
-  path: '/register/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const authAuthPageRoute = authAuthPageImport.update({
-  id: '/(auth)/auth/',
-  path: '/auth/',
+const authLoginPageRoute = authLoginPageImport.update({
+  id: '/(auth)/login/',
+  path: '/login/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -81,20 +53,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PageImport
       parentRoute: typeof rootRoute
     }
-    '/camera/': {
-      id: '/camera/'
-      path: '/camera'
-      fullPath: '/camera'
-      preLoaderRoute: typeof CameraPageImport
-      parentRoute: typeof rootRoute
-    }
-    '/chat/': {
-      id: '/chat/'
-      path: '/chat'
-      fullPath: '/chat'
-      preLoaderRoute: typeof ChatPageImport
-      parentRoute: typeof rootRoute
-    }
     '/map/': {
       id: '/map/'
       path: '/map'
@@ -102,25 +60,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MapPageImport
       parentRoute: typeof rootRoute
     }
-    '/mypage/': {
-      id: '/mypage/'
-      path: '/mypage'
-      fullPath: '/mypage'
-      preLoaderRoute: typeof MypagePageImport
-      parentRoute: typeof rootRoute
-    }
-    '/(auth)/auth/': {
-      id: '/(auth)/auth/'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof authAuthPageImport
-      parentRoute: typeof rootRoute
-    }
-    '/(auth)/register/': {
-      id: '/(auth)/register/'
-      path: '/register'
-      fullPath: '/register'
-      preLoaderRoute: typeof authRegisterPageImport
+    '/(auth)/login/': {
+      id: '/(auth)/login/'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof authLoginPageImport
       parentRoute: typeof rootRoute
     }
     '/(auth)/login/success/': {
@@ -137,91 +81,46 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof PageRoute
-  '/camera': typeof CameraPageRoute
-  '/chat': typeof ChatPageRoute
   '/map': typeof MapPageRoute
-  '/mypage': typeof MypagePageRoute
-  '/auth': typeof authAuthPageRoute
-  '/register': typeof authRegisterPageRoute
+  '/login': typeof authLoginPageRoute
   '/login/success': typeof authLoginSuccessPageRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof PageRoute
-  '/camera': typeof CameraPageRoute
-  '/chat': typeof ChatPageRoute
   '/map': typeof MapPageRoute
-  '/mypage': typeof MypagePageRoute
-  '/auth': typeof authAuthPageRoute
-  '/register': typeof authRegisterPageRoute
+  '/login': typeof authLoginPageRoute
   '/login/success': typeof authLoginSuccessPageRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof PageRoute
-  '/camera/': typeof CameraPageRoute
-  '/chat/': typeof ChatPageRoute
   '/map/': typeof MapPageRoute
-  '/mypage/': typeof MypagePageRoute
-  '/(auth)/auth/': typeof authAuthPageRoute
-  '/(auth)/register/': typeof authRegisterPageRoute
+  '/(auth)/login/': typeof authLoginPageRoute
   '/(auth)/login/success/': typeof authLoginSuccessPageRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/camera'
-    | '/chat'
-    | '/map'
-    | '/mypage'
-    | '/auth'
-    | '/register'
-    | '/login/success'
+  fullPaths: '/' | '/map' | '/login' | '/login/success'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/camera'
-    | '/chat'
-    | '/map'
-    | '/mypage'
-    | '/auth'
-    | '/register'
-    | '/login/success'
-  id:
-    | '__root__'
-    | '/'
-    | '/camera/'
-    | '/chat/'
-    | '/map/'
-    | '/mypage/'
-    | '/(auth)/auth/'
-    | '/(auth)/register/'
-    | '/(auth)/login/success/'
+  to: '/' | '/map' | '/login' | '/login/success'
+  id: '__root__' | '/' | '/map/' | '/(auth)/login/' | '/(auth)/login/success/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   PageRoute: typeof PageRoute
-  CameraPageRoute: typeof CameraPageRoute
-  ChatPageRoute: typeof ChatPageRoute
   MapPageRoute: typeof MapPageRoute
-  MypagePageRoute: typeof MypagePageRoute
-  authAuthPageRoute: typeof authAuthPageRoute
-  authRegisterPageRoute: typeof authRegisterPageRoute
+  authLoginPageRoute: typeof authLoginPageRoute
   authLoginSuccessPageRoute: typeof authLoginSuccessPageRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   PageRoute: PageRoute,
-  CameraPageRoute: CameraPageRoute,
-  ChatPageRoute: ChatPageRoute,
   MapPageRoute: MapPageRoute,
-  MypagePageRoute: MypagePageRoute,
-  authAuthPageRoute: authAuthPageRoute,
-  authRegisterPageRoute: authRegisterPageRoute,
+  authLoginPageRoute: authLoginPageRoute,
   authLoginSuccessPageRoute: authLoginSuccessPageRoute,
 }
 
@@ -236,35 +135,19 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/camera/",
-        "/chat/",
         "/map/",
-        "/mypage/",
-        "/(auth)/auth/",
-        "/(auth)/register/",
+        "/(auth)/login/",
         "/(auth)/login/success/"
       ]
     },
     "/": {
       "filePath": "page.tsx"
     },
-    "/camera/": {
-      "filePath": "camera/page.tsx"
-    },
-    "/chat/": {
-      "filePath": "chat/page.tsx"
-    },
     "/map/": {
       "filePath": "map/page.tsx"
     },
-    "/mypage/": {
-      "filePath": "mypage/page.tsx"
-    },
-    "/(auth)/auth/": {
-      "filePath": "(auth)/auth/page.tsx"
-    },
-    "/(auth)/register/": {
-      "filePath": "(auth)/register/page.tsx"
+    "/(auth)/login/": {
+      "filePath": "(auth)/login/page.tsx"
     },
     "/(auth)/login/success/": {
       "filePath": "(auth)/login/success/page.tsx"

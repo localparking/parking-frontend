@@ -1,12 +1,12 @@
 import { RouterProvider } from '@tanstack/react-router'
 import React from 'react'
 import { createRouter } from './router'
-import { AuthProvider, useAuth } from '@/shared/libs/auth'
 import { ThemeProvider } from '@ui/common/contexts/theme.context'
 import { AlertDialogProvider } from '@ui/common/components/global-alert-dialog'
 
 import { linkBridge } from '@webview-bridge/web'
 import { AppBridge, AppPostMessageSchema } from '@mobile/bridge'
+import { AuthProvider, useAuth } from './features/auth/hooks/use-auth'
 
 declare module '@tanstack/react-router' {
   interface Register {
