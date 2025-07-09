@@ -18,6 +18,7 @@ import { Route as ChatPageImport } from './app/chat/page'
 import { Route as CameraPageImport } from './app/camera/page'
 import { Route as authRegisterPageImport } from './app/(auth)/register/page'
 import { Route as authAuthPageImport } from './app/(auth)/auth/page'
+import { Route as authLoginSuccessPageImport } from './app/(auth)/login/success/page'
 
 // Create/Update Routes
 
@@ -60,6 +61,12 @@ const authRegisterPageRoute = authRegisterPageImport.update({
 const authAuthPageRoute = authAuthPageImport.update({
   id: '/(auth)/auth/',
   path: '/auth/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const authLoginSuccessPageRoute = authLoginSuccessPageImport.update({
+  id: '/(auth)/login/success/',
+  path: '/login/success/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -116,6 +123,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authRegisterPageImport
       parentRoute: typeof rootRoute
     }
+    '/(auth)/login/success/': {
+      id: '/(auth)/login/success/'
+      path: '/login/success'
+      fullPath: '/login/success'
+      preLoaderRoute: typeof authLoginSuccessPageImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -129,6 +143,7 @@ export interface FileRoutesByFullPath {
   '/mypage': typeof MypagePageRoute
   '/auth': typeof authAuthPageRoute
   '/register': typeof authRegisterPageRoute
+  '/login/success': typeof authLoginSuccessPageRoute
 }
 
 export interface FileRoutesByTo {
@@ -139,6 +154,7 @@ export interface FileRoutesByTo {
   '/mypage': typeof MypagePageRoute
   '/auth': typeof authAuthPageRoute
   '/register': typeof authRegisterPageRoute
+  '/login/success': typeof authLoginSuccessPageRoute
 }
 
 export interface FileRoutesById {
@@ -150,6 +166,7 @@ export interface FileRoutesById {
   '/mypage/': typeof MypagePageRoute
   '/(auth)/auth/': typeof authAuthPageRoute
   '/(auth)/register/': typeof authRegisterPageRoute
+  '/(auth)/login/success/': typeof authLoginSuccessPageRoute
 }
 
 export interface FileRouteTypes {
@@ -162,8 +179,17 @@ export interface FileRouteTypes {
     | '/mypage'
     | '/auth'
     | '/register'
+    | '/login/success'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/camera' | '/chat' | '/map' | '/mypage' | '/auth' | '/register'
+  to:
+    | '/'
+    | '/camera'
+    | '/chat'
+    | '/map'
+    | '/mypage'
+    | '/auth'
+    | '/register'
+    | '/login/success'
   id:
     | '__root__'
     | '/'
@@ -173,6 +199,7 @@ export interface FileRouteTypes {
     | '/mypage/'
     | '/(auth)/auth/'
     | '/(auth)/register/'
+    | '/(auth)/login/success/'
   fileRoutesById: FileRoutesById
 }
 
@@ -184,6 +211,7 @@ export interface RootRouteChildren {
   MypagePageRoute: typeof MypagePageRoute
   authAuthPageRoute: typeof authAuthPageRoute
   authRegisterPageRoute: typeof authRegisterPageRoute
+  authLoginSuccessPageRoute: typeof authLoginSuccessPageRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -194,6 +222,7 @@ const rootRouteChildren: RootRouteChildren = {
   MypagePageRoute: MypagePageRoute,
   authAuthPageRoute: authAuthPageRoute,
   authRegisterPageRoute: authRegisterPageRoute,
+  authLoginSuccessPageRoute: authLoginSuccessPageRoute,
 }
 
 export const routeTree = rootRoute
@@ -212,7 +241,8 @@ export const routeTree = rootRoute
         "/map/",
         "/mypage/",
         "/(auth)/auth/",
-        "/(auth)/register/"
+        "/(auth)/register/",
+        "/(auth)/login/success/"
       ]
     },
     "/": {
@@ -235,6 +265,9 @@ export const routeTree = rootRoute
     },
     "/(auth)/register/": {
       "filePath": "(auth)/register/page.tsx"
+    },
+    "/(auth)/login/success/": {
+      "filePath": "(auth)/login/success/page.tsx"
     }
   }
 }

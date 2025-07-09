@@ -68,10 +68,10 @@ export default defineConfig({
     ],
   },
   server: {
-    port: 3001,
+    port: 3000,
     proxy: {
       '/api': {
-        target: 'https://example.com',
+        target: 'https://townparking.store',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
         cookieDomainRewrite: {

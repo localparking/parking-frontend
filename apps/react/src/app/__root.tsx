@@ -15,7 +15,7 @@ interface RouterContext {
   auth: AuthContext
 }
 
-const publicRoutes = ['/', '/camera', '/chat', '/map']
+const publicRoutes = ['/', '/camera', '/chat', '/map', '/login/success']
 const noAuthRoutes = ['/auth', '/register']
 
 function matchRoute(routes: string[], path: string) {
