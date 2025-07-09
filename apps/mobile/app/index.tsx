@@ -1,5 +1,5 @@
-import React, { useRef, useEffect, useState } from 'react'
-import { Text, Button, SafeAreaView, TextInput, View, StyleSheet, StatusBar, ScrollView, Alert } from 'react-native'
+import React, { useRef, useCallback, useEffect, useState } from 'react'
+import { SafeAreaView, View, StyleSheet, StatusBar, Platform, Alert } from 'react-native'
 import { createWebView, useBridge, type BridgeWebView } from '@webview-bridge/react-native'
 import * as Location from 'expo-location'
 import { appBridge, appSchema } from './bridge'
@@ -17,15 +17,14 @@ export default function App() {
   const webviewRef = useRef<BridgeWebView>(null)
   const [locationPermission, setLocationPermission] = useState<string>('undetermined')
 
-  const { count, data, increase, setDataText, showNative, setShowNative, currentLocation, getCurrentLocation } =
-    useBridge(appBridge)
+  const { currentLocation, getCurrentLocation } = useBridge(appBridge)
 
   // 앱 시작 시 위치 권한 요청
   useEffect(() => {
     requestLocationPermission()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // 위치 정보가 변경될 때마다 웹뷰로 전달
   useEffect(() => {
     if (currentLocation && webviewRef.current) {
       console.log('웹뷰로 위치 정보 전달:', currentLocation)
@@ -77,91 +76,48 @@ export default function App() {
     }
   }
 
+  const webviewUrl =
+    Platform.OS === 'android' ? process.env.EXPO_PUBLIC_ANDROID_WEB_VIEW_URL : process.env.EXPO_PUBLIC_IOS_WEB_VIEW_URL
+
+  if (!webviewUrl) {
+    throw new Error('Webview URL is not set')
+  }
+
+  // 웹뷰 로드 완료 시 처리
+  const handleLoadEnd = useCallback(() => {
+    console.log('Webview load end')
+    console.log('WebView loading finished')
+    // WebView 로딩 완료 후 현재 위치 정보가 있다면 전달
+    if (currentLocation && webviewRef.current) {
+      console.log('WebView 로딩 완료 후 위치 정보 재전달:', currentLocation)
+      setTimeout(() => {
+        const message = JSON.stringify({
+          type: 'setLocationData',
+          payload: currentLocation,
+        })
+        webviewRef.current?.postMessage(message)
+      }, 1000) // 1초 딜레이 후 전달
+    }
+  }, [])
+
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={{ height: showNative ? '33%' : 0 }}>
-        <ScrollView contentContainerStyle={styles.nativeContentContainer}>
-          <Text style={styles.headerTitle}>React Native UI</Text>
+      <StatusBar barStyle="dark-content" />
 
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Native → Web: 메시지 보내기</Text>
-            <View style={styles.buttonContainer}>
-              <Button
-                title="Set Web Message (zod)"
-                onPress={() => postMessage('setWebMessage_zod', { message: 'zod !' })}
-              />
-            </View>
-            <View style={styles.buttonContainer}>
-              <Button
-                title="Set Web Message (valibot)"
-                onPress={() => postMessage('setWebMessage_valibot', { message: 'valibot !' })}
-              />
-            </View>
-          </View>
-
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>공유 상태 관리</Text>
-
-            <View style={styles.stateItem}>
-              <Text style={styles.stateLabel}>
-                Webview Count: <Text style={styles.stateValue}>{count}</Text>
-              </Text>
-              <Button onPress={increase} title="Increase From Native" />
-            </View>
-
-            <View style={styles.stateItem}>
-              <Text style={styles.stateLabel}>
-                Webview Data Text: <Text style={styles.stateValue}>{data.text}</Text>
-              </Text>
-              <TextInput
-                value={data.text}
-                onChangeText={setDataText}
-                style={styles.input}
-                placeholder="여기에 입력하세요..."
-              />
-            </View>
-
-            <View style={styles.stateItem}>
-              <Text style={styles.stateLabel}>
-                위치 권한 상태: <Text style={styles.stateValue}>{locationPermission}</Text>
-              </Text>
-              <Button onPress={requestLocationPermission} title="위치 권한 재요청" />
-            </View>
-
-            <View style={styles.stateItem}>
-              <Text style={styles.stateLabel}>
-                현재 위치:{' '}
-                {currentLocation ? (
-                  <Text style={styles.stateValue}>
-                    {`위도: ${currentLocation.latitude.toFixed(6)}, 경도: ${currentLocation.longitude.toFixed(6)}`}
-                  </Text>
-                ) : (
-                  <Text style={styles.stateValue}>위치 정보 없음</Text>
-                )}
-              </Text>
-              <Button onPress={handleUpdateLocation} title="위치 정보 업데이트" />
-            </View>
-          </View>
-
-          <View style={styles.card}>
-            <Button onPress={() => setShowNative(false)} title="Close Native UI" />
-          </View>
-        </ScrollView>
-      </View>
-
-      {/* 2. WebView 영역 */}
+      {/* WebView 영역 */}
       <View style={styles.webviewContainer}>
         <WebView
           ref={webviewRef}
-          source={{ uri: 'http://localhost:3001' }}
+          source={{ uri: webviewUrl }}
           style={styles.webview}
-          // 위치 정보 관련 설정 개선
           geolocationEnabled={true}
+          javaScriptEnabled={true}
+          allowsFullscreenVideo={true}
           allowsInlineMediaPlayback={true}
           mediaPlaybackRequiresUserAction={false}
-          // 권한 관련 설정
           originWhitelist={['*']}
           mixedContentMode="compatibility"
+          onLoadEnd={handleLoadEnd}
           thirdPartyCookiesEnabled={true}
           domStorageEnabled={true}
           // iOS 특정 설정
@@ -169,100 +125,29 @@ export default function App() {
           // 네트워크 오류 처리
           onError={(syntheticEvent) => {
             const { nativeEvent } = syntheticEvent
-            console.error('WebView error:', nativeEvent)
+            console.error('WebView error: ', nativeEvent)
+          }}
+          onHttpError={(syntheticEvent) => {
+            const { nativeEvent } = syntheticEvent
+            console.error('WebView HTTP error: ', nativeEvent)
           }}
           // 로딩 상태 처리
           onLoadStart={() => {
             console.log('WebView loading started')
           }}
-          onLoadEnd={() => {
-            console.log('WebView loading finished')
-            // WebView 로딩 완료 후 현재 위치 정보가 있다면 전달
-            if (currentLocation && webviewRef.current) {
-              console.log('WebView 로딩 완료 후 위치 정보 재전달:', currentLocation)
-              setTimeout(() => {
-                const message = JSON.stringify({
-                  type: 'setLocationData',
-                  payload: currentLocation,
-                })
-                webviewRef.current?.postMessage(message)
-              }, 1000) // 1초 딜레이 후 전달
-            }
-          }}
-          injectedJavaScript={`window.confirm = function(){ return true; }`}
-          hideKeyboardAccessoryView={true}
         />
       </View>
     </SafeAreaView>
   )
 }
 
-// --- 스타일시트 ---
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: 'white',
-  },
-  nativeContentContainer: {
-    padding: 16,
-  },
-  nativeContainer: {
-    height: '33%',
-  },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 20,
-    color: '#1A202C',
-  },
-  card: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-    // 그림자 (iOS)
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    // 그림자 (Android)
-    elevation: 3,
-  },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    marginBottom: 12,
-    color: '#2D3748',
-  },
-  buttonContainer: {
-    marginVertical: 4,
-  },
-  stateItem: {
-    marginVertical: 10,
-  },
-  stateLabel: {
-    fontSize: 16,
-    color: '#4A5568',
-    marginBottom: 8,
-  },
-  stateValue: {
-    fontWeight: 'bold',
-    color: '#2B6CB0',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#CBD5E0',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 16,
-    backgroundColor: '#F7FAFC',
   },
   webviewContainer: {
-    flex: 2,
-    borderTopWidth: 1,
-    borderTopColor: '#E2E8F0',
+    flex: 1,
   },
   webview: {
     height: '100%',
