@@ -17,9 +17,9 @@ export async function appleLogin(): Promise<SocialLoginResult> {
     console.log(credential)
 
     try {
-      const apiResponse = await axios.post(`${process.env.EXPO_PUBLIC_API_BASE_URL}/login/apple`, {
-        accessToken: credential.authorizationCode,
-        idToken: credential.identityToken,
+      const apiResponse = await axios.post(`${process.env.EXPO_PUBLIC_API_BASE_URL}/auth/login/apple`, {
+        token: credential.identityToken,
+        // idToken: credential.identityToken,
       })
 
       if (apiResponse.data && apiResponse.data.data) {
