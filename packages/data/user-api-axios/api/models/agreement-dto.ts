@@ -12,6 +12,22 @@
  * Do not edit the class manually.
  */
 
-export * from './apis/admin-api'
-export * from './apis/auth-api'
-export * from './apis/register-api'
+/**
+ * 약관 동의 DTO
+ * @export
+ * @interface AgreementDto
+ */
+export interface AgreementDto {
+  /**
+   * 약관 ID
+   * @type {number}
+   * @memberof AgreementDto
+   */
+  termId: number
+  /**
+   * 약관 동의 여부
+   * @type {boolean}
+   * @memberof AgreementDto
+   */
+  agreed: boolean
+}

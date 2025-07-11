@@ -12,6 +12,16 @@
  * Do not edit the class manually.
  */
 
-export * from './apis/admin-api'
-export * from './apis/auth-api'
-export * from './apis/register-api'
+/**
+ * 토큰
+ * @export
+ * @interface TokenRequest
+ */
+export interface TokenRequest {
+  /**
+   *
+   * @type {string}
+   * @memberof TokenRequest
+   */
+  token: string
+}

@@ -12,6 +12,20 @@
  * Do not edit the class manually.
  */
 
-export * from './apis/admin-api'
-export * from './apis/auth-api'
-export * from './apis/register-api'
+// May contain unused imports in some cases
+// @ts-ignore
+import type { CategoryDto } from './category-dto'
+
+/**
+ *
+ * @export
+ * @interface CategoryResponse
+ */
+export interface CategoryResponse {
+  /**
+   *
+   * @type {Array<CategoryDto>}
+   * @memberof CategoryResponse
+   */
+  category: Array<CategoryDto>
+}

@@ -12,7 +12,7 @@ export async function kakaoLogin(): Promise<SocialLoginResult> {
     }
 
     try {
-      const apiResponse = await axios.post(`${process.env.EXPO_PUBLIC_API_BASE_URL}/auth/kakao`, {
+      const apiResponse = await axios.post(`${process.env.EXPO_PUBLIC_API_BASE_URL}/auth/login/kakao`, {
         token: token.accessToken,
       })
 
