@@ -37,12 +37,12 @@ module.exports = () => {
         foregroundImage: './assets/images/adaptive-icon.png',
         backgroundColor: '#ffffff',
       },
-      package: 'com.malmo.app',
+      package: 'com.town-parking.app',
       intentFilters: [
         {
           action: 'VIEW',
           category: ['DEFAULT', 'BROWSABLE'],
-          data: { scheme: 'malmo' },
+          data: { scheme: 'town-parking' },
         },
       ],
     },
@@ -72,7 +72,6 @@ module.exports = () => {
           },
         },
       ],
-      'expo-router',
       [
         'expo-splash-screen',
         {

@@ -28,16 +28,16 @@ export const Route = createFileRoute('/(auth)/login/success/')({
 function RouteComponent() {
   const { data } = Route.useLoaderData()
 
-  const handleCheckAuth = async () => {
-    try {
-      const response = await authApi.refreshAccessToken({
-        headers: { Authorization: `Bearer ${data.accessToken}` },
-      })
-      console.log('Auth Check Response:', response)
-    } catch (error) {
-      console.error('Error checking auth:', error)
-    }
-  }
+  // const handleCheckAuth = async () => {
+  //   try {
+  //     const response = await authApi.refreshAccessToken({
+  //       headers: { Authorization: `Bearer ${data.accessToken}` },
+  //     })
+  //     console.log('Auth Check Response:', response)
+  //   } catch (error) {
+  //     console.error('Error checking auth:', error)
+  //   }
+  // }
 
   console.log('Login Success Data:', data)
   return (
@@ -45,10 +45,10 @@ function RouteComponent() {
       <p>{data.role}</p>
       <p>{data.accessToken}</p>
       <p>{data.refreshToken}</p>
-
+      {/* 
       <Button onClick={handleCheckAuth} className="mt-4">
         인증 확인
-      </Button>
+      </Button> */}
     </div>
   )
 }

@@ -12,7 +12,6 @@
 
 import { Route as rootRoute } from './app/__root'
 import { Route as PageImport } from './app/page'
-import { Route as MapPageImport } from './app/map/page'
 import { Route as authLoginPageImport } from './app/(auth)/login/page'
 import { Route as authLoginSuccessPageImport } from './app/(auth)/login/success/page'
 
@@ -21,12 +20,6 @@ import { Route as authLoginSuccessPageImport } from './app/(auth)/login/success/
 const PageRoute = PageImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const MapPageRoute = MapPageImport.update({
-  id: '/map/',
-  path: '/map/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -53,13 +46,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PageImport
       parentRoute: typeof rootRoute
     }
-    '/map/': {
-      id: '/map/'
-      path: '/map'
-      fullPath: '/map'
-      preLoaderRoute: typeof MapPageImport
-      parentRoute: typeof rootRoute
-    }
     '/(auth)/login/': {
       id: '/(auth)/login/'
       path: '/login'
@@ -81,14 +67,12 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof PageRoute
-  '/map': typeof MapPageRoute
   '/login': typeof authLoginPageRoute
   '/login/success': typeof authLoginSuccessPageRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof PageRoute
-  '/map': typeof MapPageRoute
   '/login': typeof authLoginPageRoute
   '/login/success': typeof authLoginSuccessPageRoute
 }
@@ -96,30 +80,27 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof PageRoute
-  '/map/': typeof MapPageRoute
   '/(auth)/login/': typeof authLoginPageRoute
   '/(auth)/login/success/': typeof authLoginSuccessPageRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/map' | '/login' | '/login/success'
+  fullPaths: '/' | '/login' | '/login/success'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/map' | '/login' | '/login/success'
-  id: '__root__' | '/' | '/map/' | '/(auth)/login/' | '/(auth)/login/success/'
+  to: '/' | '/login' | '/login/success'
+  id: '__root__' | '/' | '/(auth)/login/' | '/(auth)/login/success/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   PageRoute: typeof PageRoute
-  MapPageRoute: typeof MapPageRoute
   authLoginPageRoute: typeof authLoginPageRoute
   authLoginSuccessPageRoute: typeof authLoginSuccessPageRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   PageRoute: PageRoute,
-  MapPageRoute: MapPageRoute,
   authLoginPageRoute: authLoginPageRoute,
   authLoginSuccessPageRoute: authLoginSuccessPageRoute,
 }
@@ -135,16 +116,12 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/map/",
         "/(auth)/login/",
         "/(auth)/login/success/"
       ]
     },
     "/": {
       "filePath": "page.tsx"
-    },
-    "/map/": {
-      "filePath": "map/page.tsx"
     },
     "/(auth)/login/": {
       "filePath": "(auth)/login/page.tsx"

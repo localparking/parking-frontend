@@ -89,7 +89,7 @@ export const appBridge = bridge<AppBridgeState>(({ set }) => {
         }
 
         // 브릿지 상태에 저장
-        set({ currentLocation: locationData })
+        // set({ currentLocation: locationData })
 
         console.log('네이티브에서 위치 정보 획득:', locationData)
         return locationData

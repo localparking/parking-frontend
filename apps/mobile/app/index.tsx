@@ -15,66 +15,65 @@ export const { WebView, postMessage } = createWebView({
 
 export default function App() {
   const webviewRef = useRef<BridgeWebView>(null)
-  const [locationPermission, setLocationPermission] = useState<string>('undetermined')
+  // const [locationPermission, setLocationPermission] = useState<string>('undetermined')
 
-  const { currentLocation, getCurrentLocation } = useBridge(appBridge)
+  // const { currentLocation, getCurrentLocation } = useBridge(appBridge)
 
-  // 앱 시작 시 위치 권한 요청
-  useEffect(() => {
-    requestLocationPermission()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  // // 앱 시작 시 위치 권한 요청
+  // useEffect(() => {
+  //   requestLocationPermission()
+  // }, [])
 
-  useEffect(() => {
-    if (currentLocation && webviewRef.current) {
-      console.log('웹뷰로 위치 정보 전달:', currentLocation)
+  // useEffect(() => {
+  //   if (currentLocation && webviewRef.current) {
+  //     console.log('웹뷰로 위치 정보 전달:', currentLocation)
 
-      // JSON 메시지 형태로 웹뷰에 전달
-      const message = JSON.stringify({
-        type: 'setLocationData',
-        payload: currentLocation,
-      })
+  //     // JSON 메시지 형태로 웹뷰에 전달
+  //     const message = JSON.stringify({
+  //       type: 'setLocationData',
+  //       payload: currentLocation,
+  //     })
 
-      webviewRef.current.postMessage(message)
-    }
-  }, [currentLocation])
+  //     webviewRef.current.postMessage(message)
+  //   }
+  // }, [currentLocation])
 
-  const requestLocationPermission = async () => {
-    try {
-      // 현재 권한 상태 확인
-      let { status } = await Location.getForegroundPermissionsAsync()
+  // const requestLocationPermission = async () => {
+  //   try {
+  //     // 현재 권한 상태 확인
+  //     let { status } = await Location.getForegroundPermissionsAsync()
 
-      if (status !== 'granted') {
-        // 권한 요청
-        const { status: newStatus } = await Location.requestForegroundPermissionsAsync()
-        status = newStatus
-      }
+  //     if (status !== 'granted') {
+  //       // 권한 요청
+  //       const { status: newStatus } = await Location.requestForegroundPermissionsAsync()
+  //       status = newStatus
+  //     }
 
-      setLocationPermission(status)
+  //     setLocationPermission(status)
 
-      if (status !== 'granted') {
-        Alert.alert(
-          '위치 권한 필요',
-          '지도 기능을 사용하려면 위치 접근 권한이 필요합니다. 설정에서 권한을 허용해주세요.',
-          [{ text: '확인', style: 'default' }]
-        )
-      } else {
-        console.log('위치 권한이 허용되었습니다.')
-        await getCurrentLocation()
-      }
-    } catch (error) {
-      console.error('위치 권한 요청 중 오류:', error)
-    }
-  }
+  //     if (status !== 'granted') {
+  //       Alert.alert(
+  //         '위치 권한 필요',
+  //         '지도 기능을 사용하려면 위치 접근 권한이 필요합니다. 설정에서 권한을 허용해주세요.',
+  //         [{ text: '확인', style: 'default' }]
+  //       )
+  //     } else {
+  //       console.log('위치 권한이 허용되었습니다.')
+  //       await getCurrentLocation()
+  //     }
+  //   } catch (error) {
+  //     console.error('위치 권한 요청 중 오류:', error)
+  //   }
+  // }
 
-  const handleUpdateLocation = async () => {
-    const location = await getCurrentLocation()
-    if (location) {
-      Alert.alert('위치 업데이트', `위도: ${location.latitude.toFixed(6)}, 경도: ${location.longitude.toFixed(6)}`)
-    } else {
-      Alert.alert('위치 오류', '위치 정보를 가져올 수 없습니다.')
-    }
-  }
+  // const handleUpdateLocation = async () => {
+  //   const location = await getCurrentLocation()
+  //   if (location) {
+  //     Alert.alert('위치 업데이트', `위도: ${location.latitude.toFixed(6)}, 경도: ${location.longitude.toFixed(6)}`)
+  //   } else {
+  //     Alert.alert('위치 오류', '위치 정보를 가져올 수 없습니다.')
+  //   }
+  // }
 
   const webviewUrl =
     Platform.OS === 'android' ? process.env.EXPO_PUBLIC_ANDROID_WEB_VIEW_URL : process.env.EXPO_PUBLIC_IOS_WEB_VIEW_URL
@@ -85,19 +84,18 @@ export default function App() {
 
   // 웹뷰 로드 완료 시 처리
   const handleLoadEnd = useCallback(() => {
-    console.log('Webview load end')
     console.log('WebView loading finished')
     // WebView 로딩 완료 후 현재 위치 정보가 있다면 전달
-    if (currentLocation && webviewRef.current) {
-      console.log('WebView 로딩 완료 후 위치 정보 재전달:', currentLocation)
-      setTimeout(() => {
-        const message = JSON.stringify({
-          type: 'setLocationData',
-          payload: currentLocation,
-        })
-        webviewRef.current?.postMessage(message)
-      }, 1000) // 1초 딜레이 후 전달
-    }
+    //   if (currentLocation && webviewRef.current) {
+    //     console.log('WebView 로딩 완료 후 위치 정보 재전달:', currentLocation)
+    //     setTimeout(() => {
+    //       const message = JSON.stringify({
+    //         type: 'setLocationData',
+    //         payload: currentLocation,
+    //       })
+    //       webviewRef.current?.postMessage(message)
+    //     }, 1000) // 1초 딜레이 후 전달
+    //   }s
   }, [])
 
   return (
