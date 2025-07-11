@@ -1,10 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { MapContainer } from '@/features/map'
+import { MapFeature } from '@/features/map/components'
 
 export const Route = createFileRoute('/map/')({
   component: Map,
 })
 
 function Map() {
-  return <MapContainer />
+  return <MapFeature />
 }
