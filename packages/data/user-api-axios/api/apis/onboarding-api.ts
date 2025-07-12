@@ -32,25 +32,66 @@ import {
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, type RequestArgs, BaseAPI, RequiredError, operationServerMap } from '../base'
 // @ts-ignore
-import type { RegisterRequest } from '../models'
+import type { CategoryResponse } from '../models'
 // @ts-ignore
-import type { ResponseDtoTermsResponse } from '../models'
+import type { OnboardingRequest } from '../models'
 // @ts-ignore
 import type { ResponseDtoUnit } from '../models'
 /**
- * RegisterApi - axios parameter creator
+ * OnboardingApi - axios parameter creator
  * @export
  */
-export const RegisterApiAxiosParamCreator = function (configuration?: Configuration) {
+export const OnboardingApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
     /**
-     * 회원가입 시 약관을 조회하는 API입니다.
-     * @summary 약관 조회
+     * 온보딩을 완료하는 API입니다.
+     * @summary 온보딩 완료
+     * @param {OnboardingRequest} onboardingRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getTerms: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-      const localVarPath = `/register/terms`
+    completeOnboarding: async (
+      onboardingRequest: OnboardingRequest,
+      options: RawAxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'onboardingRequest' is not null or undefined
+      assertParamExists('completeOnboarding', 'onboardingRequest', onboardingRequest)
+      const localVarPath = `/onboarding/complete`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication Bearer Token required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
+      localVarRequestOptions.data = serializeDataIfNeeded(onboardingRequest, localVarRequestOptions, configuration)
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * 온보딩 시 카테고리를 조회하는 API입니다.
+     * @summary 온보딩 카테고리 조회
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getCategories: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+      const localVarPath = `/onboarding/categories`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -75,93 +116,52 @@ export const RegisterApiAxiosParamCreator = function (configuration?: Configurat
         options: localVarRequestOptions,
       }
     },
-    /**
-     * 회원가입 시 약관 동의를 위한 API입니다.
-     * @summary 회원가입- 약관동의
-     * @param {RegisterRequest} registerRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    registerAgreements: async (
-      registerRequest: RegisterRequest,
-      options: RawAxiosRequestConfig = {}
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'registerRequest' is not null or undefined
-      assertParamExists('registerAgreements', 'registerRequest', registerRequest)
-      const localVarPath = `/register/agreements`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication Bearer Token required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      localVarHeaderParameter['Content-Type'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
-      localVarRequestOptions.data = serializeDataIfNeeded(registerRequest, localVarRequestOptions, configuration)
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
   }
 }
 
 /**
- * RegisterApi - functional programming interface
+ * OnboardingApi - functional programming interface
  * @export
  */
-export const RegisterApiFp = function (configuration?: Configuration) {
-  const localVarAxiosParamCreator = RegisterApiAxiosParamCreator(configuration)
+export const OnboardingApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = OnboardingApiAxiosParamCreator(configuration)
   return {
     /**
-     * 회원가입 시 약관을 조회하는 API입니다.
-     * @summary 약관 조회
+     * 온보딩을 완료하는 API입니다.
+     * @summary 온보딩 완료
+     * @param {OnboardingRequest} onboardingRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async getTerms(
-      options?: RawAxiosRequestConfig
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoTermsResponse>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.getTerms(options)
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['RegisterApi.getTerms']?.[localVarOperationServerIndex]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
-     * 회원가입 시 약관 동의를 위한 API입니다.
-     * @summary 회원가입- 약관동의
-     * @param {RegisterRequest} registerRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async registerAgreements(
-      registerRequest: RegisterRequest,
+    async completeOnboarding(
+      onboardingRequest: OnboardingRequest,
       options?: RawAxiosRequestConfig
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoUnit>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.registerAgreements(registerRequest, options)
+      const localVarAxiosArgs = await localVarAxiosParamCreator.completeOnboarding(onboardingRequest, options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
-        operationServerMap['RegisterApi.registerAgreements']?.[localVarOperationServerIndex]?.url
+        operationServerMap['OnboardingApi.completeOnboarding']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * 온보딩 시 카테고리를 조회하는 API입니다.
+     * @summary 온보딩 카테고리 조회
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getCategories(
+      options?: RawAxiosRequestConfig
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CategoryResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getCategories(options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['OnboardingApi.getCategories']?.[localVarOperationServerIndex]?.url
       return (axios, basePath) =>
         createRequestFunction(
           localVarAxiosArgs,
@@ -174,84 +174,87 @@ export const RegisterApiFp = function (configuration?: Configuration) {
 }
 
 /**
- * RegisterApi - factory interface
+ * OnboardingApi - factory interface
  * @export
  */
-export const RegisterApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-  const localVarFp = RegisterApiFp(configuration)
+export const OnboardingApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+  const localVarFp = OnboardingApiFp(configuration)
   return {
     /**
-     * 회원가입 시 약관을 조회하는 API입니다.
-     * @summary 약관 조회
+     * 온보딩을 완료하는 API입니다.
+     * @summary 온보딩 완료
+     * @param {OnboardingApiCompleteOnboardingRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getTerms(options?: RawAxiosRequestConfig): AxiosPromise<ResponseDtoTermsResponse> {
-      return localVarFp.getTerms(options).then((request) => request(axios, basePath))
-    },
-    /**
-     * 회원가입 시 약관 동의를 위한 API입니다.
-     * @summary 회원가입- 약관동의
-     * @param {RegisterApiRegisterAgreementsRequest} requestParameters Request parameters.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    registerAgreements(
-      requestParameters: RegisterApiRegisterAgreementsRequest,
+    completeOnboarding(
+      requestParameters: OnboardingApiCompleteOnboardingRequest,
       options?: RawAxiosRequestConfig
     ): AxiosPromise<ResponseDtoUnit> {
       return localVarFp
-        .registerAgreements(requestParameters.registerRequest, options)
+        .completeOnboarding(requestParameters.onboardingRequest, options)
         .then((request) => request(axios, basePath))
+    },
+    /**
+     * 온보딩 시 카테고리를 조회하는 API입니다.
+     * @summary 온보딩 카테고리 조회
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getCategories(options?: RawAxiosRequestConfig): AxiosPromise<CategoryResponse> {
+      return localVarFp.getCategories(options).then((request) => request(axios, basePath))
     },
   }
 }
 
 /**
- * Request parameters for registerAgreements operation in RegisterApi.
+ * Request parameters for completeOnboarding operation in OnboardingApi.
  * @export
- * @interface RegisterApiRegisterAgreementsRequest
+ * @interface OnboardingApiCompleteOnboardingRequest
  */
-export interface RegisterApiRegisterAgreementsRequest {
+export interface OnboardingApiCompleteOnboardingRequest {
   /**
    *
-   * @type {RegisterRequest}
-   * @memberof RegisterApiRegisterAgreements
+   * @type {OnboardingRequest}
+   * @memberof OnboardingApiCompleteOnboarding
    */
-  readonly registerRequest: RegisterRequest
+  readonly onboardingRequest: OnboardingRequest
 }
 
 /**
- * RegisterApi - object-oriented interface
+ * OnboardingApi - object-oriented interface
  * @export
- * @class RegisterApi
+ * @class OnboardingApi
  * @extends {BaseAPI}
  */
-export class RegisterApi extends BaseAPI {
+export class OnboardingApi extends BaseAPI {
   /**
-   * 회원가입 시 약관을 조회하는 API입니다.
-   * @summary 약관 조회
+   * 온보딩을 완료하는 API입니다.
+   * @summary 온보딩 완료
+   * @param {OnboardingApiCompleteOnboardingRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof RegisterApi
+   * @memberof OnboardingApi
    */
-  public getTerms(options?: RawAxiosRequestConfig) {
-    return RegisterApiFp(this.configuration)
-      .getTerms(options)
+  public completeOnboarding(
+    requestParameters: OnboardingApiCompleteOnboardingRequest,
+    options?: RawAxiosRequestConfig
+  ) {
+    return OnboardingApiFp(this.configuration)
+      .completeOnboarding(requestParameters.onboardingRequest, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
   /**
-   * 회원가입 시 약관 동의를 위한 API입니다.
-   * @summary 회원가입- 약관동의
-   * @param {RegisterApiRegisterAgreementsRequest} requestParameters Request parameters.
+   * 온보딩 시 카테고리를 조회하는 API입니다.
+   * @summary 온보딩 카테고리 조회
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof RegisterApi
+   * @memberof OnboardingApi
    */
-  public registerAgreements(requestParameters: RegisterApiRegisterAgreementsRequest, options?: RawAxiosRequestConfig) {
-    return RegisterApiFp(this.configuration)
-      .registerAgreements(requestParameters.registerRequest, options)
+  public getCategories(options?: RawAxiosRequestConfig) {
+    return OnboardingApiFp(this.configuration)
+      .getCategories(options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

@@ -4,7 +4,9 @@
 api.ts
 apis/admin-api.ts
 apis/auth-api.ts
+apis/onboarding-api.ts
 apis/register-api.ts
+apis/user-api.ts
 base.ts
 common.ts
 configuration.ts
@@ -20,7 +22,9 @@ models/register-request.ts
 models/response-dto-terms-response.ts
 models/response-dto-token-response.ts
 models/response-dto-unit.ts
+models/response-dto-user-response.ts
 models/term-dto.ts
 models/terms-response.ts
 models/token-request.ts
 models/token-response.ts
+models/user-response.ts
