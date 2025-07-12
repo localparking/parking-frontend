@@ -4,6 +4,7 @@ import { z } from 'zod'
 import { BridgeStore, BridgeActions, SocialLoginType, SocialLoginResult, LocationData } from '@bridge/types'
 import { kakaoLogin } from '../features/auth/social/kakao-login'
 import { appleLogin } from '../features/auth/social/apple-login'
+import { refreshToken } from '../features/auth/token/refresh-token'
 import { AuthStorage } from '../features/auth/lib/auth-storage'
 
 export type AppBridgeState = Bridge & BridgeStore & BridgeActions
@@ -112,6 +113,10 @@ export const appBridge = bridge<AppBridgeState>(({ set }) => {
         console.error('위치 권한 요청 실패:', error)
         return false
       }
+    },
+    async notifyTokenExpired(): Promise<{ accessToken: string | null }> {
+      const { accessToken } = await refreshToken()
+      return { accessToken }
     },
   }
 

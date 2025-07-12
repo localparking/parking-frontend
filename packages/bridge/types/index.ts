@@ -27,4 +27,5 @@ export interface BridgeActions {
   logout(): Promise<{ success: boolean; message?: string }>
   getCurrentLocation(): Promise<LocationData | null>
   requestLocationPermission(): Promise<boolean>
+  notifyTokenExpired(): Promise<{ accessToken: string | null }>
 }

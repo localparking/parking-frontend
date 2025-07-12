@@ -1,15 +1,15 @@
-import { AuthApi } from '@data/user-api-axios/api'
+import { AuthApi, UserApi } from '@data/user-api-axios/api'
 import axios from 'axios'
 import apiInstance, { defaultOptions } from '../libs/api'
 
-class AuthService extends AuthApi {
+class UserService extends UserApi {
   constructor() {
     super(undefined, '', apiInstance)
   }
 
-  async getRefreshToken() {
+  async me() {
     try {
-      const { data } = await this.reissueRefreshToken()
+      const { data } = await this.getMyInfo()
       return data
     } catch (e: any) {
       throw e
@@ -37,4 +37,4 @@ class AuthService extends AuthApi {
   //   }
 }
 
-export default new AuthService()
+export default new UserService()
