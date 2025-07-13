@@ -1,6 +1,9 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { isWebView } from '../utils/webview'
 import { bridge } from '../bridge'
+import Cookies from 'js-cookie'
+import { saveTokens } from './token'
+import { AuthApi } from '@data/user-api-axios/api'
 
 // TODO: 동적으로 개발 환경에 따라 BASE_URL을 설정할 수 있도록 개선
 const BASE_URL = '/api'
@@ -28,26 +31,44 @@ const redirectToAuth = () => {
   }
 }
 
+const authApi = new AuthApi()
+
+const refreshAccessToken = async (): Promise<string | null> => {
+  // 1) WebView → 네이티브에게 토큰 갱신 요청
+  if (isWebView()) {
+    const { accessToken } = await bridge.notifyTokenExpired()
+    return accessToken ?? null
+  }
+
+  const refreshToken = Cookies.get('town-refreshToken')
+  // 2) 일반 웹 → API 호출로 갱신
+  const { data } = await authApi.reissueRefreshToken({ headers: { Authorization: `Bearer ${refreshToken}` } })
+  if (!data?.data) throw new Error('Failed to refresh token.')
+
+  const { accessToken, refreshToken: newRefreshToken } = data.data
+  if (!accessToken || !newRefreshToken) throw new Error('Invalid token payload.')
+
+  saveTokens(accessToken, newRefreshToken)
+  return accessToken
+}
+
 export function initApi(): AxiosInstance {
   const apiInstance = axios.create(defaultOptions)
 
   apiInstance.interceptors.request.use(
     async (config) => {
-      console.log('Request Config:', config)
       let accessToken: string | null = null
 
       if (isWebView()) {
         const tokenData = await bridge.getAuthToken()
         accessToken = tokenData.accessToken
       } else {
-        accessToken = localStorage.getItem('accessToken')
+        accessToken = Cookies.get('town-accessToken')
       }
 
       if (accessToken) {
         config.headers.Authorization = `Bearer ${accessToken}`
       }
-
-      console.log('Request Headers:', config.headers)
 
       return config
     },
@@ -56,7 +77,6 @@ export function initApi(): AxiosInstance {
     }
   )
 
-  let isRefreshing = false
   let failedQueue: QueueItem[] = []
 
   const processQueue = (error: Error | null, token: string | null = null) => {
@@ -79,22 +99,11 @@ export function initApi(): AxiosInstance {
       const originalRequest = error.config
       const { response } = error
 
-      if (response?.status === 401 && isWebView() && !originalRequest._retry) {
-        if (isRefreshing) {
-          return new Promise((resolve, reject) => {
-            failedQueue.push({ resolve, reject, config: originalRequest })
-          })
-        }
-
+      if (response?.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true
-        isRefreshing = true
 
         try {
-          const { accessToken: newAccessToken } = await bridge.notifyTokenExpired()
-
-          if (!newAccessToken) {
-            throw new Error('Webview bridge: Failed to receive a new token.')
-          }
+          const newAccessToken = await refreshAccessToken()
           originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`
 
           processQueue(null, newAccessToken)
@@ -102,14 +111,18 @@ export function initApi(): AxiosInstance {
           return apiInstance(originalRequest)
         } catch (refreshError) {
           processQueue(refreshError as Error, null)
+          if (isWebView()) {
+            await bridge.notifyTokenExpired()
+          } else {
+            Cookies.remove('town-accessToken')
+            Cookies.remove('town-refreshToken')
+          }
           redirectToAuth()
           return Promise.reject(refreshError)
-        } finally {
-          isRefreshing = false
         }
       }
 
-      if (response?.status === 403 && response.data?.message === 'forbidden') {
+      if (response?.status === 403) {
         redirectToAuth()
       }
 

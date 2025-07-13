@@ -1,4 +1,6 @@
-import { createFileRoute } from '@tanstack/react-router'
+const { VITE_API_URL } = import.meta.env
+
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { isWebView } from '@/shared/utils/webview'
 import logo from '@/assets/images/logo.png'
 import AppleLogo from '@/assets/icons/apple-logo.svg'
@@ -12,7 +14,7 @@ export const Route = createFileRoute('/(auth)/login/')({
 
 export default function LoginPage() {
   const auth = useAuth()
-  const navigate = Route.useNavigate()
+  const navigate = useNavigate()
   const { open } = useAlertDialog()
 
   const handleAppleLogin = async () => {
@@ -21,10 +23,10 @@ export default function LoginPage() {
         const result = await auth.socialLogin('apple')
 
         if (result.success) {
-          navigate({ to: '/onboarding/term', replace: true })
+          navigate({ to: '/', replace: true })
         }
       } else {
-        // ToDo
+        // TODO: 웹뷰가 아닌 경우 애플 로그인 처리
       }
     } catch (error: any) {
       open({
@@ -41,10 +43,10 @@ export default function LoginPage() {
         const result = await auth.socialLogin('kakao')
 
         if (result.success) {
-          navigate({ to: '/onboarding/term', replace: true })
+          navigate({ to: '/', replace: true })
         }
       } else {
-        //ToDo
+        window.location.href = `${VITE_API_URL}/oauth2/authorization/kakao`
       }
     } catch (error: any) {
       open({
@@ -76,13 +78,15 @@ export default function LoginPage() {
         </button>
 
         {/* 애플 로그인 버튼 */}
-        <button
-          onClick={handleAppleLogin}
-          className="flex h-[52px] w-full items-center justify-center rounded-[8px] bg-black text-white"
-        >
-          <AppleLogo className="mr-2" width={24} height={24} />
-          <span className="body1-semibold text-[#FFFFFF]">Apple로 시작하기</span>
-        </button>
+        {isWebView() && (
+          <button
+            onClick={handleAppleLogin}
+            className="flex h-[52px] w-full items-center justify-center rounded-[8px] bg-black text-white"
+          >
+            <AppleLogo className="mr-2" width={24} height={24} />
+            <span className="body1-semibold text-[#FFFFFF]">Apple로 시작하기</span>
+          </button>
+        )}
       </div>
     </div>
   )

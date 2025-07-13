@@ -1,6 +1,8 @@
 import bridge from '@/shared/bridge'
+import userService from '@/shared/services/user.service'
 import { isWebView } from '@/shared/utils/webview'
 import { SocialLoginType } from '@bridge/types'
+import Cookies from 'js-cookie'
 
 // 인증 관련 기능을 제공하는 클라이언트
 class AuthClient {
@@ -15,17 +17,11 @@ class AuthClient {
         if (isLoggedIn) {
           // 네이티브에서 토큰 가져오기
           const { accessToken } = await bridge.getAuthToken()
-
-          if (!accessToken) {
-            return { authenticated: false }
-          }
-
-          return { authenticated: true, accessToken }
+          return { authenticated: !!accessToken, accessToken }
         }
-
-        return { authenticated: false }
       } else {
-        // Todo
+        const accessToken = Cookies.get('town-accessToken')
+        return { authenticated: !!accessToken, accessToken }
       }
     } catch {
       return { authenticated: false }
@@ -44,7 +40,9 @@ class AuthClient {
         throw error
       }
     } else {
-      throw new Error('웹 환경에서는 로그아웃이 지원되지 않습니다.')
+      Cookies.remove('town-accessToken', { path: '/' })
+      // Cookies.remove('town-refreshToken', { path: '/' })
+      return { success: true, message: '로그아웃 성공' }
     }
   }
 

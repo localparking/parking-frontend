@@ -8,7 +8,7 @@ interface RouterContext {
   auth: AuthContext
 }
 
-const publicRoutes = ['/login', '/intro']
+const publicRoutes = ['/login', '/login/success']
 
 function matchRoute(routes: string[], path: string) {
   return routes.some((route) => match(route)(path))

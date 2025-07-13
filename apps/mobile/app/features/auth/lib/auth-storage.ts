@@ -1,9 +1,9 @@
 import * as SecureStore from 'expo-secure-store'
 
 export class AuthStorage {
-  private static readonly ACCESS_TOKEN_KEY = 'auth_access_token'
-  private static readonly REFRESH_TOKEN_KEY = 'auth_refresh_token'
-  private static readonly USER_INFO_KEY = 'auth_user_info'
+  private static readonly ACCESS_TOKEN_KEY = 'town_access_token'
+  private static readonly REFRESH_TOKEN_KEY = 'town_refresh_token'
+  private static readonly USER_INFO_KEY = 'town_user_info'
 
   // 액세스 토큰 저장
   static async setAccessToken(token: string): Promise<void> {

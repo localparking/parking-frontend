@@ -1,7 +1,9 @@
-import { AuthApi } from '@data/user-api-axios/api'
-import { createFileRoute } from '@tanstack/react-router'
-import { Button } from '@ui/common/components/button'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import z from 'zod'
+import Cookies from 'js-cookie'
+import { useEffect } from 'react'
+import { saveTokens } from '@/shared/libs/token'
+import { authClient, useAuth } from '@/features/auth'
 
 const searchSchema = z.object({
   role: z.string().optional(),
@@ -9,46 +11,31 @@ const searchSchema = z.object({
   refreshToken: z.string().optional(),
 })
 
-const authApi = new AuthApi()
-
 export const Route = createFileRoute('/(auth)/login/success/')({
   component: RouteComponent,
   validateSearch: searchSchema,
   loaderDeps: (search) => search,
-  loader: async ({ context, deps }) => {
-    // You can use the search parameters here
-    const { search } = deps
-    // Perform any necessary data fetching or processing
-    return {
-      data: search,
-    }
+  loader: async ({ deps }) => {
+    const { accessToken, refreshToken } = deps.search
+    return { accessToken, refreshToken }
   },
 })
 
 function RouteComponent() {
-  const { data } = Route.useLoaderData()
+  const { accessToken, refreshToken } = Route.useLoaderData()
+  const navigate = useNavigate()
+  const authClient = useAuth()
 
-  // const handleCheckAuth = async () => {
-  //   try {
-  //     const response = await authApi.refreshAccessToken({
-  //       headers: { Authorization: `Bearer ${data.accessToken}` },
-  //     })
-  //     console.log('Auth Check Response:', response)
-  //   } catch (error) {
-  //     console.error('Error checking auth:', error)
-  //   }
-  // }
+  useEffect(() => {
+    if (accessToken && refreshToken) {
+      saveTokens(accessToken, refreshToken)
+      authClient.setAuthenticated(true)
 
-  console.log('Login Success Data:', data)
-  return (
-    <div className="flex h-screen w-full flex-col items-center justify-center whitespace-pre-wrap">
-      <p>{data.role}</p>
-      <p>{data.accessToken}</p>
-      <p>{data.refreshToken}</p>
-      {/* 
-      <Button onClick={handleCheckAuth} className="mt-4">
-        인증 확인
-      </Button> */}
-    </div>
-  )
+      navigate({ to: '/', replace: true })
+    } else {
+      navigate({ to: '/login', replace: true })
+    }
+  }, [accessToken, refreshToken, navigate])
+
+  return <div>정보를 처리중입니다...</div>
 }
