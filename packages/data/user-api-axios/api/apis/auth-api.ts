@@ -80,6 +80,38 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
       }
     },
     /**
+     * 게스트 로그인을 위한 API입니다.
+     * @summary 게스트 로그인
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    guestLogin: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+      const localVarPath = `/auth/login/guest`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication Bearer Token required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
      * 카카오 앱 소셜 로그인을 위한 API입니다.
      * @summary 카카오 앱 소셜 로그인
      * @param {TokenRequest} tokenRequest
@@ -182,6 +214,27 @@ export const AuthApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
+     * 게스트 로그인을 위한 API입니다.
+     * @summary 게스트 로그인
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async guestLogin(
+      options?: RawAxiosRequestConfig
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoTokenResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.guestLogin(options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['AuthApi.guestLogin']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
      * 카카오 앱 소셜 로그인을 위한 API입니다.
      * @summary 카카오 앱 소셜 로그인
      * @param {TokenRequest} tokenRequest
@@ -246,6 +299,15 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
       options?: RawAxiosRequestConfig
     ): AxiosPromise<ResponseDtoTokenResponse> {
       return localVarFp.apple(requestParameters.tokenRequest, options).then((request) => request(axios, basePath))
+    },
+    /**
+     * 게스트 로그인을 위한 API입니다.
+     * @summary 게스트 로그인
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    guestLogin(options?: RawAxiosRequestConfig): AxiosPromise<ResponseDtoTokenResponse> {
+      return localVarFp.guestLogin(options).then((request) => request(axios, basePath))
     },
     /**
      * 카카오 앱 소셜 로그인을 위한 API입니다.
@@ -318,6 +380,19 @@ export class AuthApi extends BaseAPI {
   public apple(requestParameters: AuthApiAppleRequest, options?: RawAxiosRequestConfig) {
     return AuthApiFp(this.configuration)
       .apple(requestParameters.tokenRequest, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * 게스트 로그인을 위한 API입니다.
+   * @summary 게스트 로그인
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AuthApi
+   */
+  public guestLogin(options?: RawAxiosRequestConfig) {
+    return AuthApiFp(this.configuration)
+      .guestLogin(options)
       .then((request) => request(this.axios, this.basePath))
   }
 

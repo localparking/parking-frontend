@@ -55,6 +55,8 @@ export const UserResponseRoleEnum = {
   Guest: 'GUEST',
   User: 'USER',
   Admin: 'ADMIN',
+  President: 'PRESIDENT',
+  Withdrawn: 'WITHDRAWN',
 } as const
 
 export type UserResponseRoleEnum = (typeof UserResponseRoleEnum)[keyof typeof UserResponseRoleEnum]
