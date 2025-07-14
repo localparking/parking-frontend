@@ -1,134 +1,184 @@
 @import 'tw-animate-css';
 
 @theme inline {
-    --font-pretendard: var(--font-pretendard);
-    --container-2xl: 1400px;
-    --breakpoint-xl: 1160px;
+  --font-pretendard: var(--font-pretendard);
+  --container-2xl: 1400px;
+  --breakpoint-xl: 1160px;
 
-    --color-black: var(--color-black);
-    --color-white: var(--color-white);
+  --color-black: var(--color-black);
+  --color-white: var(--color-white);
 
-    --color-gray: var(--color-gray);
-    --color-gray-50: var(--color-gray-50);
-    --color-gray-100: var(--color-gray-100);
-    --color-gray-200: var(--color-gray-200);
-    --color-gray-300: var(--color-gray-300);
-    --color-gray-400: var(--color-gray-400);
-    --color-gray-500: var(--color-gray-500);
-    --color-gray-600: var(--color-gray-600);
-    --color-gray-700: var(--color-gray-700);
-    --color-gray-800: var(--color-gray-800);
-    --color-gray-900: var(--color-gray-900);
+  --color-gray: var(--color-gray);
+  --color-gray-50: var(--color-gray-50);
+  --color-gray-100: var(--color-gray-100);
+  --color-gray-200: var(--color-gray-200);
+  --color-gray-300: var(--color-gray-300);
+  --color-gray-400: var(--color-gray-400);
+  --color-gray-500: var(--color-gray-500);
+  --color-gray-600: var(--color-gray-600);
+  --color-gray-700: var(--color-gray-700);
+  --color-gray-800: var(--color-gray-800);
+  --color-gray-900: var(--color-gray-900);
 
-    --color-primary: var(--color-primary);
-    --color-primary-50: var(--color-primary-50);
-    --color-primary-100: var(--color-primary-100);
-    --color-primary-200: var(--color-primary-200);
-    --color-primary-300: var(--color-primary-300);
-    --color-primary-400: var(--color-primary-400);
-    --color-primary-500: var(--color-primary);
-    --color-primary-600: var(--color-primary-600);
-    --color-primary-700: var(--color-primary-700);
-    --color-primary-800: var(--color-primary-800);
-    --color-primary-900: var(--color-primary-900);
+  --color-primary: var(--color-primary);
+  --color-primary-50: var(--color-primary-50);
+  --color-primary-100: var(--color-primary-100);
+  --color-primary-200: var(--color-primary-200);
+  --color-primary-300: var(--color-primary-300);
+  --color-primary-400: var(--color-primary-400);
+  --color-primary-500: var(--color-primary);
+  --color-primary-600: var(--color-primary-600);
+  --color-primary-700: var(--color-primary-700);
+  --color-primary-800: var(--color-primary-800);
+  --color-primary-900: var(--color-primary-900);
 
-    --color-sub-1: var(--color-sub-1);
-    --color-sub-2: var(--color-sub-2);
-    --color-stroke: var(--color-stroke);
-    --color-success: var(--color-success);
-    --color-destructive: var(--color-destructive);
+  --color-sub-1: var(--color-sub-1);
+  --color-sub-2: var(--color-sub-2);
+  --color-stroke: var(--color-stroke);
+  --color-success: var(--color-success);
+  --color-destructive: var(--color-destructive);
 
-    /* font size */
-    --text-display-00: 2.5rem; /* 40px */
-    --text-display-00--line-height: 3.25rem; /* 52px */
-    --text-display-00--letter-spacing: -0.02em;
+  /* Figma Design System Colors */
+  --color-primary-light: var(--color-primary-light);
+  --color-primary-lighter: var(--color-primary-lighter);
+  --color-gray-1: var(--color-gray-1);
+  --color-gray-2: var(--color-gray-2);
+  --color-gray-3: var(--color-gray-3);
+  --color-gray-4: var(--color-gray-4);
+  --color-kakao: var(--color-kakao);
 
-    --text-display-01: 2rem; /* 32px */
-    --text-display-01--line-height: 2.875rem; /* 46px */
-    --text-display-01--letter-spacing: -0.02em;
+  --color-card-selected: var(--color-card-selected);
+  --color-card-selected-border: var(--color-card-selected-border);
+  --color-card-unselected: var(--color-card-unselected);
+  --color-card-unselected-border: var(--color-card-unselected-border);
 
-    --text-display-02: 1.75rem; /* 28px */
-    --text-display-02--line-height: 2.25rem; /* 36px */
-    --text-display-02--letter-spacing: -0.02em;
+  /* font size */
+  /* Figma Typography System */
+  --text-title-1: 2rem; /* 32px */
+  --text-title-1--line-height: 1.1934rem; /* 32px * 1.1934 */
+  --text-title-1--letter-spacing: 0em;
+  --text-title-1--font-weight: 700; /* Bold */
 
-    --text-title-01: 1.5rem; /* 24px */
-    --text-title-01--line-height: 2rem; /* 32px */
-    --text-title-01--letter-spacing: -0.02em;
+  --text-title-2: 2rem; /* 32px */
+  --text-title-2--line-height: 1.1934rem; /* 32px * 1.1934 */
+  --text-title-2--letter-spacing: 0em;
+  --text-title-2--font-weight: 600; /* Semi Bold */
 
-    --text-header-01: 1.25rem; /* 20px */
-    --text-header-01--line-height: 1.75rem; /* 28px */
-    --text-header-01--letter-spacing: -0.02em;
+  --text-subtitle-1: 1.75rem; /* 28px */
+  --text-subtitle-1--line-height: 1.1934rem; /* 28px * 1.1934 */
+  --text-subtitle-1--letter-spacing: 0em;
+  --text-subtitle-1--font-weight: 700; /* Bold */
 
-    --text-header-02: 1.125rem; /* 18px */
-    --text-header-02--line-height: 1.625rem; /* 26px */
-    --text-header-02--letter-spacing: -0.02em;
+  --text-subtitle-2: 1.75rem; /* 28px */
+  --text-subtitle-2--line-height: 1.1934rem; /* 28px * 1.1934 */
+  --text-subtitle-2--letter-spacing: 0em;
+  --text-subtitle-2--font-weight: 600; /* Semi Bold */
 
-    --text-body-01: 1rem; /* 16px */
-    --text-body-01--line-height: 1.5rem; /* 24px */
-    --text-body-01--letter-spacing: -0.02em;
+  --text-subtitle-3: 1.75rem; /* 28px */
+  --text-subtitle-3--line-height: 1.1934rem; /* 28px * 1.1934 */
+  --text-subtitle-3--letter-spacing: 0em;
+  --text-subtitle-3--font-weight: 500; /* Medium */
 
-    --text-body-02: 0.875rem; /* 14px */
-    --text-body-02--line-height: 1.25rem; /* 22px */
-    --text-body-02--letter-spacing: -0.02em;
+  --text-body-1: 1.5rem; /* 24px */
+  --text-body-1--line-height: 1.1934rem; /* 24px * 1.1934 */
+  --text-body-1--letter-spacing: 0em;
+  --text-body-1--font-weight: 600; /* Semi Bold */
 
-    --text-body-03: 0.75rem; /* 12px */
-    --text-body-03--line-height: 1.125rem; /* 18px */
-    --text-body-03--letter-spacing: -0.02em;
+  --text-body-2: 1.5rem; /* 24px */
+  --text-body-2--line-height: 1.1934rem; /* 24px * 1.1934 */
+  --text-body-2--letter-spacing: 0em;
+  --text-body-2--font-weight: 500; /* Medium */
 
-    --text-caption-01: 0.6875rem; /* 11px */
-    --text-caption-01--line-height: 1rem; /* 16px */
-    --text-caption-01--letter-spacing: -0.02em;
+  --text-body-3: 1.1875rem; /* 19px */
+  --text-body-3--line-height: 1.1934rem; /* 19px * 1.1934 */
+  --text-body-3--letter-spacing: 0em;
+  --text-body-3--font-weight: 600; /* Semi Bold */
 
-    --text-caption-02: 0.625rem; /* 10px */
-    --text-caption-02--line-height: 0.9375rem; /* 16px */
-    --text-caption-02--letter-spacing: -0.02em;
+  --text-body-4: 0.875rem; /* 14px */
+  --text-body-4--line-height: 1.1934rem; /* 14px * 1.1934 */
+  --text-body-4--letter-spacing: 0em;
+  --text-body-4--font-weight: 600; /* Semi Bold */
 
-    --color-background: var(--color-white);
-    --color-foreground: var(--color-black);
-    --color-card: var(--color-white);
-    --color-card-foreground: var(--color-black);
-    --color-popover: var(--color-white);
-    --color-popover-foreground: var(--color-black);
+  --text-body-5: 0.875rem; /* 14px */
+  --text-body-5--line-height: 1.1934rem; /* 14px * 1.1934 */
+  --text-body-5--letter-spacing: 0em;
+  --text-body-5--font-weight: 500; /* Medium */
 
-    --color-primary-foreground: var(--color-white);
+  --text-caption-1: 0.75rem; /* 12px */
+  --text-caption-1--line-height: 1.1934rem; /* 12px * 1.1934 */
+  --text-caption-1--letter-spacing: 0em;
+  --text-caption-1--font-weight: 700; /* Bold */
 
-    --color-secondary: var(--color-primary-600);
-    --color-secondary-foreground: var(--color-primary);
+  --text-caption-2: 0.75rem; /* 12px */
+  --text-caption-2--line-height: 1.1934rem; /* 12px * 1.1934 */
+  --text-caption-2--letter-spacing: 0em;
+  --text-caption-2--font-weight: 500; /* Medium */
 
-    --color-muted: var(--color-gray-600);
-    --color-muted-foreground: var(--color-gray-400);
+  --color-background: var(--color-white);
+  --color-foreground: var(--color-black);
+  --color-card: var(--color-white);
+  --color-card-foreground: var(--color-black);
+  --color-popover: var(--color-white);
+  --color-popover-foreground: var(--color-black);
 
-    --color-accent: var(--color-primary);
-    --color-accent-foreground: var(--color-white);
+  --color-primary-foreground: var(--color-white);
 
-    --color-success-foreground: var(--color-white);
+  --color-secondary: var(--color-primary-600);
+  --color-secondary-foreground: var(--color-primary);
 
-    --color-border: var(--color-gray-600);
-    --color-input: var(--color-gray-600);
-    --color-ring: var(--color-primary);
+  --color-muted: var(--color-gray-600);
+  --color-muted-foreground: var(--color-gray-400);
 
-    --radius-lg: var(--radius);
-    --radius-md: calc(var(--radius) - 2px);
-    --radius-sm: calc(var(--radius) - 4px);
+  --color-accent: var(--color-primary);
+  --color-accent-foreground: var(--color-white);
 
-    @keyframes accordion-down {
-        from {
-            height: 0;
-        }
-        to {
-            height: var(--radix-accordion-content-height);
-        }
+  --color-success-foreground: var(--color-white);
+
+  --color-border: var(--color-gray-600);
+  --color-input: var(--color-gray-600);
+  --color-ring: var(--color-primary);
+
+  /* Figma Design System Colors */
+  --color-primary: var(--color-primary);
+  --color-primary-light: var(--color-primary-light);
+  --color-primary-lighter: var(--color-primary-lighter);
+
+  --color-gray-1: var(--color-gray-1);
+  --color-gray-2: var(--color-gray-2);
+  --color-gray-3: var(--color-gray-3);
+  --color-gray-4: var(--color-gray-4);
+
+  --color-kakao: var(--color-kakao);
+
+  --color-card-selected: var(--color-card-selected);
+  --color-card-selected-border: var(--color-card-selected-border);
+  --color-card-unselected: var(--color-card-unselected);
+  --color-card-unselected-border: var(--color-card-unselected-border);
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-onboarding: var(--radius-onboarding);
+  --radius-card: var(--radius-card);
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
     }
-
-    @keyframes accordion-up {
-        from {
-            height: 0;
-        }
-        to {
-            height: var(--radix-accordion-content-height);
-        }
+    to {
+      height: var(--radix-accordion-content-height);
     }
+  }
 
-    --animate-down: accordion-down 0.2s ease-out;
-    --animate-up: accordion-up 0.2s ease-out;
+  @keyframes accordion-up {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+
+  --animate-down: accordion-down 0.2s ease-out;
+  --animate-up: accordion-up 0.2s ease-out;
 }

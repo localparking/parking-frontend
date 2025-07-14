@@ -12,6 +12,7 @@
 
 import { Route as rootRoute } from './app/__root'
 import { Route as PageImport } from './app/page'
+import { Route as OnboardingPageImport } from './app/onboarding/page'
 import { Route as MypagePageImport } from './app/mypage/page'
 import { Route as MapPageImport } from './app/map/page'
 import { Route as ChatPageImport } from './app/chat/page'
@@ -25,6 +26,12 @@ import { Route as authLoginSuccessPageImport } from './app/(auth)/login/success/
 const PageRoute = PageImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const OnboardingPageRoute = OnboardingPageImport.update({
+  id: '/onboarding/',
+  path: '/onboarding/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -109,6 +116,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MypagePageImport
       parentRoute: typeof rootRoute
     }
+    '/onboarding/': {
+      id: '/onboarding/'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingPageImport
+      parentRoute: typeof rootRoute
+    }
     '/(auth)/auth/': {
       id: '/(auth)/auth/'
       path: '/auth'
@@ -141,6 +155,7 @@ export interface FileRoutesByFullPath {
   '/chat': typeof ChatPageRoute
   '/map': typeof MapPageRoute
   '/mypage': typeof MypagePageRoute
+  '/onboarding': typeof OnboardingPageRoute
   '/auth': typeof authAuthPageRoute
   '/register': typeof authRegisterPageRoute
   '/login/success': typeof authLoginSuccessPageRoute
@@ -152,6 +167,7 @@ export interface FileRoutesByTo {
   '/chat': typeof ChatPageRoute
   '/map': typeof MapPageRoute
   '/mypage': typeof MypagePageRoute
+  '/onboarding': typeof OnboardingPageRoute
   '/auth': typeof authAuthPageRoute
   '/register': typeof authRegisterPageRoute
   '/login/success': typeof authLoginSuccessPageRoute
@@ -164,6 +180,7 @@ export interface FileRoutesById {
   '/chat/': typeof ChatPageRoute
   '/map/': typeof MapPageRoute
   '/mypage/': typeof MypagePageRoute
+  '/onboarding/': typeof OnboardingPageRoute
   '/(auth)/auth/': typeof authAuthPageRoute
   '/(auth)/register/': typeof authRegisterPageRoute
   '/(auth)/login/success/': typeof authLoginSuccessPageRoute
@@ -177,6 +194,7 @@ export interface FileRouteTypes {
     | '/chat'
     | '/map'
     | '/mypage'
+    | '/onboarding'
     | '/auth'
     | '/register'
     | '/login/success'
@@ -187,6 +205,7 @@ export interface FileRouteTypes {
     | '/chat'
     | '/map'
     | '/mypage'
+    | '/onboarding'
     | '/auth'
     | '/register'
     | '/login/success'
@@ -197,6 +216,7 @@ export interface FileRouteTypes {
     | '/chat/'
     | '/map/'
     | '/mypage/'
+    | '/onboarding/'
     | '/(auth)/auth/'
     | '/(auth)/register/'
     | '/(auth)/login/success/'
@@ -209,6 +229,7 @@ export interface RootRouteChildren {
   ChatPageRoute: typeof ChatPageRoute
   MapPageRoute: typeof MapPageRoute
   MypagePageRoute: typeof MypagePageRoute
+  OnboardingPageRoute: typeof OnboardingPageRoute
   authAuthPageRoute: typeof authAuthPageRoute
   authRegisterPageRoute: typeof authRegisterPageRoute
   authLoginSuccessPageRoute: typeof authLoginSuccessPageRoute
@@ -220,6 +241,7 @@ const rootRouteChildren: RootRouteChildren = {
   ChatPageRoute: ChatPageRoute,
   MapPageRoute: MapPageRoute,
   MypagePageRoute: MypagePageRoute,
+  OnboardingPageRoute: OnboardingPageRoute,
   authAuthPageRoute: authAuthPageRoute,
   authRegisterPageRoute: authRegisterPageRoute,
   authLoginSuccessPageRoute: authLoginSuccessPageRoute,
@@ -240,6 +262,7 @@ export const routeTree = rootRoute
         "/chat/",
         "/map/",
         "/mypage/",
+        "/onboarding/",
         "/(auth)/auth/",
         "/(auth)/register/",
         "/(auth)/login/success/"
@@ -259,6 +282,9 @@ export const routeTree = rootRoute
     },
     "/mypage/": {
       "filePath": "mypage/page.tsx"
+    },
+    "/onboarding/": {
+      "filePath": "onboarding/page.tsx"
     },
     "/(auth)/auth/": {
       "filePath": "(auth)/auth/page.tsx"

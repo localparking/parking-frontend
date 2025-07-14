@@ -3,7 +3,7 @@ import { NavgationIcon } from '@/shared/components/navigation'
 import { AuthContext, useAuth } from '@/shared/libs/auth'
 import { QueryClient } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { createRootRouteWithContext, Link, Outlet, redirect, useRouter } from '@tanstack/react-router'
+import { createRootRouteWithContext, Outlet, redirect, useRouter, useRouterState } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { useBridge } from '@webview-bridge/react'
 import { Bot, Camera, Home, Map, PersonStanding, User } from 'lucide-react'
@@ -15,7 +15,7 @@ interface RouterContext {
   auth: AuthContext
 }
 
-const publicRoutes = ['/', '/camera', '/chat', '/map', '/login/success']
+const publicRoutes = ['/', '/camera', '/chat', '/map', '/login/success', '/onboarding']
 const noAuthRoutes = ['/auth', '/register']
 
 function matchRoute(routes: string[], path: string) {
@@ -39,6 +39,10 @@ function RootComponent() {
   const navigate = Route.useNavigate()
   const { user, logout, authenticated } = useAuth()
   const router = useRouter()
+  const routerState = useRouterState()
+  const pathname = routerState.location.pathname
+
+  const isOnboarding = pathname.startsWith('/onboarding')
 
   const handleLogout = async () => {
     await logout()
@@ -48,25 +52,27 @@ function RootComponent() {
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-gray-09">
-      <main className="mx-auto flex h-full w-full max-w-[600px] flex-1 bg-white pb-[86px]">
+      <main className={`mx-auto flex h-full w-full flex-1 bg-white ${isOnboarding ? '' : 'max-w-[600px] pb-[86px]'}`}>
         <Outlet />
       </main>
 
-      <footer className="fixed bottom-0 z-10 h-[86px] w-full">
-        <nav
-          className="mx-auto flex w-full max-w-[600px] justify-around rounded-t-4xl bg-white px-4 py-4"
-          style={{
-            boxShadow: '0px -5px 10px rgba(0, 0, 0, 0.03)',
-            borderTop: '1px solid rgba(0, 0, 0, 0.03)',
-          }}
-        >
-          <NavgationIcon icon={Home} text="홈" url="/" />
-          <NavgationIcon icon={Camera} text="카메라" url="/camera" />
-          <NavgationIcon icon={Bot} text="채팅" url="/chat" />
-          <NavgationIcon icon={Map} text="지도" url="/map" />
-          <NavgationIcon icon={User} text="마이페이지" url={'/mypage'} />
-        </nav>
-      </footer>
+      {!isOnboarding && (
+        <footer className="fixed bottom-0 z-10 h-[86px] w-full">
+          <nav
+            className="mx-auto flex w-full max-w-[600px] justify-around rounded-t-4xl bg-white px-4 py-4"
+            style={{
+              boxShadow: '0px -5px 10px rgba(0, 0, 0, 0.03)',
+              borderTop: '1px solid rgba(0, 0, 0, 0.03)',
+            }}
+          >
+            <NavgationIcon icon={Home} text="홈" url="/" />
+            <NavgationIcon icon={Camera} text="카메라" url="/camera" />
+            <NavgationIcon icon={Bot} text="채팅" url="/chat" />
+            <NavgationIcon icon={Map} text="지도" url="/map" />
+            <NavgationIcon icon={User} text="마이페이지" url={'/mypage'} />
+          </nav>
+        </footer>
+      )}
       {/* <TanStackRouterDevtools position="top-right" /> */}
       {/* <ReactQueryDevtools buttonPosition="top-left" /> */}
     </div>

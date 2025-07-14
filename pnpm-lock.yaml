@@ -96,7 +96,7 @@ catalogs:
       version: 2.1.1
     lucide-react:
       specifier: latest
-      version: 0.523.0
+      version: 0.525.0
     next-themes:
       specifier: ^0.4
       version: 0.4.6
@@ -403,7 +403,7 @@ importers:
         version: 2.1.1
       lucide-react:
         specifier: catalog:react
-        version: 0.523.0(react@19.0.0)
+        version: 0.525.0(react@19.0.0)
       path-to-regexp:
         specifier: 'catalog:'
         version: 8.2.0
@@ -494,7 +494,7 @@ importers:
         version: link:../../packages/ui/common
       lucide-react:
         specifier: catalog:react
-        version: 0.523.0(react@19.0.0)
+        version: 0.525.0(react@19.0.0)
       react:
         specifier: catalog:react
         version: 19.0.0
@@ -589,6 +589,9 @@ importers:
       vite:
         specifier: 'catalog:'
         version: 6.3.5(@types/node@22.15.30)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.39.2)(tsx@4.19.4)(yaml@2.8.0)
+      vite-plugin-svgr:
+        specifier: 'catalog:'
+        version: 4.3.0(rollup@4.41.0)(typescript@5.8.3)(vite@6.3.5(@types/node@22.15.30)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.39.2)(tsx@4.19.4)(yaml@2.8.0))
 
   packages/data/user-api-axios:
     dependencies:
@@ -826,7 +829,7 @@ importers:
         version: 1.12.9
       lucide-react:
         specifier: catalog:react
-        version: 0.523.0(react@19.0.0)
+        version: 0.525.0(react@19.0.0)
       next-themes:
         specifier: catalog:react
         version: 0.4.6(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -5901,8 +5904,8 @@ packages:
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
 
-  lucide-react@0.523.0:
-    resolution: {integrity: sha512-rUjQoy7egZT9XYVXBK1je9ckBnNp7qzRZOhLQx5RcEp2dCGlXo+mv6vf7Am4LimEcFBJIIZzSGfgTqc9QCrPSw==}
+  lucide-react@0.525.0:
+    resolution: {integrity: sha512-Tm1txJ2OkymCGkvwoHt33Y2JpN5xucVq1slHcgE6Lk0WjDfjgKWor5CdVER8U6DvcfMwh4M8XxmpTiyzfmfDYQ==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
@@ -13949,7 +13952,7 @@ snapshots:
     dependencies:
       yallist: 3.1.1
 
-  lucide-react@0.523.0(react@19.0.0):
+  lucide-react@0.525.0(react@19.0.0):
     dependencies:
       react: 19.0.0
 

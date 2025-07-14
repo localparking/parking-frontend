@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { useBridge } from '@webview-bridge/react'
 import { useState, useEffect } from 'react'
 import { Input } from '@ui/common/components/input'
@@ -127,6 +127,15 @@ function BridgeDemoPage() {
   return (
     <div className="mb-[120px] flex w-full flex-col gap-8 p-4">
       <h1>React WebView Bridge 데모</h1>
+
+      {/* 온보딩 테스트 링크 */}
+      <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
+        <h2 className="mb-2 text-lg font-semibold text-blue-800">온보딩 테스트</h2>
+        <Link to="/onboarding">
+          <Button className="bg-blue-600 text-white hover:bg-blue-700">온보딩 플로우 테스트하기</Button>
+        </Link>
+      </div>
+
       <BridgeStatus />
       <MessageDisplay />
       <CounterDisplay />
