@@ -4,13 +4,17 @@ import { AuthStorage } from '../lib/auth-storage'
 export async function refreshToken(): Promise<{ accessToken: string | null }> {
   try {
     const token = await AuthStorage.getRefreshToken()
-    const apiResponse = await axios.post(`${process.env.EXPO_PUBLIC_API_BASE_URL}/auth/refresh`, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      withCredentials: true,
-    })
+    const apiResponse = await axios.post(
+      `${process.env.EXPO_PUBLIC_API_BASE_URL}/auth/refresh`,
+      {},
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      }
+    )
 
     if (apiResponse.data && apiResponse.data.data) {
       const { accessToken, refreshToken } = apiResponse.data.data
