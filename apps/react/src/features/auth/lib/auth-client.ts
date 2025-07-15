@@ -43,7 +43,7 @@ class AuthClient {
       }
     } else {
       Cookies.remove('town-accessToken', { path: '/' })
-      // Cookies.remove('town-refreshToken', { path: '/' })
+      Cookies.remove('town-refreshToken', { path: '/' })
       return { success: true, message: '로그아웃 성공' }
     }
   }

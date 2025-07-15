@@ -28,12 +28,9 @@ export async function refreshToken(): Promise<{ accessToken: string | null }> {
   } catch (apiError) {
     if (isAxiosError(apiError)) {
       if (apiError.response) {
-        console.error('백엔드 API 응답 오류:', apiError.response.data)
-
         return { accessToken: null }
       }
     }
-    console.error('백엔드 API 호출 오류:', apiError)
     return { accessToken: null }
   }
 }

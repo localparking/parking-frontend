@@ -41,7 +41,10 @@ export function initApi(): AxiosInstance {
     // 1) WebView → 네이티브에게 토큰 갱신 요청
     if (isWebView()) {
       const { accessToken } = await bridge.notifyTokenExpired()
-      return accessToken ?? null
+      if (!accessToken) {
+        throw new Error('Access token not found after refresh.')
+      }
+      return accessToken
     }
     const refreshToken = Cookies.get('town-refreshToken')
     if (!refreshToken) {
