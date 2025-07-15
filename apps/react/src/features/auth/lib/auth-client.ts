@@ -21,7 +21,9 @@ class AuthClient {
         }
       } else {
         const accessToken = Cookies.get('town-accessToken')
-        return { authenticated: !!accessToken, accessToken }
+        const refreshToken = Cookies.get('town-refreshToken')
+
+        return { authenticated: !!accessToken || !!refreshToken, accessToken }
       }
     } catch {
       return { authenticated: false }

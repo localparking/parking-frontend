@@ -4,6 +4,7 @@ import { bridge } from '../bridge'
 import Cookies from 'js-cookie'
 import { saveTokens } from './token'
 import { AuthApi } from '@data/user-api-axios/api'
+const { VITE_API_URL } = import.meta.env
 
 // TODO: 동적으로 개발 환경에 따라 BASE_URL을 설정할 수 있도록 개선
 const BASE_URL = '/api'
@@ -31,29 +32,32 @@ const redirectToAuth = () => {
   }
 }
 
-const authApi = new AuthApi()
-
-const refreshAccessToken = async (): Promise<string | null> => {
-  // 1) WebView → 네이티브에게 토큰 갱신 요청
-  if (isWebView()) {
-    const { accessToken } = await bridge.notifyTokenExpired()
-    return accessToken ?? null
-  }
-
-  const refreshToken = Cookies.get('town-refreshToken')
-  // 2) 일반 웹 → API 호출로 갱신
-  const { data } = await authApi.reissueRefreshToken({ headers: { Authorization: `Bearer ${refreshToken}` } })
-  if (!data?.data) throw new Error('Failed to refresh token.')
-
-  const { accessToken, refreshToken: newRefreshToken } = data.data
-  if (!accessToken || !newRefreshToken) throw new Error('Invalid token payload.')
-
-  saveTokens(accessToken, newRefreshToken)
-  return accessToken
-}
-
 export function initApi(): AxiosInstance {
   const apiInstance = axios.create(defaultOptions)
+
+  const authApi = new AuthApi(undefined, '', apiInstance)
+
+  const refreshAccessToken = async (): Promise<string | null> => {
+    // 1) WebView → 네이티브에게 토큰 갱신 요청
+    if (isWebView()) {
+      const { accessToken } = await bridge.notifyTokenExpired()
+      return accessToken ?? null
+    }
+    const refreshToken = Cookies.get('town-refreshToken')
+    if (!refreshToken) {
+      throw new Error('Refresh token not found.')
+    }
+    const { data } = await authApi.reissueRefreshToken({
+      headers: { Authorization: `Bearer ${refreshToken}` },
+    })
+    if (!data?.data) throw new Error('Failed to refresh token.')
+
+    const { accessToken, refreshToken: newRefreshToken } = data.data
+    if (!accessToken || !newRefreshToken) throw new Error('Invalid token payload.')
+
+    saveTokens(accessToken, newRefreshToken)
+    return accessToken
+  }
 
   apiInstance.interceptors.request.use(
     async (config) => {

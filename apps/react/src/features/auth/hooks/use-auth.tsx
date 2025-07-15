@@ -41,7 +41,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     authClient
       .getAuth()
-      .then((result) => {
+      .then(async (result) => {
         if (result && 'authenticated' in result) {
           setAuthenticated(result.authenticated)
         }
