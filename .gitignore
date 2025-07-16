@@ -37,5 +37,8 @@ yarn-error.log*
 .DS_Store
 *.pem
 
-apps/mobile/android
-apps/mobile/ios
+# Expo
+apps/mobile/ios/
+apps/mobile/android/
+.expo/
+
