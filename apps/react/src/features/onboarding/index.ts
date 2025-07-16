@@ -1,7 +1,7 @@
 export * from './model'
 
 export * from './hooks'
-export { OnboardingProvider } from './contexts/onboarding.context'
+export { OnboardingProvider } from './model/onboarding.context'
 
 export {
   OnboardingFlow,

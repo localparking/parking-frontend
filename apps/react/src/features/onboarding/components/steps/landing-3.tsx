@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import EtcImage from '@ui/common/assets/3d/etc.png'
-import { OnboardingLayout } from '../../layouts/onboarding-layout'
+import { OnboardingLayout } from '../ui/onboarding-layout'
 import LogoIcon from '@ui/common/assets/onboarding/logo.svg'
 
 interface LandingPageThreeProps {
@@ -9,12 +9,23 @@ interface LandingPageThreeProps {
 }
 
 export const LandingPageThree: React.FC<LandingPageThreeProps> = ({ onNext, onSkip: _onSkip }) => {
+  const [imageLoaded, setImageLoaded] = useState(false)
+
   return (
     <OnboardingLayout currentStep="landing-3" totalSteps={3} hideBackButton onNext={onNext} onSkip={_onSkip}>
       <div className="flex-[1.5]"></div>
 
       <div className="mb-8 grid place-items-center [grid-template-areas:'hero']">
-        <img src={EtcImage} alt="기타 3D 이미지" className="h-auto w-auto object-contain [grid-area:hero]" />
+        <div className="relative h-[342px] w-[342px] [grid-area:hero]">
+          <img
+            src={EtcImage}
+            alt="기타 3D 이미지"
+            className={`absolute inset-0 h-full w-full object-contain transition-opacity duration-500 ${
+              imageLoaded ? 'opacity-100' : 'opacity-0'
+            }`}
+            onLoad={() => setImageLoaded(true)}
+          />
+        </div>
 
         <div className="z-10 flex flex-col items-center [grid-area:hero]">
           <div className="-mt-50 mb-4 flex items-center gap-2">

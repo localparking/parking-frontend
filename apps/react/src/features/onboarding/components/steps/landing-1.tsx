@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import CoffeeImage from '@ui/common/assets/3d/coffee.png'
-import { OnboardingLayout } from '../../layouts/onboarding-layout'
+import { OnboardingLayout } from '../ui/onboarding-layout'
 
 interface LandingPageOneProps {
   onNext: () => void
@@ -8,6 +8,8 @@ interface LandingPageOneProps {
 }
 
 export const LandingPageOne: React.FC<LandingPageOneProps> = ({ onNext, onSkip: _onSkip }) => {
+  const [imageLoaded, setImageLoaded] = useState(false)
+
   useEffect(() => {
     const timer = setTimeout(onNext, 1000)
     return () => clearTimeout(timer)
@@ -16,11 +18,16 @@ export const LandingPageOne: React.FC<LandingPageOneProps> = ({ onNext, onSkip: 
   return (
     <OnboardingLayout currentStep="landing-1" totalSteps={3} hideBackButton hideSkipButton>
       <div className="relative flex flex-1 items-center justify-center">
-        <img
-          src={CoffeeImage}
-          alt="커피 3D 이미지"
-          className="absolute top-1/2 left-1/2 h-[266px] w-[266px] -translate-x-1/2 -translate-y-1/2 object-contain"
-        />
+        <div className="absolute top-1/2 left-1/2 h-[266px] w-[266px] -translate-x-1/2 -translate-y-1/2">
+          <img
+            src={CoffeeImage}
+            alt="커피 3D 이미지"
+            className={`h-full w-full object-contain transition-opacity duration-500 ${
+              imageLoaded ? 'opacity-100' : 'opacity-0'
+            }`}
+            onLoad={() => setImageLoaded(true)}
+          />
+        </div>
 
         <div className="absolute bottom-[calc(50%+180px)] left-1/2 -translate-x-1/2 px-4 text-center">
           <p className="text-[14px] leading-[25px] font-semibold whitespace-nowrap text-gray-1">

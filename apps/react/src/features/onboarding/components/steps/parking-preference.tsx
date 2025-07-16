@@ -1,7 +1,7 @@
 import React from 'react'
 import { useOnboarding } from '../../hooks'
 import type { ParkingPreference as ParkingPreferenceType } from '../../model/onboarding.types'
-import { OnboardingLayout } from '../../layouts/onboarding-layout'
+import { OnboardingLayout } from '../ui/onboarding-layout'
 import CashImage from '@ui/common/assets/3d/cash.png'
 import SpaceImage from '@ui/common/assets/3d/space.png'
 import LocationImage from '@ui/common/assets/3d/locate.png'

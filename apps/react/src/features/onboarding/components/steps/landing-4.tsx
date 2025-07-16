@@ -3,7 +3,7 @@ import { Button } from '@ui/common/components/button'
 import MainLogoImage from '@ui/common/assets/3d/mainlogo.png'
 import KakaoLogoIcon from '@ui/common/assets/icons/kakao-logo.svg'
 import AppleLogoIcon from '@ui/common/assets/icons/apple-logo.svg'
-import { OnboardingLayout } from '../../layouts/onboarding-layout'
+import { OnboardingLayout } from '../ui/onboarding-layout'
 
 interface LandingPageFourProps {
   onNext: () => void

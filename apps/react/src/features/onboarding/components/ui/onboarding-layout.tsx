@@ -1,6 +1,6 @@
 import React from 'react'
-import { OnboardingHeader, OnboardingNavigationButtons } from '../components/ui'
-import { OnboardingStep } from '../model/onboarding.types'
+import { OnboardingHeader, OnboardingNavigationButtons } from '.'
+import { OnboardingStep } from '../../model/onboarding.types'
 
 interface OnboardingLayoutProps {
   currentStep: OnboardingStep

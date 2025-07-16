@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 import { useOnboarding } from '../../hooks'
 import MainLogoImage from '@ui/common/assets/3d/mainlogo.png'
 import { OnboardingCheckbox } from '../ui'
-import { OnboardingLayout } from '../../layouts/onboarding-layout'
+import { OnboardingLayout } from '../ui/onboarding-layout'
 
 export const TermsAgreement: React.FC = () => {
   const { state, setTermsAgreement, toggleAllAgreement, goToNextStep, canProceed } = useOnboarding()

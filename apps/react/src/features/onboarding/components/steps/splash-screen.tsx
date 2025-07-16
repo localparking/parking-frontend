@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import LogoIcon from '@ui/common/assets/onboarding/logo.svg'
-import { OnboardingLayout } from '../../layouts/onboarding-layout'
+import { OnboardingLayout } from '../ui/onboarding-layout'
 
 interface SplashScreenProps {
   onComplete: () => void

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useOnboarding } from '../../hooks'
 import { AgeRange } from '../../model/onboarding.types'
-import { OnboardingLayout } from '../../layouts/onboarding-layout'
+import { OnboardingLayout } from '../ui/onboarding-layout'
 
 export const AgeSelection: React.FC = () => {
   const { state, setAgeRange, goToNextStep, goToPreviousStep } = useOnboarding()

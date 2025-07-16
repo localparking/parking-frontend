@@ -1,7 +1,7 @@
 import React from 'react'
 import { useOnboarding } from '../../hooks'
 import type { VisitPurpose as VisitPurposeType } from '../../model/onboarding.types'
-import { OnboardingLayout } from '../../layouts/onboarding-layout'
+import { OnboardingLayout } from '../ui/onboarding-layout'
 import CoffeeImage from '@ui/common/assets/3d/coffee.png'
 import RestaurantImage from '@ui/common/assets/3d/restaurant.png'
 import LeisureImage from '@ui/common/assets/3d/leisure.png'

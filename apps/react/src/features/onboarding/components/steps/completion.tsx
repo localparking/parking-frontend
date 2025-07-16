@@ -1,6 +1,6 @@
 import React from 'react'
 import { useOnboarding } from '../../hooks'
-import { OnboardingLayout } from '../../layouts/onboarding-layout'
+import { OnboardingLayout } from '../ui/onboarding-layout'
 import { OnboardingButton } from '../ui'
 
 export const Completion: React.FC = () => {

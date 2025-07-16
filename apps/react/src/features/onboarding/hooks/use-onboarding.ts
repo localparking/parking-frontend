@@ -1,4 +1,4 @@
-import { useOnboardingContext } from '../contexts/onboarding.context'
+import { useOnboardingContext } from '../model/onboarding.context'
 
 export const useOnboarding = () => {
   return useOnboardingContext()
