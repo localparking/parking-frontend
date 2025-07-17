@@ -2,7 +2,7 @@ import React from 'react'
 import { useOnboarding } from '../../hooks'
 import { AgeRange } from '../../model/onboarding.types'
 import { OnboardingLayout } from '../ui/onboarding-layout'
-import clsx from 'clsx'
+import { cn } from '@ui/common/lib/utils'
 
 export const AgeSelection: React.FC = () => {
   const { state, setAgeRange, goToNextStep, goToPreviousStep } = useOnboarding()
@@ -29,9 +29,8 @@ export const AgeSelection: React.FC = () => {
           <button
             key={age}
             onClick={() => handleAgeSelect(age)}
-            className={clsx(
+            className={cn(
               'flex w-full items-center justify-center rounded-[10px] border px-[32px] py-[12px] text-[12px] font-semibold',
-
               {
                 'border-primary bg-primary-lighter text-primary shadow-[0_0_5px_1px_var(--color-primary-light)]':
                   state.ageRange === age,

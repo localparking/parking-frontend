@@ -1,5 +1,5 @@
 import React from 'react'
-import clsx from 'clsx'
+import { cn } from '@ui/common/lib/utils'
 import { useOnboarding } from '../../hooks'
 import type { VisitPurpose as VisitPurposeType } from '../../model/onboarding.types'
 import { OnboardingLayout } from '../ui/onboarding-layout'
@@ -58,7 +58,7 @@ export const VisitPurpose: React.FC = () => {
               <button
                 key={purpose.key}
                 onClick={() => handlePurposeSelect(purpose.key)}
-                className={clsx('flex h-[58px] w-full items-center rounded-[15px] border border-primary p-4', {
+                className={cn('flex h-[58px] w-full items-center rounded-[15px] border border-primary p-4', {
                   'bg-primary-lighter shadow-[0_0_5px_1px_var(--color-primary-light)]': isSelected,
                   'bg-white': !isSelected,
                 })}

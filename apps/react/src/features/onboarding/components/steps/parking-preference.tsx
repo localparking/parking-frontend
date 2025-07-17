@@ -5,7 +5,7 @@ import { OnboardingLayout } from '../ui/onboarding-layout'
 import CashImage from '@ui/common/assets/3d/cash.png'
 import SpaceImage from '@ui/common/assets/3d/space.png'
 import LocationImage from '@ui/common/assets/3d/locate.png'
-import clsx from 'clsx'
+import { cn } from '@ui/common/lib/utils'
 
 export const ParkingPreference: React.FC = () => {
   const { state, toggleParkingPreference, goToNextStep, goToPreviousStep } = useOnboarding()
@@ -47,14 +47,12 @@ export const ParkingPreference: React.FC = () => {
               <button
                 key={preference.key}
                 onClick={() => handlePreferenceSelect(preference.key)}
-                className={clsx(
+                className={cn(
                   'relative flex h-[140px] w-[130px] flex-col items-center justify-center rounded-[20px] border p-4',
-
                   {
                     'border-primary bg-primary-lighter shadow-[0_0_5px_1px_var(--color-primary-light)]': isSelected,
                     'border-gray-3 bg-white': !isSelected,
                   },
-
                   {
                     'col-span-2 mx-auto': index === 2,
                   }
@@ -63,7 +61,7 @@ export const ParkingPreference: React.FC = () => {
                 <img
                   src={preference.image}
                   alt={preference.label}
-                  className={clsx(preference.imageSize, '-translate-y-3 transform object-contain')}
+                  className={cn(preference.imageSize, '-translate-y-3 transform object-contain')}
                 />
                 <span className="absolute bottom-3 left-1/2 -translate-x-1/2 transform text-center text-[14px] font-semibold whitespace-nowrap text-gray-1">
                   {preference.label}
