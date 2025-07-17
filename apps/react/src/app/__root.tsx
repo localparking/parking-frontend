@@ -21,10 +21,14 @@ export const Route = createRootRouteWithContext<RouterContext>()({
     const authenticated = context.auth.authenticated
     const pathname = location.pathname
 
+
+    // 인증되지 않은 사용자는 퍼블릭 경로만 접근 가능
     if (!authenticated && !matchRoute(publicRoutes, pathname)) {
       return redirect({ to: '/login' })
     }
 
+
+    // 인증된 사용자가 로그인 페이지로 접근하면 홈으로 리다이렉트
     if (authenticated && pathname === '/login') {
       return redirect({ to: '/' })
     }

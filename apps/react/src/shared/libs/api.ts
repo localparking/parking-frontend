@@ -1,6 +1,13 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
+import { isWebView } from '../utils/webview'
+import { bridge } from '../bridge'
+import Cookies from 'js-cookie'
+import { saveTokens } from './token'
+import { AuthApi } from '@data/user-api-axios/api'
+const { VITE_API_URL } = import.meta.env
 
-const BASE_URL = import.meta.env.VITE_API_URL
+// TODO: 동적으로 개발 환경에 따라 BASE_URL을 설정할 수 있도록 개선
+const BASE_URL = '/api'
 const AUTH_ROUTE = '/auth'
 
 interface QueueItem {
@@ -25,109 +32,111 @@ const redirectToAuth = () => {
   }
 }
 
-const refreshToken = async (refreshInstance: AxiosInstance) => {
-  return refreshInstance.post('/auth/refresh-token')
-}
-
-const processQueue = (failedQueue: QueueItem[], apiInstance: AxiosInstance, error: any = null) => {
-  if (error) {
-    failedQueue.forEach((promise) => {
-      const errorObj = error instanceof Error ? error : new Error(error?.message ?? 'Unknown error')
-      promise.reject(errorObj)
-    })
-  } else {
-    failedQueue.forEach((promise) => {
-      apiInstance(promise.config)
-        .then((response) => promise.resolve(response))
-        .catch((err) => {
-          const errorObj = err instanceof Error ? err : new Error(err?.message ?? 'Request failed')
-          promise.reject(errorObj)
-        })
-    })
-  }
-  return []
-}
-
-const handleTokenRefreshFailure = (
-  apiInstance: AxiosInstance,
-  failedQueue: QueueItem[],
-  err: any,
-  options?: ApiOptions
-): QueueItem[] => {
-  return apiInstance.delete('/admin/auth').then(() => {
-    const newQueue = processQueue(failedQueue, apiInstance, err)
-
-    if (!options?.throwError) {
-      redirectToAuth()
-    } else {
-      throw err
-    }
-
-    return newQueue
-  }) as unknown as QueueItem[]
-}
-
-const handleTokenRefreshSuccess = (failedQueue: QueueItem[], apiInstance: AxiosInstance): QueueItem[] => {
-  return processQueue(failedQueue, apiInstance)
-}
-
-export function initApi(options?: ApiOptions): AxiosInstance {
+export function initApi(): AxiosInstance {
   const apiInstance = axios.create(defaultOptions)
-  const refreshInstance = axios.create(defaultOptions)
 
-  function setupAuthInterceptor() {
-    let isRefreshing = false
-    let failedQueue: QueueItem[] = []
+  const authApi = new AuthApi(undefined, '', apiInstance)
 
-    const handleTokenRefresh = (config: AxiosRequestConfig) => {
-      if (!isRefreshing) {
-        isRefreshing = true
-
-        refreshToken(refreshInstance)
-          .then(() => {
-            isRefreshing = false
-            failedQueue = handleTokenRefreshSuccess(failedQueue, apiInstance)
-          })
-          .catch((err) => {
-            isRefreshing = false
-            failedQueue = handleTokenRefreshFailure(apiInstance, failedQueue, err, options)
-          })
+  const refreshAccessToken = async (): Promise<string | null> => {
+    // 1) WebView → 네이티브에게 토큰 갱신 요청
+    if (isWebView()) {
+      const { accessToken } = await bridge.notifyTokenExpired()
+      if (!accessToken) {
+        throw new Error('Access token not found after refresh.')
       }
-
-      return new Promise<AxiosResponse>((resolve, reject) => {
-        failedQueue.push({
-          resolve,
-          reject,
-          config: { ...config },
-        })
-      })
+      return accessToken
     }
-
-    const handleAuthError = (error: any) => {
-      const { config, response } = error
-
-      const ensureErrorObject = (err: any) => (err instanceof Error ? err : new Error(err?.message ?? 'API Error'))
-
-      if (!response) return Promise.reject(ensureErrorObject(error))
-
-      const { status, data } = response
-
-      if (status === 401 && data.message === 'invalid_access_token') {
-        return handleTokenRefresh(config)
-      }
-
-      if (status === 403 && data.message === 'forbidden') {
-        redirectToAuth()
-        return Promise.reject(ensureErrorObject(error))
-      }
-
-      return Promise.reject(ensureErrorObject(error))
+    const refreshToken = Cookies.get('town-refreshToken')
+    if (!refreshToken) {
+      throw new Error('Refresh token not found.')
     }
+    const { data } = await authApi.reissueRefreshToken({
+      headers: { Authorization: `Bearer ${refreshToken}` },
+    })
+    if (!data?.data) throw new Error('Failed to refresh token.')
 
-    apiInstance.interceptors.response.use((response: AxiosResponse) => response, handleAuthError)
+    const { accessToken, refreshToken: newRefreshToken } = data.data
+    if (!accessToken || !newRefreshToken) throw new Error('Invalid token payload.')
+
+    saveTokens(accessToken, newRefreshToken)
+    return accessToken
   }
 
-  setupAuthInterceptor()
+  apiInstance.interceptors.request.use(
+    async (config) => {
+      let accessToken: string | null = null
+
+      if (isWebView()) {
+        const tokenData = await bridge.getAuthToken()
+        accessToken = tokenData.accessToken
+      } else {
+        accessToken = Cookies.get('town-accessToken')
+      }
+
+      if (accessToken) {
+        config.headers.Authorization = `Bearer ${accessToken}`
+      }
+
+      return config
+    },
+    (error) => {
+      return Promise.reject(error)
+    }
+  )
+
+  let failedQueue: QueueItem[] = []
+
+  const processQueue = (error: Error | null, token: string | null = null) => {
+    failedQueue.forEach((promise) => {
+      if (error) {
+        promise.reject(error)
+      } else if (token && promise.config.headers) {
+        promise.config.headers['Authorization'] = `Bearer ${token}`
+        apiInstance(promise.config)
+          .then((response) => promise.resolve(response))
+          .catch((err) => promise.reject(err))
+      }
+    })
+    failedQueue = []
+  }
+
+  apiInstance.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+      const originalRequest = error.config
+      const { response } = error
+
+      if (response?.status === 401 && !originalRequest._retry) {
+        originalRequest._retry = true
+
+        try {
+          const newAccessToken = await refreshAccessToken()
+          originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`
+
+          processQueue(null, newAccessToken)
+
+          return apiInstance(originalRequest)
+        } catch (refreshError) {
+          processQueue(refreshError as Error, null)
+          if (isWebView()) {
+            await bridge.notifyTokenExpired()
+          } else {
+            Cookies.remove('town-accessToken')
+            Cookies.remove('town-refreshToken')
+          }
+          redirectToAuth()
+          return Promise.reject(refreshError)
+        }
+      }
+
+      if (response?.status === 403) {
+        redirectToAuth()
+      }
+
+      return Promise.reject(error)
+    }
+  )
+
   return apiInstance
 }
 

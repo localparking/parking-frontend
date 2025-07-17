@@ -12,8 +12,22 @@
  * Do not edit the class manually.
  */
 
-export * from './apis/admin-api'
-export * from './apis/auth-api'
-export * from './apis/onboarding-api'
-export * from './apis/register-api'
-export * from './apis/user-api'
+/**
+ *
+ * @export
+ * @interface ResponseDtoUnit
+ */
+export interface ResponseDtoUnit {
+  /**
+   *
+   * @type {string}
+   * @memberof ResponseDtoUnit
+   */
+  message: string
+  /**
+   *
+   * @type {object}
+   * @memberof ResponseDtoUnit
+   */
+  data?: object
+}

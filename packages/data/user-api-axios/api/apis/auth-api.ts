@@ -33,6 +33,8 @@ import {
 import { BASE_PATH, COLLECTION_FORMATS, type RequestArgs, BaseAPI, RequiredError, operationServerMap } from '../base'
 // @ts-ignore
 import type { ResponseDtoTokenResponse } from '../models'
+// @ts-ignore
+import type { TokenRequest } from '../models'
 /**
  * AuthApi - axios parameter creator
  * @export
@@ -40,13 +42,51 @@ import type { ResponseDtoTokenResponse } from '../models'
 export const AuthApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
     /**
-     * Access Token을 갱신하는 API입니다.
-     * @summary Access Token 갱신
+     * 애플 앱 소셜 로그인을 위한 API입니다.
+     * @summary 애플 앱 소셜 로그인
+     * @param {TokenRequest} tokenRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    refreshAccessToken: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-      const localVarPath = `/auth/refresh`
+    apple: async (tokenRequest: TokenRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'tokenRequest' is not null or undefined
+      assertParamExists('apple', 'tokenRequest', tokenRequest)
+      const localVarPath = `/auth/login/apple`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication Bearer Token required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
+      localVarRequestOptions.data = serializeDataIfNeeded(tokenRequest, localVarRequestOptions, configuration)
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * 게스트 로그인을 위한 API입니다.
+     * @summary 게스트 로그인
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    guestLogin: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+      const localVarPath = `/auth/login/guest`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -72,13 +112,51 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
       }
     },
     /**
-     * Refresh Token을 재발급하는 API입니다.
-     * @summary Refresh Token 재발급
+     * 카카오 앱 소셜 로그인을 위한 API입니다.
+     * @summary 카카오 앱 소셜 로그인
+     * @param {TokenRequest} tokenRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    kakao: async (tokenRequest: TokenRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'tokenRequest' is not null or undefined
+      assertParamExists('kakao', 'tokenRequest', tokenRequest)
+      const localVarPath = `/auth/login/kakao`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication Bearer Token required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
+      localVarRequestOptions.data = serializeDataIfNeeded(tokenRequest, localVarRequestOptions, configuration)
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Access Token을 갱신하는 API입니다.
+     * @summary Access Token 갱신
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     reissueRefreshToken: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-      const localVarPath = `/auth/reissue-refresh`
+      const localVarPath = `/auth/refresh`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -114,18 +192,19 @@ export const AuthApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = AuthApiAxiosParamCreator(configuration)
   return {
     /**
-     * Access Token을 갱신하는 API입니다.
-     * @summary Access Token 갱신
+     * 애플 앱 소셜 로그인을 위한 API입니다.
+     * @summary 애플 앱 소셜 로그인
+     * @param {TokenRequest} tokenRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async refreshAccessToken(
+    async apple(
+      tokenRequest: TokenRequest,
       options?: RawAxiosRequestConfig
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoTokenResponse>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.refreshAccessToken(options)
+      const localVarAxiosArgs = await localVarAxiosParamCreator.apple(tokenRequest, options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['AuthApi.refreshAccessToken']?.[localVarOperationServerIndex]?.url
+      const localVarOperationServerBasePath = operationServerMap['AuthApi.apple']?.[localVarOperationServerIndex]?.url
       return (axios, basePath) =>
         createRequestFunction(
           localVarAxiosArgs,
@@ -135,8 +214,51 @@ export const AuthApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * Refresh Token을 재발급하는 API입니다.
-     * @summary Refresh Token 재발급
+     * 게스트 로그인을 위한 API입니다.
+     * @summary 게스트 로그인
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async guestLogin(
+      options?: RawAxiosRequestConfig
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoTokenResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.guestLogin(options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['AuthApi.guestLogin']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * 카카오 앱 소셜 로그인을 위한 API입니다.
+     * @summary 카카오 앱 소셜 로그인
+     * @param {TokenRequest} tokenRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async kakao(
+      tokenRequest: TokenRequest,
+      options?: RawAxiosRequestConfig
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoTokenResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.kakao(tokenRequest, options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath = operationServerMap['AuthApi.kakao']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * Access Token을 갱신하는 API입니다.
+     * @summary Access Token 갱신
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -166,17 +288,43 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
   const localVarFp = AuthApiFp(configuration)
   return {
     /**
-     * Access Token을 갱신하는 API입니다.
-     * @summary Access Token 갱신
+     * 애플 앱 소셜 로그인을 위한 API입니다.
+     * @summary 애플 앱 소셜 로그인
+     * @param {AuthApiAppleRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    refreshAccessToken(options?: RawAxiosRequestConfig): AxiosPromise<ResponseDtoTokenResponse> {
-      return localVarFp.refreshAccessToken(options).then((request) => request(axios, basePath))
+    apple(
+      requestParameters: AuthApiAppleRequest,
+      options?: RawAxiosRequestConfig
+    ): AxiosPromise<ResponseDtoTokenResponse> {
+      return localVarFp.apple(requestParameters.tokenRequest, options).then((request) => request(axios, basePath))
     },
     /**
-     * Refresh Token을 재발급하는 API입니다.
-     * @summary Refresh Token 재발급
+     * 게스트 로그인을 위한 API입니다.
+     * @summary 게스트 로그인
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    guestLogin(options?: RawAxiosRequestConfig): AxiosPromise<ResponseDtoTokenResponse> {
+      return localVarFp.guestLogin(options).then((request) => request(axios, basePath))
+    },
+    /**
+     * 카카오 앱 소셜 로그인을 위한 API입니다.
+     * @summary 카카오 앱 소셜 로그인
+     * @param {AuthApiKakaoRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    kakao(
+      requestParameters: AuthApiKakaoRequest,
+      options?: RawAxiosRequestConfig
+    ): AxiosPromise<ResponseDtoTokenResponse> {
+      return localVarFp.kakao(requestParameters.tokenRequest, options).then((request) => request(axios, basePath))
+    },
+    /**
+     * Access Token을 갱신하는 API입니다.
+     * @summary Access Token 갱신
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -187,6 +335,34 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
 }
 
 /**
+ * Request parameters for apple operation in AuthApi.
+ * @export
+ * @interface AuthApiAppleRequest
+ */
+export interface AuthApiAppleRequest {
+  /**
+   *
+   * @type {TokenRequest}
+   * @memberof AuthApiApple
+   */
+  readonly tokenRequest: TokenRequest
+}
+
+/**
+ * Request parameters for kakao operation in AuthApi.
+ * @export
+ * @interface AuthApiKakaoRequest
+ */
+export interface AuthApiKakaoRequest {
+  /**
+   *
+   * @type {TokenRequest}
+   * @memberof AuthApiKakao
+   */
+  readonly tokenRequest: TokenRequest
+}
+
+/**
  * AuthApi - object-oriented interface
  * @export
  * @class AuthApi
@@ -194,21 +370,49 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
  */
 export class AuthApi extends BaseAPI {
   /**
-   * Access Token을 갱신하는 API입니다.
-   * @summary Access Token 갱신
+   * 애플 앱 소셜 로그인을 위한 API입니다.
+   * @summary 애플 앱 소셜 로그인
+   * @param {AuthApiAppleRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AuthApi
    */
-  public refreshAccessToken(options?: RawAxiosRequestConfig) {
+  public apple(requestParameters: AuthApiAppleRequest, options?: RawAxiosRequestConfig) {
     return AuthApiFp(this.configuration)
-      .refreshAccessToken(options)
+      .apple(requestParameters.tokenRequest, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
   /**
-   * Refresh Token을 재발급하는 API입니다.
-   * @summary Refresh Token 재발급
+   * 게스트 로그인을 위한 API입니다.
+   * @summary 게스트 로그인
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AuthApi
+   */
+  public guestLogin(options?: RawAxiosRequestConfig) {
+    return AuthApiFp(this.configuration)
+      .guestLogin(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * 카카오 앱 소셜 로그인을 위한 API입니다.
+   * @summary 카카오 앱 소셜 로그인
+   * @param {AuthApiKakaoRequest} requestParameters Request parameters.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AuthApi
+   */
+  public kakao(requestParameters: AuthApiKakaoRequest, options?: RawAxiosRequestConfig) {
+    return AuthApiFp(this.configuration)
+      .kakao(requestParameters.tokenRequest, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Access Token을 갱신하는 API입니다.
+   * @summary Access Token 갱신
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AuthApi
