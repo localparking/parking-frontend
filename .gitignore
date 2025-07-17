@@ -36,4 +36,12 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
+
 apps/react/tsconfig.tsbuildinfo
+
+# Expo
+apps/mobile/ios/
+apps/mobile/android/
+.expo/
+
+
