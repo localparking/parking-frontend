@@ -23,6 +23,7 @@
     "axios": "catalog:",
     "class-variance-authority": "catalog:react",
     "clsx": "catalog:react",
+    "framer-motion": "^12.23.6",
     "lucide-react": "catalog:react",
     "path-to-regexp": "catalog:",
     "react": "catalog:react",

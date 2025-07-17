@@ -9,8 +9,7 @@ import {
   VisitPurpose,
   Completion,
 } from '@/features/onboarding/components/steps'
-import { LandingPageOne } from '@/features/onboarding/components/steps/landing-1'
-import { LandingPageTwo } from '@/features/onboarding/components/steps/landing-2'
+import { IntroPages } from '@/features/onboarding/components/steps/intro-pages'
 import { LandingPageThree } from '@/features/onboarding/components/steps/landing-3'
 import { LandingPageFour } from '@/features/onboarding/components/steps/landing-4'
 
@@ -24,12 +23,14 @@ function OnboardingView() {
   switch (state.currentStep) {
     case 'splash':
       return <SplashScreen onComplete={goToNextStep} />
+
     case 'landing-1':
-      return <LandingPageOne onNext={goToNextStep} onSkip={() => setStep('landing-4')} />
     case 'landing-2':
-      return <LandingPageTwo onNext={goToNextStep} onSkip={() => setStep('landing-4')} />
+      return <IntroPages onNext={() => setStep('landing-3')} onSkip={() => setStep('landing-4')} />
+
     case 'landing-3':
-      return <LandingPageThree onNext={goToNextStep} onSkip={() => setStep('landing-4')} />
+      return <LandingPageThree onNext={() => setStep('landing-4')} onSkip={() => setStep('landing-4')} />
+
     case 'landing-4':
       return (
         <LandingPageFour
