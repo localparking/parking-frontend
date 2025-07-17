@@ -1,5 +1,5 @@
 import React from 'react'
-import { cn } from '../../../../../../../packages/ui/common/src/lib/utils'
+import { cn } from '@ui/common/lib/utils'
 
 interface OnboardingButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary'
