@@ -4,7 +4,6 @@ export * from './hooks'
 export { OnboardingProvider } from './model/onboarding.context'
 
 export {
-  OnboardingFlow,
   SplashScreen,
   TermsAgreement as TermsAgreementComponent,
   AgeSelection,
