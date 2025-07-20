@@ -171,8 +171,16 @@ export const OnboardingProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
       // API 호출 성공 시 온보딩 완료 상태로 변경
       dispatch({ type: 'COMPLETE_ONBOARDING' })
-    } catch (error) {
+    } catch (error: any) {
       console.error('온보딩 완료 API 호출 실패:', error)
+
+      // 이미 온보딩이 완료된 사용자인 경우
+      if (error?.response?.status === 400 && error?.response?.data?.message?.includes('이미 온보딩이 완료된 사용자')) {
+        console.log('이미 온보딩이 완료된 사용자입니다. 완료 상태로 변경합니다.')
+        dispatch({ type: 'COMPLETE_ONBOARDING' })
+        return
+      }
+
       dispatch({ type: 'SET_ERROR', payload: '온보딩 완료 중 오류가 발생했습니다.' })
       throw error
     } finally {
