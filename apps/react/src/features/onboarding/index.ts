@@ -1,7 +1,8 @@
 export * from './model'
 
 export * from './hooks'
-export { OnboardingProvider } from './model/onboarding.context'
+export { OnboardingProvider, useOnboarding } from './model/onboarding.context'
+export { onboardingService } from './services/onboarding.service'
 
 export {
   SplashScreen,
@@ -9,5 +10,4 @@ export {
   AgeSelection,
   ParkingPreference as ParkingPreferenceComponent,
   VisitPurpose as VisitPurposeComponent,
-  Completion,
 } from './components'

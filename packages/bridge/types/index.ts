@@ -5,6 +5,8 @@ export type SocialLoginType = 'kakao' | 'apple'
 export interface SocialLoginResult {
   success: boolean
   message?: string
+  accessToken?: string
+  refreshToken?: string
 }
 
 export interface LocationData {
@@ -23,7 +25,7 @@ export interface BridgeStore {
 export interface BridgeActions {
   socialLogin(type: SocialLoginType): Promise<SocialLoginResult>
   getAuthStatus(): Promise<{ isLoggedIn: boolean }>
-  getAuthToken(): Promise<{ accessToken: string | null }>
+  getAuthToken(): Promise<{ accessToken: string | null; refreshToken: string | null }>
   logout(): Promise<{ success: boolean; message?: string }>
   getCurrentLocation(): Promise<LocationData | null>
   requestLocationPermission(): Promise<boolean>

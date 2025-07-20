@@ -35,7 +35,7 @@ function RouteComponent() {
     } else {
       navigate({ to: '/login', replace: true })
     }
-  }, [accessToken, refreshToken, navigate])
+  }, [accessToken, refreshToken, navigate, authClient])
 
   return <div>정보를 처리중입니다...</div>
 }

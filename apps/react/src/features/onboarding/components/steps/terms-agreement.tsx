@@ -12,7 +12,11 @@ const termsData: { key: keyof Omit<TermsAgreementType, 'allAgreed'>; label: stri
   { key: 'marketingOptional', label: '[선택] 마케팅 정보 수신 동의' },
 ]
 
-export const TermsAgreement: React.FC = () => {
+interface TermsAgreementProps {
+  onNext?: () => void
+}
+
+export const TermsAgreement: React.FC<TermsAgreementProps> = ({ onNext }) => {
   const { state, setTermsAgreement, toggleAllAgreement, goToNextStep, canProceed } = useOnboarding()
 
   const handleAgreementChange = useCallback(
@@ -22,11 +26,19 @@ export const TermsAgreement: React.FC = () => {
     [setTermsAgreement]
   )
 
+  const handleNext = () => {
+    if (onNext) {
+      onNext()
+    } else {
+      goToNextStep()
+    }
+  }
+
   return (
     <OnboardingLayout
       currentStep="terms"
       totalSteps={3}
-      onNext={goToNextStep}
+      onNext={handleNext}
       hideSkipButton
       hideBackButton
       disabledNext={!canProceed}

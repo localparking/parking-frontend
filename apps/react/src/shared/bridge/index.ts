@@ -9,7 +9,7 @@ export interface WebBridge extends BridgeStore<WebBridge> {
   // 액션
   socialLogin(type: SocialLoginType): Promise<SocialLoginResult>
   getAuthStatus(): Promise<{ isLoggedIn: boolean }>
-  getAuthToken(): Promise<{ accessToken: string | null }>
+  getAuthToken(): Promise<{ accessToken: string | null; refreshToken: string | null }>
   logout(): Promise<{ success: boolean; message?: string }>
   notifyTokenExpired(): Promise<{ accessToken: string | null }>
   [key: string]: any
@@ -20,13 +20,20 @@ export const bridge = linkBridge<WebBridge>({
   throwOnError: true,
   timeout: 20000,
   initialBridge: {
-    isLoggedIn: false,
-    socialLogin: async () => ({ success: false }),
+    socialLogin: async (type: SocialLoginType) => {
+      // 네이티브에서 실제 구현이 되어야 함
+      // 현재는 기본값 반환 (네이티브에서 오버라이드됨)
+      return {
+        success: false,
+        message: '네이티브 소셜 로그인 구현이 필요합니다.',
+      }
+    },
     getAuthStatus: async () => ({ isLoggedIn: false }),
-    getAuthToken: async () => ({ accessToken: null }),
+    getAuthToken: async () => ({ accessToken: null, refreshToken: null }),
     logout: async () => ({ success: false, message: '로그아웃 실패' }),
     notifyTokenExpired: async () => ({ accessToken: null }),
   },
 })
 
+export { useBridge } from './use-bridge'
 export default bridge

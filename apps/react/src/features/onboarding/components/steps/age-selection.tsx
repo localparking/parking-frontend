@@ -4,7 +4,11 @@ import { AgeRange } from '../../model/onboarding.types'
 import { OnboardingLayout } from '../ui/onboarding-layout'
 import { cn } from '@ui/common/lib/utils'
 
-export const AgeSelection: React.FC = () => {
+interface AgeSelectionProps {
+  onBack?: () => void
+}
+
+export const AgeSelection: React.FC<AgeSelectionProps> = ({ onBack }) => {
   const { state, setAgeRange, goToNextStep, goToPreviousStep } = useOnboarding()
 
   const ageRanges: AgeRange[] = ['10대', '20대', '30대', '40대', '50대 이상']
@@ -13,13 +17,21 @@ export const AgeSelection: React.FC = () => {
     setAgeRange(age)
   }
 
+  const handleBack = () => {
+    if (onBack) {
+      onBack()
+    } else {
+      goToPreviousStep()
+    }
+  }
+
   const canProceed = state.ageRange !== undefined
 
   return (
     <OnboardingLayout
       currentStep="age-selection"
       totalSteps={3}
-      onBack={goToPreviousStep}
+      onBack={handleBack}
       onNext={goToNextStep}
       disabledNext={!canProceed}
     >

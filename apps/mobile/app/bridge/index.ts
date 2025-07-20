@@ -63,9 +63,10 @@ export const appBridge = bridge<AppBridgeState>(({ set }) => {
       return { isLoggedIn }
     },
 
-    async getAuthToken(): Promise<{ accessToken: string | null }> {
+    async getAuthToken(): Promise<{ accessToken: string | null; refreshToken: string | null }> {
       const accessToken = await AuthStorage.getAccessToken()
-      return { accessToken }
+      const refreshToken = await AuthStorage.getRefreshToken()
+      return { accessToken, refreshToken }
     },
     async getCurrentLocation() {
       try {

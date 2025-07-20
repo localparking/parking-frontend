@@ -20,7 +20,7 @@ const initialTermsAgreement: TermsAgreement = {
 
 // 초기 온보딩 데이터
 const initialOnboardingData: OnboardingData = {
-  currentStep: 'splash',
+  currentStep: 'age-selection',
   ageRange: undefined,
   parkingPreferences: [],
   visitPurposes: [],
@@ -149,12 +149,11 @@ export const ONBOARDING_STEPS: OnboardingStep[] = [
   'landing-1',
   'landing-2',
   'landing-3',
-  'landing-4',
+  'login-screen',
   'terms',
   'age-selection',
   'parking-preference',
   'visit-purpose',
-  'complete',
 ]
 
 // 다음 단계 계산 유틸리티

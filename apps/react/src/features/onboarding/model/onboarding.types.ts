@@ -3,12 +3,11 @@ export type OnboardingStep =
   | 'landing-1'
   | 'landing-2'
   | 'landing-3'
-  | 'landing-4'
+  | 'login-screen'
   | 'terms'
   | 'age-selection'
   | 'parking-preference'
   | 'visit-purpose'
-  | 'complete'
 
 export type AgeRange = '10대' | '20대' | '30대' | '40대' | '50대 이상'
 
