@@ -12,9 +12,22 @@
  * Do not edit the class manually.
  */
 
-export * from './apis/admin-api'
-export * from './apis/auth-api'
-export * from './apis/onboarding-api'
-export * from './apis/parking-api'
-export * from './apis/register-api'
-export * from './apis/user-api'
+/**
+ *
+ * @export
+ * @interface PagingInfo
+ */
+export interface PagingInfo {
+  /**
+   *
+   * @type {number}
+   * @memberof PagingInfo
+   */
+  page: number
+  /**
+   *
+   * @type {number}
+   * @memberof PagingInfo
+   */
+  totalPages: number
+}

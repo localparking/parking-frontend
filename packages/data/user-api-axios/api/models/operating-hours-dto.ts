@@ -12,9 +12,28 @@
  * Do not edit the class manually.
  */
 
-export * from './apis/admin-api'
-export * from './apis/auth-api'
-export * from './apis/onboarding-api'
-export * from './apis/parking-api'
-export * from './apis/register-api'
-export * from './apis/user-api'
+/**
+ *
+ * @export
+ * @interface OperatingHoursDto
+ */
+export interface OperatingHoursDto {
+  /**
+   *
+   * @type {string}
+   * @memberof OperatingHoursDto
+   */
+  type: string
+  /**
+   *
+   * @type {string}
+   * @memberof OperatingHoursDto
+   */
+  beginTime?: string
+  /**
+   *
+   * @type {string}
+   * @memberof OperatingHoursDto
+   */
+  endTime?: string
+}
