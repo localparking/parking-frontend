@@ -11,6 +11,7 @@
 // Import Routes
 
 import { Route as rootRoute } from './app/__root'
+import { Route as MapLayoutImport } from './app/map/layout'
 import { Route as PageImport } from './app/page'
 import { Route as OnboardingPageImport } from './app/onboarding/page'
 import { Route as MapPageImport } from './app/map/page'
@@ -18,6 +19,12 @@ import { Route as authLoginPageImport } from './app/(auth)/login/page'
 import { Route as authLoginSuccessPageImport } from './app/(auth)/login/success/page'
 
 // Create/Update Routes
+
+const MapLayoutRoute = MapLayoutImport.update({
+  id: '/map',
+  path: '/map',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const PageRoute = PageImport.update({
   id: '/',
@@ -32,9 +39,9 @@ const OnboardingPageRoute = OnboardingPageImport.update({
 } as any)
 
 const MapPageRoute = MapPageImport.update({
-  id: '/map/',
-  path: '/map/',
-  getParentRoute: () => rootRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => MapLayoutRoute,
 } as any)
 
 const authLoginPageRoute = authLoginPageImport.update({
@@ -60,12 +67,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PageImport
       parentRoute: typeof rootRoute
     }
-    '/map/': {
-      id: '/map/'
+    '/map': {
+      id: '/map'
       path: '/map'
       fullPath: '/map'
-      preLoaderRoute: typeof MapPageImport
+      preLoaderRoute: typeof MapLayoutImport
       parentRoute: typeof rootRoute
+    }
+    '/map/': {
+      id: '/map/'
+      path: '/'
+      fullPath: '/map/'
+      preLoaderRoute: typeof MapPageImport
+      parentRoute: typeof MapLayoutImport
     }
     '/onboarding/': {
       id: '/onboarding/'
@@ -93,9 +107,22 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
+interface MapLayoutRouteChildren {
+  MapPageRoute: typeof MapPageRoute
+}
+
+const MapLayoutRouteChildren: MapLayoutRouteChildren = {
+  MapPageRoute: MapPageRoute,
+}
+
+const MapLayoutRouteWithChildren = MapLayoutRoute._addFileChildren(
+  MapLayoutRouteChildren,
+)
+
 export interface FileRoutesByFullPath {
   '/': typeof PageRoute
-  '/map': typeof MapPageRoute
+  '/map': typeof MapLayoutRouteWithChildren
+  '/map/': typeof MapPageRoute
   '/onboarding': typeof OnboardingPageRoute
   '/login': typeof authLoginPageRoute
   '/login/success': typeof authLoginSuccessPageRoute
@@ -112,6 +139,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof PageRoute
+  '/map': typeof MapLayoutRouteWithChildren
   '/map/': typeof MapPageRoute
   '/onboarding/': typeof OnboardingPageRoute
   '/(auth)/login/': typeof authLoginPageRoute
@@ -120,12 +148,19 @@ export interface FileRoutesById {
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/map' | '/onboarding' | '/login' | '/login/success'
+  fullPaths:
+    | '/'
+    | '/map'
+    | '/map/'
+    | '/onboarding'
+    | '/login'
+    | '/login/success'
   fileRoutesByTo: FileRoutesByTo
   to: '/' | '/map' | '/onboarding' | '/login' | '/login/success'
   id:
     | '__root__'
     | '/'
+    | '/map'
     | '/map/'
     | '/onboarding/'
     | '/(auth)/login/'
@@ -135,7 +170,7 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   PageRoute: typeof PageRoute
-  MapPageRoute: typeof MapPageRoute
+  MapLayoutRoute: typeof MapLayoutRouteWithChildren
   OnboardingPageRoute: typeof OnboardingPageRoute
   authLoginPageRoute: typeof authLoginPageRoute
   authLoginSuccessPageRoute: typeof authLoginSuccessPageRoute
@@ -143,7 +178,7 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   PageRoute: PageRoute,
-  MapPageRoute: MapPageRoute,
+  MapLayoutRoute: MapLayoutRouteWithChildren,
   OnboardingPageRoute: OnboardingPageRoute,
   authLoginPageRoute: authLoginPageRoute,
   authLoginSuccessPageRoute: authLoginSuccessPageRoute,
@@ -160,7 +195,7 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/map/",
+        "/map",
         "/onboarding/",
         "/(auth)/login/",
         "/(auth)/login/success/"
@@ -169,8 +204,15 @@ export const routeTree = rootRoute
     "/": {
       "filePath": "page.tsx"
     },
+    "/map": {
+      "filePath": "map/layout.tsx",
+      "children": [
+        "/map/"
+      ]
+    },
     "/map/": {
-      "filePath": "map/page.tsx"
+      "filePath": "map/page.tsx",
+      "parent": "/map"
     },
     "/onboarding/": {
       "filePath": "onboarding/page.tsx"

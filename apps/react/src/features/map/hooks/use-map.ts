@@ -1,152 +1,180 @@
 import { useEffect, useRef, useState } from 'react'
-import type { LocationData, NaverMap, NaverMarker, WebViewMessage } from '../model'
-import {
-  createLocationMarker,
-  getCurrentLocation,
-  initializeMap,
-  loadNaverMapScript,
-  updateMapWithNativeLocation,
-} from '../services'
+import type { NaverMap, NaverMarker } from '../model'
+
+import type { MapInitOptions } from '../model'
+
+export const isMapReady = (): boolean => {
+  return !!(window.naver?.maps && window.currentMap)
+}
+
+export const isMapContainerReady = (): boolean => {
+  return !!document.getElementById('map')
+}
 
 export const useMap = () => {
   const mapRef = useRef<NaverMap | null>(null)
   const markersRef = useRef<NaverMarker[]>([])
-  const [isMapLoaded, setIsMapLoaded] = useState(false)
   const [locationError, setLocationError] = useState<string | null>(null)
 
-  const cleanupMap = () => {
-    markersRef.current.forEach((marker) => {
-      marker.setMap(null)
+  const loadNaverMapScript = (): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      if (window.naver?.maps) {
+        resolve()
+        return
+      }
+
+      const naverMapClientId = import.meta.env.VITE_NAVER_MAP_CLIENT_ID
+
+      if (!naverMapClientId) {
+        reject(new Error('네이버 지도 API 키가 설정되지 않았습니다.'))
+        return
+      }
+
+      const mapScript = document.createElement('script')
+      mapScript.type = 'text/javascript'
+      mapScript.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${naverMapClientId}&submodules=geocoder`
+      mapScript.onload = () => initializeMap()
+      mapScript.onerror = () => reject(new Error('네이버 지도 API 로드 실패'))
+      document.head.appendChild(mapScript)
     })
-    markersRef.current = []
-
-    if (window.currentLocationMarker) {
-      window.currentLocationMarker.setMap(null)
-      window.currentLocationMarker = undefined
-    }
-
-    mapRef.current = null
-    window.currentMap = undefined
-
-    setIsMapLoaded(false)
-    setLocationError(null)
-    console.log('지도 리소스가 정리되었습니다.')
   }
 
-  const initMap = async () => {
-    cleanupMap()
+  const initializeMap = async (options?: MapInitOptions): Promise<NaverMap | null> => {
+    const mapContainer = document.getElementById('map')
 
-    try {
-      const map = await initializeMap()
-      if (!map) return
-
-      mapRef.current = map
-      setIsMapLoaded(true)
-
-      if (window.nativeLocationData) {
-        console.log('기존 네이티브 위치 정보 사용:', window.nativeLocationData)
-        updateMapWithNativeLocation(window.nativeLocationData)
-      } else {
-        try {
-          const position = await getCurrentLocation()
-          const currentLocation = new window.naver!.maps.LatLng(position.coords.latitude, position.coords.longitude)
-
-          const currentLocationMarker = createLocationMarker(currentLocation, map, '현재 위치 (웹)', '#34a853')
-          markersRef.current.push(currentLocationMarker)
-          window.currentLocationMarker = currentLocationMarker
-
-          map.setCenter(currentLocation)
-          console.log('현재 위치로 지도 중심을 이동했습니다.')
-          setLocationError(null)
-        } catch (locationError) {
-          console.warn('현재 위치를 가져올 수 없어 기본 위치를 사용합니다.')
-        }
-      }
-    } catch (error) {
-      console.error('지도 초기화 중 오류 발생:', error)
+    if (!mapContainer) {
+      return null
     }
+
+    // 기본 설정
+    const defaultOptions: Required<MapInitOptions> = {
+      center: { lat: 37.5665, lng: 126.978 },
+      zoom: 15,
+      mapDataControl: false,
+    }
+
+    // 사용자 옵션이 있다면 덮어씌워 현 위치 설정
+    const finalOptions = { ...defaultOptions, ...options }
+    const position = new window.naver.maps.LatLng(finalOptions.center.lat, finalOptions.center.lng)
+
+    // 지도 생성
+    const map = new window.naver.maps.Map('map', {
+      center: position,
+      zoom: finalOptions.zoom,
+      mapDataControl: finalOptions.mapDataControl,
+    })
+
+    window.currentMap = map
+
+    return map
   }
 
-  const moveToCurrentLocation = async () => {
-    if (!isMapLoaded || !window.currentMap || !window.naver) {
-      console.warn('지도가 아직 로드되지 않았습니다.')
-      return
-    }
+  // const cleanupMap = () => {
+  //   markersRef.current.forEach((marker) => {
+  //     marker.setMap(null)
+  //   })
+  //   markersRef.current = []
 
-    if (window.nativeLocationData) {
-      updateMapWithNativeLocation(window.nativeLocationData)
-      console.log('네이티브 현재 위치로 이동했습니다.')
-      return
-    }
+  //   if (window.currentLocationMarker) {
+  //     window.currentLocationMarker.setMap(null)
+  //     window.currentLocationMarker = undefined
+  //   }
 
-    try {
-      const position = await getCurrentLocation()
-      const currentLocation = new window.naver.maps.LatLng(position.coords.latitude, position.coords.longitude)
+  //   mapRef.current = null
+  //   window.currentMap = undefined
 
-      window.currentMap.setCenter(currentLocation)
-      window.currentMap.setZoom(15)
+  //   setIsMapLoaded(false)
+  //   setLocationError(null)
+  // }
 
-      if (window.currentLocationMarker) {
-        window.currentLocationMarker.setMap(null)
-      }
+  // const initMap = async () => {
+  //   cleanupMap()
 
-      window.currentLocationMarker = createLocationMarker(
-        currentLocation,
-        window.currentMap,
-        '현재 위치 (웹)',
-        '#34a853'
-      )
+  //   try {
+  //     const map = await initializeMap()
+  //     if (!map) return
 
-      console.log('현재 위치로 이동했습니다.')
-      setLocationError(null)
-    } catch (error) {
-      console.error('현재 위치로 이동할 수 없습니다:', error)
-      setLocationError('현재 위치를 가져올 수 없습니다.')
-    }
-  }
+  //     mapRef.current = map
+  //     setIsMapLoaded(true)
 
-  useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      try {
-        const data: WebViewMessage = JSON.parse(event.data)
-        console.log('메시지 수신:', data)
+  //     if (window.nativeLocationData) {
+  //       updateMapWithNativeLocation(window.nativeLocationData)
+  //     } else {
+  //       try {
+  //         const position = await getCurrentLocation()
+  //         const currentLocation = new window.naver!.maps.LatLng(position.coords.latitude, position.coords.longitude)
 
-        if (data.type === 'setLocationData' && data.payload) {
-          console.log('네이티브로부터 위치 정보 수신:', data.payload)
-          window.nativeLocationData = data.payload
+  //         const currentLocationMarker = createLocationMarker(currentLocation, map, '현재 위치 (웹)', '#34a853')
+  //         markersRef.current.push(currentLocationMarker)
+  //         window.currentLocationMarker = currentLocationMarker
 
-          // 지도가 이미 로드되어 있다면 즉시 위치 업데이트
-          if (window.currentMap && window.naver) {
-            updateMapWithNativeLocation(data.payload)
-          }
-        }
-      } catch (error) {
-        console.warn('메시지 파싱 실패:', error)
-      }
-    }
+  //         map.setCenter(currentLocation)
+  //         setLocationError(null)
+  //       } catch (locationError) {}
+  //     }
+  //   } catch (error) {}
+  // }
 
-    window.addEventListener('message', handleMessage)
-    return () => window.removeEventListener('message', handleMessage)
-  }, [])
+  // const moveToCurrentLocation = async () => {
+  //   if (!isMapLoaded || !window.currentMap || !window.naver) {
+  //     return
+  //   }
 
-  useEffect(() => {
-    const initializeMapWithScript = async () => {
-      try {
-        await loadNaverMapScript()
-        await initMap()
-      } catch (error) {
-        console.error('지도 초기화 실패:', error)
-      }
-    }
+  //   if (window.nativeLocationData) {
+  //     updateMapWithNativeLocation(window.nativeLocationData)
+  //     return
+  //   }
 
-    initializeMapWithScript()
-    return cleanupMap
-  }, [])
+  //   try {
+  //     const position = await getCurrentLocation()
+  //     const currentLocation = new window.naver.maps.LatLng(position.coords.latitude, position.coords.longitude)
+
+  //     window.currentMap.setCenter(currentLocation)
+  //     window.currentMap.setZoom(15)
+
+  //     if (window.currentLocationMarker) {
+  //       window.currentLocationMarker.setMap(null)
+  //     }
+
+  //     window.currentLocationMarker = createLocationMarker(
+  //       currentLocation,
+  //       window.currentMap,
+  //       '현재 위치 (웹)',
+  //       '#34a853'
+  //     )
+
+  //     setLocationError(null)
+  //   } catch (error) {
+  //     setLocationError('현재 위치를 가져올 수 없습니다.')
+  //   }
+  // }
+
+  // useEffect(() => {
+  //   const handleMessage = (event: MessageEvent) => {
+  //     try {
+  //       const data: WebViewMessage = JSON.parse(event.data)
+
+  //       if (data.type === 'setLocationData' && data.payload) {
+  //         window.nativeLocationData = data.payload
+
+  //         // 지도가 이미 로드되어 있다면 즉시 위치 업데이트
+  //         if (window.currentMap && window.naver) {
+  //           updateMapWithNativeLocation(data.payload)
+  //         }
+  //       }
+  //     } catch (error) {
+  //     }
+  //   }
+
+  //   window.addEventListener('message', handleMessage)
+  //   return () => window.removeEventListener('message', handleMessage)
+  // }, [])
 
   return {
-    isMapLoaded,
     locationError,
-    moveToCurrentLocation,
+    // moveToCurrentLocation,
     setLocationError,
+    loadNaverMapScript,
+    initializeMap,
   }
 }

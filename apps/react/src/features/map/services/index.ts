@@ -1,4 +1,3 @@
-export * from './map-initialization.service'
 export * from './map-navigation.service'
 export * from './marker.service'
 export * from './geocoding.service'

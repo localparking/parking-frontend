@@ -15,6 +15,12 @@ function HomePage() {
           <Button className="bg-blue-600 text-white hover:bg-blue-700">온보딩 플로우 테스트하기</Button>
         </Link>
       </div>
+
+      <div className="mt-8 rounded-lg border border-blue-200 bg-blue-50 p-4">
+        <Link to="/map">
+          <Button className="bg-blue-600 text-white hover:bg-blue-700">지도 보기</Button>
+        </Link>
+      </div>
     </div>
   )
 }

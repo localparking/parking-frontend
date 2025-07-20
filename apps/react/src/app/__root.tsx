@@ -36,11 +36,10 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 function RootComponent() {
   const routerState = useRouterState()
   const pathname = routerState.location.pathname
-  const isOnboarding = pathname.startsWith('/onboarding')
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-gray-09">
-      <main className={cn('mx-auto flex h-full w-full flex-1 bg-white', !isOnboarding && 'max-w-[600px] pb-[86px]')}>
+      <main className={cn('mx-auto flex h-full w-full max-w-[600px] flex-1 bg-white')}>
         <Outlet />
       </main>
     </div>

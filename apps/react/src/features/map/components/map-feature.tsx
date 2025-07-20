@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
-import { MapContainer } from './map-container'
 import { useMap } from '../hooks/use-map'
 import { useMapNavigation } from '../hooks/use-map-navigation'
 import { useMarkers } from '../hooks/use-markers'
 import { geocodeAddress } from '../services'
 import { MarkerData } from '../model/marker.types'
+import { useMapContext } from '../context/map-context'
 
 export const MapFeature: React.FC = () => {
-  const { isMapLoaded, moveToCurrentLocation } = useMap()
+  const { isMapLoaded } = useMapContext()
   const { moveTo, fitToCoordinates } = useMapNavigation()
   const { addMarkersFromAddresses } = useMarkers()
 
@@ -28,11 +28,9 @@ export const MapFeature: React.FC = () => {
       const uniqueMarkers = newMarkers.filter((newMarker) => !isDuplicateMarker(newMarker, prev))
 
       if (uniqueMarkers.length === 0) {
-        console.log('모든 마커가 이미 존재합니다.')
         return prev
       }
 
-      console.log(`${uniqueMarkers.length}개의 새로운 마커가 추가됩니다.`)
       return [...prev, ...uniqueMarkers]
     })
   }
@@ -108,15 +106,15 @@ export const MapFeature: React.FC = () => {
   }
 
   return (
-    <MapContainer markers={markers}>
+    <>
       <div className="absolute top-5 right-5 z-[1000] flex flex-col gap-2">
-        <div className="rounded-md bg-white/90 px-3 py-2 text-body-03 font-medium text-gray-800 shadow-lg">
+        <div className="text-body-03 rounded-md bg-white/90 px-3 py-2 font-medium text-gray-800 shadow-lg">
           마커 개수: {markers.length}
         </div>
         <button
           onClick={() => moveTo(37.5665, 126.978, 15)}
           disabled={!isMapLoaded}
-          className={`rounded-md border-none px-3 py-2 text-body-03 font-medium text-white shadow-lg transition-all duration-200 ${
+          className={`text-body-03 rounded-md border-none px-3 py-2 font-medium text-white shadow-lg transition-all duration-200 ${
             isMapLoaded ? 'bg-blue-600 hover:bg-blue-700 active:scale-95 active:bg-blue-800' : 'bg-gray-400 opacity-50'
           }`}
         >
@@ -125,7 +123,7 @@ export const MapFeature: React.FC = () => {
         <button
           onClick={() => moveTo(37.4979, 127.0276, 15)}
           disabled={!isMapLoaded}
-          className={`rounded-md border-none px-3 py-2 text-body-03 font-medium text-white shadow-lg transition-all duration-200 ${
+          className={`text-body-03 rounded-md border-none px-3 py-2 font-medium text-white shadow-lg transition-all duration-200 ${
             isMapLoaded ? 'bg-blue-600 hover:bg-blue-700 active:scale-95 active:bg-blue-800' : 'bg-gray-400 opacity-50'
           }`}
         >
@@ -134,7 +132,7 @@ export const MapFeature: React.FC = () => {
         <button
           onClick={addMultipleAddressMarkers}
           disabled={!isMapLoaded}
-          className={`rounded-md border-none px-3 py-2 text-body-03 font-medium text-white shadow-lg transition-all duration-200 ${
+          className={`text-body-03 rounded-md border-none px-3 py-2 font-medium text-white shadow-lg transition-all duration-200 ${
             isMapLoaded
               ? 'bg-orange-500 hover:bg-orange-600 active:scale-95 active:bg-orange-700'
               : 'bg-gray-400 opacity-50'
@@ -145,7 +143,7 @@ export const MapFeature: React.FC = () => {
         <button
           onClick={showFitToCoordinatesExample}
           disabled={!isMapLoaded}
-          className={`rounded-md border-none px-3 py-2 text-body-03 font-medium text-white shadow-lg transition-all duration-200 ${
+          className={`text-body-03 rounded-md border-none px-3 py-2 font-medium text-white shadow-lg transition-all duration-200 ${
             isMapLoaded
               ? 'bg-purple-600 hover:bg-purple-700 active:scale-95 active:bg-purple-800'
               : 'bg-gray-400 opacity-50'
@@ -156,7 +154,7 @@ export const MapFeature: React.FC = () => {
         <button
           onClick={clearAllMarkers}
           disabled={!isMapLoaded}
-          className={`rounded-md border-none px-3 py-2 text-body-03 font-medium text-white shadow-lg transition-all duration-200 ${
+          className={`text-body-03 rounded-md border-none px-3 py-2 font-medium text-white shadow-lg transition-all duration-200 ${
             isMapLoaded ? 'bg-red-500 hover:bg-red-600 active:scale-95 active:bg-red-700' : 'bg-gray-400 opacity-50'
           }`}
         >
@@ -165,7 +163,7 @@ export const MapFeature: React.FC = () => {
       </div>
 
       {/* 현재 위치로 이동 버튼 */}
-      <button
+      {/* <button
         onClick={moveToCurrentLocation}
         disabled={!isMapLoaded}
         className={`absolute right-5 bottom-5 z-[1000] rounded-full border-none p-3 text-white shadow-lg transition-all duration-200 ${
@@ -173,7 +171,7 @@ export const MapFeature: React.FC = () => {
         }`}
       >
         📍
-      </button>
-    </MapContainer>
+      </button> */}
+    </>
   )
 }
