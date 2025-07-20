@@ -13,7 +13,6 @@
 import { Route as rootRoute } from './app/__root'
 import { Route as PageImport } from './app/page'
 import { Route as MapPageImport } from './app/map/page'
-import { Route as DebugPageImport } from './app/debug/page'
 import { Route as OnboardingTermsPageImport } from './app/onboarding/terms/page'
 import { Route as OnboardingLandingPageImport } from './app/onboarding/landing/page'
 import { Route as OnboardingFinalOnboardingPageImport } from './app/onboarding/final-onboarding/page'
@@ -31,12 +30,6 @@ const PageRoute = PageImport.update({
 const MapPageRoute = MapPageImport.update({
   id: '/map/',
   path: '/map/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const DebugPageRoute = DebugPageImport.update({
-  id: '/debug/',
-  path: '/debug/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -80,13 +73,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof PageImport
-      parentRoute: typeof rootRoute
-    }
-    '/debug/': {
-      id: '/debug/'
-      path: '/debug'
-      fullPath: '/debug'
-      preLoaderRoute: typeof DebugPageImport
       parentRoute: typeof rootRoute
     }
     '/map/': {
@@ -138,7 +124,6 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof PageRoute
-  '/debug': typeof DebugPageRoute
   '/map': typeof MapPageRoute
   '/login': typeof authLoginPageRoute
   '/onboarding/final-onboarding': typeof OnboardingFinalOnboardingPageRoute
@@ -149,7 +134,6 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof PageRoute
-  '/debug': typeof DebugPageRoute
   '/map': typeof MapPageRoute
   '/login': typeof authLoginPageRoute
   '/onboarding/final-onboarding': typeof OnboardingFinalOnboardingPageRoute
@@ -161,7 +145,6 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof PageRoute
-  '/debug/': typeof DebugPageRoute
   '/map/': typeof MapPageRoute
   '/(auth)/login/': typeof authLoginPageRoute
   '/onboarding/final-onboarding/': typeof OnboardingFinalOnboardingPageRoute
@@ -174,7 +157,6 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/debug'
     | '/map'
     | '/login'
     | '/onboarding/final-onboarding'
@@ -184,7 +166,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/debug'
     | '/map'
     | '/login'
     | '/onboarding/final-onboarding'
@@ -194,7 +175,6 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/debug/'
     | '/map/'
     | '/(auth)/login/'
     | '/onboarding/final-onboarding/'
@@ -206,7 +186,6 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   PageRoute: typeof PageRoute
-  DebugPageRoute: typeof DebugPageRoute
   MapPageRoute: typeof MapPageRoute
   authLoginPageRoute: typeof authLoginPageRoute
   OnboardingFinalOnboardingPageRoute: typeof OnboardingFinalOnboardingPageRoute
@@ -217,7 +196,6 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   PageRoute: PageRoute,
-  DebugPageRoute: DebugPageRoute,
   MapPageRoute: MapPageRoute,
   authLoginPageRoute: authLoginPageRoute,
   OnboardingFinalOnboardingPageRoute: OnboardingFinalOnboardingPageRoute,
@@ -237,7 +215,6 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/debug/",
         "/map/",
         "/(auth)/login/",
         "/onboarding/final-onboarding/",
@@ -248,9 +225,6 @@ export const routeTree = rootRoute
     },
     "/": {
       "filePath": "page.tsx"
-    },
-    "/debug/": {
-      "filePath": "debug/page.tsx"
     },
     "/map/": {
       "filePath": "map/page.tsx"
