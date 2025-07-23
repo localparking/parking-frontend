@@ -32,8 +32,6 @@ import {
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, type RequestArgs, BaseAPI, RequiredError, operationServerMap } from '../base'
 // @ts-ignore
-import type { CategoryResponse } from '../models'
-// @ts-ignore
 import type { OnboardingRequest } from '../models'
 // @ts-ignore
 import type { ResponseDtoUnit } from '../models'
@@ -84,38 +82,6 @@ export const OnboardingApiAxiosParamCreator = function (configuration?: Configur
         options: localVarRequestOptions,
       }
     },
-    /**
-     * 온보딩 시 카테고리를 조회하는 API입니다.
-     * @summary 온보딩 카테고리 조회
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getCategories: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-      const localVarPath = `/onboarding/categories`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication Bearer Token required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
   }
 }
 
@@ -149,27 +115,6 @@ export const OnboardingApiFp = function (configuration?: Configuration) {
           configuration
         )(axios, localVarOperationServerBasePath || basePath)
     },
-    /**
-     * 온보딩 시 카테고리를 조회하는 API입니다.
-     * @summary 온보딩 카테고리 조회
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async getCategories(
-      options?: RawAxiosRequestConfig
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CategoryResponse>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.getCategories(options)
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['OnboardingApi.getCategories']?.[localVarOperationServerIndex]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
   }
 }
 
@@ -194,15 +139,6 @@ export const OnboardingApiFactory = function (configuration?: Configuration, bas
       return localVarFp
         .completeOnboarding(requestParameters.onboardingRequest, options)
         .then((request) => request(axios, basePath))
-    },
-    /**
-     * 온보딩 시 카테고리를 조회하는 API입니다.
-     * @summary 온보딩 카테고리 조회
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getCategories(options?: RawAxiosRequestConfig): AxiosPromise<CategoryResponse> {
-      return localVarFp.getCategories(options).then((request) => request(axios, basePath))
     },
   }
 }
@@ -242,19 +178,6 @@ export class OnboardingApi extends BaseAPI {
   ) {
     return OnboardingApiFp(this.configuration)
       .completeOnboarding(requestParameters.onboardingRequest, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   * 온보딩 시 카테고리를 조회하는 API입니다.
-   * @summary 온보딩 카테고리 조회
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof OnboardingApi
-   */
-  public getCategories(options?: RawAxiosRequestConfig) {
-    return OnboardingApiFp(this.configuration)
-      .getCategories(options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

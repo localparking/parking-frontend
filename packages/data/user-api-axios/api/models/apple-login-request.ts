@@ -12,11 +12,22 @@
  * Do not edit the class manually.
  */
 
-export * from './apis/admin-api'
-export * from './apis/auth-api'
-export * from './apis/onboarding-api'
-export * from './apis/register-api'
-export * from './apis/user-api'
-export * from './apis/가게컨트롤러api'
-export * from './apis/주차장컨트롤러api'
-export * from './apis/카테고리컨트롤러api'
+/**
+ *
+ * @export
+ * @interface AppleLoginRequest
+ */
+export interface AppleLoginRequest {
+  /**
+   *
+   * @type {string}
+   * @memberof AppleLoginRequest
+   */
+  identityToken: string
+  /**
+   *
+   * @type {string}
+   * @memberof AppleLoginRequest
+   */
+  fullName?: string
+}

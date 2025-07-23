@@ -14,24 +14,24 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { UserResponse } from './user-response'
+import type { UserInfoResponse } from './user-info-response'
 
 /**
  *
  * @export
- * @interface ResponseDtoUserResponse
+ * @interface ResponseDtoUserInfoResponse
  */
-export interface ResponseDtoUserResponse {
+export interface ResponseDtoUserInfoResponse {
   /**
    *
    * @type {string}
-   * @memberof ResponseDtoUserResponse
+   * @memberof ResponseDtoUserInfoResponse
    */
   message: string
   /**
    *
-   * @type {UserResponse}
-   * @memberof ResponseDtoUserResponse
+   * @type {UserInfoResponse}
+   * @memberof ResponseDtoUserInfoResponse
    */
-  data?: UserResponse
+  data?: UserInfoResponse
 }

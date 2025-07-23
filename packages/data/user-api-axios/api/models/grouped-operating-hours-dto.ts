@@ -15,25 +15,19 @@
 /**
  *
  * @export
- * @interface OperatingHoursDto
+ * @interface GroupedOperatingHoursDto
  */
-export interface OperatingHoursDto {
+export interface GroupedOperatingHoursDto {
   /**
    *
    * @type {string}
-   * @memberof OperatingHoursDto
+   * @memberof GroupedOperatingHoursDto
    */
-  type: string
+  label: string
   /**
    *
-   * @type {string}
-   * @memberof OperatingHoursDto
+   * @type {Array<string>}
+   * @memberof GroupedOperatingHoursDto
    */
-  beginTime?: string
-  /**
-   *
-   * @type {string}
-   * @memberof OperatingHoursDto
-   */
-  endTime?: string
+  timeRanges: Array<string>
 }

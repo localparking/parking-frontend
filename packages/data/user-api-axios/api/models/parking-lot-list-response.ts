@@ -59,13 +59,7 @@ export interface ParkingLotListResponse {
    * @type {number}
    * @memberof ParkingLotListResponse
    */
-  baseFee?: number
-  /**
-   *
-   * @type {number}
-   * @memberof ParkingLotListResponse
-   */
-  baseTimeMin?: number
+  hourlyFee?: number
   /**
    *
    * @type {number}
@@ -84,10 +78,4 @@ export interface ParkingLotListResponse {
    * @memberof ParkingLotListResponse
    */
   isOpen?: boolean
-  /**
-   *
-   * @type {string}
-   * @memberof ParkingLotListResponse
-   */
-  congestion?: string
 }

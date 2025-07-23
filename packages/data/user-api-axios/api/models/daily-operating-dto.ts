@@ -12,28 +12,26 @@
  * Do not edit the class manually.
  */
 
+// May contain unused imports in some cases
+// @ts-ignore
+import type { OperatingSlotDto } from './operating-slot-dto'
+
 /**
  *
  * @export
- * @interface CategoryDto
+ * @interface DailyOperatingDto
  */
-export interface CategoryDto {
-  /**
-   *
-   * @type {number}
-   * @memberof CategoryDto
-   */
-  categoryId: number
+export interface DailyOperatingDto {
   /**
    *
    * @type {string}
-   * @memberof CategoryDto
+   * @memberof DailyOperatingDto
    */
-  categoryName?: string
+  dayLabel: string
   /**
    *
-   * @type {number}
-   * @memberof CategoryDto
+   * @type {Array<OperatingSlotDto>}
+   * @memberof DailyOperatingDto
    */
-  parentId?: number
+  slots: Array<OperatingSlotDto>
 }

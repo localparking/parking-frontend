@@ -12,28 +12,26 @@
  * Do not edit the class manually.
  */
 
+// May contain unused imports in some cases
+// @ts-ignore
+import type { PageResponseStoreListResponse } from './page-response-store-list-response'
+
 /**
  *
  * @export
- * @interface CategoryDto
+ * @interface ResponseDtoPageResponseStoreListResponse
  */
-export interface CategoryDto {
-  /**
-   *
-   * @type {number}
-   * @memberof CategoryDto
-   */
-  categoryId: number
+export interface ResponseDtoPageResponseStoreListResponse {
   /**
    *
    * @type {string}
-   * @memberof CategoryDto
+   * @memberof ResponseDtoPageResponseStoreListResponse
    */
-  categoryName?: string
+  message: string
   /**
    *
-   * @type {number}
-   * @memberof CategoryDto
+   * @type {PageResponseStoreListResponse}
+   * @memberof ResponseDtoPageResponseStoreListResponse
    */
-  parentId?: number
+  data?: PageResponseStoreListResponse
 }
