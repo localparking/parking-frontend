@@ -11,6 +11,7 @@ interface RouterContext {
 }
 
 const publicRoutes = [
+  '/',
   '/login',
   '/login/success',
   '/onboarding/landing',
@@ -49,18 +50,13 @@ export const Route = createRootRouteWithContext<RouterContext>()({
         }
       }
       // 온보딩 완료
-      else if (user.isOnboarding === true) {
-        // 1-1. 약관동의/온보딩 완료 유저는 온보딩/약관/로그인 접근 시 홈으로
-        if (isOnPublicRoute) {
-          throw redirect({ to: '/' })
-        }
-      }
+      // (홈 리다이렉트는 온보딩 플로우 내부에서만 처리)
     }
     // 2. 미인증 사용자 (로그아웃 상태)
     else if (!authenticated) {
-      // 2-1. 접근하려는 페이지가 public route가 아니라면 로그인 페이지로 리다이렉트
+      // 2-1. 접근하려는 페이지가 public route가 아니라면 홈으로 리다이렉트
       if (!isOnPublicRoute) {
-        throw redirect({ to: '/login' })
+        throw redirect({ to: '/' })
       }
       // 2-2. (설치 후 첫 방문자) 랜딩 페이지로 보내는 로직
       const hasCompletedLanding =

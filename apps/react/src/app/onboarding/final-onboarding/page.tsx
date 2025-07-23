@@ -5,7 +5,6 @@ import { useEffect } from 'react'
 import { useNativeMessageHandler } from '@/shared/hooks'
 import { useRouter } from '@tanstack/react-router'
 import { useAuth } from '@/features/auth'
-import { isWebView } from '@/shared/utils/webview'
 
 export const Route = createFileRoute('/onboarding/final-onboarding/')({
   component: FinalOnboardingPage,

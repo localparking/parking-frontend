@@ -41,20 +41,13 @@ export function initApi(): AxiosInstance {
     // 1) WebView → 네이티브에게 토큰 갱신 요청
     if (isWebView()) {
       try {
-        console.log('[API] Requesting token refresh from native...')
         const { accessToken } = await bridge.notifyTokenExpired()
-        console.log('[API] Token refresh response:', { accessToken: accessToken })
 
         if (!accessToken || typeof accessToken !== 'string' || accessToken.trim() === '') {
-          console.error('[API] Native returned invalid access token:', accessToken)
           throw new Error('Access token not found after refresh.')
         }
         return accessToken
       } catch (error: any) {
-        console.error('[API] Token refresh failed:', {
-          message: error?.message,
-          error: error,
-        })
         throw error
       }
     }
@@ -130,14 +123,11 @@ export function initApi(): AxiosInstance {
           return apiInstance(originalRequest)
         } catch (refreshError) {
           processQueue(refreshError as Error, null)
-          console.error('[API] Token refresh failed, logging out user:', refreshError)
 
           if (isWebView()) {
             try {
               await bridge.logout()
-            } catch (logoutError) {
-              console.error('[API] Native logout failed:', logoutError)
-            }
+            } catch (logoutError) {}
           } else {
             Cookies.remove('town-accessToken')
             Cookies.remove('town-refreshToken')
