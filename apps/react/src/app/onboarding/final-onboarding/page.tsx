@@ -37,12 +37,7 @@ function OnboardingFlow() {
 }
 
 function AgeSelectionWrapper() {
-  const router = useRouter()
-  const handleBack = () => {
-    router.navigate({ to: '/onboarding/terms' })
-  }
-
-  return <AgeSelection onBack={handleBack} />
+  return <AgeSelection hideBackButton />
 }
 
 function FinalOnboardingPage() {

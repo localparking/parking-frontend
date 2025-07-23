@@ -30,17 +30,9 @@ function RouteComponent() {
     const doLogin = async () => {
       if (accessToken && refreshToken) {
         saveTokens(accessToken, refreshToken)
-        console.log(
-          '[login/success] 토큰 저장 후 쿠키:',
-          Cookies.get('town-accessToken'),
-          Cookies.get('town-refreshToken')
-        )
+
         await auth.refetchUser()
-        console.log(
-          '[login/success] refetchUser 후 쿠키:',
-          Cookies.get('town-accessToken'),
-          Cookies.get('town-refreshToken')
-        )
+
         if (auth.user) {
           navigate({ to: '/', replace: true })
         } else {

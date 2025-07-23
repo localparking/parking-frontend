@@ -6,9 +6,10 @@ import { cn } from '@ui/common/lib/utils'
 
 interface AgeSelectionProps {
   onBack?: () => void
+  hideBackButton?: boolean
 }
 
-export const AgeSelection: React.FC<AgeSelectionProps> = ({ onBack }) => {
+export const AgeSelection: React.FC<AgeSelectionProps> = ({ onBack, hideBackButton }) => {
   const { state, setAgeRange, goToNextStep, goToPreviousStep } = useOnboarding()
 
   const ageRanges: AgeRange[] = ['10대', '20대', '30대', '40대', '50대 이상']
@@ -31,7 +32,7 @@ export const AgeSelection: React.FC<AgeSelectionProps> = ({ onBack }) => {
     <OnboardingLayout
       currentStep="age-selection"
       totalSteps={3}
-      onBack={handleBack}
+      {...(hideBackButton ? { hideBackButton: true } : { onBack: handleBack, hideBackButton })}
       onNext={goToNextStep}
       onSkip={goToNextStep}
       disabledNext={!canProceed}

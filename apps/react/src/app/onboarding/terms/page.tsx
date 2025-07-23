@@ -5,6 +5,7 @@ import { OnboardingProvider, useOnboarding } from '@/features/onboarding'
 import { useNativeMessageHandler } from '@/shared/hooks'
 import registerService from '@/shared/services/register.service'
 import { useNavigate } from '@tanstack/react-router'
+import { useAuth } from '@/features/auth'
 
 export const Route = createFileRoute('/onboarding/terms/')({
   component: TermsPage,
@@ -33,7 +34,8 @@ const keyToTitleMap = {
 } as const
 
 function TermsAgreementWrapper() {
-  const { state, goToNextStep, setStep } = useOnboarding()
+  const { state, setStep } = useOnboarding()
+  const { refetchUser } = useAuth()
   const navigate = useNavigate()
 
   React.useEffect(() => {
@@ -52,6 +54,7 @@ function TermsAgreementWrapper() {
       return { termId: term.termId, agreed }
     })
     await registerService.postTerms({ agreements })
+    await refetchUser()
     navigate({ to: '/onboarding/final-onboarding', replace: true })
   }
 
