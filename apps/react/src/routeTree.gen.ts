@@ -8,119 +8,51 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-// Import Routes
+import { Route as rootRouteImport } from './app/__root'
+import { Route as PageRouteImport } from './app/page'
+import { Route as MapPageRouteImport } from './app/map/page'
+import { Route as OnboardingTermsPageRouteImport } from './app/onboarding/terms/page'
+import { Route as OnboardingLandingPageRouteImport } from './app/onboarding/landing/page'
+import { Route as OnboardingFinalOnboardingPageRouteImport } from './app/onboarding/final-onboarding/page'
+import { Route as authLoginPageRouteImport } from './app/(auth)/login/page'
+import { Route as authLoginSuccessPageRouteImport } from './app/(auth)/login/success/page'
 
-import { Route as rootRoute } from './app/__root'
-import { Route as PageImport } from './app/page'
-import { Route as MapPageImport } from './app/map/page'
-import { Route as OnboardingTermsPageImport } from './app/onboarding/terms/page'
-import { Route as OnboardingLandingPageImport } from './app/onboarding/landing/page'
-import { Route as OnboardingFinalOnboardingPageImport } from './app/onboarding/final-onboarding/page'
-import { Route as authLoginPageImport } from './app/(auth)/login/page'
-import { Route as authLoginSuccessPageImport } from './app/(auth)/login/success/page'
-
-// Create/Update Routes
-
-const PageRoute = PageImport.update({
+const PageRoute = PageRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const MapPageRoute = MapPageImport.update({
+const MapPageRoute = MapPageRouteImport.update({
   id: '/map/',
   path: '/map/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const OnboardingTermsPageRoute = OnboardingTermsPageImport.update({
+const OnboardingTermsPageRoute = OnboardingTermsPageRouteImport.update({
   id: '/onboarding/terms/',
   path: '/onboarding/terms/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const OnboardingLandingPageRoute = OnboardingLandingPageImport.update({
+const OnboardingLandingPageRoute = OnboardingLandingPageRouteImport.update({
   id: '/onboarding/landing/',
   path: '/onboarding/landing/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
 const OnboardingFinalOnboardingPageRoute =
-  OnboardingFinalOnboardingPageImport.update({
+  OnboardingFinalOnboardingPageRouteImport.update({
     id: '/onboarding/final-onboarding/',
     path: '/onboarding/final-onboarding/',
-    getParentRoute: () => rootRoute,
+    getParentRoute: () => rootRouteImport,
   } as any)
-
-const authLoginPageRoute = authLoginPageImport.update({
+const authLoginPageRoute = authLoginPageRouteImport.update({
   id: '/(auth)/login/',
   path: '/login/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const authLoginSuccessPageRoute = authLoginSuccessPageImport.update({
+const authLoginSuccessPageRoute = authLoginSuccessPageRouteImport.update({
   id: '/(auth)/login/success/',
   path: '/login/success/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-// Populate the FileRoutesByPath interface
-
-declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof PageImport
-      parentRoute: typeof rootRoute
-    }
-    '/map/': {
-      id: '/map/'
-      path: '/map'
-      fullPath: '/map'
-      preLoaderRoute: typeof MapPageImport
-      parentRoute: typeof rootRoute
-    }
-    '/(auth)/login/': {
-      id: '/(auth)/login/'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof authLoginPageImport
-      parentRoute: typeof rootRoute
-    }
-    '/onboarding/final-onboarding/': {
-      id: '/onboarding/final-onboarding/'
-      path: '/onboarding/final-onboarding'
-      fullPath: '/onboarding/final-onboarding'
-      preLoaderRoute: typeof OnboardingFinalOnboardingPageImport
-      parentRoute: typeof rootRoute
-    }
-    '/onboarding/landing/': {
-      id: '/onboarding/landing/'
-      path: '/onboarding/landing'
-      fullPath: '/onboarding/landing'
-      preLoaderRoute: typeof OnboardingLandingPageImport
-      parentRoute: typeof rootRoute
-    }
-    '/onboarding/terms/': {
-      id: '/onboarding/terms/'
-      path: '/onboarding/terms'
-      fullPath: '/onboarding/terms'
-      preLoaderRoute: typeof OnboardingTermsPageImport
-      parentRoute: typeof rootRoute
-    }
-    '/(auth)/login/success/': {
-      id: '/(auth)/login/success/'
-      path: '/login/success'
-      fullPath: '/login/success'
-      preLoaderRoute: typeof authLoginSuccessPageImport
-      parentRoute: typeof rootRoute
-    }
-  }
-}
-
-// Create and export the route tree
 
 export interface FileRoutesByFullPath {
   '/': typeof PageRoute
@@ -131,7 +63,6 @@ export interface FileRoutesByFullPath {
   '/onboarding/terms': typeof OnboardingTermsPageRoute
   '/login/success': typeof authLoginSuccessPageRoute
 }
-
 export interface FileRoutesByTo {
   '/': typeof PageRoute
   '/map': typeof MapPageRoute
@@ -141,9 +72,8 @@ export interface FileRoutesByTo {
   '/onboarding/terms': typeof OnboardingTermsPageRoute
   '/login/success': typeof authLoginSuccessPageRoute
 }
-
 export interface FileRoutesById {
-  __root__: typeof rootRoute
+  __root__: typeof rootRouteImport
   '/': typeof PageRoute
   '/map/': typeof MapPageRoute
   '/(auth)/login/': typeof authLoginPageRoute
@@ -152,7 +82,6 @@ export interface FileRoutesById {
   '/onboarding/terms/': typeof OnboardingTermsPageRoute
   '/(auth)/login/success/': typeof authLoginSuccessPageRoute
 }
-
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
@@ -183,7 +112,6 @@ export interface FileRouteTypes {
     | '/(auth)/login/success/'
   fileRoutesById: FileRoutesById
 }
-
 export interface RootRouteChildren {
   PageRoute: typeof PageRoute
   MapPageRoute: typeof MapPageRoute
@@ -192,6 +120,60 @@ export interface RootRouteChildren {
   OnboardingLandingPageRoute: typeof OnboardingLandingPageRoute
   OnboardingTermsPageRoute: typeof OnboardingTermsPageRoute
   authLoginSuccessPageRoute: typeof authLoginSuccessPageRoute
+}
+
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof PageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/map/': {
+      id: '/map/'
+      path: '/map'
+      fullPath: '/map'
+      preLoaderRoute: typeof MapPageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding/terms/': {
+      id: '/onboarding/terms/'
+      path: '/onboarding/terms'
+      fullPath: '/onboarding/terms'
+      preLoaderRoute: typeof OnboardingTermsPageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding/landing/': {
+      id: '/onboarding/landing/'
+      path: '/onboarding/landing'
+      fullPath: '/onboarding/landing'
+      preLoaderRoute: typeof OnboardingLandingPageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding/final-onboarding/': {
+      id: '/onboarding/final-onboarding/'
+      path: '/onboarding/final-onboarding'
+      fullPath: '/onboarding/final-onboarding'
+      preLoaderRoute: typeof OnboardingFinalOnboardingPageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(auth)/login/': {
+      id: '/(auth)/login/'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof authLoginPageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(auth)/login/success/': {
+      id: '/(auth)/login/success/'
+      path: '/login/success'
+      fullPath: '/login/success'
+      preLoaderRoute: typeof authLoginSuccessPageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+  }
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -203,47 +185,6 @@ const rootRouteChildren: RootRouteChildren = {
   OnboardingTermsPageRoute: OnboardingTermsPageRoute,
   authLoginSuccessPageRoute: authLoginSuccessPageRoute,
 }
-
-export const routeTree = rootRoute
+export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-/* ROUTE_MANIFEST_START
-{
-  "routes": {
-    "__root__": {
-      "filePath": "__root.tsx",
-      "children": [
-        "/",
-        "/map/",
-        "/(auth)/login/",
-        "/onboarding/final-onboarding/",
-        "/onboarding/landing/",
-        "/onboarding/terms/",
-        "/(auth)/login/success/"
-      ]
-    },
-    "/": {
-      "filePath": "page.tsx"
-    },
-    "/map/": {
-      "filePath": "map/page.tsx"
-    },
-    "/(auth)/login/": {
-      "filePath": "(auth)/login/page.tsx"
-    },
-    "/onboarding/final-onboarding/": {
-      "filePath": "onboarding/final-onboarding/page.tsx"
-    },
-    "/onboarding/landing/": {
-      "filePath": "onboarding/landing/page.tsx"
-    },
-    "/onboarding/terms/": {
-      "filePath": "onboarding/terms/page.tsx"
-    },
-    "/(auth)/login/success/": {
-      "filePath": "(auth)/login/success/page.tsx"
-    }
-  }
-}
-ROUTE_MANIFEST_END */
