@@ -5,18 +5,12 @@ import { OnboardingCheckbox } from '../ui'
 import { OnboardingLayout } from '../ui/onboarding-layout'
 import type { TermsAgreement as TermsAgreementType } from '../../model/onboarding.types'
 
-const termsData: { key: keyof Omit<TermsAgreementType, 'allAgreed'>; label: string }[] = [
-  { key: 'age14Plus', label: '[필수] 만 14세 이상입니다.' },
-  { key: 'serviceTerms', label: '[필수] 서비스 이용 약관' },
-  { key: 'privacyPolicy', label: '[필수] 개인정보 처리 방침' },
-  { key: 'marketingOptional', label: '[선택] 마케팅 정보 수신 동의' },
-]
-
 interface TermsAgreementProps {
   onNext?: () => void
+  termsData: { key: keyof TermsAgreementType; label: string }[]
 }
 
-export const TermsAgreement: React.FC<TermsAgreementProps> = ({ onNext }) => {
+export const TermsAgreement: React.FC<TermsAgreementProps> = ({ onNext, termsData }) => {
   const { state, setTermsAgreement, toggleAllAgreement, goToNextStep, canProceed } = useOnboarding()
 
   const handleAgreementChange = useCallback(

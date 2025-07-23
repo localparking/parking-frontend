@@ -2,16 +2,10 @@
 export interface WebViewMessage {
   type:
     | 'onLandingComplete' // 랜딩 완료
-    | 'onLoginSuccess' // 로그인 성공
-    | 'onTermsAgreed' // 약관 동의 완료
-    | 'onOnboardingComplete' // 온보딩 완료
     | 'navigate' // 페이지 이동 요청
 
   data?: {
     hasCompletedLanding?: boolean
-    hasAgreedToTerms?: boolean
-    hasCompletedOnboarding?: boolean
-    isLoggedIn?: boolean
     route?: string
     accessToken?: string
     refreshToken?: string

@@ -33,6 +33,7 @@ export const AgeSelection: React.FC<AgeSelectionProps> = ({ onBack }) => {
       totalSteps={3}
       onBack={handleBack}
       onNext={goToNextStep}
+      onSkip={goToNextStep}
       disabledNext={!canProceed}
     >
       <h1 className="mt-[82px] px-6 text-[19px] font-semibold text-gray-1">연령대를 선택하세요</h1>

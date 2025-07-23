@@ -28,7 +28,7 @@ export const IntroSlides: React.FC<IntroSlidesProps> = ({ onNext, onSkip }) => {
     if (currentSlideIndex === 0) {
       const timer = setTimeout(() => {
         setCurrentSlideIndex(1)
-      }, 1500)
+      }, 1200)
 
       return () => clearTimeout(timer)
     }
@@ -42,6 +42,10 @@ export const IntroSlides: React.FC<IntroSlidesProps> = ({ onNext, onSkip }) => {
 
   const isSecondSlide = currentSlideIndex === 1
 
+  const handleSkip = () => {
+    onSkip()
+  }
+
   return (
     <OnboardingLayout
       currentStep={currentSlideData.step}
@@ -49,7 +53,7 @@ export const IntroSlides: React.FC<IntroSlidesProps> = ({ onNext, onSkip }) => {
       hideBackButton
       hideSkipButton={!isSecondSlide}
       onNext={onNext}
-      onSkip={onSkip}
+      onSkip={handleSkip}
     >
       <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
         <div className="mb-[30px] flex h-auto min-h-[50px] flex-col justify-center">

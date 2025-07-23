@@ -40,11 +40,23 @@ export function initApi(): AxiosInstance {
   const refreshAccessToken = async (): Promise<string | null> => {
     // 1) WebView → 네이티브에게 토큰 갱신 요청
     if (isWebView()) {
-      const { accessToken } = await bridge.notifyTokenExpired()
-      if (!accessToken) {
-        throw new Error('Access token not found after refresh.')
+      try {
+        console.log('[API] Requesting token refresh from native...')
+        const { accessToken } = await bridge.notifyTokenExpired()
+        console.log('[API] Token refresh response:', { accessToken: accessToken })
+
+        if (!accessToken || typeof accessToken !== 'string' || accessToken.trim() === '') {
+          console.error('[API] Native returned invalid access token:', accessToken)
+          throw new Error('Access token not found after refresh.')
+        }
+        return accessToken
+      } catch (error: any) {
+        console.error('[API] Token refresh failed:', {
+          message: error?.message,
+          error: error,
+        })
+        throw error
       }
-      return accessToken
     }
     const refreshToken = Cookies.get('town-refreshToken')
     if (!refreshToken) {
@@ -118,12 +130,20 @@ export function initApi(): AxiosInstance {
           return apiInstance(originalRequest)
         } catch (refreshError) {
           processQueue(refreshError as Error, null)
+          console.error('[API] Token refresh failed, logging out user:', refreshError)
+
           if (isWebView()) {
-            await bridge.notifyTokenExpired()
+            try {
+              await bridge.logout()
+            } catch (logoutError) {
+              console.error('[API] Native logout failed:', logoutError)
+            }
           } else {
             Cookies.remove('town-accessToken')
             Cookies.remove('town-refreshToken')
           }
+
+          // 토큰 갱신 실패 시 로그인 페이지로 리다이렉트
           redirectToAuth()
           return Promise.reject(refreshError)
         }

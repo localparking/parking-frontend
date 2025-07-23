@@ -3,21 +3,29 @@ import { AgeSelection, ParkingPreference, VisitPurpose } from '@/features/onboar
 import { OnboardingProvider, useOnboarding } from '@/features/onboarding'
 import { useEffect } from 'react'
 import { useNativeMessageHandler } from '@/shared/hooks'
+import { useRouter } from '@tanstack/react-router'
+import { useAuth } from '@/features/auth'
+import { isWebView } from '@/shared/utils/webview'
 
 export const Route = createFileRoute('/onboarding/final-onboarding/')({
   component: FinalOnboardingPage,
 })
 
 function OnboardingFlow() {
-  const { state } = useOnboarding()
+  const { state, submitOnboardingToServer } = useOnboarding()
   const { handleWebViewMessage } = useNativeMessageHandler()
+  const auth = useAuth()
+  const navigate = useRouter().navigate
 
   useEffect(() => {
     if (state.isCompleted) {
-      const completeMessage = { type: 'onOnboardingComplete' as const, data: { hasCompletedOnboarding: true } }
-      handleWebViewMessage(completeMessage)
+      const doComplete = async () => {
+        await auth.refetchUser()
+        navigate({ to: '/', replace: true })
+      }
+      doComplete()
     }
-  }, [state.isCompleted, handleWebViewMessage])
+  }, [state.isCompleted, auth, navigate])
 
   return (
     <>
@@ -29,8 +37,9 @@ function OnboardingFlow() {
 }
 
 function AgeSelectionWrapper() {
+  const router = useRouter()
   const handleBack = () => {
-    window.location.href = '/onboarding/terms'
+    router.navigate({ to: '/onboarding/terms' })
   }
 
   return <AgeSelection onBack={handleBack} />

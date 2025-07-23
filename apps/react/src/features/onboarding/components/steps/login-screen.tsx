@@ -4,22 +4,17 @@ import MainLogoImage from '@ui/common/assets/3d/mainlogo.png'
 import KakaoLogoIcon from '@ui/common/assets/icons/kakao-logo.svg'
 import AppleLogoIcon from '@ui/common/assets/icons/apple-logo.svg'
 import { OnboardingLayout } from '../ui/onboarding-layout'
+import { isWebView } from '@/shared/utils/webview'
 
 interface LoginScreenProps {
   onNext: () => void
   onKakaoLogin: () => void
   onAppleLogin: () => void
   onGuestStart: () => void
-  showAppleLogin?: boolean
 }
 
-export const LoginScreen: React.FC<LoginScreenProps> = ({
-  onNext,
-  onKakaoLogin,
-  onAppleLogin,
-  onGuestStart,
-  showAppleLogin = true,
-}) => {
+export const LoginScreen: React.FC<LoginScreenProps> = ({ onNext, onKakaoLogin, onAppleLogin, onGuestStart }) => {
+  const showAppleLogin = isWebView()
   return (
     <OnboardingLayout currentStep="login-screen" totalSteps={3} hideBackButton hideSkipButton>
       {/* 중앙 컨텐츠 */}

@@ -47,6 +47,7 @@ export const VisitPurpose: React.FC = () => {
       totalSteps={3}
       onBack={goToPreviousStep}
       onNext={handleComplete}
+      onSkip={handleComplete}
       nextButtonText="완료"
       disabledNext={!canProceed}
     >

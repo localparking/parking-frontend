@@ -17,19 +17,22 @@ export default function LoginPage() {
   const { open } = useAlertDialog()
   const { handleWebViewMessage } = useNativeMessageHandler()
 
+  const handleLoginSuccess = async () => {
+    localStorage.setItem('hasCompletedLanding', 'true')
+    const user = await auth.refetchUser()
+    if (user?.role === 'GUEST') {
+      navigate({ to: '/onboarding/terms', replace: true })
+    } else {
+      navigate({ to: '/', replace: true })
+    }
+  }
+
   const handleAppleLogin = async () => {
     try {
       const result = await auth.socialLogin('apple')
 
       if (result.success) {
-        // 로그인 성공 후 다음 단계로 이동하기 위한 브릿지 메시지
-        const message = {
-          type: 'onLoginSuccess' as const,
-          data: {
-            isLoggedIn: true,
-          },
-        }
-        handleWebViewMessage(message)
+        await handleLoginSuccess()
       }
     } catch (error: any) {
       open({
@@ -46,14 +49,7 @@ export default function LoginPage() {
         const result = await auth.socialLogin('kakao')
 
         if (result.success) {
-          // 로그인 성공 후 다음 단계로 이동하기 위한 브릿지 메시지
-          const message = {
-            type: 'onLoginSuccess' as const,
-            data: {
-              isLoggedIn: true,
-            },
-          }
-          handleWebViewMessage(message)
+          await handleLoginSuccess()
         }
       } else {
         window.location.href = `${VITE_API_URL}/oauth2/authorization/kakao`
@@ -66,13 +62,18 @@ export default function LoginPage() {
     }
   }
 
+  const handleGuestStart = () => {
+    // 게스트 시작 시에도 hasCompletedLanding 설정
+    localStorage.setItem('hasCompletedLanding', 'true')
+    navigate({ to: '/', replace: true })
+  }
+
   return (
     <LoginScreen
       onNext={() => navigate({ to: '/', replace: true })}
       onKakaoLogin={handleKakaoLogin}
       onAppleLogin={handleAppleLogin}
-      onGuestStart={() => navigate({ to: '/', replace: true })}
-      showAppleLogin={isWebView()}
+      onGuestStart={handleGuestStart}
     />
   )
 }

@@ -8,6 +8,44 @@ interface BenefitGuideProps {
   onSkip: () => void
 }
 
+const steps = [
+  {
+    number: 1,
+    text: (
+      <>
+        목적지 근방의 <span className="text-primary">제휴상점</span> 찾고
+      </>
+    ),
+  },
+  {
+    number: 2,
+    text: (
+      <>
+        혜택 제공 가격에 맞게 <span className="text-primary">제품 구매</span> 시,
+      </>
+    ),
+  },
+  {
+    number: 3,
+    text: (
+      <>
+        <span className="text-primary">주차 혜택</span> 바로 적용!
+      </>
+    ),
+  },
+]
+
+const StepItem = ({ number, text }: { number: number; text: React.ReactNode }) => (
+  <div className="flex items-center gap-2">
+    <div className="flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-[5px] bg-primary">
+      <span className="text-[11px] font-medium text-white">{number}</span>
+    </div>
+    <div className="flex h-[28px] flex-1 items-center justify-center rounded-[5px] border border-primary-light px-3">
+      <span className="text-[11px] font-medium text-gray-1">{text}</span>
+    </div>
+  </div>
+)
+
 export const BenefitGuide: React.FC<BenefitGuideProps> = ({ onNext, onSkip }) => {
   const [imageLoaded, setImageLoaded] = useState(false)
 
@@ -38,36 +76,9 @@ export const BenefitGuide: React.FC<BenefitGuideProps> = ({ onNext, onSkip }) =>
         </div>
 
         <div className="flex w-full flex-col gap-[13px]">
-          <div className="flex items-center gap-2">
-            <div className="flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-[5px] bg-primary">
-              <span className="text-[11px] font-medium text-white">1</span>
-            </div>
-            <div className="flex h-[28px] flex-1 items-center justify-center rounded-[5px] border border-primary-light px-3">
-              <span className="text-[11px] font-medium text-gray-1">
-                목적지 근방의 <span className="text-primary">제휴상점</span> 찾고
-              </span>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-[5px] bg-primary">
-              <span className="text-[11px] font-medium text-white">2</span>
-            </div>
-            <div className="flex h-[28px] flex-1 items-center justify-center rounded-[5px] border border-primary-light px-3">
-              <span className="text-[11px] font-medium text-gray-1">
-                혜택 제공 가격에 맞게 <span className="text-primary">제품 구매</span> 시,
-              </span>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-[5px] bg-primary">
-              <span className="text-[11px] font-medium text-white">3</span>
-            </div>
-            <div className="flex h-[28px] flex-1 items-center justify-center rounded-[5px] border border-primary-light px-3">
-              <span className="text-[11px] font-medium text-gray-1">
-                <span className="text-primary">주차 혜택</span> 바로 적용!
-              </span>
-            </div>
-          </div>
+          {steps.map((step) => (
+            <StepItem key={step.number} number={step.number} text={step.text} />
+          ))}
         </div>
       </div>
     </OnboardingLayout>
