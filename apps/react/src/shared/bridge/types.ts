@@ -8,7 +8,6 @@ export interface WebViewMessage {
     hasCompletedLanding?: boolean
     route?: string
     accessToken?: string
-    refreshToken?: string
   }
 }
 

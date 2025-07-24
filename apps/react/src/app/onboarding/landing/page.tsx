@@ -1,8 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 import { IntroSlides, BenefitGuide } from '@/features/onboarding/components/steps'
-import { useNativeMessageHandler } from '@/shared/hooks'
 import { useNavigate } from '@tanstack/react-router'
+import bridge from '@/shared/bridge'
 
 export const Route = createFileRoute('/onboarding/landing/')({
   component: LandingPage,
@@ -10,7 +10,6 @@ export const Route = createFileRoute('/onboarding/landing/')({
 
 function LandingPage() {
   const [currentStep, setCurrentStep] = useState<'intro' | 'guide'>('intro')
-  const { handleWebViewMessage } = useNativeMessageHandler()
   const navigate = useNavigate()
 
   const handleIntroComplete = () => {
@@ -19,15 +18,13 @@ function LandingPage() {
 
   const handleGuideComplete = () => {
     localStorage.setItem('hasCompletedLanding', 'true')
-    const message = { type: 'onLandingComplete' as const, data: { hasCompletedLanding: true } }
-    handleWebViewMessage(message)
+    bridge.setLandingStatus(true)
     navigate({ to: '/login', replace: true })
   }
 
   const handleSkip = () => {
     localStorage.setItem('hasCompletedLanding', 'true')
-    const message = { type: 'onLandingComplete' as const, data: { hasCompletedLanding: true } }
-    handleWebViewMessage(message)
+    bridge.setLandingStatus(true)
     navigate({ to: '/login', replace: true })
   }
 

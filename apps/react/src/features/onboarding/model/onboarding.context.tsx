@@ -36,11 +36,24 @@ interface OnboardingContextValue {
 
 const OnboardingContext = createContext<OnboardingContextValue | undefined>(undefined)
 
+enum OnboardingStep {
+  SET_STEP = 'SET_STEP',
+  SET_ERROR = 'SET_ERROR',
+  SET_LOADING = 'SET_LOADING',
+  SET_AGE_RANGE = 'SET_AGE_RANGE',
+  SET_TERMS_AGREEMENT = 'SET_TERMS_AGREEMENT',
+  CLEAR_ERROR = 'CLEAR_ERROR',
+  RESET_ONBOARDING = 'RESET_ONBOARDING',
+  TOGGLE_VISIT_PURPOSE = 'TOGGLE_VISIT_PURPOSE',
+  TOGGLE_PARKING_PREFERENCE = 'TOGGLE_PARKING_PREFERENCE',
+  COMPLETE_ONBOARDING = 'COMPLETE_ONBOARDING',
+}
+
 export const OnboardingProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(onboardingReducer, initialState)
 
   const setStep = useCallback((step: OnboardingData['currentStep']) => {
-    dispatch({ type: 'SET_STEP', payload: step })
+    dispatch({ type: OnboardingStep.SET_STEP, payload: step })
   }, [])
 
   const goToNextStep = useCallback(() => {
@@ -49,7 +62,7 @@ export const OnboardingProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       setStep(nextStep)
     } else {
       // visit-purpose 단계가 마지막이므로 온보딩 완료
-      dispatch({ type: 'COMPLETE_ONBOARDING' })
+      dispatch({ type: OnboardingStep.COMPLETE_ONBOARDING })
     }
   }, [state.data.currentStep, setStep])
 
@@ -61,26 +74,26 @@ export const OnboardingProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   }, [state.data.currentStep, setStep])
 
   const setAgeRange = useCallback((age: AgeRange) => {
-    dispatch({ type: 'SET_AGE_RANGE', payload: age })
+    dispatch({ type: OnboardingStep.SET_AGE_RANGE, payload: age })
   }, [])
 
   const toggleParkingPreference = useCallback((pref: ParkingPreference) => {
-    dispatch({ type: 'TOGGLE_PARKING_PREFERENCE', payload: pref })
+    dispatch({ type: OnboardingStep.TOGGLE_PARKING_PREFERENCE, payload: pref })
   }, [])
 
   const toggleVisitPurpose = useCallback((purpose: VisitPurpose) => {
-    dispatch({ type: 'TOGGLE_VISIT_PURPOSE', payload: purpose })
+    dispatch({ type: OnboardingStep.TOGGLE_VISIT_PURPOSE, payload: purpose })
   }, [])
 
   const setTermsAgreement = useCallback((agreement: Partial<TermsAgreement>) => {
-    dispatch({ type: 'SET_TERMS_AGREEMENT', payload: agreement })
+    dispatch({ type: OnboardingStep.SET_TERMS_AGREEMENT, payload: agreement })
   }, [])
 
   const toggleAllAgreement = useCallback(() => {
     const { termsAgreement } = state.data
     const newAllAgreed = !termsAgreement.allAgreed
     dispatch({
-      type: 'SET_TERMS_AGREEMENT',
+      type: OnboardingStep.SET_TERMS_AGREEMENT,
       payload: {
         allAgreed: newAllAgreed,
         age14Plus: newAllAgreed,
@@ -92,13 +105,13 @@ export const OnboardingProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   }, [state.data.termsAgreement])
 
   const completeOnboarding = useCallback(() => {
-    dispatch({ type: 'COMPLETE_ONBOARDING' })
+    dispatch({ type: OnboardingStep.COMPLETE_ONBOARDING })
   }, [])
 
   const submitOnboardingToServer = useCallback(async () => {
     try {
-      dispatch({ type: 'SET_LOADING', payload: true })
-      dispatch({ type: 'CLEAR_ERROR' })
+      dispatch({ type: OnboardingStep.SET_LOADING, payload: true })
+      dispatch({ type: OnboardingStep.CLEAR_ERROR })
 
       // 온보딩 데이터를 API 형식으로 변환
       const { ageRange, parkingPreferences, visitPurposes } = state.data
@@ -170,26 +183,26 @@ export const OnboardingProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       await onboardingService.submitOnboarding(requestBody)
 
       // API 호출 성공 시 온보딩 완료 상태로 변경
-      dispatch({ type: 'COMPLETE_ONBOARDING' })
+      dispatch({ type: OnboardingStep.COMPLETE_ONBOARDING })
     } catch (error: any) {
       // console.error('온보딩 완료 API 호출 실패:', error)
 
       // 이미 온보딩이 완료된 사용자인 경우
       if (error?.response?.status === 400 && error?.response?.data?.message?.includes('이미 온보딩이 완료된 사용자')) {
         console.log('이미 온보딩이 완료된 사용자입니다. 완료 상태로 변경합니다.')
-        dispatch({ type: 'COMPLETE_ONBOARDING' })
+        dispatch({ type: OnboardingStep.COMPLETE_ONBOARDING })
         return
       }
 
-      dispatch({ type: 'SET_ERROR', payload: '온보딩 완료 중 오류가 발생했습니다.' })
+      dispatch({ type: OnboardingStep.SET_ERROR, payload: '온보딩 완료 중 오류가 발생했습니다.' })
       throw error
     } finally {
-      dispatch({ type: 'SET_LOADING', payload: false })
+      dispatch({ type: OnboardingStep.SET_LOADING, payload: false })
     }
   }, [state.data])
 
   const resetOnboarding = useCallback(() => {
-    dispatch({ type: 'RESET_ONBOARDING' })
+    dispatch({ type: OnboardingStep.RESET_ONBOARDING })
   }, [])
 
   const skipCurrentStep = useCallback(() => {

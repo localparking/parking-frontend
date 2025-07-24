@@ -1,7 +1,7 @@
 import React from 'react'
 import { AuthContext } from '@/features/auth/hooks/use-auth'
 import { QueryClient } from '@tanstack/react-query'
-import { createRootRouteWithContext, Outlet, redirect } from '@tanstack/react-router'
+import { createRootRouteWithContext, Outlet, redirect, useRouterState } from '@tanstack/react-router'
 import { match } from 'path-to-regexp'
 import { cn } from '@ui/common/lib/utils'
 
@@ -71,12 +71,9 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 })
 
 function RootComponent() {
-  // 화면만 렌더링
-  const isOnboarding =
-    typeof window !== 'undefined' &&
-    (window.location.pathname.startsWith('/onboarding/landing') ||
-      window.location.pathname.startsWith('/onboarding/terms') ||
-      window.location.pathname.startsWith('/onboarding/final-onboarding'))
+  const routerState = useRouterState()
+  const pathname = routerState.location.pathname
+  const isOnboarding = pathname.startsWith('/onboarding')
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-gray-09">

@@ -2,7 +2,6 @@ import { createFileRoute } from '@tanstack/react-router'
 import { AgeSelection, ParkingPreference, VisitPurpose } from '@/features/onboarding/components/steps'
 import { OnboardingProvider, useOnboarding } from '@/features/onboarding'
 import { useEffect } from 'react'
-import { useNativeMessageHandler } from '@/shared/hooks'
 import { useRouter } from '@tanstack/react-router'
 import { useAuth } from '@/features/auth'
 
@@ -12,7 +11,6 @@ export const Route = createFileRoute('/onboarding/final-onboarding/')({
 
 function OnboardingFlow() {
   const { state, submitOnboardingToServer } = useOnboarding()
-  const { handleWebViewMessage } = useNativeMessageHandler()
   const auth = useAuth()
   const navigate = useRouter().navigate
 

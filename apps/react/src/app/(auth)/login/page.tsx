@@ -5,7 +5,6 @@ import { isWebView } from '@/shared/utils/webview'
 import { useAlertDialog } from '@ui/common/hooks/alert-dialog.hook'
 import { useAuth } from '@/features/auth'
 import { LoginScreen } from '@/features/onboarding/components/steps/login-screen'
-import { useNativeMessageHandler } from '@/shared/hooks'
 
 export const Route = createFileRoute('/(auth)/login/')({
   component: LoginPage,
@@ -15,10 +14,8 @@ export default function LoginPage() {
   const auth = useAuth()
   const navigate = useNavigate()
   const { open } = useAlertDialog()
-  const { handleWebViewMessage } = useNativeMessageHandler()
 
   const handleLoginSuccess = async () => {
-    localStorage.setItem('hasCompletedLanding', 'true')
     const user = await auth.refetchUser()
     if (user?.role === 'GUEST') {
       navigate({ to: '/onboarding/terms', replace: true })

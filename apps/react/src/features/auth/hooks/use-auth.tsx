@@ -6,9 +6,8 @@ import userService from '@/shared/services/user.service'
 import { isWebView } from '@/shared/utils/webview'
 
 export interface User {
-  id: string
-  name: string
-  onboardingStatus: 'before' | 'completed'
+  email: string
+  nickname: string
   role: string
   isOnboarding: boolean
 }
@@ -42,9 +41,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const data = userInfo?.data
       if (!data) throw new Error('No user data')
       const user: User = {
-        id: data.email,
-        name: data.nickname,
-        onboardingStatus: data.isOnboarding ? 'completed' : 'before',
+        email: data.email,
+        nickname: data.nickname,
         role: data.role,
         isOnboarding: data.isOnboarding,
       }
@@ -54,11 +52,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (error: any) {
       if (error?.message?.includes('Access token not found') || error?.response?.status === 401) {
         clearAuth()
-        if (isWebView()) {
-          try {
-            await AuthClient.logout()
-          } catch {}
-        }
+        await AuthClient.logout()
       } else {
         clearAuth()
       }
@@ -82,13 +76,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   )
 
   const logout = useCallback(async () => {
-    try {
-      await AuthClient.logout()
-      clearAuth()
-      return { success: true }
-    } catch (e: any) {
-      throw e
-    }
+    await AuthClient.logout()
+    clearAuth()
+    return { success: true }
   }, [])
 
   useEffect(() => {
