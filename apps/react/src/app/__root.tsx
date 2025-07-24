@@ -53,7 +53,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       // (홈 리다이렉트는 온보딩 플로우 내부에서만 처리)
     }
     // 2. 미인증 사용자 (로그아웃 상태)
-    else if (!authenticated) {
+    else if (!authenticated || !user) {
       // 2-1. 접근하려는 페이지가 public route가 아니라면 홈으로 리다이렉트
       if (!isOnPublicRoute) {
         throw redirect({ to: '/' })

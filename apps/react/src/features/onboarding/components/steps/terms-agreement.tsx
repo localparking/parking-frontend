@@ -1,9 +1,11 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { useOnboarding } from '../../hooks'
+import { useNavigate } from '@tanstack/react-router'
 import MainLogoImage from '@ui/common/assets/3d/mainlogo.png'
 import { OnboardingCheckbox } from '../ui'
 import { OnboardingLayout } from '../ui/onboarding-layout'
 import type { TermsAgreement as TermsAgreementType } from '../../model/onboarding.types'
+import { useAuth } from '@/features/auth/hooks/use-auth'
 
 interface TermsAgreementProps {
   onNext?: () => void
@@ -12,6 +14,14 @@ interface TermsAgreementProps {
 
 export const TermsAgreement: React.FC<TermsAgreementProps> = ({ onNext, termsData }) => {
   const { state, setTermsAgreement, toggleAllAgreement, goToNextStep, canProceed } = useOnboarding()
+  const navigate = useNavigate()
+  const { user, setUser } = useAuth()
+
+  useEffect(() => {
+    if (user === null) {
+      navigate({ to: '/login', replace: true })
+    }
+  }, [user, navigate])
 
   const handleAgreementChange = useCallback(
     (key: keyof TermsAgreementType, value: boolean) => {
@@ -28,13 +38,17 @@ export const TermsAgreement: React.FC<TermsAgreementProps> = ({ onNext, termsDat
     }
   }
 
+  const handleBack = () => {
+    setUser(null)
+  }
+
   return (
     <OnboardingLayout
       currentStep="terms"
       totalSteps={3}
       onNext={handleNext}
+      onBack={handleBack}
       hideSkipButton
-      hideBackButton
       disabledNext={!canProceed}
     >
       <div className="mt-[120px] px-6">
