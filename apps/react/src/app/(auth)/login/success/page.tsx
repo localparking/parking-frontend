@@ -24,18 +24,26 @@ export const Route = createFileRoute('/(auth)/login/success/')({
 function RouteComponent() {
   const { accessToken, refreshToken } = Route.useLoaderData()
   const navigate = useNavigate()
-  const authClient = useAuth()
+  const auth = useAuth()
 
   useEffect(() => {
-    if (accessToken && refreshToken) {
-      saveTokens(accessToken, refreshToken)
-      authClient.setAuthenticated(true)
+    const doLogin = async () => {
+      if (accessToken && refreshToken) {
+        saveTokens(accessToken, refreshToken)
 
-      navigate({ to: '/', replace: true })
-    } else {
-      navigate({ to: '/login', replace: true })
+        await auth.refetchUser()
+
+        if (auth.user) {
+          navigate({ to: '/', replace: true })
+        } else {
+          navigate({ to: '/login', replace: true })
+        }
+      } else {
+        navigate({ to: '/login', replace: true })
+      }
     }
-  }, [accessToken, refreshToken, navigate])
+    doLogin()
+  }, [accessToken, refreshToken, navigate, auth])
 
   return <div>정보를 처리중입니다...</div>
 }

@@ -12,26 +12,22 @@
  * Do not edit the class manually.
  */
 
-// May contain unused imports in some cases
-// @ts-ignore
-import type { UserResponse } from './user-response'
-
 /**
  *
  * @export
- * @interface ResponseDtoUserResponse
+ * @interface GroupedOperatingHoursDto
  */
-export interface ResponseDtoUserResponse {
+export interface GroupedOperatingHoursDto {
   /**
    *
    * @type {string}
-   * @memberof ResponseDtoUserResponse
+   * @memberof GroupedOperatingHoursDto
    */
-  message: string
+  label: string
   /**
    *
-   * @type {UserResponse}
-   * @memberof ResponseDtoUserResponse
+   * @type {Array<string>}
+   * @memberof GroupedOperatingHoursDto
    */
-  data?: UserResponse
+  timeRanges: Array<string>
 }

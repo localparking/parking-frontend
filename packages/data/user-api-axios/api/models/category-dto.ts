@@ -30,4 +30,10 @@ export interface CategoryDto {
    * @memberof CategoryDto
    */
   categoryName?: string
+  /**
+   *
+   * @type {number}
+   * @memberof CategoryDto
+   */
+  parentId?: number
 }

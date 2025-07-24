@@ -32,7 +32,7 @@ import {
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, type RequestArgs, BaseAPI, RequiredError, operationServerMap } from '../base'
 // @ts-ignore
-import type { ResponseDtoUserResponse } from '../models'
+import type { ResponseDtoUserInfoResponse } from '../models'
 /**
  * UserApi - axios parameter creator
  * @export
@@ -89,7 +89,7 @@ export const UserApiFp = function (configuration?: Configuration) {
      */
     async getMyInfo(
       options?: RawAxiosRequestConfig
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoUserResponse>> {
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoUserInfoResponse>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getMyInfo(options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
@@ -118,7 +118,7 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getMyInfo(options?: RawAxiosRequestConfig): AxiosPromise<ResponseDtoUserResponse> {
+    getMyInfo(options?: RawAxiosRequestConfig): AxiosPromise<ResponseDtoUserInfoResponse> {
       return localVarFp.getMyInfo(options).then((request) => request(axios, basePath))
     },
   }

@@ -24,10 +24,19 @@ const purposes = Object.keys(PURPOSE_DATA).map((key) => ({
 }))
 
 export const VisitPurpose: React.FC = () => {
-  const { state, toggleVisitPurpose, goToNextStep, goToPreviousStep } = useOnboarding()
+  const { state, toggleVisitPurpose, goToPreviousStep, submitOnboardingToServer } = useOnboarding()
 
   const handlePurposeSelect = (purpose: VisitPurposeType) => {
     toggleVisitPurpose(purpose)
+  }
+
+  const handleComplete = async () => {
+    try {
+      await submitOnboardingToServer()
+    } catch (error) {
+      console.error('온보딩 완료 실패:', error)
+      // 에러 처리 (사용자에게 알림 등)
+    }
   }
 
   const canProceed = state.visitPurposes.length > 0
@@ -37,8 +46,9 @@ export const VisitPurpose: React.FC = () => {
       currentStep="visit-purpose"
       totalSteps={3}
       onBack={goToPreviousStep}
-      onNext={goToNextStep}
-      nextButtonText="시작하기"
+      onNext={handleComplete}
+      onSkip={handleComplete}
+      nextButtonText="완료"
       disabledNext={!canProceed}
     >
       <div className="mt-[82px] px-6">
