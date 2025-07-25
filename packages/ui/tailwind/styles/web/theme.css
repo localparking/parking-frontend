@@ -94,6 +94,11 @@
   --text-body-3--letter-spacing: 0em;
   --text-body-3--font-weight: 600; /* Semi Bold */
 
+  --text-body-6: 0.9375rem; /* 15px */
+  --text-body-6--line-height: 1.5625rem; /* 25px */
+  --text-body-6--letter-spacing: 0em;
+  --text-body-6--font-weight: 600; /* Semi Bold */
+
   --text-body-4: 0.875rem; /* 14px */
   --text-body-4--line-height: 1.5625rem; /* 25px */
   --text-body-4--letter-spacing: 0em;
@@ -103,6 +108,11 @@
   --text-body-5--line-height: 1.125rem; /* 18px */
   --text-body-5--letter-spacing: 0em;
   --text-body-5--font-weight: 500; /* Medium */
+
+  --text-caption-0: 0.875rem; /* 14px */
+  --text-caption-0--line-height: 1.25rem; /* 20px */
+  --text-caption-0--letter-spacing: 0em;
+  --text-caption-0--font-weight: 700; /* Bold */
 
   --text-caption-1: 0.75rem; /* 12px */
   --text-caption-1--line-height: 1.25rem; /* 20px */

@@ -38,10 +38,10 @@ const steps = [
 const StepItem = ({ number, text }: { number: number; text: React.ReactNode }) => (
   <div className="flex items-center gap-2">
     <div className="flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-[5px] bg-primary">
-      <span className="text-[11px] font-medium text-white">{number}</span>
+      <span className="text-[12px] font-medium text-white">{number}</span>
     </div>
     <div className="flex h-[28px] flex-1 items-center justify-center rounded-[5px] border border-primary-light px-3">
-      <span className="text-[11px] font-medium text-gray-1">{text}</span>
+      <span className="text-[12px] font-medium text-gray-1">{text}</span>
     </div>
   </div>
 )
@@ -57,9 +57,9 @@ export const BenefitGuide: React.FC<BenefitGuideProps> = ({ onNext, onSkip }) =>
             <div className="flex h-[22px] w-[22px] items-center justify-center rounded-full bg-primary">
               <LogoIcon className="h-full w-full rounded-full" />
             </div>
-            <span className="text-[12px] font-semibold text-gray-2">동네 파킹에서만 만나볼 수 있는</span>
+            <span className="text-caption-1 text-gray-2">동네 파킹에서만 만나볼 수 있는</span>
           </div>
-          <h2 className="text-center text-[24px] font-semibold text-gray-1">
+          <h2 className="text-center text-body-1 text-gray-1">
             <span className="text-primary">3초면 끝!</span> 혜택 이용법
           </h2>
         </div>

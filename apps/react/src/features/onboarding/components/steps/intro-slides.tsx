@@ -57,7 +57,7 @@ export const IntroSlides: React.FC<IntroSlidesProps> = ({ onNext, onSkip }) => {
     >
       <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
         <div className="mb-[30px] flex h-auto min-h-[50px] flex-col justify-center">
-          <p className="text-[14px] leading-[25px] font-semibold text-gray-1">{commonText.line1}</p>
+          <p className="text-body-6 text-gray-1">{commonText.line1}</p>
 
           <AnimatePresence>
             {isSecondSlide && (
@@ -65,7 +65,7 @@ export const IntroSlides: React.FC<IntroSlidesProps> = ({ onNext, onSkip }) => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4 }}
-                className="text-[14px] leading-[25px] font-semibold text-gray-1"
+                className="text-body-6 text-gray-1"
               >
                 {commonText.line2}
               </motion.p>

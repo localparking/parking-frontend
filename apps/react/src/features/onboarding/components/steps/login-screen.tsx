@@ -20,7 +20,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onNext, onKakaoLogin, 
       {/* 중앙 컨텐츠 */}
       <div className="flex flex-1 flex-col items-center justify-center">
         <div className="mb-12 text-center">
-          <h1 className="text-[24px] leading-[29px] font-semibold text-gray-1">
+          <h1 className="text-body-1 text-gray-1">
             가장 가까운 <span className="text-primary">무료주차 혜택</span>,
             <br />
             지금 찾아볼까요?
@@ -33,36 +33,32 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onNext, onKakaoLogin, 
       </div>
 
       {/* 하단 로그인 버튼들 */}
-      <div className="flex w-full flex-col gap-4 px-[25px] pb-8">
+      <div className="flex w-full flex-col gap-4 px-[10px] pb-8">
         {/* 카카오 로그인 */}
-        <div className="relative">
-          <Button
-            onClick={onKakaoLogin}
-            className="relative flex h-[39px] w-full items-center justify-center gap-2 rounded-[10px] bg-kakao text-[12px] text-gray-1 transition-all duration-150 active:scale-[0.98] active:bg-[#FFE600]"
-          >
-            <KakaoLogoIcon className="absolute left-[30px] h-[20px] w-[20px]" />
-            카카오로 시작하기
-          </Button>
-        </div>
+        <Button
+          onClick={onKakaoLogin}
+          className="relative flex h-[39px] w-full items-center justify-center gap-2 rounded-[10px] bg-kakao text-caption-1 text-gray-1 transition-all duration-150 active:scale-[0.98] active:bg-[#FFE600]"
+        >
+          <KakaoLogoIcon className="absolute left-[30px] h-[20px] w-[20px]" />
+          카카오로 시작하기
+        </Button>
 
         {/* 애플 로그인 */}
         {showAppleLogin && (
-          <div className="relative">
-            <Button
-              onClick={onAppleLogin}
-              className="relative flex h-[39px] w-full items-center justify-center gap-2 rounded-[10px] bg-gray-1 text-[12px] text-white transition-all duration-150 active:scale-[0.98] active:bg-[#111111]"
-            >
-              <AppleLogoIcon className="absolute left-[30px] h-[20px] w-[20px]" />
-              애플로 시작하기
-            </Button>
-          </div>
+          <Button
+            onClick={onAppleLogin}
+            className="relative flex h-[39px] w-full items-center justify-center gap-2 rounded-[10px] bg-gray-1 text-caption-1 text-white transition-all duration-150 active:scale-[0.98] active:bg-[#111111]"
+          >
+            <AppleLogoIcon className="absolute left-[30px] h-[20px] w-[20px]" />
+            애플로 시작하기
+          </Button>
         )}
 
         {/* 로그인 없이 시작하기 */}
         <div className="text-center">
           <button
             onClick={onGuestStart}
-            className="text-[10px] font-semibold text-gray-2 underline decoration-gray-3 decoration-[0.7px] underline-offset-2"
+            className="text-caption-2 text-gray-2 underline decoration-gray-3 decoration-[0.7px] underline-offset-2"
           >
             로그인 없이 시작하기
           </button>
