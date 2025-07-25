@@ -15,25 +15,19 @@
 /**
  *
  * @export
- * @interface OperatingHoursDto
+ * @interface OperatingSlot
  */
-export interface OperatingHoursDto {
+export interface OperatingSlot {
   /**
    *
    * @type {string}
-   * @memberof OperatingHoursDto
+   * @memberof OperatingSlot
    */
-  type: string
+  begin: string
   /**
    *
    * @type {string}
-   * @memberof OperatingHoursDto
+   * @memberof OperatingSlot
    */
-  beginTime?: string
-  /**
-   *
-   * @type {string}
-   * @memberof OperatingHoursDto
-   */
-  endTime?: string
+  end: string
 }

@@ -12,6 +12,10 @@
  * Do not edit the class manually.
  */
 
+// May contain unused imports in some cases
+// @ts-ignore
+import type { OperatingSlot } from './operating-slot'
+
 /**
  *
  * @export
@@ -26,8 +30,8 @@ export interface GroupedOperatingHoursDto {
   label: string
   /**
    *
-   * @type {Array<string>}
+   * @type {OperatingSlot}
    * @memberof GroupedOperatingHoursDto
    */
-  timeRanges: Array<string>
+  slot?: OperatingSlot
 }

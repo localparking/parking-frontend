@@ -34,10 +34,10 @@ import { BASE_PATH, COLLECTION_FORMATS, type RequestArgs, BaseAPI, RequiredError
 // @ts-ignore
 import type { ResponseDtoCategoryResponse } from '../models'
 /**
- * 카테고리컨트롤러Api - axios parameter creator
+ * CategoryApi - axios parameter creator
  * @export
  */
-export const 카테고리컨트롤러ApiAxiosParamCreator = function (configuration?: Configuration) {
+export const CategoryApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
     /**
      * 상위 카테고리를 조회하는 API입니다.
@@ -107,11 +107,11 @@ export const 카테고리컨트롤러ApiAxiosParamCreator = function (configurat
 }
 
 /**
- * 카테고리컨트롤러Api - functional programming interface
+ * CategoryApi - functional programming interface
  * @export
  */
-export const 카테고리컨트롤러ApiFp = function (configuration?: Configuration) {
-  const localVarAxiosParamCreator = 카테고리컨트롤러ApiAxiosParamCreator(configuration)
+export const CategoryApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = CategoryApiAxiosParamCreator(configuration)
   return {
     /**
      * 상위 카테고리를 조회하는 API입니다.
@@ -125,7 +125,7 @@ export const 카테고리컨트롤러ApiFp = function (configuration?: Configura
       const localVarAxiosArgs = await localVarAxiosParamCreator.getCategories(options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
-        operationServerMap['카테고리컨트롤러Api.getCategories']?.[localVarOperationServerIndex]?.url
+        operationServerMap['CategoryApi.getCategories']?.[localVarOperationServerIndex]?.url
       return (axios, basePath) =>
         createRequestFunction(
           localVarAxiosArgs,
@@ -146,7 +146,7 @@ export const 카테고리컨트롤러ApiFp = function (configuration?: Configura
       const localVarAxiosArgs = await localVarAxiosParamCreator.getChildCategories(options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
-        operationServerMap['카테고리컨트롤러Api.getChildCategories']?.[localVarOperationServerIndex]?.url
+        operationServerMap['CategoryApi.getChildCategories']?.[localVarOperationServerIndex]?.url
       return (axios, basePath) =>
         createRequestFunction(
           localVarAxiosArgs,
@@ -159,15 +159,11 @@ export const 카테고리컨트롤러ApiFp = function (configuration?: Configura
 }
 
 /**
- * 카테고리컨트롤러Api - factory interface
+ * CategoryApi - factory interface
  * @export
  */
-export const 카테고리컨트롤러ApiFactory = function (
-  configuration?: Configuration,
-  basePath?: string,
-  axios?: AxiosInstance
-) {
-  const localVarFp = 카테고리컨트롤러ApiFp(configuration)
+export const CategoryApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+  const localVarFp = CategoryApiFp(configuration)
   return {
     /**
      * 상위 카테고리를 조회하는 API입니다.
@@ -191,21 +187,21 @@ export const 카테고리컨트롤러ApiFactory = function (
 }
 
 /**
- * 카테고리컨트롤러Api - object-oriented interface
+ * CategoryApi - object-oriented interface
  * @export
- * @class 카테고리컨트롤러Api
+ * @class CategoryApi
  * @extends {BaseAPI}
  */
-export class 카테고리컨트롤러Api extends BaseAPI {
+export class CategoryApi extends BaseAPI {
   /**
    * 상위 카테고리를 조회하는 API입니다.
    * @summary 상위 카테고리 조회
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof 카테고리컨트롤러Api
+   * @memberof CategoryApi
    */
   public getCategories(options?: RawAxiosRequestConfig) {
-    return 카테고리컨트롤러ApiFp(this.configuration)
+    return CategoryApiFp(this.configuration)
       .getCategories(options)
       .then((request) => request(this.axios, this.basePath))
   }
@@ -215,10 +211,10 @@ export class 카테고리컨트롤러Api extends BaseAPI {
    * @summary 전체 카테고리 조회
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof 카테고리컨트롤러Api
+   * @memberof CategoryApi
    */
   public getChildCategories(options?: RawAxiosRequestConfig) {
-    return 카테고리컨트롤러ApiFp(this.configuration)
+    return CategoryApiFp(this.configuration)
       .getChildCategories(options)
       .then((request) => request(this.axios, this.basePath))
   }

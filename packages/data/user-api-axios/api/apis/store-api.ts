@@ -38,10 +38,10 @@ import type { ResponseDtoStoreDetailResponse } from '../models'
 // @ts-ignore
 import type { StoreSearchRequest } from '../models'
 /**
- * 가게컨트롤러Api - axios parameter creator
+ * StoreApi - axios parameter creator
  * @export
  */
-export const 가게컨트롤러ApiAxiosParamCreator = function (configuration?: Configuration) {
+export const StoreApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
     /**
      * 가게 상세 정보를 조회하는 API입니다.
@@ -123,11 +123,11 @@ export const 가게컨트롤러ApiAxiosParamCreator = function (configuration?: 
 }
 
 /**
- * 가게컨트롤러Api - functional programming interface
+ * StoreApi - functional programming interface
  * @export
  */
-export const 가게컨트롤러ApiFp = function (configuration?: Configuration) {
-  const localVarAxiosParamCreator = 가게컨트롤러ApiAxiosParamCreator(configuration)
+export const StoreApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = StoreApiAxiosParamCreator(configuration)
   return {
     /**
      * 가게 상세 정보를 조회하는 API입니다.
@@ -143,7 +143,7 @@ export const 가게컨트롤러ApiFp = function (configuration?: Configuration) 
       const localVarAxiosArgs = await localVarAxiosParamCreator.getStoreDetail(storeId, options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
-        operationServerMap['가게컨트롤러Api.getStoreDetail']?.[localVarOperationServerIndex]?.url
+        operationServerMap['StoreApi.getStoreDetail']?.[localVarOperationServerIndex]?.url
       return (axios, basePath) =>
         createRequestFunction(
           localVarAxiosArgs,
@@ -165,8 +165,7 @@ export const 가게컨트롤러ApiFp = function (configuration?: Configuration) 
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoPageResponseStoreListResponse>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.search(storeSearchRequest, options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['가게컨트롤러Api.search']?.[localVarOperationServerIndex]?.url
+      const localVarOperationServerBasePath = operationServerMap['StoreApi.search']?.[localVarOperationServerIndex]?.url
       return (axios, basePath) =>
         createRequestFunction(
           localVarAxiosArgs,
@@ -179,25 +178,21 @@ export const 가게컨트롤러ApiFp = function (configuration?: Configuration) 
 }
 
 /**
- * 가게컨트롤러Api - factory interface
+ * StoreApi - factory interface
  * @export
  */
-export const 가게컨트롤러ApiFactory = function (
-  configuration?: Configuration,
-  basePath?: string,
-  axios?: AxiosInstance
-) {
-  const localVarFp = 가게컨트롤러ApiFp(configuration)
+export const StoreApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+  const localVarFp = StoreApiFp(configuration)
   return {
     /**
      * 가게 상세 정보를 조회하는 API입니다.
      * @summary 가게 상세 정보 조회
-     * @param {가게컨트롤러ApiGetStoreDetailRequest} requestParameters Request parameters.
+     * @param {StoreApiGetStoreDetailRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     getStoreDetail(
-      requestParameters: 가게컨트롤러ApiGetStoreDetailRequest,
+      requestParameters: StoreApiGetStoreDetailRequest,
       options?: RawAxiosRequestConfig
     ): AxiosPromise<ResponseDtoStoreDetailResponse> {
       return localVarFp.getStoreDetail(requestParameters.storeId, options).then((request) => request(axios, basePath))
@@ -205,12 +200,12 @@ export const 가게컨트롤러ApiFactory = function (
     /**
      * 지도에서 가게를 검색하는 API입니다.
      * @summary 지도 기반 가게 검색
-     * @param {가게컨트롤러ApiSearchRequest} requestParameters Request parameters.
+     * @param {StoreApiSearchRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     search(
-      requestParameters: 가게컨트롤러ApiSearchRequest,
+      requestParameters: StoreApiSearchRequest,
       options?: RawAxiosRequestConfig
     ): AxiosPromise<ResponseDtoPageResponseStoreListResponse> {
       return localVarFp
@@ -221,50 +216,50 @@ export const 가게컨트롤러ApiFactory = function (
 }
 
 /**
- * Request parameters for getStoreDetail operation in 가게컨트롤러Api.
+ * Request parameters for getStoreDetail operation in StoreApi.
  * @export
- * @interface 가게컨트롤러ApiGetStoreDetailRequest
+ * @interface StoreApiGetStoreDetailRequest
  */
-export interface 가게컨트롤러ApiGetStoreDetailRequest {
+export interface StoreApiGetStoreDetailRequest {
   /**
    *
    * @type {number}
-   * @memberof 가게컨트롤러ApiGetStoreDetail
+   * @memberof StoreApiGetStoreDetail
    */
   readonly storeId: number
 }
 
 /**
- * Request parameters for search operation in 가게컨트롤러Api.
+ * Request parameters for search operation in StoreApi.
  * @export
- * @interface 가게컨트롤러ApiSearchRequest
+ * @interface StoreApiSearchRequest
  */
-export interface 가게컨트롤러ApiSearchRequest {
+export interface StoreApiSearchRequest {
   /**
    *
    * @type {StoreSearchRequest}
-   * @memberof 가게컨트롤러ApiSearch
+   * @memberof StoreApiSearch
    */
   readonly storeSearchRequest: StoreSearchRequest
 }
 
 /**
- * 가게컨트롤러Api - object-oriented interface
+ * StoreApi - object-oriented interface
  * @export
- * @class 가게컨트롤러Api
+ * @class StoreApi
  * @extends {BaseAPI}
  */
-export class 가게컨트롤러Api extends BaseAPI {
+export class StoreApi extends BaseAPI {
   /**
    * 가게 상세 정보를 조회하는 API입니다.
    * @summary 가게 상세 정보 조회
-   * @param {가게컨트롤러ApiGetStoreDetailRequest} requestParameters Request parameters.
+   * @param {StoreApiGetStoreDetailRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof 가게컨트롤러Api
+   * @memberof StoreApi
    */
-  public getStoreDetail(requestParameters: 가게컨트롤러ApiGetStoreDetailRequest, options?: RawAxiosRequestConfig) {
-    return 가게컨트롤러ApiFp(this.configuration)
+  public getStoreDetail(requestParameters: StoreApiGetStoreDetailRequest, options?: RawAxiosRequestConfig) {
+    return StoreApiFp(this.configuration)
       .getStoreDetail(requestParameters.storeId, options)
       .then((request) => request(this.axios, this.basePath))
   }
@@ -272,13 +267,13 @@ export class 가게컨트롤러Api extends BaseAPI {
   /**
    * 지도에서 가게를 검색하는 API입니다.
    * @summary 지도 기반 가게 검색
-   * @param {가게컨트롤러ApiSearchRequest} requestParameters Request parameters.
+   * @param {StoreApiSearchRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof 가게컨트롤러Api
+   * @memberof StoreApi
    */
-  public search(requestParameters: 가게컨트롤러ApiSearchRequest, options?: RawAxiosRequestConfig) {
-    return 가게컨트롤러ApiFp(this.configuration)
+  public search(requestParameters: StoreApiSearchRequest, options?: RawAxiosRequestConfig) {
+    return StoreApiFp(this.configuration)
       .search(requestParameters.storeSearchRequest, options)
       .then((request) => request(this.axios, this.basePath))
   }

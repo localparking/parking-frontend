@@ -27,7 +27,7 @@ export interface DailyOperatingDto {
    * @type {string}
    * @memberof DailyOperatingDto
    */
-  dayLabel: string
+  label: string
   /**
    *
    * @type {Array<OperatingSlotDto>}
