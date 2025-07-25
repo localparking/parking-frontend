@@ -1,9 +1,7 @@
-import { useOnboarding } from '@/features/onboarding'
 import { OnboardingNavigationButtons } from '@/features/onboarding/components'
 import registerService from '@/shared/services/register.service'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
-import { useEffect } from 'react'
-import { set, z } from 'zod'
+import { z } from 'zod'
 
 const searchSchema = z.object({
   termId: z.string(),

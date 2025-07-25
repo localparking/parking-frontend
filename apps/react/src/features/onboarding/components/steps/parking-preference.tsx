@@ -23,14 +23,14 @@ export const ParkingPreference: React.FC = () => {
   return (
     <>
       <div className="mt-[82px] px-6">
-        <h1 className="text-[19px] leading-[24px] font-semibold text-gray-1">
+        <h1 className="text-body-3 text-gray-1">
           주차 중 가장 중요하게
           <br />
           여기는 것은 무엇인가요?
         </h1>
       </div>
 
-      <div className="mt-[44px] flex w-full justify-center">
+      <div className="mt-[75px] flex w-full justify-center">
         <div className="grid grid-cols-2 gap-6">
           {preferences.map((preference, index) => {
             const isSelected = weight === preference.key
@@ -54,7 +54,7 @@ export const ParkingPreference: React.FC = () => {
                   alt={preference.label}
                   className={cn(preference.imageSize, '-translate-y-3 transform object-contain')}
                 />
-                <span className="absolute bottom-3 left-1/2 -translate-x-1/2 transform text-center text-[14px] font-semibold whitespace-nowrap text-gray-1">
+                <span className="absolute bottom-3 left-1/2 -translate-x-1/2 transform text-center text-body-5 whitespace-nowrap text-gray-1">
                   {preference.label}
                 </span>
               </button>
@@ -63,6 +63,5 @@ export const ParkingPreference: React.FC = () => {
         </div>
       </div>
     </>
-    // </OnboardingLayout>
   )
 }

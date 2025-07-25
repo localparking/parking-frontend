@@ -1,5 +1,4 @@
-import { OnboardingProvider, useOnboarding } from '@/features/onboarding'
-import { OnboardingHeader, OnboardingNavigationButtons } from '@/features/onboarding/components'
+import { OnboardingProvider } from '@/features/onboarding/model/onboarding.context'
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/onboarding')({

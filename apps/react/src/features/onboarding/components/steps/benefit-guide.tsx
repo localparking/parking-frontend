@@ -32,10 +32,10 @@ const steps = [
 const StepItem = ({ number, text }: { number: number; text: React.ReactNode }) => (
   <div className="flex items-center gap-2">
     <div className="flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-[5px] bg-primary">
-      <span className="text-[12px] font-medium text-white">{number}</span>
+      <span className="text-caption-2 text-white">{number}</span>
     </div>
     <div className="flex h-[28px] flex-1 items-center justify-center rounded-[5px] border border-primary-light px-3">
-      <span className="text-[12px] font-medium text-gray-1">{text}</span>
+      <span className="text-caption-2 text-gray-1">{text}</span>
     </div>
   </div>
 )

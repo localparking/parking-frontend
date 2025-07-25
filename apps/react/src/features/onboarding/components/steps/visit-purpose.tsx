@@ -2,7 +2,7 @@ import { cn } from '@ui/common/lib/utils'
 import { useOnboardingContext } from '../../model/onboarding.context'
 import { CategoryResponse } from '@data/user-api-axios/api'
 
-import CoffeeImage from '@ui/common/assets/3d/coffee.png'
+import CoffeeImage from '@ui/common/assets/3d/coffee-icon.png'
 import RestaurantImage from '@ui/common/assets/3d/restaurant.png'
 import CultureImage from '@ui/common/assets/3d/culture.png'
 import LeisureImage from '@ui/common/assets/3d/leisure.png'
@@ -26,12 +26,12 @@ export const VisitPurpose = ({ categories }: { categories?: CategoryResponse }) 
   return (
     <>
       <div className="mt-[82px] px-6">
-        <h1 className="text-[19px] leading-[24px] font-semibold text-gray-1">
+        <h1 className="text-body-3 text-gray-1">
           주로 차량을 이용해서
           <br />
           어디로 방문하시나요?
         </h1>
-        <p className="mt-[18px] text-[10px] font-semibold text-gray-2">복수선택이 가능해요!</p>
+        <p className="mt-[18px] text-caption-2 text-gray-2">복수선택이 가능해요!</p>
       </div>
 
       <div className="mt-[44px] flex w-full flex-col items-start px-6">
@@ -52,10 +52,13 @@ export const VisitPurpose = ({ categories }: { categories?: CategoryResponse }) 
                     }
                   })
                 }
-                className={cn('flex h-[58px] w-full items-center rounded-[15px] border border-primary p-4', {
-                  'bg-primary-lighter shadow-[0_0_5px_1px_var(--color-primary-light)]': isSelected,
-                  'bg-white': !isSelected,
-                })}
+                className={cn(
+                  'flex h-[58px] w-full items-center rounded-[15px] border border-primary px-[18px] py-[9px]',
+                  {
+                    'bg-primary-lighter shadow-[0_0_5px_1px_var(--color-primary-light)]': isSelected,
+                    'bg-white': !isSelected,
+                  }
+                )}
               >
                 <div className="flex items-center gap-4">
                   <div className="flex items-center justify-center">
@@ -66,11 +69,11 @@ export const VisitPurpose = ({ categories }: { categories?: CategoryResponse }) 
                       <img
                         src={purpose.image.src}
                         alt={purpose.image.alt}
-                        className="h-[24px] w-[24px] object-contain"
+                        className="h-[32px] w-[32px] object-contain"
                       />
                     </div>
                   </div>
-                  <span className="text-[14px] font-semibold text-gray-1">{purpose.label}</span>
+                  <span className="text-body-5 text-gray-1">{purpose.label}</span>
                 </div>
               </button>
             )

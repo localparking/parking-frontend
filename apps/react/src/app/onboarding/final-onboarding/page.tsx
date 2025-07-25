@@ -1,8 +1,11 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { AgeSelection, ParkingPreference, VisitPurpose } from '@/features/onboarding/components/steps'
 import { useState } from 'react'
 import { OnboardingHeader, OnboardingNavigationButtons } from '@/features/onboarding/components'
 import { categoryService } from '@/shared/services/category.service'
+import { onboardingService } from '@/shared/services/onboarding.service'
+import { useOnboarding } from '@/features/onboarding/model/onboarding.context'
+import { useAuth } from '@/features/auth'
 
 export const Route = createFileRoute('/onboarding/final-onboarding/')({
   component: OnboardingFlow,
@@ -15,7 +18,30 @@ export const Route = createFileRoute('/onboarding/final-onboarding/')({
 function OnboardingFlow() {
   const { categories } = Route.useLoaderData()
   const [currentStep, setCurrentStep] = useState(1)
+  const auth = useAuth()
+  const navigate = useNavigate()
 
+  const { ageGroup, weight, selectedCategories } = useOnboarding()
+
+  const handleOnboardingSubmit = async () => {
+    await onboardingService.submitOnboarding({
+      onboardingRequest: {
+        ageGroup,
+        weight,
+        categoryIds: selectedCategories,
+      },
+    })
+    await auth.refetchUser()
+    navigate({ to: '/', replace: true })
+  }
+
+  const handleNextStep = async () => {
+    if (currentStep === 3) {
+      await handleOnboardingSubmit()
+    } else {
+      setCurrentStep((prev) => Math.min(prev + 1, 3))
+    }
+  }
   return (
     <>
       <OnboardingHeader
@@ -29,11 +55,7 @@ function OnboardingFlow() {
       {currentStep === 3 && <VisitPurpose categories={categories} />}
 
       <div className="mt-auto w-full pt-8">
-        <OnboardingNavigationButtons
-          onNext={() => setCurrentStep((prev) => Math.min(prev + 1, 3))}
-          hideSkipButton={true}
-          // disabled={}
-        />
+        <OnboardingNavigationButtons onNext={handleNextStep} onSkip={handleOnboardingSubmit} showSkipButton />
       </div>
     </>
   )

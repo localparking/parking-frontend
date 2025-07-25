@@ -31,12 +31,9 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 
     const onRestricted = isRestrictedRoute(pathname)
 
-    console.log('인증 상태:', authenticated, '사용자 정보:', user, '현재 경로:', pathname)
-
     // 1. 인증된 사용자 (로그인 완료)
     if (authenticated && user) {
       // 온보딩 미완료
-      // if (user.isOnboarding === false) {
       // 1-2. 약관동의 미완료(게스트) 유저는 온보딩 플로우로 강제
       if (user.role === 'GUEST' && !pathname.startsWith('/onboarding/terms')) {
         throw redirect({ to: '/onboarding/terms' })
@@ -45,9 +42,6 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       if (user.role === 'USER' && !user.isOnboarding && pathname !== '/onboarding/final-onboarding') {
         throw redirect({ to: '/onboarding/final-onboarding' })
       }
-      // }
-      // 온보딩 완료
-      // (홈 리다이렉트는 온보딩 플로우 내부에서만 처리)
     }
 
     // 2. 미인증 사용자 (로그아웃 상태)
@@ -59,7 +53,6 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       const hasCompletedLanding = isWebView()
         ? await bridge.getLandingStatus()
         : localStorage.getItem('hasCompletedLanding')
-      console.log('랜딩 상태:', hasCompletedLanding)
 
       if (!hasCompletedLanding && pathname !== '/onboarding/landing') throw redirect({ to: '/onboarding/landing' })
     }
@@ -69,8 +62,6 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 })
 
 function RootComponent() {
-  const routerState = useRouterState()
-
   return (
     <div className="flex min-h-screen w-full flex-col bg-gray-09">
       <main className={cn('mx-auto flex h-full w-full max-w-[600px] flex-1 bg-white')}>

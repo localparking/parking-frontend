@@ -1,4 +1,4 @@
-import { OnboardingApi } from '@data/user-api-axios/api'
+import { OnboardingApi, OnboardingApiCompleteOnboardingRequest } from '@data/user-api-axios/api'
 import apiInstance from '@/shared/libs/api'
 
 class OnboardingService extends OnboardingApi {
@@ -6,10 +6,8 @@ class OnboardingService extends OnboardingApi {
     super(undefined, '', apiInstance)
   }
 
-  async submitOnboarding(body: { ageGroup?: string; weight?: string; categoryIds?: number[] }) {
-    const { data } = await this.completeOnboarding({
-      onboardingRequest: { ...body },
-    })
+  async submitOnboarding(body: OnboardingApiCompleteOnboardingRequest) {
+    const { data } = await this.completeOnboarding(body)
     return data
   }
 }
