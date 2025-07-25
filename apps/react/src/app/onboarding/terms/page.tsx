@@ -1,61 +1,93 @@
-import React from 'react'
-import { createFileRoute } from '@tanstack/react-router'
-import { TermsAgreement } from '@/features/onboarding/components/steps'
-import { OnboardingProvider, useOnboarding } from '@/features/onboarding'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import registerService from '@/shared/services/register.service'
-import { useNavigate } from '@tanstack/react-router'
+import { useCallback, useState } from 'react'
 import { useAuth } from '@/features/auth'
+import { AgreementDto } from '@data/user-api-axios/api'
+import { OnboardingCheckbox, OnboardingNavigationButtons } from '@/features/onboarding/components'
+import MainLogoImage from '@ui/common/assets/3d/mainlogo.png'
 
 export const Route = createFileRoute('/onboarding/terms/')({
   component: TermsPage,
+  loader: async () => {
+    const termsResponse = await registerService.findTerms()
+    return { terms: termsResponse?.data?.terms || [] }
+  },
 })
 
 function TermsPage() {
-  return (
-    <OnboardingProvider>
-      <TermsAgreementWrapper />
-    </OnboardingProvider>
-  )
-}
-
-const termsData: { key: 'age14Plus' | 'serviceTerms' | 'privacyPolicy' | 'marketingOptional'; label: string }[] = [
-  { key: 'age14Plus', label: '[필수] 만 14세 이상입니다' },
-  { key: 'serviceTerms', label: '[필수] 서비스 이용 약관' },
-  { key: 'privacyPolicy', label: '[필수] 개인정보 처리 방침' },
-  { key: 'marketingOptional', label: '[선택] 마케팅 정보 수신 동의' },
-]
-
-const keyToTitleMap = {
-  age14Plus: '만 14세 이상입니다',
-  serviceTerms: '서비스 이용 약관',
-  privacyPolicy: '개인정보 처리 방침',
-  marketingOptional: '마케팅 정보 수신 동의',
-} as const
-
-function TermsAgreementWrapper() {
-  const { state, setStep } = useOnboarding()
+  const { terms } = Route.useLoaderData()
   const { refetchUser } = useAuth()
   const navigate = useNavigate()
 
-  React.useEffect(() => {
-    setStep('terms')
-  }, [setStep])
-  // 약관동의 및 API 호출
+  const [agreedTerms, setAgreedTerms] = useState<AgreementDto[]>(
+    terms.map((term) => ({ termId: term.termId, agreed: false }))
+  )
+
   const handleTermsAgreed = async () => {
-    const termsResponse = await registerService.findTerms()
-    const terms = termsResponse?.data?.terms || []
-
-    const agreements = terms.map((term) => {
-      const cleanTitle = term.title?.replace(/\[.*?\]\s*/, '').trim()
-      const key = Object.entries(keyToTitleMap).find(([, v]) => v === cleanTitle)?.[0]
-
-      const agreed = term.mandatory ? true : key ? state.termsAgreement[key] : false
-      return { termId: term.termId, agreed }
-    })
-    await registerService.postTerms({ agreements })
+    await registerService.postTerms({ agreements: agreedTerms })
     await refetchUser()
     navigate({ to: '/onboarding/final-onboarding', replace: true })
   }
 
-  return <TermsAgreement onNext={handleTermsAgreed} termsData={termsData} />
+  const disabled = useCallback(() => {
+    return terms
+      .filter((term) => term.mandatory)
+      .map((term) => !agreedTerms.some((agreed) => agreed.termId === term.termId && agreed.agreed))
+      .includes(true)
+  }, [terms, agreedTerms])
+
+  const toggleAllAgreement = (checked: boolean) => {
+    const updatedAgreements = agreedTerms.map((term) => ({ ...term, agreed: checked }))
+    setAgreedTerms(updatedAgreements)
+  }
+
+  const toggleAgreement = (termId: number, checked: boolean) => {
+    const updatedAgreements = agreedTerms.map((term) => (term.termId === termId ? { ...term, agreed: checked } : term))
+    setAgreedTerms(updatedAgreements)
+  }
+
+  return (
+    <>
+      <div className="h-[52px]" />
+
+      <div className="mt-[70px]">
+        <img src={MainLogoImage} alt="메인 로고" className="h-[64px] w-[64px] object-contain" />
+        <h1 className="text-body-3 text-gray-1">서비스 이용 동의</h1>
+      </div>
+
+      <div className="mt-[30px] flex w-full flex-col items-center">
+        <div className="w-full">
+          <OnboardingCheckbox
+            id="allAgreed"
+            checked={terms.every((term) =>
+              agreedTerms?.some((agreed) => agreed.termId === term.termId && agreed.agreed)
+            )}
+            onChange={(checked) => toggleAllAgreement(checked)}
+            label="전체 이용 동의"
+            showArrow={false}
+          />
+
+          <div className="mt-[11px] mb-[19px] h-[2px] rounded-[2px] bg-primary" />
+
+          <div className="space-y-[15px]">
+            {terms.map((term) => (
+              <OnboardingCheckbox
+                key={term.termId}
+                id={term.termId.toString()}
+                checked={agreedTerms?.some((agreed) => agreed.termId === term.termId && agreed.agreed) ?? false}
+                onChange={(checked) => toggleAgreement(term.termId, checked)}
+                label={term.title ?? ''}
+                // TODO content가 없는 경우에는 false로 처리
+                showArrow={term.title !== '[필수] 만 14세 이상입니다'}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-auto w-full pt-8">
+        <OnboardingNavigationButtons onNext={handleTermsAgreed} hideSkipButton={true} disabled={disabled()} />
+      </div>
+    </>
+  )
 }

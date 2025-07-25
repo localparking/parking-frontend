@@ -1,5 +1,7 @@
 import React, { useCallback } from 'react'
 import CheckIcon from '@ui/common/assets/icons/check=2.svg'
+import { Link } from '@tanstack/react-router'
+import { ChevronRight } from 'lucide-react'
 
 interface OnboardingCheckboxProps {
   id: string
@@ -30,25 +32,26 @@ const OnboardingCheckboxComponent: React.FC<OnboardingCheckboxProps> = ({
           <input type="checkbox" id={id} checked={checked} onChange={handleToggle} className="sr-only" />
           <div className="transition-all duration-200 ease-in-out">
             {checked ? (
-              <CheckIcon className="h-[18px] w-[18px]" />
+              <CheckIcon className="h-[22px] w-[22px]" />
             ) : (
-              <div className="h-[18px] w-[18px] rounded-full border-[1.3px] border-[#BCBCBC] transition-colors duration-200 hover:border-primary active:border-primary" />
+              <div className="h-[22px] w-[22px] rounded-full border-[1.3px] border-[#BCBCBC] transition-colors duration-200 hover:border-primary active:border-primary" />
             )}
           </div>
         </div>
-        <label htmlFor={id} className="ml-3 cursor-pointer text-[10px] font-semibold text-gray-1 select-none">
+
+        <label htmlFor={id} className="ml-6 cursor-pointer text-body-4 text-gray-1 select-none">
           {label}
         </label>
       </div>
+
       {showArrow && (
-        <button
+        <Link
           className="text-[#09090B] transition-colors duration-150 hover:text-primary active:text-primary"
-          type="button"
+          to={`/onboarding/terms/detail`}
+          search={{ termId: id }}
         >
-          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
+          <ChevronRight className="h-4 w-4" />
+        </Link>
       )}
     </div>
   )

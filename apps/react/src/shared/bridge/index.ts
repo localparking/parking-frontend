@@ -13,7 +13,8 @@ export interface WebBridge extends BridgeStore<WebBridge> {
   logout(): Promise<{ success: boolean; message?: string }>
   notifyTokenExpired(): Promise<{ accessToken: string | null }>
   [key: string]: any
-  setLandingStatus(landingStatus: boolean): Promise<void>
+  setLandingStatus(): Promise<void>
+  getLandingStatus(): Promise<boolean>
 }
 
 // 브릿지 인스턴스 생성
@@ -33,9 +34,8 @@ export const bridge = linkBridge<WebBridge>({
     getAuthToken: async () => ({ accessToken: null }),
     logout: async () => ({ success: false, message: '로그아웃 실패' }),
     notifyTokenExpired: async () => ({ accessToken: null }),
-    setLandingStatus: async (landingStatus: boolean): Promise<void> => {
-      localStorage.setItem('hasCompletedLanding', JSON.stringify(landingStatus))
-    },
+    setLandingStatus: async (): Promise<void> => {},
+    getLandingStatus: async () => false,
   },
 })
 

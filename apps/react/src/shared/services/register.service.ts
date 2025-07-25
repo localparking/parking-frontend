@@ -13,21 +13,9 @@ class RegisterService extends RegisterApi {
     return data
   }
 
-  async findOnboarding() {
-    const { data } = await this.getCategories()
-    return data
-  }
-
   async postTerms(body: RegisterRequest) {
     const { data } = await this.registerAgreements({
       registerRequest: { ...body },
-    })
-    return { data }
-  }
-
-  async postOnboarding(body: OnboardingRequest) {
-    const { data } = await this.completeOnboarding({
-      onboardingRequest: { ...body },
     })
     return { data }
   }
