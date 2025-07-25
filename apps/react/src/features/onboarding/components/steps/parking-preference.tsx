@@ -21,14 +21,12 @@ export const ParkingPreference: React.FC = () => {
   ]
 
   return (
-    <>
-      <div className="mt-[82px] px-6">
-        <h1 className="text-body-3 text-gray-1">
-          주차 중 가장 중요하게
-          <br />
-          여기는 것은 무엇인가요?
-        </h1>
-      </div>
+    <div>
+      <h1 className="align-text-bottom text-body-3 text-gray-1">
+        주차 중 가장 중요하게
+        <br />
+        여기는 것은 무엇인가요?
+      </h1>
 
       <div className="mt-[75px] flex w-full justify-center">
         <div className="grid grid-cols-2 gap-6">
@@ -39,10 +37,10 @@ export const ParkingPreference: React.FC = () => {
                 key={preference.key}
                 onClick={() => setWeight(preference.key)}
                 className={cn(
-                  'relative flex h-[140px] w-[130px] flex-col items-center justify-center rounded-[20px] border p-4',
+                  'relative flex h-[140px] w-[130px] flex-col items-center justify-center rounded-[20px] border border-primary p-4',
                   {
-                    'border-primary bg-primary-lighter shadow-[0_0_5px_1px_var(--color-primary-light)]': isSelected,
-                    'border-gray-3 bg-white': !isSelected,
+                    'bg-primary-lighter shadow-[0_0_5px_1px_var(--color-primary-light)]': isSelected,
+                    'bg-white': !isSelected,
                   },
                   {
                     'col-span-2 mx-auto': index === 2,
@@ -62,6 +60,6 @@ export const ParkingPreference: React.FC = () => {
           })}
         </div>
       </div>
-    </>
+    </div>
   )
 }

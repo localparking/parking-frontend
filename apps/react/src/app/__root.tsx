@@ -24,7 +24,6 @@ export const Route = createRootRouteWithContext<RouterContext>()({
     const { authenticated, user, loading } = context.auth
     const pathname = location.pathname
 
-    // 0. 인증 정보 로딩 중에는 아무 작업도 하지 않음
     if (loading) {
       return
     }
@@ -33,7 +32,6 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 
     // 1. 인증된 사용자 (로그인 완료)
     if (authenticated && user) {
-      // 온보딩 미완료
       // 1-2. 약관동의 미완료(게스트) 유저는 온보딩 플로우로 강제
       if (user.role === 'GUEST' && !pathname.startsWith('/onboarding/terms')) {
         throw redirect({ to: '/onboarding/terms' })

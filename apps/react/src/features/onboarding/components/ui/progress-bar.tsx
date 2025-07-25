@@ -8,7 +8,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }) => {
   if (!currentStep) return null
 
   return (
-    <div className="flex items-center gap-2 p-4">
+    <div className="flex items-center gap-2 pt-7">
       {Array.from({ length: progressSteps }, (_, index) => (
         <div
           key={index}

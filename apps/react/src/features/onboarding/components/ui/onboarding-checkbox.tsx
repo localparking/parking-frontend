@@ -32,14 +32,14 @@ const OnboardingCheckboxComponent: React.FC<OnboardingCheckboxProps> = ({
           <input type="checkbox" id={id} checked={checked} onChange={handleToggle} className="sr-only" />
           <div className="transition-all duration-200 ease-in-out">
             {checked ? (
-              <CheckIcon className="h-[18px] w-[18px]" />
+              <CheckIcon className="h-[22px] w-[22px]" />
             ) : (
-              <div className="h-[18px] w-[18px] rounded-full border-[1.3px] border-[#BCBCBC] transition-colors duration-200 hover:border-primary active:border-primary" />
+              <div className="h-[22px] w-[22px] rounded-full border-[1.3px] border-[#BCBCBC] transition-colors duration-200 hover:border-primary active:border-primary" />
             )}
           </div>
         </div>
 
-        <label htmlFor={id} className="ml-6 cursor-pointer text-caption-2 text-gray-1 select-none">
+        <label htmlFor={id} className="ml-6 cursor-pointer text-body-4 text-gray-1 select-none">
           {label}
         </label>
       </div>

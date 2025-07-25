@@ -21,7 +21,7 @@ export const OnboardingNavigationButtons: React.FC<OnboardingNavigationButtonsPr
   hideSkipButton = false,
 }) => {
   return (
-    <div className="flex w-full flex-col items-center gap-4">
+    <div className="flex w-full flex-col items-center gap-4 pb-[35px]">
       <Button
         onClick={onNext}
         disabled={disabled}

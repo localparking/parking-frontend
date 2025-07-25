@@ -17,14 +17,12 @@ export const OnboardingHeader: React.FC<OnboardingHeaderProps> = ({
   className = '',
 }) => {
   return (
-    <div className={cn('w-full pt-[25px]', className)}>
+    <div className={cn('h-[52px] w-full pt-[25px]', className)}>
       <div className="flex w-full justify-start pb-2">
         <button
           onClick={onBack}
           disabled={!showBackButton}
-          className={cn('text-black', {
-            invisible: !showBackButton,
-          })}
+          className={cn('text-black', { invisible: !showBackButton })}
         >
           <ArrowLeft className="h-6 w-6" />
         </button>

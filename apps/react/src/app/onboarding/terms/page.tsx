@@ -48,6 +48,8 @@ function TermsPage() {
 
   return (
     <>
+      <div className="h-[52px]" />
+
       <div className="mt-[70px]">
         <img src={MainLogoImage} alt="메인 로고" className="h-[64px] w-[64px] object-contain" />
         <h1 className="text-body-3 text-gray-1">서비스 이용 동의</h1>

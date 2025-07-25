@@ -24,18 +24,16 @@ export const VisitPurpose = ({ categories }: { categories?: CategoryResponse }) 
   }
 
   return (
-    <>
-      <div className="mt-[82px] px-6">
-        <h1 className="text-body-3 text-gray-1">
-          주로 차량을 이용해서
-          <br />
-          어디로 방문하시나요?
-        </h1>
-        <p className="mt-[18px] text-caption-2 text-gray-2">복수선택이 가능해요!</p>
-      </div>
+    <div className="space-y-[15px]">
+      <h1 className="text-body-3 text-gray-1">
+        주로 차량을 이용해서
+        <br />
+        어디로 방문하시나요?
+      </h1>
+      <p className="text-caption-2 text-gray-2">복수선택이 가능해요!</p>
 
-      <div className="mt-[44px] flex w-full flex-col items-start px-6">
-        <div className="w-full space-y-3">
+      <div className="flex w-full flex-col items-start">
+        <div className="w-full space-y-[20px]">
           {categories.category.map((category) => {
             const isSelected = selectedCategories.includes(category.categoryId)
             const purpose = PURPOSE_DATA[category.categoryId]
@@ -80,6 +78,6 @@ export const VisitPurpose = ({ categories }: { categories?: CategoryResponse }) 
           })}
         </div>
       </div>
-    </>
+    </div>
   )
 }

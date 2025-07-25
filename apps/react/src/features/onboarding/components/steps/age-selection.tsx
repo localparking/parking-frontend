@@ -24,15 +24,16 @@ export const AgeSelection: React.FC<AgeSelectionProps> = () => {
   }
 
   return (
-    <>
-      <h1 className="mt-[82px] px-6 text-body-3 text-gray-1">연령대를 선택하세요</h1>
-      <div className="mt-[44px] w-full space-y-[20px] px-6">
+    <div>
+      <h1 className="text-body-3 text-gray-1">연령대를 선택하세요</h1>
+
+      <div className="mt-[75px] w-full space-y-[21px]">
         {ageRanges.map((age) => (
           <button
             key={age.value}
             onClick={() => handleAgeSelect(age.value)}
             className={cn(
-              'flex w-full items-center justify-center rounded-[10px] border px-[32px] py-[12px] text-caption-1',
+              'flex h-[38px] w-full items-center justify-center rounded-[10px] border py-[12px] text-caption-1',
               {
                 'border-primary bg-primary-lighter text-primary shadow-[0_0_5px_1px_var(--color-primary-light)]':
                   ageGroup === age.value,
@@ -44,7 +45,6 @@ export const AgeSelection: React.FC<AgeSelectionProps> = () => {
           </button>
         ))}
       </div>
-    </>
-    // </OnboardingLayout>
+    </div>
   )
 }

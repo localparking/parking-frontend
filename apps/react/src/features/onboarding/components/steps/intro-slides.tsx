@@ -47,7 +47,7 @@ export const IntroSlides = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
-              className="text-body-6 text-gray-1"
+              className="text-body-6 text-nowrap text-gray-1"
             >
               {commonText.line2}
             </motion.p>
