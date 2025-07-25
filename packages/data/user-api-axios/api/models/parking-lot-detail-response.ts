@@ -20,6 +20,7 @@ import type { AssociatedStoreDto } from './associated-store-dto'
 import type { FeePolicyDto } from './fee-policy-dto'
 // May contain unused imports in some cases
 // @ts-ignore
+import type { OperatingHoursDto } from './operating-hours-dto'
 import type { GroupedOperatingHoursDto } from './grouped-operating-hours-dto'
 
 /**
@@ -114,6 +115,10 @@ export interface ParkingLotDetailResponse {
   feePolicy: FeePolicyDto
   /**
    *
+   * @type {Array<OperatingHoursDto>}
+   * @memberof ParkingLotDetailResponse
+   */
+  operatingHours: Array<OperatingHoursDto>
    * @type {Array<GroupedOperatingHoursDto>}
    * @memberof ParkingLotDetailResponse
    */

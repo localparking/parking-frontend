@@ -30,6 +30,18 @@ module.exports = () => {
           },
         ],
         LSApplicationQueriesSchemes: ['kakaokompassauth', 'kakaolink', 'kakaoplus'],
+        NSAppTransportSecurity: {
+          NSExceptionDomains: {
+            'map.naver.com': {
+              NSExceptionAllowsInsecureHTTPLoads: true,
+              NSIncludesSubdomains: true,
+            },
+            'map.naver.net': {
+              NSExceptionAllowsInsecureHTTPLoads: true,
+              NSIncludesSubdomains: true,
+            },
+          },
+        },
       },
     },
     android: {
@@ -52,6 +64,13 @@ module.exports = () => {
       favicon: './assets/images/favicon.png',
     },
     plugins: [
+      [
+        'expo-network-security-config',
+        {
+          networkSecurityConfig: './assets/configs/network_security_config.xml',
+          enable: true,
+        },
+      ],
       [
         'expo-build-properties',
         {

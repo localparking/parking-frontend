@@ -23,6 +23,12 @@ export interface AssociatedStoreDto {
    * @type {number}
    * @memberof AssociatedStoreDto
    */
+  storeId: number
+  /**
+   * 가게 세부 카테고리 이름
+   * @type {string}
+   * @memberof AssociatedStoreDto
+   */
   storeId?: number
   /**
    * 가게 세부 카테고리 이름
@@ -35,7 +41,7 @@ export interface AssociatedStoreDto {
    * @type {string}
    * @memberof AssociatedStoreDto
    */
-  storeName?: string
+  storeName: string
   /**
    * 현재 가게 영업 여부 (true: 영업 중, false: 영업 종료, null: 정보 없음)
    * @type {boolean}
