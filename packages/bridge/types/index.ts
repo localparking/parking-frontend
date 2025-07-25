@@ -28,5 +28,6 @@ export interface BridgeActions {
   getCurrentLocation(): Promise<LocationData | null>
   requestLocationPermission(): Promise<boolean>
   notifyTokenExpired(): Promise<{ accessToken: string | null }>
-  setLandingStatus(landingStatus: boolean): Promise<void>
+  setLandingStatus(): Promise<void>
+  getLandingStatus(): Promise<boolean>
 }

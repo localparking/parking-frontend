@@ -3,7 +3,6 @@ import React, { createContext, ReactNode, useCallback, useEffect, useState } fro
 import AuthClient from '../lib/auth-client'
 import { SocialLoginType } from '@bridge/types'
 import userService from '@/shared/services/user.service'
-import { isWebView } from '@/shared/utils/webview'
 
 export interface User {
   email: string
@@ -40,6 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const userInfo = await userService.me()
       const data = userInfo?.data
       if (!data) throw new Error('No user data')
+
       const user: User = {
         email: data.email,
         nickname: data.nickname,
@@ -48,6 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       setUser(user)
       setAuthenticated(true)
+
       return user
     } catch (error: any) {
       if (error?.message?.includes('Access token not found') || error?.response?.status === 401) {
@@ -83,18 +84,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const checkAuthStatus = async () => {
-      try {
-        const result = await AuthClient.getAuth()
-        if (result?.authenticated) {
-          await refetchUser()
-        } else {
-          clearAuth()
-        }
-      } catch (error: any) {
-        clearAuth()
-      } finally {
-        setLoading(false)
-      }
+      const result = await AuthClient.getAuth()
+
+      if (result?.authenticated) await refetchUser()
+      else clearAuth()
+
+      setLoading(false)
     }
     checkAuthStatus()
   }, [refetchUser])
