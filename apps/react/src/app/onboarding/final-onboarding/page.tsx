@@ -24,15 +24,20 @@ function OnboardingFlow() {
   const { ageGroup, weight, selectedCategories } = useOnboarding()
 
   const handleOnboardingSubmit = async () => {
-    await onboardingService.submitOnboarding({
-      onboardingRequest: {
-        ageGroup,
-        weight,
-        categoryIds: selectedCategories,
-      },
-    })
-    await auth.refetchUser()
-    navigate({ to: '/', replace: true })
+    try {
+      await onboardingService.submitOnboarding({
+        onboardingRequest: {
+          ageGroup,
+          weight,
+          categoryIds: selectedCategories,
+        },
+      })
+      await auth.refetchUser()
+      navigate({ to: '/', replace: true })
+    } catch (error: any) {
+      console.error('Onboarding submission failed:', error)
+      alert('온보딩 제출에 실패했습니다. 다시 시도해주세요.')
+    }
   }
 
   const handleNextStep = async () => {
