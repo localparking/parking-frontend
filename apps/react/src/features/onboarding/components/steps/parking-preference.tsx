@@ -1,53 +1,43 @@
 import React from 'react'
-import { useOnboarding } from '../../hooks'
-import type { ParkingPreference as ParkingPreferenceType } from '../../model/onboarding.types'
-import { OnboardingLayout } from '../ui/onboarding-layout'
 import CashImage from '@ui/common/assets/3d/cash.png'
 import SpaceImage from '@ui/common/assets/3d/space.png'
 import LocationImage from '@ui/common/assets/3d/locate.png'
 import { cn } from '@ui/common/lib/utils'
+import { useOnboardingContext } from '../../model/onboarding.context'
+import { Weight } from '../../model'
 
 export const ParkingPreference: React.FC = () => {
-  const { state, toggleParkingPreference, goToNextStep, goToPreviousStep } = useOnboarding()
+  const { weight, setWeight } = useOnboardingContext()
 
-  const preferences: { key: ParkingPreferenceType; label: string; image: string; imageSize: string }[] = [
-    { key: 'price', label: '가격', image: CashImage, imageSize: 'h-[100px] w-[100px]' },
-    { key: 'location', label: '위치 및 접근성', image: LocationImage, imageSize: 'h-[70px] w-[70px]' },
-    { key: 'space', label: '주차공간', image: SpaceImage, imageSize: 'h-[100px] w-[100px]' },
+  const preferences: { key: Weight; label: string; image: string; imageSize: string }[] = [
+    { key: Weight.PRICE, label: '가격', image: CashImage, imageSize: 'h-[100px] w-[100px]' },
+    {
+      key: Weight.DISTANCE,
+      label: '위치 및 접근성',
+      image: LocationImage,
+      imageSize: 'h-[70px] w-[70px]',
+    },
+    { key: Weight.PARKING_SPACE, label: '주차공간', image: SpaceImage, imageSize: 'h-[100px] w-[100px]' },
   ]
 
-  const handlePreferenceSelect = (preference: ParkingPreferenceType) => {
-    toggleParkingPreference(preference)
-  }
-
-  const canProceed = state.parkingPreferences.length > 0
-
   return (
-    <OnboardingLayout
-      currentStep="parking-preference"
-      totalSteps={3}
-      onBack={goToPreviousStep}
-      onNext={goToNextStep}
-      onSkip={goToNextStep}
-      disabledNext={!canProceed}
-    >
+    <>
       <div className="mt-[82px] px-6">
         <h1 className="text-[19px] leading-[24px] font-semibold text-gray-1">
           주차 중 가장 중요하게
           <br />
           여기는 것은 무엇인가요?
         </h1>
-        <p className="mt-[18px] text-[10px] font-semibold text-gray-2">복수선택이 가능해요!</p>
       </div>
 
       <div className="mt-[44px] flex w-full justify-center">
         <div className="grid grid-cols-2 gap-6">
           {preferences.map((preference, index) => {
-            const isSelected = state.parkingPreferences.includes(preference.key)
+            const isSelected = weight === preference.key
             return (
               <button
                 key={preference.key}
-                onClick={() => handlePreferenceSelect(preference.key)}
+                onClick={() => setWeight(preference.key)}
                 className={cn(
                   'relative flex h-[140px] w-[130px] flex-col items-center justify-center rounded-[20px] border p-4',
                   {
@@ -72,6 +62,7 @@ export const ParkingPreference: React.FC = () => {
           })}
         </div>
       </div>
-    </OnboardingLayout>
+    </>
+    // </OnboardingLayout>
   )
 }

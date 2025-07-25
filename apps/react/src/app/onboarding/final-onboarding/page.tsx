@@ -1,46 +1,40 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { AgeSelection, ParkingPreference, VisitPurpose } from '@/features/onboarding/components/steps'
-import { OnboardingProvider, useOnboarding } from '@/features/onboarding'
-import { useEffect } from 'react'
-import { useRouter } from '@tanstack/react-router'
-import { useAuth } from '@/features/auth'
+import { useState } from 'react'
+import { OnboardingHeader, OnboardingNavigationButtons } from '@/features/onboarding/components'
+import { categoryService } from '@/shared/services/category.service'
 
 export const Route = createFileRoute('/onboarding/final-onboarding/')({
-  component: FinalOnboardingPage,
+  component: OnboardingFlow,
+  loader: async () => {
+    const categories = await categoryService.getCategoriesParent()
+    return { categories: categories.data || { category: [] } }
+  },
 })
 
 function OnboardingFlow() {
-  const { state, submitOnboardingToServer } = useOnboarding()
-  const auth = useAuth()
-  const navigate = useRouter().navigate
-
-  useEffect(() => {
-    if (state.isCompleted) {
-      const doComplete = async () => {
-        await auth.refetchUser()
-        navigate({ to: '/', replace: true })
-      }
-      doComplete()
-    }
-  }, [state.isCompleted, auth, navigate])
+  const { categories } = Route.useLoaderData()
+  const [currentStep, setCurrentStep] = useState(1)
 
   return (
     <>
-      {state.currentStep === 'age-selection' && <AgeSelectionWrapper />}
-      {state.currentStep === 'parking-preference' && <ParkingPreference />}
-      {state.currentStep === 'visit-purpose' && <VisitPurpose />}
+      <OnboardingHeader
+        currentStep={currentStep}
+        onBack={() => setCurrentStep((prev) => Math.max(prev - 1, 1))}
+        showBackButton={currentStep > 1}
+      />
+
+      {currentStep === 1 && <AgeSelection />}
+      {currentStep === 2 && <ParkingPreference />}
+      {currentStep === 3 && <VisitPurpose categories={categories} />}
+
+      <div className="mt-auto w-full pt-8">
+        <OnboardingNavigationButtons
+          onNext={() => setCurrentStep((prev) => Math.min(prev + 1, 3))}
+          hideSkipButton={true}
+          // disabled={}
+        />
+      </div>
     </>
-  )
-}
-
-function AgeSelectionWrapper() {
-  return <AgeSelection hideBackButton />
-}
-
-function FinalOnboardingPage() {
-  return (
-    <OnboardingProvider>
-      <OnboardingFlow />
-    </OnboardingProvider>
   )
 }

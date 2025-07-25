@@ -1,13 +1,12 @@
 import React from 'react'
 import { ArrowLeft } from 'lucide-react'
 import { ProgressBar } from './progress-bar'
-import { OnboardingStep } from '../../model/onboarding.types'
 import { cn } from '@ui/common/lib/utils'
 
 export interface OnboardingHeaderProps {
   showBackButton?: boolean
   onBack?: () => void
-  currentStep: OnboardingStep
+  currentStep: number
   className?: string
 }
 

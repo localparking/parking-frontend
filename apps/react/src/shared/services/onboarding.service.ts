@@ -12,11 +12,6 @@ class OnboardingService extends OnboardingApi {
     })
     return data
   }
-
-  async getCategories() {
-    const { data } = await this.getCategories()
-    return data
-  }
 }
 
 export const onboardingService = new OnboardingService()

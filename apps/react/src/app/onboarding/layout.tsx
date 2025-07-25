@@ -7,28 +7,9 @@ export const Route = createFileRoute('/onboarding')({
 })
 
 export const OnboardingLayout = () => {
-  const { navigationBar, bottomButton } = useOnboarding()
-
   return (
-    <div className="relative flex min-h-screen w-full flex-col bg-white px-[34px] pb-6" style={{ opacity: 0.9 }}>
-      <OnboardingHeader
-        currentStep={navigationBar.currentStep}
-        onBack={navigationBar.onBack}
-        showBackButton={!navigationBar.showBackButton}
-      />
-
+    <div className="relative flex min-h-screen w-full flex-col bg-white px-[34px] pb-6">
       <Outlet />
-
-      {bottomButton.onNext && (
-        <div className="mt-auto w-full pt-8">
-          <OnboardingNavigationButtons
-            onNext={bottomButton.onNext}
-            onSkip={bottomButton.onSkip ?? bottomButton.onNext}
-            hideSkipButton={bottomButton.hideSkipButton}
-            disabled={bottomButton.disabled}
-          />
-        </div>
-      )}
     </div>
   )
 }

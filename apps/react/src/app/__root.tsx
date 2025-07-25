@@ -42,9 +42,9 @@ export const Route = createRootRouteWithContext<RouterContext>()({
         throw redirect({ to: '/onboarding/terms' })
       }
       // 온보딩 미완료 && 약관동의 완료(유저) && 현재 온보딩 페이지가 아닌 경우만 리다이렉트
-      // if (user.role === 'USER' && pathname !== '/onboarding/final-onboarding') {
-      //   throw redirect({ to: '/onboarding/final-onboarding' })
-      // }
+      if (user.role === 'USER' && !user.isOnboarding && pathname !== '/onboarding/final-onboarding') {
+        throw redirect({ to: '/onboarding/final-onboarding' })
+      }
       // }
       // 온보딩 완료
       // (홈 리다이렉트는 온보딩 플로우 내부에서만 처리)
@@ -70,7 +70,6 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 
 function RootComponent() {
   const routerState = useRouterState()
-  const pathname = routerState.location.pathname
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-gray-09">

@@ -1,7 +1,5 @@
-export * from './model'
-
 export { OnboardingProvider, useOnboarding } from './model/onboarding.context'
-export { onboardingService } from './services/onboarding.service'
+export { onboardingService } from '../../shared/services/onboarding.service'
 
 export {
   AgeSelection,
