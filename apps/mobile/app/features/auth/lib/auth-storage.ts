@@ -4,6 +4,7 @@ export class AuthStorage {
   private static readonly ACCESS_TOKEN_KEY = 'town_access_token'
   private static readonly REFRESH_TOKEN_KEY = 'town_refresh_token'
   private static readonly USER_INFO_KEY = 'town_user_info'
+  private static readonly LANDING_STATUS_KEY = 'hasCompletedLanding'
 
   // 액세스 토큰 저장
   static async setAccessToken(token: string): Promise<void> {
@@ -82,6 +83,26 @@ export class AuthStorage {
       ])
     } catch (error) {
       console.error('인증 정보 삭제 중 오류 발생:', error)
+      throw error
+    }
+  }
+
+  // 랜딩 상태 저장
+  static async setLandingStatus(landingStatus: any): Promise<void> {
+    try {
+      await SecureStore.setItemAsync(this.LANDING_STATUS_KEY, JSON.stringify(landingStatus))
+    } catch (error) {
+      console.error('랜딩 상태 저장 중 오류 발생:', error)
+      throw error
+    }
+  }
+
+  // 랜딩 상태 조회
+  static async getLandingStatus(): Promise<void> {
+    try {
+      await SecureStore.getItemAsync(this.LANDING_STATUS_KEY)
+    } catch (error) {
+      console.error('랜딩 상태 조회 중 오류 발생:', error)
       throw error
     }
   }

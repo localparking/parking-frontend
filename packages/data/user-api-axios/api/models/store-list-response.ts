@@ -13,39 +13,57 @@
  */
 
 /**
- * 주차장과 연계된 가게 정보 DTO
+ *
  * @export
- * @interface AssociatedStoreDto
+ * @interface StoreListResponse
  */
-export interface AssociatedStoreDto {
+export interface StoreListResponse {
   /**
-   * 가게 ID
+   *
    * @type {number}
-   * @memberof AssociatedStoreDto
+   * @memberof StoreListResponse
    */
   storeId: number
   /**
-   * 가게 세부 카테고리 이름
+   *
    * @type {string}
-   * @memberof AssociatedStoreDto
+   * @memberof StoreListResponse
    */
-  storeId?: number
+  name: string
   /**
-   * 가게 세부 카테고리 이름
+   *
    * @type {Array<string>}
-   * @memberof AssociatedStoreDto
+   * @memberof StoreListResponse
    */
-  categoryNames?: Array<string>
+  categoryNames: Array<string>
   /**
-   * 가게 이름
+   *
    * @type {string}
-   * @memberof AssociatedStoreDto
+   * @memberof StoreListResponse
    */
-  storeName: string
+  address?: string
   /**
-   * 현재 가게 영업 여부 (true: 영업 중, false: 영업 종료, null: 정보 없음)
+   *
+   * @type {number}
+   * @memberof StoreListResponse
+   */
+  lat: number
+  /**
+   *
+   * @type {number}
+   * @memberof StoreListResponse
+   */
+  lon: number
+  /**
+   *
    * @type {boolean}
-   * @memberof AssociatedStoreDto
+   * @memberof StoreListResponse
    */
   isOpen?: boolean
+  /**
+   *
+   * @type {boolean}
+   * @memberof StoreListResponse
+   */
+  isCoalition: boolean
 }

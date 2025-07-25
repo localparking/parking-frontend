@@ -12,28 +12,26 @@
  * Do not edit the class manually.
  */
 
+// May contain unused imports in some cases
+// @ts-ignore
+import type { UserInfoResponse } from './user-info-response'
+
 /**
  *
  * @export
- * @interface CategoryDto
+ * @interface ResponseDtoUserInfoResponse
  */
-export interface CategoryDto {
-  /**
-   *
-   * @type {number}
-   * @memberof CategoryDto
-   */
-  categoryId: number
+export interface ResponseDtoUserInfoResponse {
   /**
    *
    * @type {string}
-   * @memberof CategoryDto
+   * @memberof ResponseDtoUserInfoResponse
    */
-  categoryName?: string
+  message: string
   /**
    *
-   * @type {number}
-   * @memberof CategoryDto
+   * @type {UserInfoResponse}
+   * @memberof ResponseDtoUserInfoResponse
    */
-  parentId?: number
+  data?: UserInfoResponse
 }

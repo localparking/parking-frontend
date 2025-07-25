@@ -12,12 +12,22 @@
  * Do not edit the class manually.
  */
 
-export * from './apis/admin-api'
-export * from './apis/auth-api'
-export * from './apis/onboarding-api'
-export * from './apis/parking-api'
-export * from './apis/register-api'
-export * from './apis/user-api'
-export * from './apis/가게컨트롤러api'
-export * from './apis/주차장컨트롤러api'
-export * from './apis/카테고리컨트롤러api'
+/**
+ *
+ * @export
+ * @interface OperatingSlotDto
+ */
+export interface OperatingSlotDto {
+  /**
+   *
+   * @type {string}
+   * @memberof OperatingSlotDto
+   */
+  begin: string
+  /**
+   *
+   * @type {string}
+   * @memberof OperatingSlotDto
+   */
+  end: string
+}

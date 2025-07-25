@@ -28,6 +28,7 @@ export const ParkingPreference: React.FC = () => {
       totalSteps={3}
       onBack={goToPreviousStep}
       onNext={goToNextStep}
+      onSkip={goToNextStep}
       disabledNext={!canProceed}
     >
       <div className="mt-[82px] px-6">

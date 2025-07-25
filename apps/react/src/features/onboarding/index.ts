@@ -1,14 +1,13 @@
 export * from './model'
 
 export * from './hooks'
-export { OnboardingProvider } from './model/onboarding.context'
+export { OnboardingProvider, useOnboarding } from './model/onboarding.context'
+export { onboardingService } from './services/onboarding.service'
 
 export {
-  OnboardingFlow,
   SplashScreen,
   TermsAgreement as TermsAgreementComponent,
   AgeSelection,
   ParkingPreference as ParkingPreferenceComponent,
   VisitPurpose as VisitPurposeComponent,
-  Completion,
 } from './components'

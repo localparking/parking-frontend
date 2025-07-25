@@ -118,6 +118,9 @@ export const appBridge = bridge<AppBridgeState>(({ set }) => {
       const { accessToken } = await refreshToken()
       return { accessToken }
     },
+    async setLandingStatus(landingStatus: boolean): Promise<void> {
+      await AuthStorage.setLandingStatus(landingStatus)
+    },
   }
 
   return {

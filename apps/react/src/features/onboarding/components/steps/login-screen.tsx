@@ -4,22 +4,19 @@ import MainLogoImage from '@ui/common/assets/3d/mainlogo.png'
 import KakaoLogoIcon from '@ui/common/assets/icons/kakao-logo.svg'
 import AppleLogoIcon from '@ui/common/assets/icons/apple-logo.svg'
 import { OnboardingLayout } from '../ui/onboarding-layout'
+import { isWebView } from '@/shared/utils/webview'
 
-interface LandingPageFourProps {
+interface LoginScreenProps {
   onNext: () => void
   onKakaoLogin: () => void
   onAppleLogin: () => void
   onGuestStart: () => void
 }
 
-export const LandingPageFour: React.FC<LandingPageFourProps> = ({
-  onNext,
-  onKakaoLogin,
-  onAppleLogin,
-  onGuestStart,
-}) => {
+export const LoginScreen: React.FC<LoginScreenProps> = ({ onNext, onKakaoLogin, onAppleLogin, onGuestStart }) => {
+  const showAppleLogin = isWebView()
   return (
-    <OnboardingLayout currentStep="landing-4" totalSteps={3} hideBackButton hideSkipButton>
+    <OnboardingLayout currentStep="login-screen" totalSteps={3} hideBackButton hideSkipButton>
       {/* 중앙 컨텐츠 */}
       <div className="flex flex-1 flex-col items-center justify-center">
         <div className="mb-12 text-center">
@@ -49,15 +46,17 @@ export const LandingPageFour: React.FC<LandingPageFourProps> = ({
         </div>
 
         {/* 애플 로그인 */}
-        <div className="relative">
-          <Button
-            onClick={onAppleLogin}
-            className="relative flex h-[39px] w-full items-center justify-center gap-2 rounded-[10px] bg-gray-1 text-[12px] text-white transition-all duration-150 active:scale-[0.98] active:bg-[#111111]"
-          >
-            <AppleLogoIcon className="absolute left-[30px] h-[20px] w-[20px]" />
-            애플로 시작하기
-          </Button>
-        </div>
+        {showAppleLogin && (
+          <div className="relative">
+            <Button
+              onClick={onAppleLogin}
+              className="relative flex h-[39px] w-full items-center justify-center gap-2 rounded-[10px] bg-gray-1 text-[12px] text-white transition-all duration-150 active:scale-[0.98] active:bg-[#111111]"
+            >
+              <AppleLogoIcon className="absolute left-[30px] h-[20px] w-[20px]" />
+              애플로 시작하기
+            </Button>
+          </div>
+        )}
 
         {/* 로그인 없이 시작하기 */}
         <div className="text-center">

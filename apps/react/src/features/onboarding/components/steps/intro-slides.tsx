@@ -5,9 +5,8 @@ import { OnboardingLayout } from '../ui/onboarding-layout'
 import CoffeeImage from '@ui/common/assets/3d/coffee.png'
 import CashImage from '@ui/common/assets/3d/cash.png'
 
-const introPagesData = [
+const introSlidesData = [
   { step: 'landing-1', image: CashImage, alt: '현금 3D 이미지' },
-
   { step: 'landing-2', image: CoffeeImage, alt: '커피 3D 이미지' },
 ] as const
 
@@ -16,51 +15,52 @@ const commonText = {
   line2: '어차피 마실 커피 사고, 주차는 공짜로 즐기세요.',
 }
 
-interface IntroPagesProps {
+interface IntroSlidesProps {
   onNext: () => void
   onSkip: () => void
 }
 
-export const IntroPages: React.FC<IntroPagesProps> = ({ onNext, onSkip }) => {
-  const [currentPageIndex, setCurrentPageIndex] = useState(0)
+export const IntroSlides: React.FC<IntroSlidesProps> = ({ onNext, onSkip }) => {
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0)
   const [imageLoaded, setImageLoaded] = useState(false)
 
   useEffect(() => {
-    if (currentPageIndex === 0) {
+    if (currentSlideIndex === 0) {
       const timer = setTimeout(() => {
-        setCurrentPageIndex(1)
-      }, 1500)
+        setCurrentSlideIndex(1)
+      }, 1200)
 
       return () => clearTimeout(timer)
     }
-  }, [currentPageIndex])
+  }, [currentSlideIndex])
 
-  const currentPageData = introPagesData[currentPageIndex]
+  const currentSlideData = introSlidesData[currentSlideIndex]
 
-  if (!currentPageData) {
+  if (!currentSlideData) {
     return null
   }
 
-  const isSecondPage = currentPageIndex === 1
+  const isSecondSlide = currentSlideIndex === 1
+
+  const handleSkip = () => {
+    onSkip()
+  }
 
   return (
     <OnboardingLayout
-      currentStep={currentPageData.step}
+      currentStep={currentSlideData.step}
       totalSteps={3}
       hideBackButton
-      hideSkipButton={!isSecondPage}
+      hideSkipButton={!isSecondSlide}
       onNext={onNext}
-      onSkip={onSkip}
+      onSkip={handleSkip}
     >
       <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
-        {/* 텍스트 컨테이너 */}
         <div className="mb-[30px] flex h-auto min-h-[50px] flex-col justify-center">
-          {/* 첫 번째 줄 텍스트: 항상 렌더링 */}
           <p className="text-[14px] leading-[25px] font-semibold text-gray-1">{commonText.line1}</p>
 
-          {/* 두 번째 줄 텍스트: 두 번째 페이지(인덱스 1)일 때만 애니메이션과 함께 렌더링 */}
           <AnimatePresence>
-            {isSecondPage && (
+            {isSecondSlide && (
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -73,10 +73,9 @@ export const IntroPages: React.FC<IntroPagesProps> = ({ onNext, onSkip }) => {
           </AnimatePresence>
         </div>
 
-        {/* 이미지 컨테이너: AnimatePresence로 이미지 전환 효과 추가 */}
         <AnimatePresence mode="wait">
           <motion.div
-            key={currentPageIndex}
+            key={currentSlideIndex}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -84,8 +83,8 @@ export const IntroPages: React.FC<IntroPagesProps> = ({ onNext, onSkip }) => {
             className="h-[266px] w-[266px]"
           >
             <img
-              src={currentPageData.image}
-              alt={currentPageData.alt}
+              src={currentSlideData.image}
+              alt={currentSlideData.alt}
               className={`h-full w-full object-contain transition-opacity duration-500 ${
                 imageLoaded ? 'opacity-100' : 'opacity-0'
               }`}
