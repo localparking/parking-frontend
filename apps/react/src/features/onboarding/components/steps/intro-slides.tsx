@@ -37,7 +37,7 @@ export const IntroSlides = () => {
   const isSecondSlide = currentSlideIndex === 1
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
+    <>
       <div className="mb-[30px] flex h-auto min-h-[50px] flex-col justify-center">
         <p className="text-body-6 text-gray-1">{commonText.line1}</p>
 
@@ -74,6 +74,6 @@ export const IntroSlides = () => {
           />
         </motion.div>
       </AnimatePresence>
-    </div>
+    </>
   )
 }

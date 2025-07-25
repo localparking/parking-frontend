@@ -3,11 +3,12 @@ import React, { createContext, ReactNode, useCallback, useEffect, useState } fro
 import AuthClient from '../lib/auth-client'
 import { SocialLoginType } from '@bridge/types'
 import userService from '@/shared/services/user.service'
+import { UserInfoResponseRoleEnum } from '@data/user-api-axios/api'
 
 export interface User {
   email: string
   nickname: string
-  role: string
+  role: UserInfoResponseRoleEnum
   isOnboarding: boolean
 }
 
@@ -85,7 +86,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const checkAuthStatus = async () => {
       const result = await AuthClient.getAuth()
-
       if (result?.authenticated) await refetchUser()
       else clearAuth()
 

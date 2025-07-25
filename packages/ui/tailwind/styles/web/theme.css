@@ -122,7 +122,7 @@
   --text-caption-2: 0.75rem; /* 12px */
   --text-caption-2--line-height: 1.25rem; /* 20px */
   --text-caption-2--letter-spacing: 0em;
-  --text-caption-2--font-weight: 500; /* Medium */
+  --text-caption-2--font-weight: 600; /* Medium */
 
   --color-background: var(--color-white);
   --color-foreground: var(--color-black);
