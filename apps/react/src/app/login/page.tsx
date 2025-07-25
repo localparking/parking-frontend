@@ -24,7 +24,12 @@ export default function LoginPage() {
       const result = await auth.socialLogin('apple')
 
       if (result.success) {
-        await auth.refetchUser()
+        const user = await auth.refetchUser()
+        if (user?.role === 'GUEST') {
+          navigate({ to: '/onboarding/terms', replace: true })
+        } else {
+          navigate({ to: '/', replace: true })
+        }
       }
     } catch (error: any) {
       open({
@@ -40,7 +45,12 @@ export default function LoginPage() {
         const result = await auth.socialLogin('kakao')
 
         if (result.success) {
-          await auth.refetchUser()
+          const user = await auth.refetchUser()
+          if (user?.role === 'GUEST') {
+            navigate({ to: '/onboarding/terms', replace: true })
+          } else {
+            navigate({ to: '/', replace: true })
+          }
         }
       } else {
         window.location.href = `${VITE_API_URL}/oauth2/authorization/kakao`
