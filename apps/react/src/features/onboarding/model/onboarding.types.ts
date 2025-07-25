@@ -1,18 +1,6 @@
-export type OnboardingStep =
-  | 'splash'
-  | 'landing-1'
-  | 'landing-2'
-  | 'landing-3'
-  | 'login-screen'
-  | 'terms'
-  | 'age-selection'
-  | 'parking-preference'
-  | 'visit-purpose'
-
+export type OnboardingStep = 'terms' | 'age-selection' | 'parking-preference' | 'visit-purpose' | null
 export type AgeRange = '10대' | '20대' | '30대' | '40대' | '50대 이상'
-
 export type ParkingPreference = 'price' | 'space' | 'location'
-
 export type VisitPurpose = 'cafe' | 'restaurant' | 'leisure' | 'life' | 'other'
 
 export interface TermsAgreement {

@@ -1,13 +1,4 @@
-import {
-  OnboardingData,
-  OnboardingState,
-  OnboardingAction,
-  OnboardingStep,
-  AgeRange,
-  ParkingPreference,
-  VisitPurpose,
-  TermsAgreement,
-} from './onboarding.types'
+import { OnboardingData, OnboardingState, OnboardingAction, OnboardingStep, TermsAgreement } from './onboarding.types'
 
 // 초기 약관 동의 상태
 const initialTermsAgreement: TermsAgreement = {
@@ -144,38 +135,28 @@ export const onboardingReducer = (state: OnboardingState, action: OnboardingActi
 }
 
 // 온보딩 단계 순서 정의
-export const ONBOARDING_STEPS: OnboardingStep[] = [
-  'splash',
-  'landing-1',
-  'landing-2',
-  'landing-3',
-  'login-screen',
-  'terms',
-  'age-selection',
-  'parking-preference',
-  'visit-purpose',
-]
+export const ONBOARDING_STEPS: OnboardingStep[] = ['age-selection', 'parking-preference', 'visit-purpose']
 
 // 다음 단계 계산 유틸리티
-export const getNextStep = (currentStep: OnboardingStep): OnboardingStep | null => {
-  const currentIndex = ONBOARDING_STEPS.indexOf(currentStep)
-  if (currentIndex === -1 || currentIndex === ONBOARDING_STEPS.length - 1) {
-    return null
-  }
-  return ONBOARDING_STEPS[currentIndex + 1] ?? null
-}
+// export const getNextStep = (currentStep: OnboardingStep): OnboardingStep | null => {
+//   const currentIndex = ONBOARDING_STEPS.indexOf(currentStep)
+//   if (currentIndex === -1 || currentIndex === ONBOARDING_STEPS.length - 1) {
+//     return null
+//   }
+//   return ONBOARDING_STEPS[currentIndex + 1] ?? null
+// }
 
-// 이전 단계 계산 유틸리티
-export const getPreviousStep = (currentStep: OnboardingStep): OnboardingStep | null => {
-  const currentIndex = ONBOARDING_STEPS.indexOf(currentStep)
-  if (currentIndex <= 0) {
-    return null
-  }
-  return ONBOARDING_STEPS[currentIndex - 1] ?? null
-}
+// // 이전 단계 계산 유틸리티
+// export const getPreviousStep = (currentStep: OnboardingStep): OnboardingStep | null => {
+//   const currentIndex = ONBOARDING_STEPS.indexOf(currentStep)
+//   if (currentIndex <= 0) {
+//     return null
+//   }
+//   return ONBOARDING_STEPS[currentIndex - 1] ?? null
+// }
 
-// 단계 진행률 계산
-export const getStepProgress = (currentStep: OnboardingStep): number => {
-  const currentIndex = ONBOARDING_STEPS.indexOf(currentStep)
-  return Math.round((currentIndex / (ONBOARDING_STEPS.length - 1)) * 100)
-}
+// // 단계 진행률 계산
+// export const getStepProgress = (currentStep: OnboardingStep): number => {
+//   const currentIndex = ONBOARDING_STEPS.indexOf(currentStep)
+//   return Math.round((currentIndex / (ONBOARDING_STEPS.length - 1)) * 100)
+// }

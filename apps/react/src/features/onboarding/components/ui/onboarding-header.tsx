@@ -4,11 +4,10 @@ import { ProgressBar } from './progress-bar'
 import { OnboardingStep } from '../../model/onboarding.types'
 import { cn } from '@ui/common/lib/utils'
 
-interface OnboardingHeaderProps {
+export interface OnboardingHeaderProps {
   showBackButton?: boolean
   onBack?: () => void
   currentStep: OnboardingStep
-  totalSteps: number
   className?: string
 }
 
@@ -16,12 +15,11 @@ export const OnboardingHeader: React.FC<OnboardingHeaderProps> = ({
   showBackButton = true,
   onBack,
   currentStep,
-  totalSteps,
   className = '',
 }) => {
   return (
-    <div className={cn('w-full', className)}>
-      <div className="flex w-full justify-start px-4 pb-2">
+    <div className={cn('w-full pt-[25px]', className)}>
+      <div className="flex w-full justify-start pb-2">
         <button
           onClick={onBack}
           disabled={!showBackButton}
@@ -32,7 +30,8 @@ export const OnboardingHeader: React.FC<OnboardingHeaderProps> = ({
           <ArrowLeft className="h-6 w-6" />
         </button>
       </div>
-      <ProgressBar currentStep={currentStep} currentStepIndex={0} totalSteps={totalSteps} />
+
+      <ProgressBar currentStep={currentStep} />
     </div>
   )
 }

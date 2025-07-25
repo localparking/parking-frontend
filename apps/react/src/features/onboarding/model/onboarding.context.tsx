@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useReducer } from 'react'
+import React, { createContext, useCallback, useContext, useReducer, useState } from 'react'
 import {
   AgeRange,
   OnboardingData,
@@ -7,11 +7,10 @@ import {
   TermsAgreement,
   initialState,
   onboardingReducer,
-  getNextStep,
-  getPreviousStep,
-  getStepProgress,
 } from '../model'
 import { onboardingService } from '../services/onboarding.service'
+import { OnboardingHeaderProps } from '../components/ui/onboarding-header'
+import { OnboardingNavigationButtonsProps } from '../components/ui/onboarding-next-buttons'
 
 interface OnboardingContextValue {
   state: OnboardingData
@@ -19,6 +18,11 @@ interface OnboardingContextValue {
   error?: string
   progress: number
   canProceed: boolean
+
+  navigationBar: OnboardingHeaderProps
+  bottomButton: OnboardingNavigationButtonsProps
+  setNextAction: (onNext: () => void) => void
+  setSkipAction: (onSkip: () => void) => void
 
   setStep: (step: OnboardingData['currentStep']) => void
   goToNextStep: () => void
@@ -50,28 +54,52 @@ enum OnboardingStep {
 }
 
 export const OnboardingProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [state, dispatch] = useReducer(onboardingReducer, initialState)
+  const [navigationBar, setNavigationBar] = useState<OnboardingHeaderProps>({
+    showBackButton: true,
+    onBack: undefined,
+    currentStep: null,
+  })
 
-  const setStep = useCallback((step: OnboardingData['currentStep']) => {
-    dispatch({ type: OnboardingStep.SET_STEP, payload: step })
+  const [bottomButton, setBottomButton] = useState<OnboardingNavigationButtonsProps>({
+    onNext: () => {},
+    onSkip: undefined,
+    nextButtonText: undefined,
+    skipButtonText: undefined,
+    disabled: false,
+    showSkipButton: false,
+    hideSkipButton: false,
+  })
+
+  const setNextAction = useCallback((onNext: () => void) => {
+    setBottomButton((prev) => ({ ...prev, onNext }))
   }, [])
 
-  const goToNextStep = useCallback(() => {
-    const nextStep = getNextStep(state.data.currentStep)
-    if (nextStep) {
-      setStep(nextStep)
-    } else {
-      // visit-purpose 단계가 마지막이므로 온보딩 완료
-      dispatch({ type: OnboardingStep.COMPLETE_ONBOARDING })
-    }
-  }, [state.data.currentStep, setStep])
+  const setSkipAction = useCallback((onSkip: () => void) => {
+    setBottomButton((prev) => ({ ...prev, onSkip }))
+  }, [])
 
-  const goToPreviousStep = useCallback(() => {
-    const prev = getPreviousStep(state.data.currentStep)
-    if (prev) {
-      setStep(prev)
-    }
-  }, [state.data.currentStep, setStep])
+  const [state, dispatch] = useReducer(onboardingReducer, initialState)
+
+  // const setStep = useCallback((step: OnboardingData['currentStep']) => {
+  //   dispatch({ type: OnboardingStep.SET_STEP, payload: step })
+  // }, [])
+
+  // const goToNextStep = useCallback(() => {
+  //   const nextStep = getNextStep(state.data.currentStep)
+  //   if (nextStep) {
+  //     setStep(nextStep)
+  //   } else {
+  //     // visit-purpose 단계가 마지막이므로 온보딩 완료
+  //     dispatch({ type: OnboardingStep.COMPLETE_ONBOARDING })
+  //   }
+  // }, [state.data.currentStep, setStep])
+
+  // const goToPreviousStep = useCallback(() => {
+  //   const prev = getPreviousStep(state.data.currentStep)
+  //   if (prev) {
+  //     setStep(prev)
+  //   }
+  // }, [state.data.currentStep, setStep])
 
   const setAgeRange = useCallback((age: AgeRange) => {
     dispatch({ type: OnboardingStep.SET_AGE_RANGE, payload: age })
@@ -205,12 +233,12 @@ export const OnboardingProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     dispatch({ type: OnboardingStep.RESET_ONBOARDING })
   }, [])
 
-  const skipCurrentStep = useCallback(() => {
-    const { currentStep } = state.data
-    if (currentStep === 'age-selection' || currentStep === 'parking-preference' || currentStep === 'visit-purpose') {
-      goToNextStep()
-    }
-  }, [state.data.currentStep, goToNextStep])
+  // const skipCurrentStep = useCallback(() => {
+  //   const { currentStep } = state.data
+  //   if (currentStep === 'age-selection' || currentStep === 'parking-preference' || currentStep === 'visit-purpose') {
+  //     goToNextStep()
+  //   }
+  // }, [state.data.currentStep, goToNextStep])
 
   const canProceedFn = () => {
     const { currentStep, ageRange, parkingPreferences, visitPurposes, termsAgreement } = state.data
@@ -233,11 +261,11 @@ export const OnboardingProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     state: state.data,
     isLoading: state.isLoading,
     error: state.error,
-    progress: getStepProgress(state.data.currentStep),
+    // progress: getStepProgress(state.data.currentStep),
     canProceed: canProceedFn(),
-    setStep,
-    goToNextStep,
-    goToPreviousStep,
+    // setStep,
+    // goToNextStep,
+    // goToPreviousStep,
     setAgeRange,
     toggleParkingPreference,
     toggleVisitPurpose,
@@ -246,7 +274,11 @@ export const OnboardingProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     completeOnboarding,
     submitOnboardingToServer,
     resetOnboarding,
-    skipCurrentStep,
+    navigationBar,
+    bottomButton,
+    setNextAction,
+    setSkipAction,
+    // skipCurrentStep,
   }
 
   return <OnboardingContext.Provider value={contextValue}>{children}</OnboardingContext.Provider>

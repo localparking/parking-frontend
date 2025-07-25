@@ -2,13 +2,13 @@ import React from 'react'
 import { OnboardingStep } from '../../model/onboarding.types'
 
 interface ProgressBarProps {
-  currentStep: OnboardingStep
-  totalSteps: number
-  currentStepIndex: number
+  currentStep?: OnboardingStep
 }
 
-export const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep, totalSteps, currentStepIndex }) => {
+export const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }) => {
   const progressSteps = 3
+
+  if (!currentStep) return null
 
   const getCurrentProgress = () => {
     if (currentStep === 'age-selection') return 1
@@ -18,10 +18,6 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep, totalStep
   }
 
   const currentProgress = getCurrentProgress()
-
-  if (!['age-selection', 'parking-preference', 'visit-purpose'].includes(currentStep)) {
-    return null
-  }
 
   return (
     <div className="flex items-center gap-2 p-4">
