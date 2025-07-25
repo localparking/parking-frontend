@@ -38,7 +38,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       // 온보딩 미완료
       // if (user.isOnboarding === false) {
       // 1-2. 약관동의 미완료(게스트) 유저는 온보딩 플로우로 강제
-      if (user.role === 'GUEST' && pathname !== '/onboarding/terms') {
+      if (user.role === 'GUEST' && !pathname.startsWith('/onboarding/terms')) {
         throw redirect({ to: '/onboarding/terms' })
       }
       // 온보딩 미완료 && 약관동의 완료(유저) && 현재 온보딩 페이지가 아닌 경우만 리다이렉트

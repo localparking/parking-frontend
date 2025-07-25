@@ -11,16 +11,24 @@
 // Import Routes
 
 import { Route as rootRoute } from './app/__root'
+import { Route as OnboardingLayoutImport } from './app/onboarding/layout'
 import { Route as MapLayoutImport } from './app/map/layout'
 import { Route as PageImport } from './app/page'
 import { Route as MapPageImport } from './app/map/page'
+import { Route as LoginPageImport } from './app/login/page'
 import { Route as OnboardingTermsPageImport } from './app/onboarding/terms/page'
 import { Route as OnboardingLandingPageImport } from './app/onboarding/landing/page'
 import { Route as OnboardingFinalOnboardingPageImport } from './app/onboarding/final-onboarding/page'
-import { Route as authLoginPageImport } from './app/(auth)/login/page'
-import { Route as authLoginSuccessPageImport } from './app/(auth)/login/success/page'
+import { Route as LoginSuccessPageImport } from './app/login/success/page'
+import { Route as OnboardingTermsDetailPageImport } from './app/onboarding/terms/detail/page'
 
 // Create/Update Routes
+
+const OnboardingLayoutRoute = OnboardingLayoutImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const MapLayoutRoute = MapLayoutImport.update({
   id: '/map',
@@ -40,34 +48,41 @@ const MapPageRoute = MapPageImport.update({
   getParentRoute: () => MapLayoutRoute,
 } as any)
 
-const OnboardingTermsPageRoute = OnboardingTermsPageImport.update({
-  id: '/onboarding/terms/',
-  path: '/onboarding/terms/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const OnboardingLandingPageRoute = OnboardingLandingPageImport.update({
-  id: '/onboarding/landing/',
-  path: '/onboarding/landing/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const OnboardingFinalOnboardingPageRoute = OnboardingFinalOnboardingPageImport.update({
-  id: '/onboarding/final-onboarding/',
-  path: '/onboarding/final-onboarding/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const authLoginPageRoute = authLoginPageImport.update({
-  id: '/(auth)/login/',
+const LoginPageRoute = LoginPageImport.update({
+  id: '/login/',
   path: '/login/',
   getParentRoute: () => rootRoute,
 } as any)
 
-const authLoginSuccessPageRoute = authLoginSuccessPageImport.update({
-  id: '/(auth)/login/success/',
+const OnboardingTermsPageRoute = OnboardingTermsPageImport.update({
+  id: '/terms/',
+  path: '/terms/',
+  getParentRoute: () => OnboardingLayoutRoute,
+} as any)
+
+const OnboardingLandingPageRoute = OnboardingLandingPageImport.update({
+  id: '/landing/',
+  path: '/landing/',
+  getParentRoute: () => OnboardingLayoutRoute,
+} as any)
+
+const OnboardingFinalOnboardingPageRoute =
+  OnboardingFinalOnboardingPageImport.update({
+    id: '/final-onboarding/',
+    path: '/final-onboarding/',
+    getParentRoute: () => OnboardingLayoutRoute,
+  } as any)
+
+const LoginSuccessPageRoute = LoginSuccessPageImport.update({
+  id: '/login/success/',
   path: '/login/success/',
   getParentRoute: () => rootRoute,
+} as any)
+
+const OnboardingTermsDetailPageRoute = OnboardingTermsDetailPageImport.update({
+  id: '/terms/detail/',
+  path: '/terms/detail/',
+  getParentRoute: () => OnboardingLayoutRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -88,6 +103,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MapLayoutImport
       parentRoute: typeof rootRoute
     }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingLayoutImport
+      parentRoute: typeof rootRoute
+    }
+    '/login/': {
+      id: '/login/'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginPageImport
+      parentRoute: typeof rootRoute
+    }
     '/map/': {
       id: '/map/'
       path: '/'
@@ -95,40 +124,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MapPageImport
       parentRoute: typeof MapLayoutImport
     }
-    '/(auth)/login/': {
-      id: '/(auth)/login/'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof authLoginPageImport
+    '/login/success/': {
+      id: '/login/success/'
+      path: '/login/success'
+      fullPath: '/login/success'
+      preLoaderRoute: typeof LoginSuccessPageImport
       parentRoute: typeof rootRoute
     }
     '/onboarding/final-onboarding/': {
       id: '/onboarding/final-onboarding/'
-      path: '/onboarding/final-onboarding'
+      path: '/final-onboarding'
       fullPath: '/onboarding/final-onboarding'
       preLoaderRoute: typeof OnboardingFinalOnboardingPageImport
-      parentRoute: typeof rootRoute
+      parentRoute: typeof OnboardingLayoutImport
     }
     '/onboarding/landing/': {
       id: '/onboarding/landing/'
-      path: '/onboarding/landing'
+      path: '/landing'
       fullPath: '/onboarding/landing'
       preLoaderRoute: typeof OnboardingLandingPageImport
-      parentRoute: typeof rootRoute
+      parentRoute: typeof OnboardingLayoutImport
     }
     '/onboarding/terms/': {
       id: '/onboarding/terms/'
-      path: '/onboarding/terms'
+      path: '/terms'
       fullPath: '/onboarding/terms'
       preLoaderRoute: typeof OnboardingTermsPageImport
-      parentRoute: typeof rootRoute
+      parentRoute: typeof OnboardingLayoutImport
     }
-    '/(auth)/login/success/': {
-      id: '/(auth)/login/success/'
-      path: '/login/success'
-      fullPath: '/login/success'
-      preLoaderRoute: typeof authLoginSuccessPageImport
-      parentRoute: typeof rootRoute
+    '/onboarding/terms/detail/': {
+      id: '/onboarding/terms/detail/'
+      path: '/terms/detail'
+      fullPath: '/onboarding/terms/detail'
+      preLoaderRoute: typeof OnboardingTermsDetailPageImport
+      parentRoute: typeof OnboardingLayoutImport
     }
   }
 }
@@ -143,39 +172,64 @@ const MapLayoutRouteChildren: MapLayoutRouteChildren = {
   MapPageRoute: MapPageRoute,
 }
 
-const MapLayoutRouteWithChildren = MapLayoutRoute._addFileChildren(MapLayoutRouteChildren)
+const MapLayoutRouteWithChildren = MapLayoutRoute._addFileChildren(
+  MapLayoutRouteChildren,
+)
+
+interface OnboardingLayoutRouteChildren {
+  OnboardingFinalOnboardingPageRoute: typeof OnboardingFinalOnboardingPageRoute
+  OnboardingLandingPageRoute: typeof OnboardingLandingPageRoute
+  OnboardingTermsPageRoute: typeof OnboardingTermsPageRoute
+  OnboardingTermsDetailPageRoute: typeof OnboardingTermsDetailPageRoute
+}
+
+const OnboardingLayoutRouteChildren: OnboardingLayoutRouteChildren = {
+  OnboardingFinalOnboardingPageRoute: OnboardingFinalOnboardingPageRoute,
+  OnboardingLandingPageRoute: OnboardingLandingPageRoute,
+  OnboardingTermsPageRoute: OnboardingTermsPageRoute,
+  OnboardingTermsDetailPageRoute: OnboardingTermsDetailPageRoute,
+}
+
+const OnboardingLayoutRouteWithChildren =
+  OnboardingLayoutRoute._addFileChildren(OnboardingLayoutRouteChildren)
 
 export interface FileRoutesByFullPath {
   '/': typeof PageRoute
   '/map': typeof MapLayoutRouteWithChildren
+  '/onboarding': typeof OnboardingLayoutRouteWithChildren
+  '/login': typeof LoginPageRoute
   '/map/': typeof MapPageRoute
-  '/login': typeof authLoginPageRoute
+  '/login/success': typeof LoginSuccessPageRoute
   '/onboarding/final-onboarding': typeof OnboardingFinalOnboardingPageRoute
   '/onboarding/landing': typeof OnboardingLandingPageRoute
   '/onboarding/terms': typeof OnboardingTermsPageRoute
-  '/login/success': typeof authLoginSuccessPageRoute
+  '/onboarding/terms/detail': typeof OnboardingTermsDetailPageRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof PageRoute
+  '/onboarding': typeof OnboardingLayoutRouteWithChildren
+  '/login': typeof LoginPageRoute
   '/map': typeof MapPageRoute
-  '/login': typeof authLoginPageRoute
+  '/login/success': typeof LoginSuccessPageRoute
   '/onboarding/final-onboarding': typeof OnboardingFinalOnboardingPageRoute
   '/onboarding/landing': typeof OnboardingLandingPageRoute
   '/onboarding/terms': typeof OnboardingTermsPageRoute
-  '/login/success': typeof authLoginSuccessPageRoute
+  '/onboarding/terms/detail': typeof OnboardingTermsDetailPageRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof PageRoute
   '/map': typeof MapLayoutRouteWithChildren
+  '/onboarding': typeof OnboardingLayoutRouteWithChildren
+  '/login/': typeof LoginPageRoute
   '/map/': typeof MapPageRoute
-  '/(auth)/login/': typeof authLoginPageRoute
+  '/login/success/': typeof LoginSuccessPageRoute
   '/onboarding/final-onboarding/': typeof OnboardingFinalOnboardingPageRoute
   '/onboarding/landing/': typeof OnboardingLandingPageRoute
   '/onboarding/terms/': typeof OnboardingTermsPageRoute
-  '/(auth)/login/success/': typeof authLoginSuccessPageRoute
+  '/onboarding/terms/detail/': typeof OnboardingTermsDetailPageRoute
 }
 
 export interface FileRouteTypes {
@@ -183,55 +237,59 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/map'
-    | '/map/'
+    | '/onboarding'
     | '/login'
+    | '/map/'
+    | '/login/success'
     | '/onboarding/final-onboarding'
     | '/onboarding/landing'
     | '/onboarding/terms'
-    | '/login/success'
+    | '/onboarding/terms/detail'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/map'
+    | '/onboarding'
     | '/login'
+    | '/map'
+    | '/login/success'
     | '/onboarding/final-onboarding'
     | '/onboarding/landing'
     | '/onboarding/terms'
-    | '/login/success'
+    | '/onboarding/terms/detail'
   id:
     | '__root__'
     | '/'
     | '/map'
+    | '/onboarding'
+    | '/login/'
     | '/map/'
-    | '/(auth)/login/'
+    | '/login/success/'
     | '/onboarding/final-onboarding/'
     | '/onboarding/landing/'
     | '/onboarding/terms/'
-    | '/(auth)/login/success/'
+    | '/onboarding/terms/detail/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   PageRoute: typeof PageRoute
   MapLayoutRoute: typeof MapLayoutRouteWithChildren
-  authLoginPageRoute: typeof authLoginPageRoute
-  OnboardingFinalOnboardingPageRoute: typeof OnboardingFinalOnboardingPageRoute
-  OnboardingLandingPageRoute: typeof OnboardingLandingPageRoute
-  OnboardingTermsPageRoute: typeof OnboardingTermsPageRoute
-  authLoginSuccessPageRoute: typeof authLoginSuccessPageRoute
+  OnboardingLayoutRoute: typeof OnboardingLayoutRouteWithChildren
+  LoginPageRoute: typeof LoginPageRoute
+  LoginSuccessPageRoute: typeof LoginSuccessPageRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   PageRoute: PageRoute,
   MapLayoutRoute: MapLayoutRouteWithChildren,
-  authLoginPageRoute: authLoginPageRoute,
-  OnboardingFinalOnboardingPageRoute: OnboardingFinalOnboardingPageRoute,
-  OnboardingLandingPageRoute: OnboardingLandingPageRoute,
-  OnboardingTermsPageRoute: OnboardingTermsPageRoute,
-  authLoginSuccessPageRoute: authLoginSuccessPageRoute,
+  OnboardingLayoutRoute: OnboardingLayoutRouteWithChildren,
+  LoginPageRoute: LoginPageRoute,
+  LoginSuccessPageRoute: LoginSuccessPageRoute,
 }
 
-export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileTypes<FileRouteTypes>()
+export const routeTree = rootRoute
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()
 
 /* ROUTE_MANIFEST_START
 {
@@ -241,11 +299,9 @@ export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileT
       "children": [
         "/",
         "/map",
-        "/(auth)/login/",
-        "/onboarding/final-onboarding/",
-        "/onboarding/landing/",
-        "/onboarding/terms/",
-        "/(auth)/login/success/"
+        "/onboarding",
+        "/login/",
+        "/login/success/"
       ]
     },
     "/": {
@@ -257,24 +313,40 @@ export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileT
         "/map/"
       ]
     },
+    "/onboarding": {
+      "filePath": "onboarding/layout.tsx",
+      "children": [
+        "/onboarding/final-onboarding/",
+        "/onboarding/landing/",
+        "/onboarding/terms/",
+        "/onboarding/terms/detail/"
+      ]
+    },
+    "/login/": {
+      "filePath": "login/page.tsx"
+    },
     "/map/": {
       "filePath": "map/page.tsx",
       "parent": "/map"
     },
-    "/(auth)/login/": {
-      "filePath": "(auth)/login/page.tsx"
+    "/login/success/": {
+      "filePath": "login/success/page.tsx"
     },
     "/onboarding/final-onboarding/": {
-      "filePath": "onboarding/final-onboarding/page.tsx"
+      "filePath": "onboarding/final-onboarding/page.tsx",
+      "parent": "/onboarding"
     },
     "/onboarding/landing/": {
-      "filePath": "onboarding/landing/page.tsx"
+      "filePath": "onboarding/landing/page.tsx",
+      "parent": "/onboarding"
     },
     "/onboarding/terms/": {
-      "filePath": "onboarding/terms/page.tsx"
+      "filePath": "onboarding/terms/page.tsx",
+      "parent": "/onboarding"
     },
-    "/(auth)/login/success/": {
-      "filePath": "(auth)/login/success/page.tsx"
+    "/onboarding/terms/detail/": {
+      "filePath": "onboarding/terms/detail/page.tsx",
+      "parent": "/onboarding"
     }
   }
 }

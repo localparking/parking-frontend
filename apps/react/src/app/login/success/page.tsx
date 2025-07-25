@@ -1,9 +1,9 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import z from 'zod'
-import Cookies from 'js-cookie'
 import { useEffect } from 'react'
 import { saveTokens } from '@/shared/libs/token'
-import { authClient, useAuth } from '@/features/auth'
+import { useAuth } from '@/features/auth'
+import { UserInfoResponseRoleEnum } from '@data/user-api-axios/api'
 
 const searchSchema = z.object({
   role: z.string().optional(),
@@ -11,7 +11,7 @@ const searchSchema = z.object({
   refreshToken: z.string().optional(),
 })
 
-export const Route = createFileRoute('/(auth)/login/success/')({
+export const Route = createFileRoute('/login/success/')({
   component: RouteComponent,
   validateSearch: searchSchema,
   loaderDeps: (search) => search,
@@ -31,12 +31,12 @@ function RouteComponent() {
       if (accessToken && refreshToken) {
         saveTokens(accessToken, refreshToken)
 
-        await auth.refetchUser()
+        const user = await auth.refetchUser()
 
-        if (auth.user) {
-          navigate({ to: '/', replace: true })
+        if (user?.role === UserInfoResponseRoleEnum.Guest) {
+          navigate({ to: '/onboarding/terms', replace: true })
         } else {
-          navigate({ to: '/login', replace: true })
+          navigate({ to: '/', replace: true })
         }
       } else {
         navigate({ to: '/login', replace: true })

@@ -1,23 +1,60 @@
-import React from 'react'
-import { Button } from '@ui/common/components/button'
+const { VITE_API_URL } = import.meta.env
+
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { isWebView } from '@/shared/utils/webview'
+import { useAlertDialog } from '@ui/common/hooks/alert-dialog.hook'
+import { useAuth } from '@/features/auth'
+
 import MainLogoImage from '@ui/common/assets/3d/mainlogo.png'
 import KakaoLogoIcon from '@ui/common/assets/icons/kakao-logo.svg'
 import AppleLogoIcon from '@ui/common/assets/icons/apple-logo.svg'
-import { OnboardingLayout } from '../ui/onboarding-layout'
-import { isWebView } from '@/shared/utils/webview'
+import { Button } from '@ui/common/components/button'
 
-interface LoginScreenProps {
-  onNext: () => void
-  onKakaoLogin: () => void
-  onAppleLogin: () => void
-  onGuestStart: () => void
-}
+export const Route = createFileRoute('/login/')({
+  component: LoginPage,
+})
 
-export const LoginScreen: React.FC<LoginScreenProps> = ({ onNext, onKakaoLogin, onAppleLogin, onGuestStart }) => {
-  const showAppleLogin = isWebView()
+export default function LoginPage() {
+  const auth = useAuth()
+  const navigate = useNavigate()
+  const { open } = useAlertDialog()
+
+  const handleAppleLogin = async () => {
+    try {
+      const result = await auth.socialLogin('apple')
+
+      if (result.success) {
+        await auth.refetchUser()
+      }
+    } catch (error: any) {
+      open({
+        title: '애플 로그인 실패',
+        description: error?.message || '애플 로그인에 실패했습니다.',
+      })
+    }
+  }
+
+  const handleKakaoLogin = async () => {
+    try {
+      if (isWebView()) {
+        const result = await auth.socialLogin('kakao')
+
+        if (result.success) {
+          await auth.refetchUser()
+        }
+      } else {
+        window.location.href = `${VITE_API_URL}/oauth2/authorization/kakao`
+      }
+    } catch (error: any) {
+      open({
+        title: '카카오 로그인 실패',
+        description: error?.message || '카카오 로그인에 실패했습니다.',
+      })
+    }
+  }
+
   return (
-    <OnboardingLayout currentStep="login-screen" totalSteps={3} hideBackButton hideSkipButton>
-      {/* 중앙 컨텐츠 */}
+    <div className="flex min-h-screen w-full flex-col bg-white px-[34px] pb-6">
       <div className="flex flex-1 flex-col items-center justify-center">
         <div className="mb-12 text-center">
           <h1 className="text-body-1 text-gray-1">
@@ -32,21 +69,18 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onNext, onKakaoLogin, 
         </div>
       </div>
 
-      {/* 하단 로그인 버튼들 */}
-      <div className="flex w-full flex-col gap-4 px-[10px] pb-8">
-        {/* 카카오 로그인 */}
+      <div className="flex w-full flex-col gap-4 pb-8">
         <Button
-          onClick={onKakaoLogin}
+          onClick={handleKakaoLogin}
           className="relative flex h-[39px] w-full items-center justify-center gap-2 rounded-[10px] bg-kakao text-caption-1 text-gray-1 transition-all duration-150 active:scale-[0.98] active:bg-[#FFE600]"
         >
           <KakaoLogoIcon className="absolute left-[30px] h-[20px] w-[20px]" />
           카카오로 시작하기
         </Button>
 
-        {/* 애플 로그인 */}
-        {showAppleLogin && (
+        {isWebView() && (
           <Button
-            onClick={onAppleLogin}
+            onClick={handleAppleLogin}
             className="relative flex h-[39px] w-full items-center justify-center gap-2 rounded-[10px] bg-gray-1 text-caption-1 text-white transition-all duration-150 active:scale-[0.98] active:bg-[#111111]"
           >
             <AppleLogoIcon className="absolute left-[30px] h-[20px] w-[20px]" />
@@ -54,16 +88,15 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onNext, onKakaoLogin, 
           </Button>
         )}
 
-        {/* 로그인 없이 시작하기 */}
         <div className="text-center">
           <button
-            onClick={onGuestStart}
+            onClick={() => navigate({ to: '/', replace: true })}
             className="text-caption-2 text-gray-2 underline decoration-gray-3 decoration-[0.7px] underline-offset-2"
           >
             로그인 없이 시작하기
           </button>
         </div>
       </div>
-    </OnboardingLayout>
+    </div>
   )
 }
