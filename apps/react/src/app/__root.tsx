@@ -1,7 +1,7 @@
 import React from 'react'
 import { AuthContext } from '@/features/auth/hooks/use-auth'
 import { QueryClient } from '@tanstack/react-query'
-import { createRootRouteWithContext, Outlet, redirect, useRouterState } from '@tanstack/react-router'
+import { createRootRouteWithContext, Outlet, redirect } from '@tanstack/react-router'
 import { match } from 'path-to-regexp'
 import { cn } from '@ui/common/lib/utils'
 import { isWebView } from '@/shared/utils/webview'
@@ -45,7 +45,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
     // 2. 미인증 사용자 (로그아웃 상태)
     else if (!authenticated || !user) {
       // 2-1. 접근하려는 페이지가 접근 불가능한 페이지인 경우 리다이렉트
-      if (onRestricted) throw redirect({ to: '/' })
+      if (onRestricted) throw redirect({ to: '/map' })
 
       // 2-2. (설치 후 첫 방문자) 랜딩 페이지로 보내는 로직
       const hasCompletedLanding = isWebView()
