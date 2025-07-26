@@ -1,5 +1,5 @@
 import { cn } from '@ui/common/lib/utils'
-import { useOnboardingContext } from '../../model/onboarding.context'
+import { useOnboardingContext } from '../../context/onboarding-context'
 import { CategoryResponse } from '@data/user-api-axios/api'
 
 import CoffeeImage from '@ui/common/assets/3d/coffee-icon.png'

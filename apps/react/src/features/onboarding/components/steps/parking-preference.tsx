@@ -3,7 +3,7 @@ import CashImage from '@ui/common/assets/3d/cash.png'
 import SpaceImage from '@ui/common/assets/3d/space.png'
 import LocationImage from '@ui/common/assets/3d/locate.png'
 import { cn } from '@ui/common/lib/utils'
-import { useOnboardingContext } from '../../model/onboarding.context'
+import { useOnboardingContext } from '../../context/onboarding-context'
 import { Weight } from '../../model'
 
 export const ParkingPreference: React.FC = () => {

@@ -50,7 +50,7 @@ const OnboardingCheckboxComponent: React.FC<OnboardingCheckboxProps> = ({
           to={`/onboarding/terms/detail`}
           search={{ termId: id }}
         >
-          <ChevronRight className="h-4 w-4" />
+          <p className="text-caption-2 text-gray-2">보기</p>
         </Link>
       )}
     </div>
