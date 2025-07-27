@@ -1,35 +1,111 @@
-import { useNavigate } from '@tanstack/react-router'
-import { cn } from '@ui/common/lib/utils'
-import { createContext, useContext, useState, ReactNode, useCallback, useEffect } from 'react'
-import { useMap } from '../hooks'
+import { createContext, useContext, useState, ReactNode, useEffect } from 'react'
+import {
+  PageResponseStoreListResponse,
+  ParkingLotSearchRequestSortEnum,
+  ResponseDtoPageResponseStoreListResponse,
+  StoreListResponse,
+  StoreSearchRequestSortEnum,
+} from '@data/user-api-axios/api'
+import { useMapNavigation } from '../hooks'
+import { MapInitOptions } from '../model'
+import { useNaverMap } from '../hooks/use-initialize-map'
+import storeService from '@/shared/services/store.service'
+import { useQuery } from '@tanstack/react-query'
+
+enum DayOfWeek {
+  MONDAY = 'MONDAY',
+  TUESDAY = 'TUESDAY',
+  WEDNESDAY = 'WEDNESDAY',
+  THURSDAY = 'THURSDAY',
+  FRIDAY = 'FRIDAY',
+  SATURDAY = 'SATURDAY',
+  SUNDAY = 'SUNDAY',
+}
+
+enum Congestion {
+  LOW = '여유',
+  MEDIUM = '보통',
+  HIGH = '혼잡',
+}
+
+interface StoreSearchParams {
+  sort: StoreSearchRequestSortEnum
+  categoryId?: number
+  maxFreeMin?: number
+  isOpen?: boolean
+  is24Hours?: boolean
+  checkDayOfWeek?: DayOfWeek
+  checkTime?: string
+  page: number
+}
+
+interface ParkingLotSearchParams {
+  sort: ParkingLotSearchRequestSortEnum
+  isFree?: boolean
+  isRealtime?: boolean
+  congestion?: Congestion[]
+  maxFeePerHour?: number
+  isOpen?: boolean
+  is24Hours?: boolean
+  checkDayOfWeek?: DayOfWeek
+  checkTime?: string
+  page: number
+}
 
 interface MapContextType {
-  data: []
-  isMapLoaded: boolean
+  isMapReady: boolean
+  storeSearchParams: StoreSearchParams
+  setStoreSearchParams: React.Dispatch<React.SetStateAction<StoreSearchParams>>
+  parkingLotSearchParams: ParkingLotSearchParams
+  setParkingLotSearchParams: React.Dispatch<React.SetStateAction<ParkingLotSearchParams>>
+  storeData?: PageResponseStoreListResponse
+  isStoreDataLoading: boolean
+  storeDataError?: Error | null
 }
 
 const MapContext = createContext<MapContextType | undefined>(undefined)
 
 export function MapProvider({ children }: { children: ReactNode }) {
-  const [data, setData] = useState<MapContextType['data']>([])
-  const [isMapLoaded, setIsMapLoaded] = useState(false)
+  const [storeSearchParams, setStoreSearchParams] = useState<StoreSearchParams>({
+    sort: StoreSearchRequestSortEnum.Distance,
+    page: 0,
+  })
+  const [parkingLotSearchParams, setParkingLotSearchParams] = useState<ParkingLotSearchParams>({
+    sort: ParkingLotSearchRequestSortEnum.Distance,
+    page: 0,
+  })
 
-  const { loadNaverMapScript, initializeMap } = useMap()
+  const { moveTo, currentMapInfo, isMapReady } = useNaverMap()
 
-  useEffect(() => {
-    if (typeof window.naver === 'undefined') {
-      loadNaverMapScript()
-    } else {
-      initializeMap()
-    }
-    setIsMapLoaded(true)
-  }, [])
+  const {
+    data: storeData,
+    isLoading: isStoreDataLoading,
+    error: storeDataError,
+  } = useQuery({
+    queryKey: ['stores', 'mapSearch', storeSearchParams, currentMapInfo.center],
+    queryFn: async () => {
+      const { data } = await storeService.postStoreMapSearch({
+        ...storeSearchParams,
+        lat: currentMapInfo.center.lat,
+        lon: currentMapInfo.center.lng,
+      })
+      return data
+    },
+    select: (data: ResponseDtoPageResponseStoreListResponse) => data.data,
+    enabled: isMapReady,
+  })
 
   return (
     <MapContext.Provider
       value={{
-        data,
-        isMapLoaded,
+        isMapReady,
+        storeSearchParams,
+        setStoreSearchParams,
+        parkingLotSearchParams,
+        setParkingLotSearchParams,
+        storeData,
+        isStoreDataLoading,
+        storeDataError,
       }}
     >
       {children}

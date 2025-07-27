@@ -2,10 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 
 // 훅이 반환할 지도 정보의 타입을 정의합니다.
 interface MapInfo {
-  center: {
-    lat: number
-    lng: number
-  }
+  center: naver.maps.LatLngObjectLiteral
   zoom: number
 }
 
@@ -13,7 +10,7 @@ interface MapInfo {
 interface UseNaverMapResult {
   mapInstance: naver.maps.Map | null
   currentMapInfo: MapInfo
-  moveTo: (position: naver.maps.Coord, zoom?: number) => void
+  moveTo: (position: naver.maps.CoordLiteral, zoom?: number) => void
   isMapReady: boolean
 }
 
@@ -21,7 +18,7 @@ export const useNaverMap = (mapId = 'map'): UseNaverMapResult => {
   const mapInstanceRef = useRef<naver.maps.Map | null>(null)
   const [isMapReady, setIsMapReady] = useState<boolean>(false)
   const [currentMapInfo, setCurrentMapInfo] = useState<MapInfo>({
-    center: { lat: 37.5665, lng: 126.978 },
+    center: { lat: 37.498095, lng: 127.02761 }, // 기본 위치 (서울 강남구)
     zoom: 15,
   })
 
@@ -52,7 +49,7 @@ export const useNaverMap = (mapId = 'map'): UseNaverMapResult => {
   }, [])
 
   // 특정 위치와 줌 레벨로 지도를 부드럽게 이동시키는 함수
-  const moveTo = useCallback((position: naver.maps.Coord, zoom?: number) => {
+  const moveTo = useCallback((position: naver.maps.CoordLiteral, zoom?: number) => {
     const map = mapInstanceRef.current
     if (!map) return
 
@@ -68,10 +65,9 @@ export const useNaverMap = (mapId = 'map'): UseNaverMapResult => {
       const mapContainer = document.getElementById(mapId)
       if (!mapContainer || !naver) return
 
-      const { center, zoom } = currentMapInfo
       const mapOptions: naver.maps.MapOptions = {
-        center: { x: center.lng, y: center.lat },
-        zoom: zoom,
+        center: currentMapInfo.center,
+        zoom: currentMapInfo.zoom,
         mapDataControl: false,
       }
 
