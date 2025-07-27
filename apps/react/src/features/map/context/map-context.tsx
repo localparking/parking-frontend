@@ -1,14 +1,11 @@
-import { createContext, useContext, useState, ReactNode, useEffect } from 'react'
+import { createContext, useContext, useState, ReactNode } from 'react'
 import {
   PageResponseStoreListResponse,
   ParkingLotSearchRequestSortEnum,
   ResponseDtoPageResponseStoreListResponse,
-  StoreListResponse,
   StoreSearchRequestSortEnum,
 } from '@data/user-api-axios/api'
-import { useMapNavigation } from '../hooks'
-import { MapInitOptions } from '../model'
-import { useNaverMap } from '../hooks/use-initialize-map'
+import { useNaverMap } from '../hooks/use-naver-map'
 import storeService from '@/shared/services/store.service'
 import { useQuery } from '@tanstack/react-query'
 
