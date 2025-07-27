@@ -36,7 +36,7 @@ function RouteComponent() {
         if (user?.role === UserInfoResponseRoleEnum.Guest) {
           navigate({ to: '/onboarding/terms', replace: true })
         } else {
-          navigate({ to: '/', replace: true })
+          navigate({ to: '/map', replace: true })
         }
       } else {
         navigate({ to: '/login', replace: true })

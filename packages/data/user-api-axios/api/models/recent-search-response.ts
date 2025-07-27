@@ -12,12 +12,28 @@
  * Do not edit the class manually.
  */
 
-export * from './apis/admin-api'
-export * from './apis/auth-api'
-export * from './apis/category-api'
-export * from './apis/onboarding-api'
-export * from './apis/parking-api'
-export * from './apis/register-api'
-export * from './apis/search-api'
-export * from './apis/store-api'
-export * from './apis/user-api'
+/**
+ *
+ * @export
+ * @interface RecentSearchResponse
+ */
+export interface RecentSearchResponse {
+  /**
+   *
+   * @type {number}
+   * @memberof RecentSearchResponse
+   */
+  id: number
+  /**
+   *
+   * @type {string}
+   * @memberof RecentSearchResponse
+   */
+  query: string
+  /**
+   *
+   * @type {string}
+   * @memberof RecentSearchResponse
+   */
+  date: string
+}

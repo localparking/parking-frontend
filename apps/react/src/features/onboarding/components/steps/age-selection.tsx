@@ -1,6 +1,6 @@
 import React from 'react'
 import { cn } from '@ui/common/lib/utils'
-import { useOnboardingContext } from '../../model/onboarding.context'
+import { useOnboardingContext } from '../../context/onboarding-context'
 import { AgeRange } from '../../model'
 
 interface AgeSelectionProps {

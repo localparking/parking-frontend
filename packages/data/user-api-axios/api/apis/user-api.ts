@@ -32,6 +32,8 @@ import {
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, type RequestArgs, BaseAPI, RequiredError, operationServerMap } from '../base'
 // @ts-ignore
+import type { ResponseDtoUnit } from '../models'
+// @ts-ignore
 import type { ResponseDtoUserInfoResponse } from '../models'
 /**
  * UserApi - axios parameter creator
@@ -55,6 +57,38 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
       }
 
       const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication Bearer Token required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * 로그인된 사용자의 계정을 탈퇴 처리합니다.
+     * @summary 회원 탈퇴
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    withdrawUser: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+      const localVarPath = `/user/withdraw`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
 
@@ -102,6 +136,27 @@ export const UserApiFp = function (configuration?: Configuration) {
           configuration
         )(axios, localVarOperationServerBasePath || basePath)
     },
+    /**
+     * 로그인된 사용자의 계정을 탈퇴 처리합니다.
+     * @summary 회원 탈퇴
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async withdrawUser(
+      options?: RawAxiosRequestConfig
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoUnit>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.withdrawUser(options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['UserApi.withdrawUser']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
   }
 }
 
@@ -120,6 +175,15 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
      */
     getMyInfo(options?: RawAxiosRequestConfig): AxiosPromise<ResponseDtoUserInfoResponse> {
       return localVarFp.getMyInfo(options).then((request) => request(axios, basePath))
+    },
+    /**
+     * 로그인된 사용자의 계정을 탈퇴 처리합니다.
+     * @summary 회원 탈퇴
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    withdrawUser(options?: RawAxiosRequestConfig): AxiosPromise<ResponseDtoUnit> {
+      return localVarFp.withdrawUser(options).then((request) => request(axios, basePath))
     },
   }
 }
@@ -141,6 +205,19 @@ export class UserApi extends BaseAPI {
   public getMyInfo(options?: RawAxiosRequestConfig) {
     return UserApiFp(this.configuration)
       .getMyInfo(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * 로그인된 사용자의 계정을 탈퇴 처리합니다.
+   * @summary 회원 탈퇴
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof UserApi
+   */
+  public withdrawUser(options?: RawAxiosRequestConfig) {
+    return UserApiFp(this.configuration)
+      .withdrawUser(options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

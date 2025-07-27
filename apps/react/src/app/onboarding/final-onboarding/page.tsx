@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { OnboardingHeader, OnboardingNavigationButtons } from '@/features/onboarding/components'
 import { categoryService } from '@/shared/services/category.service'
 import { onboardingService } from '@/shared/services/onboarding.service'
-import { useOnboarding } from '@/features/onboarding/model/onboarding.context'
+import { useOnboarding } from '@/features/onboarding/context/onboarding-context'
 import { useAuth } from '@/features/auth'
 
 export const Route = createFileRoute('/onboarding/final-onboarding/')({
@@ -27,7 +27,7 @@ function OnboardingFlow() {
   // auth.user 상태가 변경될 때마다, 온보딩이 완료되었는지 확인
   useEffect(() => {
     if (onboardingComplete && auth.user?.isOnboarding) {
-      navigate({ to: '/', replace: true })
+      navigate({ to: '/map', replace: true })
     }
   }, [auth.user, onboardingComplete, navigate])
 

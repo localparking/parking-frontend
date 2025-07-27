@@ -23,13 +23,13 @@ export interface ParkingLotSearchRequest {
    * @type {number}
    * @memberof ParkingLotSearchRequest
    */
-  lat: number
+  lat?: number
   /**
    * 경도
    * @type {number}
    * @memberof ParkingLotSearchRequest
    */
-  lon: number
+  lon?: number
   /**
    * 검색 정렬 (예: DISTANCE, PRICE)
    * @type {string}

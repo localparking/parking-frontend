@@ -1,4 +1,4 @@
-import { OnboardingProvider } from '@/features/onboarding/model/onboarding.context'
+import { OnboardingProvider } from '@/features/onboarding/context/onboarding-context'
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/onboarding')({

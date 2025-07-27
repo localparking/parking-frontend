@@ -28,7 +28,7 @@ export default function LoginPage() {
         if (user?.role === 'GUEST') {
           navigate({ to: '/onboarding/terms', replace: true })
         } else {
-          navigate({ to: '/', replace: true })
+          navigate({ to: '/map', replace: true })
         }
       }
     } catch (error: any) {
@@ -49,7 +49,7 @@ export default function LoginPage() {
           if (user?.role === 'GUEST') {
             navigate({ to: '/onboarding/terms', replace: true })
           } else {
-            navigate({ to: '/', replace: true })
+            navigate({ to: '/map', replace: true })
           }
         }
       } else {
@@ -100,7 +100,7 @@ export default function LoginPage() {
 
         <div className="text-center">
           <button
-            onClick={() => navigate({ to: '/', replace: true })}
+            onClick={() => navigate({ to: '/map', replace: true })}
             className="text-caption-2 text-gray-2 underline decoration-gray-3 decoration-[0.7px] underline-offset-2"
           >
             로그인 없이 시작하기

@@ -32,16 +32,16 @@ export interface StoreListResponse {
   name: string
   /**
    *
+   * @type {string}
+   * @memberof StoreListResponse
+   */
+  storeType?: string
+  /**
+   *
    * @type {Array<string>}
    * @memberof StoreListResponse
    */
   categoryNames: Array<string>
-  /**
-   *
-   * @type {string}
-   * @memberof StoreListResponse
-   */
-  address?: string
   /**
    *
    * @type {number}
@@ -60,10 +60,4 @@ export interface StoreListResponse {
    * @memberof StoreListResponse
    */
   isOpen?: boolean
-  /**
-   *
-   * @type {boolean}
-   * @memberof StoreListResponse
-   */
-  isCoalition: boolean
 }

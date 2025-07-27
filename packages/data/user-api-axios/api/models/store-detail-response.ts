@@ -39,6 +39,12 @@ export interface StoreDetailResponse {
   name: string
   /**
    *
+   * @type {string}
+   * @memberof StoreDetailResponse
+   */
+  storeType?: StoreDetailResponseStoreTypeEnum
+  /**
+   *
    * @type {Array<string>}
    * @memberof StoreDetailResponse
    */
@@ -97,10 +103,13 @@ export interface StoreDetailResponse {
    * @memberof StoreDetailResponse
    */
   associatedParkingLots: Array<AssociatedParkingLotDto>
-  /**
-   *
-   * @type {boolean}
-   * @memberof StoreDetailResponse
-   */
-  isCoalition: boolean
 }
+
+export const StoreDetailResponseStoreTypeEnum = {
+  General: 'GENERAL',
+  ProductDetail: 'PRODUCT_DETAIL',
+  Coalition: 'COALITION',
+} as const
+
+export type StoreDetailResponseStoreTypeEnum =
+  (typeof StoreDetailResponseStoreTypeEnum)[keyof typeof StoreDetailResponseStoreTypeEnum]

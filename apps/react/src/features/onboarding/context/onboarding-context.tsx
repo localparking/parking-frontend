@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react'
-import { AgeRange, Weight } from '.'
+import { AgeRange, Weight } from '../model'
 
 interface OnboardingContextValue {
   ageGroup: string | undefined

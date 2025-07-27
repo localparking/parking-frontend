@@ -1,35 +1,124 @@
-import { useNavigate } from '@tanstack/react-router'
-import { cn } from '@ui/common/lib/utils'
-import { createContext, useContext, useState, ReactNode, useCallback, useEffect } from 'react'
-import { useMap } from '../hooks'
+import { createContext, useContext, useState, ReactNode, useEffect } from 'react'
+import {
+  PageResponseStoreListResponse,
+  ParkingLotSearchRequestSortEnum,
+  ResponseDtoPageResponseStoreListResponse,
+  StoreSearchRequestSortEnum,
+} from '@data/user-api-axios/api'
+import { MapInfo, useNaverMap } from '../hooks/use-naver-map'
+import storeService from '@/shared/services/store.service'
+import { useQuery } from '@tanstack/react-query'
+import { getDistance } from '../utils/geo'
+
+enum DayOfWeek {
+  MONDAY = 'MONDAY',
+  TUESDAY = 'TUESDAY',
+  WEDNESDAY = 'WEDNESDAY',
+  THURSDAY = 'THURSDAY',
+  FRIDAY = 'FRIDAY',
+  SATURDAY = 'SATURDAY',
+  SUNDAY = 'SUNDAY',
+}
+
+enum Congestion {
+  LOW = '여유',
+  MEDIUM = '보통',
+  HIGH = '혼잡',
+}
+
+enum MapDisplayType {
+  STORE = 'store',
+  PARKING_LOT = 'parkingLot',
+}
+
+interface StoreSearchParams {
+  sort: StoreSearchRequestSortEnum
+  categoryId?: number
+  maxFreeMin?: number
+  isOpen?: boolean
+  is24Hours?: boolean
+  checkDayOfWeek?: DayOfWeek
+  checkTime?: string
+  page: number
+}
+
+interface ParkingLotSearchParams {
+  sort: ParkingLotSearchRequestSortEnum
+  isFree?: boolean
+  isRealtime?: boolean
+  congestion?: Congestion[]
+  maxFeePerHour?: number
+  isOpen?: boolean
+  is24Hours?: boolean
+  checkDayOfWeek?: DayOfWeek
+  checkTime?: string
+  page: number
+}
 
 interface MapContextType {
-  data: []
-  isMapLoaded: boolean
+  isMapReady: boolean
+  mapDisplayType: MapDisplayType
+  setMapDisplayType: React.Dispatch<React.SetStateAction<MapDisplayType>>
+  storeSearchParams: StoreSearchParams
+  setStoreSearchParams: React.Dispatch<React.SetStateAction<StoreSearchParams>>
+  parkingLotSearchParams: ParkingLotSearchParams
+  setParkingLotSearchParams: React.Dispatch<React.SetStateAction<ParkingLotSearchParams>>
+  storeData?: PageResponseStoreListResponse
+  isStoreDataLoading: boolean
+  storeDataError?: Error | null
 }
 
 const MapContext = createContext<MapContextType | undefined>(undefined)
 
 export function MapProvider({ children }: { children: ReactNode }) {
-  const [data, setData] = useState<MapContextType['data']>([])
-  const [isMapLoaded, setIsMapLoaded] = useState(false)
+  const [mapDisplayType, setMapDisplayType] = useState<MapDisplayType>(MapDisplayType.STORE)
+  const [storeSearchParams, setStoreSearchParams] = useState<StoreSearchParams>({
+    sort: StoreSearchRequestSortEnum.Distance,
+    page: 0,
+  })
+  const [parkingLotSearchParams, setParkingLotSearchParams] = useState<ParkingLotSearchParams>({
+    sort: ParkingLotSearchRequestSortEnum.Distance,
+    page: 0,
+  })
 
-  const { loadNaverMapScript, initializeMap } = useMap()
+  const { moveTo, currentMapInfo, isMapReady, queryCenter } = useNaverMap()
 
-  useEffect(() => {
-    if (typeof window.naver === 'undefined') {
-      loadNaverMapScript()
-    } else {
-      initializeMap()
-    }
-    setIsMapLoaded(true)
-  }, [])
+  // TODO useInfiniteQuery로 변경 필요 ( 무한 스크롤 )
+  const {
+    data: storeData,
+    isLoading: isStoreDataLoading,
+    error: storeDataError,
+  } = useQuery({
+    queryKey: ['stores', 'mapSearch', storeSearchParams, queryCenter],
+
+    queryFn: async () => {
+      if (!queryCenter) return null
+
+      const { data } = await storeService.postStoreMapSearch({
+        ...storeSearchParams,
+        lat: queryCenter.lat,
+        lon: queryCenter.lng,
+      })
+      return data
+    },
+    select: (data) => data?.data,
+
+    enabled: isMapReady && mapDisplayType === MapDisplayType.STORE && !!queryCenter,
+  })
 
   return (
     <MapContext.Provider
       value={{
-        data,
-        isMapLoaded,
+        isMapReady,
+        mapDisplayType,
+        setMapDisplayType,
+        storeSearchParams,
+        setStoreSearchParams,
+        parkingLotSearchParams,
+        setParkingLotSearchParams,
+        storeData,
+        isStoreDataLoading,
+        storeDataError,
       }}
     >
       {children}

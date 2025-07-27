@@ -1,7 +1,10 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
-import { Button } from '@ui/common/components/button'
+import { createFileRoute, redirect } from '@tanstack/react-router'
+
 export const Route = createFileRoute('/')({
   component: HomePage,
+  beforeLoad: () => {
+    throw redirect({ to: '/map' })
+  },
 })
 
 function HomePage() {

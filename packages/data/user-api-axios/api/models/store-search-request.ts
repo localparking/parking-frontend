@@ -23,13 +23,13 @@ export interface StoreSearchRequest {
    * @type {number}
    * @memberof StoreSearchRequest
    */
-  lat: number
+  lat?: number
   /**
    * 경도
    * @type {number}
    * @memberof StoreSearchRequest
    */
-  lon: number
+  lon?: number
   /**
    * 카테고리 ID
    * @type {number}

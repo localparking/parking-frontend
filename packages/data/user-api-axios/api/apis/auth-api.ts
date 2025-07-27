@@ -36,6 +36,8 @@ import type { AppleLoginRequest } from '../models'
 // @ts-ignore
 import type { ResponseDtoTokenResponse } from '../models'
 // @ts-ignore
+import type { ResponseDtoUnit } from '../models'
+// @ts-ignore
 import type { TokenRequest } from '../models'
 /**
  * AuthApi - axios parameter creator
@@ -113,6 +115,37 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
       localVarRequestOptions.data = serializeDataIfNeeded(tokenRequest, localVarRequestOptions, configuration)
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    logout: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+      const localVarPath = `/auth/logout`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication Bearer Token required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
 
       return {
         url: toPathString(localVarUrlObj),
@@ -206,6 +239,25 @@ export const AuthApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
+     *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async logout(
+      options?: RawAxiosRequestConfig
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoUnit>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.logout(options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath = operationServerMap['AuthApi.logout']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
      * Access Token을 갱신하는 API입니다.
      * @summary Access Token 갱신
      * @param {*} [options] Override http request option.
@@ -261,6 +313,14 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
       options?: RawAxiosRequestConfig
     ): AxiosPromise<ResponseDtoTokenResponse> {
       return localVarFp.kakao(requestParameters.tokenRequest, options).then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    logout(options?: RawAxiosRequestConfig): AxiosPromise<ResponseDtoUnit> {
+      return localVarFp.logout(options).then((request) => request(axios, basePath))
     },
     /**
      * Access Token을 갱신하는 API입니다.
@@ -334,6 +394,18 @@ export class AuthApi extends BaseAPI {
   public kakao(requestParameters: AuthApiKakaoRequest, options?: RawAxiosRequestConfig) {
     return AuthApiFp(this.configuration)
       .kakao(requestParameters.tokenRequest, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AuthApi
+   */
+  public logout(options?: RawAxiosRequestConfig) {
+    return AuthApiFp(this.configuration)
+      .logout(options)
       .then((request) => request(this.axios, this.basePath))
   }
 

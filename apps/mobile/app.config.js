@@ -17,12 +17,12 @@ module.exports = () => {
     assetBundlePatterns: ['**/*'],
     ios: {
       supportsTablet: true,
-      bundleIdentifier: 'com.town-parking.app',
+      bundleIdentifier: 'com.townparking.app',
       usesAppleSignIn: true,
       infoPlist: {
         CFBundleURLTypes: [
           {
-            CFBundleURLSchemes: ['town-parking', 'com.town-parking.app'],
+            CFBundleURLSchemes: ['town-parking', 'com.townparking.app'],
           },
           {
             CFBundleURLSchemes: [`kakao${KAKAO_NATIVE_APP_KEY}`],
@@ -49,7 +49,7 @@ module.exports = () => {
         foregroundImage: './assets/images/adaptive-icon.png',
         backgroundColor: '#ffffff',
       },
-      package: 'com.town-parking.app',
+      package: 'com.townparking.app',
       intentFilters: [
         {
           action: 'VIEW',
