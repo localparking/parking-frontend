@@ -8,7 +8,6 @@ export const moveToCoordinates = (lat: number, lng: number, zoom?: number) => {
 
   try {
     const targetPosition = new window.naver.maps.LatLng(lat, lng)
-
     window.currentMap.setCenter(targetPosition)
 
     if (zoom !== undefined) {
