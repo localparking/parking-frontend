@@ -25,7 +25,7 @@ export const useNaverMap = (mapId = 'map'): UseNaverMapResult => {
   const [queryCenter, setQueryCenter] = useState<MapInfo['center'] | null>(null)
   const [currentMapInfo, setCurrentMapInfo] = useState<MapInfo>({
     center: { lat: 37.498095, lng: 127.02761 }, // 기본 위치 (서울 강남구)
-    zoom: 15,
+    zoom: 14, // 기본 줌 레벨 500m
   })
 
   // Naver Map 스크립트를 동적으로 로드하는 함수
@@ -87,6 +87,7 @@ export const useNaverMap = (mapId = 'map'): UseNaverMapResult => {
     // 실제로는 위치정보를 통해 현재 위치를 받아와야 합니다.
   }, [])
 
+  // 현재 지도 상태를 감지하고, queryCenter를 업데이트하는 200M 기준으로 데이터 Fetch하도록 설정
   useEffect(() => {
     if (!isMapReady) return
 
@@ -116,6 +117,7 @@ export const useNaverMap = (mapId = 'map'): UseNaverMapResult => {
       const mapOptions: naver.maps.MapOptions = {
         center: currentMapInfo.center,
         zoom: currentMapInfo.zoom,
+        minZoom: 11, // 최소 줌 레벨 설정 5KM
         mapDataControl: false,
       }
 
