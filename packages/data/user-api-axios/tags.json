@@ -3,6 +3,7 @@
   "카테고리 컨트롤러": "category",
   "온보딩 컨트롤러": "onboarding",
   "관리자 인증 컨트롤러": "admin",
+  "검색 컨트롤러": "search",
   "주차장 컨트롤러": "parking",
   "가게 컨트롤러": "store",
   "가입 컨트롤러": "register",
