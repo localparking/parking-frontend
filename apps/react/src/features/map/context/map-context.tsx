@@ -1,13 +1,14 @@
-import { createContext, useContext, useState, ReactNode } from 'react'
+import { createContext, useContext, useState, ReactNode, useEffect } from 'react'
 import {
   PageResponseStoreListResponse,
   ParkingLotSearchRequestSortEnum,
   ResponseDtoPageResponseStoreListResponse,
   StoreSearchRequestSortEnum,
 } from '@data/user-api-axios/api'
-import { useNaverMap } from '../hooks/use-naver-map'
+import { MapInfo, useNaverMap } from '../hooks/use-naver-map'
 import storeService from '@/shared/services/store.service'
 import { useQuery } from '@tanstack/react-query'
+import { getDistance } from '../utils/geo'
 
 enum DayOfWeek {
   MONDAY = 'MONDAY',
@@ -80,7 +81,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
     page: 0,
   })
 
-  const { moveTo, currentMapInfo, isMapReady } = useNaverMap()
+  const { moveTo, currentMapInfo, isMapReady, queryCenter } = useNaverMap()
 
   // TODO useInfiniteQuery로 변경 필요 ( 무한 스크롤 )
   const {
@@ -88,17 +89,21 @@ export function MapProvider({ children }: { children: ReactNode }) {
     isLoading: isStoreDataLoading,
     error: storeDataError,
   } = useQuery({
-    queryKey: ['stores', 'mapSearch', storeSearchParams, currentMapInfo.center],
+    queryKey: ['stores', 'mapSearch', storeSearchParams, queryCenter],
+
     queryFn: async () => {
+      if (!queryCenter) return null
+
       const { data } = await storeService.postStoreMapSearch({
         ...storeSearchParams,
-        lat: currentMapInfo.center.lat,
-        lon: currentMapInfo.center.lng,
+        lat: queryCenter.lat,
+        lon: queryCenter.lng,
       })
       return data
     },
-    select: (data: ResponseDtoPageResponseStoreListResponse) => data.data,
-    enabled: isMapReady && mapDisplayType === MapDisplayType.STORE,
+    select: (data) => data?.data,
+
+    enabled: isMapReady && mapDisplayType === MapDisplayType.STORE && !!queryCenter,
   })
 
   return (

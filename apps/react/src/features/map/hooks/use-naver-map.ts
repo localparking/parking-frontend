@@ -1,8 +1,9 @@
 import { isWebView } from '@/shared/utils/webview'
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { getDistance } from '../utils/geo'
 
 // 훅이 반환할 지도 정보의 타입을 정의합니다.
-interface MapInfo {
+export interface MapInfo {
   center: naver.maps.LatLngObjectLiteral
   zoom: number
 }
@@ -11,6 +12,7 @@ interface MapInfo {
 interface UseNaverMapResult {
   mapInstance: naver.maps.Map | null
   currentMapInfo: MapInfo
+  queryCenter: MapInfo['center'] | null
   moveTo: (position: naver.maps.CoordLiteral, zoom?: number) => void
   setZoom: (newZoom: number) => void
   moveToCurrentLocation: () => void
@@ -20,6 +22,7 @@ interface UseNaverMapResult {
 export const useNaverMap = (mapId = 'map'): UseNaverMapResult => {
   const mapInstanceRef = useRef<naver.maps.Map | null>(null)
   const [isMapReady, setIsMapReady] = useState<boolean>(false)
+  const [queryCenter, setQueryCenter] = useState<MapInfo['center'] | null>(null)
   const [currentMapInfo, setCurrentMapInfo] = useState<MapInfo>({
     center: { lat: 37.498095, lng: 127.02761 }, // 기본 위치 (서울 강남구)
     zoom: 15,
@@ -84,6 +87,24 @@ export const useNaverMap = (mapId = 'map'): UseNaverMapResult => {
     // 실제로는 위치정보를 통해 현재 위치를 받아와야 합니다.
   }, [])
 
+  useEffect(() => {
+    if (!isMapReady) return
+
+    // 첫 로딩 시, queryCenter를 현재 지도 중심으로 초기화
+    if (!queryCenter) {
+      setQueryCenter(currentMapInfo.center)
+      return
+    }
+
+    // 마지막으로 API를 호출했던 좌표(queryCenter)와 현재 지도 중심 좌표(currentMapInfo.center) 사이의 거리를 계산
+    const distance = getDistance(queryCenter.lat, queryCenter.lng, currentMapInfo.center.lat, currentMapInfo.center.lng)
+
+    // 거리가 200m를 초과하면 API 호출 기준 좌표를 업데이트
+    if (distance > 200) {
+      setQueryCenter(currentMapInfo.center)
+    }
+  }, [currentMapInfo.center, isMapReady, queryCenter])
+
   // 최초 마운트 시 스크립트 로드 및 지도 초기화
   useEffect(() => {
     const initializeMap = async () => {
@@ -134,6 +155,7 @@ export const useNaverMap = (mapId = 'map'): UseNaverMapResult => {
   return {
     mapInstance: mapInstanceRef.current,
     currentMapInfo,
+    queryCenter,
     moveTo,
     setZoom,
     moveToCurrentLocation,
