@@ -1,3 +1,4 @@
+import { isWebView } from '@/shared/utils/webview'
 import { useState, useEffect, useRef, useCallback } from 'react'
 
 // 훅이 반환할 지도 정보의 타입을 정의합니다.
@@ -11,6 +12,8 @@ interface UseNaverMapResult {
   mapInstance: naver.maps.Map | null
   currentMapInfo: MapInfo
   moveTo: (position: naver.maps.CoordLiteral, zoom?: number) => void
+  setZoom: (newZoom: number) => void
+  moveToCurrentLocation: () => void
   isMapReady: boolean
 }
 
@@ -57,6 +60,30 @@ export const useNaverMap = (mapId = 'map'): UseNaverMapResult => {
     map.morph(position, zoom)
   }, [])
 
+  // 줌 레벨을 설정하는 함수
+  const setZoom = useCallback((newZoom: number) => {
+    const map = mapInstanceRef.current
+    if (!map) return
+    map.setZoom(newZoom, true) // true: 부드러운 전환 효과 적용
+  }, [])
+
+  /**
+   * TODO 사용자의 현재 GPS 위치로 지도를 이동시킵니다.
+   * WEB / WebView 환경 분기처리 필수
+   */
+  const moveToCurrentLocation = useCallback(() => {
+    const map = mapInstanceRef.current
+    if (!map) return
+
+    if (isWebView()) {
+      // bridge 기반 현재 위치정보 요청해 가져옵니다.
+    } else {
+      // 브라우저 Geolocation API를 사용하여 현재 위치를 가져옵니다.
+    }
+    // moveTo({ lat: 37.498095, lng: 127.02761 }, 15) // 예시로 강남구 위치로 이동
+    // 실제로는 위치정보를 통해 현재 위치를 받아와야 합니다.
+  }, [])
+
   // 최초 마운트 시 스크립트 로드 및 지도 초기화
   useEffect(() => {
     const initializeMap = async () => {
@@ -95,6 +122,9 @@ export const useNaverMap = (mapId = 'map'): UseNaverMapResult => {
       })
     })
 
+    // 현재 사용자 위치로 이동
+    moveToCurrentLocation()
+
     // 컴포넌트 언마운트 시 이벤트 리스너 메모리 해제
     return () => {
       naver.maps.Event.removeListener(idleListener)
@@ -105,6 +135,8 @@ export const useNaverMap = (mapId = 'map'): UseNaverMapResult => {
     mapInstance: mapInstanceRef.current,
     currentMapInfo,
     moveTo,
+    setZoom,
+    moveToCurrentLocation,
     isMapReady,
   }
 }
