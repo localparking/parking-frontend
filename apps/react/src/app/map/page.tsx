@@ -9,7 +9,10 @@ function Map() {
     <div>
       <div id="map" className="h-screen" />
 
-      <div />
+      {/* <MapMarkers /> */}
+      {/* <Search /> */}
+      {/* <MapControll /> */}
+      {/* <BottomSheet /> */}
     </div>
   )
 }

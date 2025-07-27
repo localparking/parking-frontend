@@ -25,6 +25,11 @@ enum Congestion {
   HIGH = '혼잡',
 }
 
+enum MapDisplayType {
+  STORE = 'store',
+  PARKING_LOT = 'parkingLot',
+}
+
 interface StoreSearchParams {
   sort: StoreSearchRequestSortEnum
   categoryId?: number
@@ -51,6 +56,8 @@ interface ParkingLotSearchParams {
 
 interface MapContextType {
   isMapReady: boolean
+  mapDisplayType: MapDisplayType
+  setMapDisplayType: React.Dispatch<React.SetStateAction<MapDisplayType>>
   storeSearchParams: StoreSearchParams
   setStoreSearchParams: React.Dispatch<React.SetStateAction<StoreSearchParams>>
   parkingLotSearchParams: ParkingLotSearchParams
@@ -63,6 +70,7 @@ interface MapContextType {
 const MapContext = createContext<MapContextType | undefined>(undefined)
 
 export function MapProvider({ children }: { children: ReactNode }) {
+  const [mapDisplayType, setMapDisplayType] = useState<MapDisplayType>(MapDisplayType.STORE)
   const [storeSearchParams, setStoreSearchParams] = useState<StoreSearchParams>({
     sort: StoreSearchRequestSortEnum.Distance,
     page: 0,
@@ -74,6 +82,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
 
   const { moveTo, currentMapInfo, isMapReady } = useNaverMap()
 
+  // TODO useInfiniteQuery로 변경 필요 ( 무한 스크롤 )
   const {
     data: storeData,
     isLoading: isStoreDataLoading,
@@ -89,13 +98,15 @@ export function MapProvider({ children }: { children: ReactNode }) {
       return data
     },
     select: (data: ResponseDtoPageResponseStoreListResponse) => data.data,
-    enabled: isMapReady,
+    enabled: isMapReady && mapDisplayType === MapDisplayType.STORE,
   })
 
   return (
     <MapContext.Provider
       value={{
         isMapReady,
+        mapDisplayType,
+        setMapDisplayType,
         storeSearchParams,
         setStoreSearchParams,
         parkingLotSearchParams,
