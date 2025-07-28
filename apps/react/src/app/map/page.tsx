@@ -13,7 +13,6 @@ function Map() {
       <div id="map" className="h-screen" />
       <MapTypeToggle />
       <MapControl />
-
       <MapMarkers />
       {/* <Search /> */}
       {/* <BottomSheet /> */}

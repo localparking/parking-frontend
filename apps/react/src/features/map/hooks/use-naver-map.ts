@@ -93,7 +93,7 @@ export const useNaverMap = (mapId = 'map'): UseNaverMapResult => {
           map: map,
           icon: {
             content: `
-              <div style="width: 24px; height: 24px; background-color: #007AFF; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"></div>
+              <div style="width: 18px; height: 18px; background-color: #007AFF; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"></div>
             `,
             anchor: new window.naver.maps.Point(12, 12),
           },

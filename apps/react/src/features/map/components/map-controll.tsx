@@ -1,7 +1,24 @@
 import React from 'react'
-import { Button } from '@ui/common/components/button'
-import { MapPin, Plus, Minus } from 'lucide-react'
+import { Plus, Minus, LocateFixed } from 'lucide-react'
 import { useMapContext } from '@/features/map/context/map-context'
+
+const controlOptions = [
+  {
+    icon: Plus,
+    onClick: 'zoomIn',
+    title: '확대',
+  },
+  {
+    icon: Minus,
+    onClick: 'zoomOut',
+    title: '축소',
+  },
+  {
+    icon: LocateFixed,
+    onClick: 'location',
+    title: '현재 위치로 이동',
+  },
+]
 
 export const MapControl: React.FC = () => {
   const { moveToCurrentLocation, mapInstance, setZoom, isMapReady } = useMapContext()
@@ -18,42 +35,39 @@ export const MapControl: React.FC = () => {
     setZoom(currentZoom - 1)
   }
 
-  return (
-    <div className="absolute top-4 right-4 z-10 flex flex-col gap-2">
-      {/* 현재 위치 버튼 */}
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={moveToCurrentLocation}
-        disabled={!isMapReady}
-        className="bg-white/90 shadow-lg backdrop-blur-sm hover:bg-white"
-        title="현재 위치로 이동"
-      >
-        <MapPin className="h-4 w-4" />
-      </Button>
+  const handleClick = (action: string) => {
+    switch (action) {
+      case 'zoomIn':
+        handleZoomIn()
+        break
+      case 'zoomOut':
+        handleZoomOut()
+        break
+      case 'location':
+        moveToCurrentLocation()
+        break
+    }
+  }
 
-      {/* 줌 컨트롤 */}
-      <div className="flex flex-col gap-1">
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={handleZoomIn}
-          disabled={!isMapReady}
-          className="bg-white/90 shadow-lg backdrop-blur-sm hover:bg-white"
-          title="확대"
-        >
-          <Plus className="h-4 w-4" />
-        </Button>
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={handleZoomOut}
-          disabled={!isMapReady}
-          className="bg-white/90 shadow-lg backdrop-blur-sm hover:bg-white"
-          title="축소"
-        >
-          <Minus className="h-4 w-4" />
-        </Button>
+  return (
+    <div className="absolute right-4 bottom-10 z-10">
+      <div className="flex w-[33px] flex-col gap-[5px]">
+        {controlOptions.map((option, index) => {
+          const IconComponent = option.icon
+          const isLocationButton = option.onClick === 'location'
+
+          return (
+            <button
+              key={index}
+              onClick={() => handleClick(option.onClick)}
+              disabled={!isMapReady}
+              className="flex h-[33px] w-[33px] items-center justify-center rounded-full border border-white/25 bg-[rgba(255,255,255,0.25)] shadow-[0px_0px_3.33px_0px_rgba(0,0,0,0.25)] backdrop-blur-[1.66px] transition-all duration-200 hover:bg-[rgba(255,255,255,0.35)] disabled:opacity-50"
+              title={option.title}
+            >
+              <IconComponent size={16} color={isLocationButton ? '#00C800' : '#222222'} />
+            </button>
+          )
+        })}
       </div>
     </div>
   )
