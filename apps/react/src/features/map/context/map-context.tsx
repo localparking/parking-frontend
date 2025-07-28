@@ -1,12 +1,6 @@
 import { createContext, useContext, useState, ReactNode } from 'react'
-import {
-  PageResponseStoreListResponse,
-  ParkingLotSearchRequestSortEnum,
-  StoreSearchRequestSortEnum,
-} from '@data/user-api-axios/api'
+import { ParkingLotSearchRequestSortEnum, StoreSearchRequestSortEnum } from '@data/user-api-axios/api'
 import { MapInfo, useNaverMap } from '../hooks/use-naver-map'
-import storeService from '@/shared/services/store.service'
-import { useQuery } from '@tanstack/react-query'
 
 enum DayOfWeek {
   MONDAY = 'MONDAY',
@@ -24,12 +18,12 @@ enum Congestion {
   HIGH = '혼잡',
 }
 
-enum MapDisplayType {
+export enum MapDisplayType {
   STORE = 'store',
   PARKING_LOT = 'parkingLot',
 }
 
-interface StoreSearchParams {
+export interface StoreSearchParams {
   sort: StoreSearchRequestSortEnum
   categoryId?: number
   maxFreeMin?: number
@@ -40,7 +34,7 @@ interface StoreSearchParams {
   page: number
 }
 
-interface ParkingLotSearchParams {
+export interface ParkingLotSearchParams {
   sort: ParkingLotSearchRequestSortEnum
   isFree?: boolean
   isRealtime?: boolean
@@ -70,11 +64,6 @@ interface MapContextType {
   setStoreSearchParams: React.Dispatch<React.SetStateAction<StoreSearchParams>>
   parkingLotSearchParams: ParkingLotSearchParams
   setParkingLotSearchParams: React.Dispatch<React.SetStateAction<ParkingLotSearchParams>>
-
-  // --- API 데이터 관련 상태 ---
-  storeData?: PageResponseStoreListResponse
-  isStoreDataLoading: boolean
-  storeDataError?: Error | null
 }
 
 const MapContext = createContext<MapContextType | undefined>(undefined)
@@ -93,33 +82,9 @@ export function MapProvider({ children }: { children: ReactNode }) {
     page: 0,
   })
 
-  // TODO: useInfiniteQuery로 변경 필요 (무한 스크롤)
-  const {
-    data: storeData,
-    isLoading: isStoreDataLoading,
-    error: storeDataError,
-  } = useQuery({
-    queryKey: ['stores', 'mapSearch', storeSearchParams, queryCenter],
-    queryFn: async () => {
-      if (!isMapReady || !queryCenter) {
-        return null
-      }
-
-      const { data } = await storeService.postStoreMapSearch({
-        ...storeSearchParams,
-        lat: queryCenter.lat,
-        lon: queryCenter.lng,
-      })
-      return data
-    },
-    select: (data) => data?.data,
-    enabled: isMapReady && mapDisplayType === MapDisplayType.STORE && !!queryCenter,
-  })
-
   return (
     <MapContext.Provider
       value={{
-        // useNaverMap에서 온 값들
         isMapReady,
         mapInstance,
         currentMapInfo,
@@ -127,19 +92,12 @@ export function MapProvider({ children }: { children: ReactNode }) {
         moveToCurrentLocation,
         setZoom,
         moveTo,
-
-        // Provider가 직접 관리하는 값들
         mapDisplayType,
         setMapDisplayType,
         storeSearchParams,
         setStoreSearchParams,
         parkingLotSearchParams,
         setParkingLotSearchParams,
-
-        // useQuery에서 온 값들
-        storeData,
-        isStoreDataLoading,
-        storeDataError,
       }}
     >
       {children}

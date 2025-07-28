@@ -21,6 +21,7 @@ interface UseNaverMapResult {
 
 export const useNaverMap = (mapId = 'map'): UseNaverMapResult => {
   const mapInstanceRef = useRef<naver.maps.Map | null>(null)
+  const userMarkerRef = useRef<naver.maps.Marker | null>(null) // 사용자 마커 ref
   const [isMapReady, setIsMapReady] = useState<boolean>(false)
   const [queryCenter, setQueryCenter] = useState<MapInfo['center'] | null>(null)
   const [currentMapInfo, setCurrentMapInfo] = useState<MapInfo>({
@@ -81,7 +82,26 @@ export const useNaverMap = (mapId = 'map'): UseNaverMapResult => {
 
     if (locationResult.success && locationResult.data) {
       const { latitude, longitude } = locationResult.data
+
       moveTo({ lat: latitude, lng: longitude }, 15)
+
+      // 사용자 마커 생성 또는 위치 업데이트
+      if (!userMarkerRef.current) {
+        // 마커가 없으면 새로 생성
+        userMarkerRef.current = new window.naver.maps.Marker({
+          position: { lat: latitude, lng: longitude },
+          map: map,
+          icon: {
+            content: `
+              <div style="width: 24px; height: 24px; background-color: #007AFF; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"></div>
+            `,
+            anchor: new window.naver.maps.Point(12, 12),
+          },
+        })
+      } else {
+        // 이미 마커가 있으면 위치만 업데이트
+        userMarkerRef.current.setPosition({ lat: latitude, lng: longitude })
+      }
     } else {
       const defaultLocation = getDefaultLocation()
       moveTo({ lat: defaultLocation.latitude, lng: defaultLocation.longitude }, 15)
@@ -152,6 +172,7 @@ export const useNaverMap = (mapId = 'map'): UseNaverMapResult => {
     // 컴포넌트 언마운트 시 이벤트 리스너 메모리 해제
     return () => {
       naver.maps.Event.removeListener(idleListener)
+      userMarkerRef.current?.setMap(null) // 사용자 마커 제거
     }
   }, [isMapReady])
 
