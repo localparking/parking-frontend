@@ -3,6 +3,7 @@ import { createRouter } from './router'
 import { AuthProvider, useAuth } from '@/features/auth'
 import { ThemeProvider } from '@ui/common/contexts/theme.context'
 import { AlertDialogProvider } from '@ui/common/components/global-alert-dialog'
+import { DrawerProvider } from '@ui/common/components/global-drawer'
 
 declare module '@tanstack/react-router' {
   interface Register {
@@ -22,7 +23,9 @@ export function App() {
     <ThemeProvider>
       <AuthProvider>
         <AlertDialogProvider>
-          <InnerApp />
+          <DrawerProvider>
+            <InnerApp />
+          </DrawerProvider>
         </AlertDialogProvider>
       </AuthProvider>
     </ThemeProvider>
