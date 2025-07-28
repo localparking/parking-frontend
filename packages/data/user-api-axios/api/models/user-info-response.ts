@@ -86,7 +86,7 @@ export const UserInfoResponseRoleEnum = {
   Guest: 'GUEST',
   User: 'USER',
   Admin: 'ADMIN',
-  President: 'PRESIDENT',
+  Storekeeper: 'STOREKEEPER',
   Withdrawn: 'WITHDRAWN',
 } as const
 

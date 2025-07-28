@@ -17,7 +17,13 @@
 import type { AssociatedParkingLotDto } from './associated-parking-lot-dto'
 // May contain unused imports in some cases
 // @ts-ignore
+import type { CategoryDto } from './category-dto'
+// May contain unused imports in some cases
+// @ts-ignore
 import type { DailyOperatingDto } from './daily-operating-dto'
+// May contain unused imports in some cases
+// @ts-ignore
+import type { ParkingBenefitDto } from './parking-benefit-dto'
 
 /**
  *
@@ -45,10 +51,10 @@ export interface StoreDetailResponse {
   storeType?: StoreDetailResponseStoreTypeEnum
   /**
    *
-   * @type {Array<string>}
+   * @type {Array<CategoryDto>}
    * @memberof StoreDetailResponse
    */
-  categoryNames?: Array<string>
+  categories?: Array<CategoryDto>
   /**
    *
    * @type {string}
@@ -87,12 +93,6 @@ export interface StoreDetailResponse {
   lon: number
   /**
    *
-   * @type {number}
-   * @memberof StoreDetailResponse
-   */
-  maxFreeMin?: number
-  /**
-   *
    * @type {Array<DailyOperatingDto>}
    * @memberof StoreDetailResponse
    */
@@ -103,6 +103,12 @@ export interface StoreDetailResponse {
    * @memberof StoreDetailResponse
    */
   associatedParkingLots: Array<AssociatedParkingLotDto>
+  /**
+   *
+   * @type {Array<ParkingBenefitDto>}
+   * @memberof StoreDetailResponse
+   */
+  parkingBenefits: Array<ParkingBenefitDto>
 }
 
 export const StoreDetailResponseStoreTypeEnum = {

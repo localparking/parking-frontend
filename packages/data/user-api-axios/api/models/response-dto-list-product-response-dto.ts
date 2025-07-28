@@ -14,24 +14,24 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { RecentSearchResponse } from './recent-search-response'
+import type { ProductResponseDto } from './product-response-dto'
 
 /**
  *
  * @export
- * @interface SearchSuggestionResponse
+ * @interface ResponseDtoListProductResponseDto
  */
-export interface SearchSuggestionResponse {
+export interface ResponseDtoListProductResponseDto {
   /**
    *
-   * @type {Array<string>}
-   * @memberof SearchSuggestionResponse
+   * @type {string}
+   * @memberof ResponseDtoListProductResponseDto
    */
-  recommendations: Array<string>
+  message: string
   /**
    *
-   * @type {Array<RecentSearchResponse>}
-   * @memberof SearchSuggestionResponse
+   * @type {Array<ProductResponseDto>}
+   * @memberof ResponseDtoListProductResponseDto
    */
-  recentSearches: Array<RecentSearchResponse>
+  data?: Array<ProductResponseDto>
 }

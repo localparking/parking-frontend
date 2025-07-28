@@ -13,27 +13,33 @@
  */
 
 /**
- *
+ * 가게 상품 추가 요청 DTO
  * @export
- * @interface RecentSearchResponse
+ * @interface ProductRequestDto
  */
-export interface RecentSearchResponse {
+export interface ProductRequestDto {
   /**
-   *
+   * 상품 이름
+   * @type {string}
+   * @memberof ProductRequestDto
+   */
+  name: string
+  /**
+   * 상품 이미지 URL
+   * @type {string}
+   * @memberof ProductRequestDto
+   */
+  imageUrl: string
+  /**
+   * 상품 설명
+   * @type {string}
+   * @memberof ProductRequestDto
+   */
+  description: string
+  /**
+   * 상품 가격
    * @type {number}
-   * @memberof RecentSearchResponse
+   * @memberof ProductRequestDto
    */
-  id: number
-  /**
-   *
-   * @type {string}
-   * @memberof RecentSearchResponse
-   */
-  query: string
-  /**
-   *
-   * @type {string}
-   * @memberof RecentSearchResponse
-   */
-  date: string
+  price: number
 }

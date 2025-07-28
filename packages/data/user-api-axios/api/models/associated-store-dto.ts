@@ -12,6 +12,10 @@
  * Do not edit the class manually.
  */
 
+// May contain unused imports in some cases
+// @ts-ignore
+import type { CategoryDto } from './category-dto'
+
 /**
  * 주차장과 연계된 가게 정보 DTO
  * @export
@@ -25,11 +29,11 @@ export interface AssociatedStoreDto {
    */
   storeId?: number
   /**
-   * 가게 세부 카테고리 이름
-   * @type {Array<string>}
+   * 가게 세부 카테고리 정보
+   * @type {Array<CategoryDto>}
    * @memberof AssociatedStoreDto
    */
-  categoryNames?: Array<string>
+  categories?: Array<CategoryDto>
   /**
    * 가게 이름
    * @type {string}

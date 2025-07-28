@@ -12,6 +12,10 @@
  * Do not edit the class manually.
  */
 
+// May contain unused imports in some cases
+// @ts-ignore
+import type { CategoryDto } from './category-dto'
+
 /**
  *
  * @export
@@ -38,10 +42,10 @@ export interface StoreListResponse {
   storeType?: string
   /**
    *
-   * @type {Array<string>}
+   * @type {Array<CategoryDto>}
    * @memberof StoreListResponse
    */
-  categoryNames: Array<string>
+  categories?: Array<CategoryDto>
   /**
    *
    * @type {number}
@@ -60,4 +64,16 @@ export interface StoreListResponse {
    * @memberof StoreListResponse
    */
   isOpen?: boolean
+  /**
+   *
+   * @type {number}
+   * @memberof StoreListResponse
+   */
+  purchaseAmount?: number
+  /**
+   *
+   * @type {number}
+   * @memberof StoreListResponse
+   */
+  discountMin?: number
 }
