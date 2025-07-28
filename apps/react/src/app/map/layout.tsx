@@ -1,10 +1,5 @@
-import { MarkerData } from '@/features/map'
 import { MapProvider, useMapContext } from '@/features/map/context/map-context'
 import { createFileRoute, Outlet } from '@tanstack/react-router'
-
-interface MapContainerProps {
-  markers?: MarkerData[]
-}
 
 export const Route = createFileRoute('/map')({
   component: RootComponent,
