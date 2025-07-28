@@ -1,6 +1,6 @@
-import { isWebView } from '@/shared/utils/webview'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { getDistance } from '../utils/geo'
+import { getCurrentLocation, getDefaultLocation } from '../services/location.service'
 
 // 훅이 반환할 지도 정보의 타입을 정의합니다.
 export interface MapInfo {
@@ -10,13 +10,13 @@ export interface MapInfo {
 
 // 훅의 반환 타입을 정의합니다.
 interface UseNaverMapResult {
+  isMapReady: boolean
   mapInstance: naver.maps.Map | null
   currentMapInfo: MapInfo
   queryCenter: MapInfo['center'] | null
-  moveTo: (position: naver.maps.CoordLiteral, zoom?: number) => void
-  setZoom: (newZoom: number) => void
   moveToCurrentLocation: () => void
-  isMapReady: boolean
+  setZoom: (newZoom: number) => void
+  moveTo: (position: naver.maps.CoordLiteral, zoom?: number) => void
 }
 
 export const useNaverMap = (mapId = 'map'): UseNaverMapResult => {
@@ -71,21 +71,22 @@ export const useNaverMap = (mapId = 'map'): UseNaverMapResult => {
   }, [])
 
   /**
-   * TODO 사용자의 현재 GPS 위치로 지도를 이동시킵니다.
-   * WEB / WebView 환경 분기처리 필수
+   * 사용자의 현재 GPS 위치로 지도를 이동시킵니다.
    */
-  const moveToCurrentLocation = useCallback(() => {
+  const moveToCurrentLocation = useCallback(async () => {
     const map = mapInstanceRef.current
     if (!map) return
 
-    if (isWebView()) {
-      // bridge 기반 현재 위치정보 요청해 가져옵니다.
+    const locationResult = await getCurrentLocation()
+
+    if (locationResult.success && locationResult.data) {
+      const { latitude, longitude } = locationResult.data
+      moveTo({ lat: latitude, lng: longitude }, 15)
     } else {
-      // 브라우저 Geolocation API를 사용하여 현재 위치를 가져옵니다.
+      const defaultLocation = getDefaultLocation()
+      moveTo({ lat: defaultLocation.latitude, lng: defaultLocation.longitude }, 15)
     }
-    // moveTo({ lat: 37.498095, lng: 127.02761 }, 15) // 예시로 강남구 위치로 이동
-    // 실제로는 위치정보를 통해 현재 위치를 받아와야 합니다.
-  }, [])
+  }, [moveTo])
 
   // 현재 지도 상태를 감지하고, queryCenter를 업데이트하는 200M 기준으로 데이터 Fetch하도록 설정
   useEffect(() => {
