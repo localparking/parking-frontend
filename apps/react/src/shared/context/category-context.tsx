@@ -3,20 +3,25 @@ import { useQuery } from '@tanstack/react-query'
 import { CategoryDto } from '@data/user-api-axios/api'
 import { categoryService } from '@/shared/services/category.service'
 
+export interface CategoryNode extends CategoryDto {
+  children: CategoryNode[]
+}
+
 interface CategoryContextType {
   allCategories: CategoryDto[]
+  categoryTree: CategoryNode[]
   isCategoriesLoading: boolean
   parentIdToPrefixMap: Map<number, string>
 }
 
 const CategoryContext = createContext<CategoryContextType | undefined>(undefined)
 
-const PARENT_ID_PREFIX_MAP_CONFIG = {
-  1: 'cafe', // 커피
-  2: 'food', // 음식점
-  3: 'culture', // 문화
-  4: 'leisure', // 여가
-  5: 'shopping', // 상점
+const CATEGORY_NAME_TO_PREFIX_MAP: Record<string, string> = {
+  커피: 'cafe',
+  음식점: 'food',
+  문화: 'culture',
+  여가: 'leisure',
+  상점: 'shopping',
 }
 
 export function CategoryProvider({ children }: { children: ReactNode }) {
@@ -31,17 +36,44 @@ export function CategoryProvider({ children }: { children: ReactNode }) {
     gcTime: Infinity,
   })
 
-  const parentIdToPrefixMap = useMemo(() => {
-    const map = new Map<number, string>()
+  const { categoryTree, parentIdToPrefixMap } = useMemo(() => {
+    const categoriesById = new Map<number, CategoryNode>()
+    const tree: CategoryNode[] = []
+    const idToPrefixMap = new Map<number, string>()
 
-    Object.entries(PARENT_ID_PREFIX_MAP_CONFIG).forEach(([id, prefix]) => {
-      map.set(Number(id), prefix)
+    if (allCategories.length === 0) {
+      return { categoryTree: [], parentIdToPrefixMap: new Map() }
+    }
+
+    allCategories.forEach((cat) => {
+      categoriesById.set(cat.categoryId, { ...cat, children: [] })
     })
-    return map
-  }, [])
+
+    categoriesById.forEach((node) => {
+      if (node.parentId === null || node.parentId === undefined) {
+        tree.push(node)
+        const prefix = CATEGORY_NAME_TO_PREFIX_MAP[node.categoryName || ''] || 'store'
+        idToPrefixMap.set(node.categoryId, prefix)
+      } else {
+        const parent = categoriesById.get(node.parentId)
+        if (parent) {
+          parent.children.push(node)
+        }
+      }
+    })
+
+    return { categoryTree: tree, parentIdToPrefixMap: idToPrefixMap }
+  }, [allCategories])
 
   return (
-    <CategoryContext.Provider value={{ allCategories, isCategoriesLoading, parentIdToPrefixMap }}>
+    <CategoryContext.Provider
+      value={{
+        allCategories,
+        categoryTree,
+        isCategoriesLoading,
+        parentIdToPrefixMap,
+      }}
+    >
       {children}
     </CategoryContext.Provider>
   )

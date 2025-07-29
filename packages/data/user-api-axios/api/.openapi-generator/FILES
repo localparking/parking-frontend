@@ -9,9 +9,8 @@ apis/onboarding-api.ts
 apis/parking-api.ts
 apis/register-api.ts
 apis/store-api.ts
+apis/storekeeper-api.ts
 apis/user-api.ts
-apis/가게주인컨트롤러api.ts
-apis/관리자가게컨트롤러api.ts
 base.ts
 common.ts
 configuration.ts

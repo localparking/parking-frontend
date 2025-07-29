@@ -34,6 +34,10 @@ import { BASE_PATH, COLLECTION_FORMATS, type RequestArgs, BaseAPI, RequiredError
 // @ts-ignore
 import type { AdminLoginRequest } from '../models'
 // @ts-ignore
+import type { ResponseDtoListStoreOwnershipReqResponse } from '../models'
+// @ts-ignore
+import type { ResponseDtoUnit } from '../models'
+// @ts-ignore
 import type { TokenResponse } from '../models'
 /**
  * AdminApi - axios parameter creator
@@ -41,6 +45,86 @@ import type { TokenResponse } from '../models'
  */
 export const AdminApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
+    /**
+     * 관리자가 특정 소유권 신청을 승인 처리합니다.
+     * @summary 소유권 신청 승인
+     * @param {number} requestId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    approveOwnershipRequest: async (requestId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'requestId' is not null or undefined
+      assertParamExists('approveOwnershipRequest', 'requestId', requestId)
+      const localVarPath = `/admin/store/ownership-requests/{requestId}/approve`.replace(
+        `{${'requestId'}}`,
+        encodeURIComponent(String(requestId))
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication Bearer Token required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * 관리자가 소유권 신청 목록을 조회합니다.
+     * @summary 소유권 신청 목록 조회
+     * @param {GetOwnershipRequestsStatusEnum} status
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getOwnershipRequests: async (
+      status: GetOwnershipRequestsStatusEnum,
+      options: RawAxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'status' is not null or undefined
+      assertParamExists('getOwnershipRequests', 'status', status)
+      const localVarPath = `/admin/store/ownership-requests`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication Bearer Token required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      if (status !== undefined) {
+        localVarQueryParameter['status'] = status
+      }
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
     /**
      * 관리자가 로그인하는 API입니다.
      * @summary 관리자 로그인
@@ -79,6 +163,44 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
         options: localVarRequestOptions,
       }
     },
+    /**
+     * 관리자가 특정 소유권 신청을 거절 처리합니다.
+     * @summary 소유권 신청 거절
+     * @param {number} requestId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    rejectOwnershipRequest: async (requestId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'requestId' is not null or undefined
+      assertParamExists('rejectOwnershipRequest', 'requestId', requestId)
+      const localVarPath = `/admin/store/ownership-requests/{requestId}/reject`.replace(
+        `{${'requestId'}}`,
+        encodeURIComponent(String(requestId))
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication Bearer Token required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
   }
 }
 
@@ -89,6 +211,52 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
 export const AdminApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = AdminApiAxiosParamCreator(configuration)
   return {
+    /**
+     * 관리자가 특정 소유권 신청을 승인 처리합니다.
+     * @summary 소유권 신청 승인
+     * @param {number} requestId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async approveOwnershipRequest(
+      requestId: number,
+      options?: RawAxiosRequestConfig
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoUnit>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.approveOwnershipRequest(requestId, options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.approveOwnershipRequest']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * 관리자가 소유권 신청 목록을 조회합니다.
+     * @summary 소유권 신청 목록 조회
+     * @param {GetOwnershipRequestsStatusEnum} status
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getOwnershipRequests(
+      status: GetOwnershipRequestsStatusEnum,
+      options?: RawAxiosRequestConfig
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoListStoreOwnershipReqResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getOwnershipRequests(status, options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.getOwnershipRequests']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
     /**
      * 관리자가 로그인하는 API입니다.
      * @summary 관리자 로그인
@@ -111,6 +279,29 @@ export const AdminApiFp = function (configuration?: Configuration) {
           configuration
         )(axios, localVarOperationServerBasePath || basePath)
     },
+    /**
+     * 관리자가 특정 소유권 신청을 거절 처리합니다.
+     * @summary 소유권 신청 거절
+     * @param {number} requestId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async rejectOwnershipRequest(
+      requestId: number,
+      options?: RawAxiosRequestConfig
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoUnit>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.rejectOwnershipRequest(requestId, options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.rejectOwnershipRequest']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
   }
 }
 
@@ -122,6 +313,36 @@ export const AdminApiFactory = function (configuration?: Configuration, basePath
   const localVarFp = AdminApiFp(configuration)
   return {
     /**
+     * 관리자가 특정 소유권 신청을 승인 처리합니다.
+     * @summary 소유권 신청 승인
+     * @param {AdminApiApproveOwnershipRequestRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    approveOwnershipRequest(
+      requestParameters: AdminApiApproveOwnershipRequestRequest,
+      options?: RawAxiosRequestConfig
+    ): AxiosPromise<ResponseDtoUnit> {
+      return localVarFp
+        .approveOwnershipRequest(requestParameters.requestId, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * 관리자가 소유권 신청 목록을 조회합니다.
+     * @summary 소유권 신청 목록 조회
+     * @param {AdminApiGetOwnershipRequestsRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getOwnershipRequests(
+      requestParameters: AdminApiGetOwnershipRequestsRequest,
+      options?: RawAxiosRequestConfig
+    ): AxiosPromise<ResponseDtoListStoreOwnershipReqResponse> {
+      return localVarFp
+        .getOwnershipRequests(requestParameters.status, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
      * 관리자가 로그인하는 API입니다.
      * @summary 관리자 로그인
      * @param {AdminApiLoginRequest} requestParameters Request parameters.
@@ -131,7 +352,50 @@ export const AdminApiFactory = function (configuration?: Configuration, basePath
     login(requestParameters: AdminApiLoginRequest, options?: RawAxiosRequestConfig): AxiosPromise<TokenResponse> {
       return localVarFp.login(requestParameters.adminLoginRequest, options).then((request) => request(axios, basePath))
     },
+    /**
+     * 관리자가 특정 소유권 신청을 거절 처리합니다.
+     * @summary 소유권 신청 거절
+     * @param {AdminApiRejectOwnershipRequestRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    rejectOwnershipRequest(
+      requestParameters: AdminApiRejectOwnershipRequestRequest,
+      options?: RawAxiosRequestConfig
+    ): AxiosPromise<ResponseDtoUnit> {
+      return localVarFp
+        .rejectOwnershipRequest(requestParameters.requestId, options)
+        .then((request) => request(axios, basePath))
+    },
   }
+}
+
+/**
+ * Request parameters for approveOwnershipRequest operation in AdminApi.
+ * @export
+ * @interface AdminApiApproveOwnershipRequestRequest
+ */
+export interface AdminApiApproveOwnershipRequestRequest {
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiApproveOwnershipRequest
+   */
+  readonly requestId: number
+}
+
+/**
+ * Request parameters for getOwnershipRequests operation in AdminApi.
+ * @export
+ * @interface AdminApiGetOwnershipRequestsRequest
+ */
+export interface AdminApiGetOwnershipRequestsRequest {
+  /**
+   *
+   * @type {'PENDING' | 'APPROVED' | 'REJECTED'}
+   * @memberof AdminApiGetOwnershipRequests
+   */
+  readonly status: GetOwnershipRequestsStatusEnum
 }
 
 /**
@@ -149,12 +413,57 @@ export interface AdminApiLoginRequest {
 }
 
 /**
+ * Request parameters for rejectOwnershipRequest operation in AdminApi.
+ * @export
+ * @interface AdminApiRejectOwnershipRequestRequest
+ */
+export interface AdminApiRejectOwnershipRequestRequest {
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiRejectOwnershipRequest
+   */
+  readonly requestId: number
+}
+
+/**
  * AdminApi - object-oriented interface
  * @export
  * @class AdminApi
  * @extends {BaseAPI}
  */
 export class AdminApi extends BaseAPI {
+  /**
+   * 관리자가 특정 소유권 신청을 승인 처리합니다.
+   * @summary 소유권 신청 승인
+   * @param {AdminApiApproveOwnershipRequestRequest} requestParameters Request parameters.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AdminApi
+   */
+  public approveOwnershipRequest(
+    requestParameters: AdminApiApproveOwnershipRequestRequest,
+    options?: RawAxiosRequestConfig
+  ) {
+    return AdminApiFp(this.configuration)
+      .approveOwnershipRequest(requestParameters.requestId, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * 관리자가 소유권 신청 목록을 조회합니다.
+   * @summary 소유권 신청 목록 조회
+   * @param {AdminApiGetOwnershipRequestsRequest} requestParameters Request parameters.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AdminApi
+   */
+  public getOwnershipRequests(requestParameters: AdminApiGetOwnershipRequestsRequest, options?: RawAxiosRequestConfig) {
+    return AdminApiFp(this.configuration)
+      .getOwnershipRequests(requestParameters.status, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
   /**
    * 관리자가 로그인하는 API입니다.
    * @summary 관리자 로그인
@@ -168,4 +477,32 @@ export class AdminApi extends BaseAPI {
       .login(requestParameters.adminLoginRequest, options)
       .then((request) => request(this.axios, this.basePath))
   }
+
+  /**
+   * 관리자가 특정 소유권 신청을 거절 처리합니다.
+   * @summary 소유권 신청 거절
+   * @param {AdminApiRejectOwnershipRequestRequest} requestParameters Request parameters.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AdminApi
+   */
+  public rejectOwnershipRequest(
+    requestParameters: AdminApiRejectOwnershipRequestRequest,
+    options?: RawAxiosRequestConfig
+  ) {
+    return AdminApiFp(this.configuration)
+      .rejectOwnershipRequest(requestParameters.requestId, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
 }
+
+/**
+ * @export
+ */
+export const GetOwnershipRequestsStatusEnum = {
+  Pending: 'PENDING',
+  Approved: 'APPROVED',
+  Rejected: 'REJECTED',
+} as const
+export type GetOwnershipRequestsStatusEnum =
+  (typeof GetOwnershipRequestsStatusEnum)[keyof typeof GetOwnershipRequestsStatusEnum]

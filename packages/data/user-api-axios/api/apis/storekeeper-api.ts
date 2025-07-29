@@ -40,10 +40,10 @@ import type { ResponseDtoListMyStoreInfo } from '../models'
 // @ts-ignore
 import type { ResponseDtoUnit } from '../models'
 /**
- * 가게주인컨트롤러Api - axios parameter creator
+ * StorekeeperApi - axios parameter creator
  * @export
  */
-export const 가게주인컨트롤러ApiAxiosParamCreator = function (configuration?: Configuration) {
+export const StorekeeperApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
     /**
      * 특정 가게에 구매 금액별 주차 할인 혜택을 추가합니다.
@@ -387,11 +387,11 @@ export const 가게주인컨트롤러ApiAxiosParamCreator = function (configurat
 }
 
 /**
- * 가게주인컨트롤러Api - functional programming interface
+ * StorekeeperApi - functional programming interface
  * @export
  */
-export const 가게주인컨트롤러ApiFp = function (configuration?: Configuration) {
-  const localVarAxiosParamCreator = 가게주인컨트롤러ApiAxiosParamCreator(configuration)
+export const StorekeeperApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = StorekeeperApiAxiosParamCreator(configuration)
   return {
     /**
      * 특정 가게에 구매 금액별 주차 할인 혜택을 추가합니다.
@@ -409,7 +409,7 @@ export const 가게주인컨트롤러ApiFp = function (configuration?: Configura
       const localVarAxiosArgs = await localVarAxiosParamCreator.addParkingBenefit(storeId, benefitRequestDto, options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
-        operationServerMap['가게주인컨트롤러Api.addParkingBenefit']?.[localVarOperationServerIndex]?.url
+        operationServerMap['StorekeeperApi.addParkingBenefit']?.[localVarOperationServerIndex]?.url
       return (axios, basePath) =>
         createRequestFunction(
           localVarAxiosArgs,
@@ -434,7 +434,7 @@ export const 가게주인컨트롤러ApiFp = function (configuration?: Configura
       const localVarAxiosArgs = await localVarAxiosParamCreator.addProduct(storeId, productRequestDto, options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
-        operationServerMap['가게주인컨트롤러Api.addProduct']?.[localVarOperationServerIndex]?.url
+        operationServerMap['StorekeeperApi.addProduct']?.[localVarOperationServerIndex]?.url
       return (axios, basePath) =>
         createRequestFunction(
           localVarAxiosArgs,
@@ -457,7 +457,7 @@ export const 가게주인컨트롤러ApiFp = function (configuration?: Configura
       const localVarAxiosArgs = await localVarAxiosParamCreator.deleteParkingBenefit(benefitId, options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
-        operationServerMap['가게주인컨트롤러Api.deleteParkingBenefit']?.[localVarOperationServerIndex]?.url
+        operationServerMap['StorekeeperApi.deleteParkingBenefit']?.[localVarOperationServerIndex]?.url
       return (axios, basePath) =>
         createRequestFunction(
           localVarAxiosArgs,
@@ -480,7 +480,7 @@ export const 가게주인컨트롤러ApiFp = function (configuration?: Configura
       const localVarAxiosArgs = await localVarAxiosParamCreator.deleteProduct(productId, options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
-        operationServerMap['가게주인컨트롤러Api.deleteProduct']?.[localVarOperationServerIndex]?.url
+        operationServerMap['StorekeeperApi.deleteProduct']?.[localVarOperationServerIndex]?.url
       return (axios, basePath) =>
         createRequestFunction(
           localVarAxiosArgs,
@@ -501,7 +501,7 @@ export const 가게주인컨트롤러ApiFp = function (configuration?: Configura
       const localVarAxiosArgs = await localVarAxiosParamCreator.getMyStores(options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
-        operationServerMap['가게주인컨트롤러Api.getMyStores']?.[localVarOperationServerIndex]?.url
+        operationServerMap['StorekeeperApi.getMyStores']?.[localVarOperationServerIndex]?.url
       return (axios, basePath) =>
         createRequestFunction(
           localVarAxiosArgs,
@@ -524,7 +524,7 @@ export const 가게주인컨트롤러ApiFp = function (configuration?: Configura
       const localVarAxiosArgs = await localVarAxiosParamCreator.requestOwnership(storeId, options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
-        operationServerMap['가게주인컨트롤러Api.requestOwnership']?.[localVarOperationServerIndex]?.url
+        operationServerMap['StorekeeperApi.requestOwnership']?.[localVarOperationServerIndex]?.url
       return (axios, basePath) =>
         createRequestFunction(
           localVarAxiosArgs,
@@ -553,7 +553,7 @@ export const 가게주인컨트롤러ApiFp = function (configuration?: Configura
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
-        operationServerMap['가게주인컨트롤러Api.updateParkingBenefit']?.[localVarOperationServerIndex]?.url
+        operationServerMap['StorekeeperApi.updateParkingBenefit']?.[localVarOperationServerIndex]?.url
       return (axios, basePath) =>
         createRequestFunction(
           localVarAxiosArgs,
@@ -578,7 +578,7 @@ export const 가게주인컨트롤러ApiFp = function (configuration?: Configura
       const localVarAxiosArgs = await localVarAxiosParamCreator.updateProduct(productId, productRequestDto, options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
-        operationServerMap['가게주인컨트롤러Api.updateProduct']?.[localVarOperationServerIndex]?.url
+        operationServerMap['StorekeeperApi.updateProduct']?.[localVarOperationServerIndex]?.url
       return (axios, basePath) =>
         createRequestFunction(
           localVarAxiosArgs,
@@ -591,25 +591,25 @@ export const 가게주인컨트롤러ApiFp = function (configuration?: Configura
 }
 
 /**
- * 가게주인컨트롤러Api - factory interface
+ * StorekeeperApi - factory interface
  * @export
  */
-export const 가게주인컨트롤러ApiFactory = function (
+export const StorekeeperApiFactory = function (
   configuration?: Configuration,
   basePath?: string,
   axios?: AxiosInstance
 ) {
-  const localVarFp = 가게주인컨트롤러ApiFp(configuration)
+  const localVarFp = StorekeeperApiFp(configuration)
   return {
     /**
      * 특정 가게에 구매 금액별 주차 할인 혜택을 추가합니다.
      * @summary 가게 주차 할인 혜택 추가
-     * @param {가게주인컨트롤러ApiAddParkingBenefitRequest} requestParameters Request parameters.
+     * @param {StorekeeperApiAddParkingBenefitRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     addParkingBenefit(
-      requestParameters: 가게주인컨트롤러ApiAddParkingBenefitRequest,
+      requestParameters: StorekeeperApiAddParkingBenefitRequest,
       options?: RawAxiosRequestConfig
     ): AxiosPromise<ResponseDtoUnit> {
       return localVarFp
@@ -619,12 +619,12 @@ export const 가게주인컨트롤러ApiFactory = function (
     /**
      * 특정 가게에 새로운 상품을 추가합니다.
      * @summary 가게 상품 추가
-     * @param {가게주인컨트롤러ApiAddProductRequest} requestParameters Request parameters.
+     * @param {StorekeeperApiAddProductRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     addProduct(
-      requestParameters: 가게주인컨트롤러ApiAddProductRequest,
+      requestParameters: StorekeeperApiAddProductRequest,
       options?: RawAxiosRequestConfig
     ): AxiosPromise<ResponseDtoUnit> {
       return localVarFp
@@ -634,12 +634,12 @@ export const 가게주인컨트롤러ApiFactory = function (
     /**
      * 가게의 주차 할인 혜택을 삭제합니다.
      * @summary 가게 주차 할인 혜택 삭제
-     * @param {가게주인컨트롤러ApiDeleteParkingBenefitRequest} requestParameters Request parameters.
+     * @param {StorekeeperApiDeleteParkingBenefitRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     deleteParkingBenefit(
-      requestParameters: 가게주인컨트롤러ApiDeleteParkingBenefitRequest,
+      requestParameters: StorekeeperApiDeleteParkingBenefitRequest,
       options?: RawAxiosRequestConfig
     ): AxiosPromise<ResponseDtoUnit> {
       return localVarFp
@@ -649,12 +649,12 @@ export const 가게주인컨트롤러ApiFactory = function (
     /**
      * 특정 상품을 삭제합니다.
      * @summary 가게 상품 삭제
-     * @param {가게주인컨트롤러ApiDeleteProductRequest} requestParameters Request parameters.
+     * @param {StorekeeperApiDeleteProductRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     deleteProduct(
-      requestParameters: 가게주인컨트롤러ApiDeleteProductRequest,
+      requestParameters: StorekeeperApiDeleteProductRequest,
       options?: RawAxiosRequestConfig
     ): AxiosPromise<ResponseDtoUnit> {
       return localVarFp.deleteProduct(requestParameters.productId, options).then((request) => request(axios, basePath))
@@ -671,12 +671,12 @@ export const 가게주인컨트롤러ApiFactory = function (
     /**
      * 로그인한 사용자가 특정 가게의 소유권을 신청합니다.
      * @summary 가게 소유권 신청
-     * @param {가게주인컨트롤러ApiRequestOwnershipRequest} requestParameters Request parameters.
+     * @param {StorekeeperApiRequestOwnershipRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     requestOwnership(
-      requestParameters: 가게주인컨트롤러ApiRequestOwnershipRequest,
+      requestParameters: StorekeeperApiRequestOwnershipRequest,
       options?: RawAxiosRequestConfig
     ): AxiosPromise<ResponseDtoUnit> {
       return localVarFp.requestOwnership(requestParameters.storeId, options).then((request) => request(axios, basePath))
@@ -684,12 +684,12 @@ export const 가게주인컨트롤러ApiFactory = function (
     /**
      * 가게의 주차 할인 혜택을 수정합니다.
      * @summary 가게 주차 할인 혜택 수정
-     * @param {가게주인컨트롤러ApiUpdateParkingBenefitRequest} requestParameters Request parameters.
+     * @param {StorekeeperApiUpdateParkingBenefitRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     updateParkingBenefit(
-      requestParameters: 가게주인컨트롤러ApiUpdateParkingBenefitRequest,
+      requestParameters: StorekeeperApiUpdateParkingBenefitRequest,
       options?: RawAxiosRequestConfig
     ): AxiosPromise<ResponseDtoUnit> {
       return localVarFp
@@ -699,12 +699,12 @@ export const 가게주인컨트롤러ApiFactory = function (
     /**
      * 특정 상품의 정보를 수정합니다.
      * @summary 가게 상품 수정
-     * @param {가게주인컨트롤러ApiUpdateProductRequest} requestParameters Request parameters.
+     * @param {StorekeeperApiUpdateProductRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     updateProduct(
-      requestParameters: 가게주인컨트롤러ApiUpdateProductRequest,
+      requestParameters: StorekeeperApiUpdateProductRequest,
       options?: RawAxiosRequestConfig
     ): AxiosPromise<ResponseDtoUnit> {
       return localVarFp
@@ -715,151 +715,148 @@ export const 가게주인컨트롤러ApiFactory = function (
 }
 
 /**
- * Request parameters for addParkingBenefit operation in 가게주인컨트롤러Api.
+ * Request parameters for addParkingBenefit operation in StorekeeperApi.
  * @export
- * @interface 가게주인컨트롤러ApiAddParkingBenefitRequest
+ * @interface StorekeeperApiAddParkingBenefitRequest
  */
-export interface 가게주인컨트롤러ApiAddParkingBenefitRequest {
+export interface StorekeeperApiAddParkingBenefitRequest {
   /**
    *
    * @type {number}
-   * @memberof 가게주인컨트롤러ApiAddParkingBenefit
+   * @memberof StorekeeperApiAddParkingBenefit
    */
   readonly storeId: number
 
   /**
    *
    * @type {BenefitRequestDto}
-   * @memberof 가게주인컨트롤러ApiAddParkingBenefit
+   * @memberof StorekeeperApiAddParkingBenefit
    */
   readonly benefitRequestDto: BenefitRequestDto
 }
 
 /**
- * Request parameters for addProduct operation in 가게주인컨트롤러Api.
+ * Request parameters for addProduct operation in StorekeeperApi.
  * @export
- * @interface 가게주인컨트롤러ApiAddProductRequest
+ * @interface StorekeeperApiAddProductRequest
  */
-export interface 가게주인컨트롤러ApiAddProductRequest {
+export interface StorekeeperApiAddProductRequest {
   /**
    *
    * @type {number}
-   * @memberof 가게주인컨트롤러ApiAddProduct
+   * @memberof StorekeeperApiAddProduct
    */
   readonly storeId: number
 
   /**
    *
    * @type {ProductRequestDto}
-   * @memberof 가게주인컨트롤러ApiAddProduct
+   * @memberof StorekeeperApiAddProduct
    */
   readonly productRequestDto: ProductRequestDto
 }
 
 /**
- * Request parameters for deleteParkingBenefit operation in 가게주인컨트롤러Api.
+ * Request parameters for deleteParkingBenefit operation in StorekeeperApi.
  * @export
- * @interface 가게주인컨트롤러ApiDeleteParkingBenefitRequest
+ * @interface StorekeeperApiDeleteParkingBenefitRequest
  */
-export interface 가게주인컨트롤러ApiDeleteParkingBenefitRequest {
+export interface StorekeeperApiDeleteParkingBenefitRequest {
   /**
    *
    * @type {number}
-   * @memberof 가게주인컨트롤러ApiDeleteParkingBenefit
+   * @memberof StorekeeperApiDeleteParkingBenefit
    */
   readonly benefitId: number
 }
 
 /**
- * Request parameters for deleteProduct operation in 가게주인컨트롤러Api.
+ * Request parameters for deleteProduct operation in StorekeeperApi.
  * @export
- * @interface 가게주인컨트롤러ApiDeleteProductRequest
+ * @interface StorekeeperApiDeleteProductRequest
  */
-export interface 가게주인컨트롤러ApiDeleteProductRequest {
+export interface StorekeeperApiDeleteProductRequest {
   /**
    *
    * @type {number}
-   * @memberof 가게주인컨트롤러ApiDeleteProduct
+   * @memberof StorekeeperApiDeleteProduct
    */
   readonly productId: number
 }
 
 /**
- * Request parameters for requestOwnership operation in 가게주인컨트롤러Api.
+ * Request parameters for requestOwnership operation in StorekeeperApi.
  * @export
- * @interface 가게주인컨트롤러ApiRequestOwnershipRequest
+ * @interface StorekeeperApiRequestOwnershipRequest
  */
-export interface 가게주인컨트롤러ApiRequestOwnershipRequest {
+export interface StorekeeperApiRequestOwnershipRequest {
   /**
    *
    * @type {number}
-   * @memberof 가게주인컨트롤러ApiRequestOwnership
+   * @memberof StorekeeperApiRequestOwnership
    */
   readonly storeId: number
 }
 
 /**
- * Request parameters for updateParkingBenefit operation in 가게주인컨트롤러Api.
+ * Request parameters for updateParkingBenefit operation in StorekeeperApi.
  * @export
- * @interface 가게주인컨트롤러ApiUpdateParkingBenefitRequest
+ * @interface StorekeeperApiUpdateParkingBenefitRequest
  */
-export interface 가게주인컨트롤러ApiUpdateParkingBenefitRequest {
+export interface StorekeeperApiUpdateParkingBenefitRequest {
   /**
    *
    * @type {number}
-   * @memberof 가게주인컨트롤러ApiUpdateParkingBenefit
+   * @memberof StorekeeperApiUpdateParkingBenefit
    */
   readonly benefitId: number
 
   /**
    *
    * @type {BenefitRequestDto}
-   * @memberof 가게주인컨트롤러ApiUpdateParkingBenefit
+   * @memberof StorekeeperApiUpdateParkingBenefit
    */
   readonly benefitRequestDto: BenefitRequestDto
 }
 
 /**
- * Request parameters for updateProduct operation in 가게주인컨트롤러Api.
+ * Request parameters for updateProduct operation in StorekeeperApi.
  * @export
- * @interface 가게주인컨트롤러ApiUpdateProductRequest
+ * @interface StorekeeperApiUpdateProductRequest
  */
-export interface 가게주인컨트롤러ApiUpdateProductRequest {
+export interface StorekeeperApiUpdateProductRequest {
   /**
    *
    * @type {number}
-   * @memberof 가게주인컨트롤러ApiUpdateProduct
+   * @memberof StorekeeperApiUpdateProduct
    */
   readonly productId: number
 
   /**
    *
    * @type {ProductRequestDto}
-   * @memberof 가게주인컨트롤러ApiUpdateProduct
+   * @memberof StorekeeperApiUpdateProduct
    */
   readonly productRequestDto: ProductRequestDto
 }
 
 /**
- * 가게주인컨트롤러Api - object-oriented interface
+ * StorekeeperApi - object-oriented interface
  * @export
- * @class 가게주인컨트롤러Api
+ * @class StorekeeperApi
  * @extends {BaseAPI}
  */
-export class 가게주인컨트롤러Api extends BaseAPI {
+export class StorekeeperApi extends BaseAPI {
   /**
    * 특정 가게에 구매 금액별 주차 할인 혜택을 추가합니다.
    * @summary 가게 주차 할인 혜택 추가
-   * @param {가게주인컨트롤러ApiAddParkingBenefitRequest} requestParameters Request parameters.
+   * @param {StorekeeperApiAddParkingBenefitRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof 가게주인컨트롤러Api
+   * @memberof StorekeeperApi
    */
-  public addParkingBenefit(
-    requestParameters: 가게주인컨트롤러ApiAddParkingBenefitRequest,
-    options?: RawAxiosRequestConfig
-  ) {
-    return 가게주인컨트롤러ApiFp(this.configuration)
+  public addParkingBenefit(requestParameters: StorekeeperApiAddParkingBenefitRequest, options?: RawAxiosRequestConfig) {
+    return StorekeeperApiFp(this.configuration)
       .addParkingBenefit(requestParameters.storeId, requestParameters.benefitRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
@@ -867,13 +864,13 @@ export class 가게주인컨트롤러Api extends BaseAPI {
   /**
    * 특정 가게에 새로운 상품을 추가합니다.
    * @summary 가게 상품 추가
-   * @param {가게주인컨트롤러ApiAddProductRequest} requestParameters Request parameters.
+   * @param {StorekeeperApiAddProductRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof 가게주인컨트롤러Api
+   * @memberof StorekeeperApi
    */
-  public addProduct(requestParameters: 가게주인컨트롤러ApiAddProductRequest, options?: RawAxiosRequestConfig) {
-    return 가게주인컨트롤러ApiFp(this.configuration)
+  public addProduct(requestParameters: StorekeeperApiAddProductRequest, options?: RawAxiosRequestConfig) {
+    return StorekeeperApiFp(this.configuration)
       .addProduct(requestParameters.storeId, requestParameters.productRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
@@ -881,16 +878,16 @@ export class 가게주인컨트롤러Api extends BaseAPI {
   /**
    * 가게의 주차 할인 혜택을 삭제합니다.
    * @summary 가게 주차 할인 혜택 삭제
-   * @param {가게주인컨트롤러ApiDeleteParkingBenefitRequest} requestParameters Request parameters.
+   * @param {StorekeeperApiDeleteParkingBenefitRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof 가게주인컨트롤러Api
+   * @memberof StorekeeperApi
    */
   public deleteParkingBenefit(
-    requestParameters: 가게주인컨트롤러ApiDeleteParkingBenefitRequest,
+    requestParameters: StorekeeperApiDeleteParkingBenefitRequest,
     options?: RawAxiosRequestConfig
   ) {
-    return 가게주인컨트롤러ApiFp(this.configuration)
+    return StorekeeperApiFp(this.configuration)
       .deleteParkingBenefit(requestParameters.benefitId, options)
       .then((request) => request(this.axios, this.basePath))
   }
@@ -898,13 +895,13 @@ export class 가게주인컨트롤러Api extends BaseAPI {
   /**
    * 특정 상품을 삭제합니다.
    * @summary 가게 상품 삭제
-   * @param {가게주인컨트롤러ApiDeleteProductRequest} requestParameters Request parameters.
+   * @param {StorekeeperApiDeleteProductRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof 가게주인컨트롤러Api
+   * @memberof StorekeeperApi
    */
-  public deleteProduct(requestParameters: 가게주인컨트롤러ApiDeleteProductRequest, options?: RawAxiosRequestConfig) {
-    return 가게주인컨트롤러ApiFp(this.configuration)
+  public deleteProduct(requestParameters: StorekeeperApiDeleteProductRequest, options?: RawAxiosRequestConfig) {
+    return StorekeeperApiFp(this.configuration)
       .deleteProduct(requestParameters.productId, options)
       .then((request) => request(this.axios, this.basePath))
   }
@@ -914,10 +911,10 @@ export class 가게주인컨트롤러Api extends BaseAPI {
    * @summary 내 가게 목록 조회
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof 가게주인컨트롤러Api
+   * @memberof StorekeeperApi
    */
   public getMyStores(options?: RawAxiosRequestConfig) {
-    return 가게주인컨트롤러ApiFp(this.configuration)
+    return StorekeeperApiFp(this.configuration)
       .getMyStores(options)
       .then((request) => request(this.axios, this.basePath))
   }
@@ -925,16 +922,13 @@ export class 가게주인컨트롤러Api extends BaseAPI {
   /**
    * 로그인한 사용자가 특정 가게의 소유권을 신청합니다.
    * @summary 가게 소유권 신청
-   * @param {가게주인컨트롤러ApiRequestOwnershipRequest} requestParameters Request parameters.
+   * @param {StorekeeperApiRequestOwnershipRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof 가게주인컨트롤러Api
+   * @memberof StorekeeperApi
    */
-  public requestOwnership(
-    requestParameters: 가게주인컨트롤러ApiRequestOwnershipRequest,
-    options?: RawAxiosRequestConfig
-  ) {
-    return 가게주인컨트롤러ApiFp(this.configuration)
+  public requestOwnership(requestParameters: StorekeeperApiRequestOwnershipRequest, options?: RawAxiosRequestConfig) {
+    return StorekeeperApiFp(this.configuration)
       .requestOwnership(requestParameters.storeId, options)
       .then((request) => request(this.axios, this.basePath))
   }
@@ -942,16 +936,16 @@ export class 가게주인컨트롤러Api extends BaseAPI {
   /**
    * 가게의 주차 할인 혜택을 수정합니다.
    * @summary 가게 주차 할인 혜택 수정
-   * @param {가게주인컨트롤러ApiUpdateParkingBenefitRequest} requestParameters Request parameters.
+   * @param {StorekeeperApiUpdateParkingBenefitRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof 가게주인컨트롤러Api
+   * @memberof StorekeeperApi
    */
   public updateParkingBenefit(
-    requestParameters: 가게주인컨트롤러ApiUpdateParkingBenefitRequest,
+    requestParameters: StorekeeperApiUpdateParkingBenefitRequest,
     options?: RawAxiosRequestConfig
   ) {
-    return 가게주인컨트롤러ApiFp(this.configuration)
+    return StorekeeperApiFp(this.configuration)
       .updateParkingBenefit(requestParameters.benefitId, requestParameters.benefitRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
@@ -959,13 +953,13 @@ export class 가게주인컨트롤러Api extends BaseAPI {
   /**
    * 특정 상품의 정보를 수정합니다.
    * @summary 가게 상품 수정
-   * @param {가게주인컨트롤러ApiUpdateProductRequest} requestParameters Request parameters.
+   * @param {StorekeeperApiUpdateProductRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof 가게주인컨트롤러Api
+   * @memberof StorekeeperApi
    */
-  public updateProduct(requestParameters: 가게주인컨트롤러ApiUpdateProductRequest, options?: RawAxiosRequestConfig) {
-    return 가게주인컨트롤러ApiFp(this.configuration)
+  public updateProduct(requestParameters: StorekeeperApiUpdateProductRequest, options?: RawAxiosRequestConfig) {
+    return StorekeeperApiFp(this.configuration)
       .updateProduct(requestParameters.productId, requestParameters.productRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }

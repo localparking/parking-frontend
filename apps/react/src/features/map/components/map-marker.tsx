@@ -32,9 +32,9 @@ const createStoreMarkerOptions = (
     map: mapInstance,
     icon: {
       url: iconUrl,
-      size: new window.naver.maps.Size(40, 40),
-      scaledSize: new window.naver.maps.Size(40, 40),
-      anchor: new window.naver.maps.Point(20, 40),
+      size: new naver.maps.Size(40, 40),
+      scaledSize: new naver.maps.Size(40, 40),
+      anchor: new naver.maps.Point(20, 40),
     },
   }
 }
@@ -49,46 +49,55 @@ const createParkingLotMarkerOptions = (
     map: mapInstance,
     icon: {
       url: iconUrl,
-      size: new window.naver.maps.Size(40, 40),
-      scaledSize: new window.naver.maps.Size(40, 40),
-      anchor: new window.naver.maps.Point(20, 40),
+      size: new naver.maps.Size(40, 40),
+      scaledSize: new naver.maps.Size(40, 40),
+      anchor: new naver.maps.Point(20, 40),
     },
   }
 }
 
 export const MapMarkers = () => {
-  const { mapInstance, mapDisplayType, queryCenter, storeSearchParams, parkingLotSearchParams, isMapReady } =
-    useMapContext()
+  const {
+    mapInstance,
+    mapDisplayType,
+    queryCenter,
+    storeSearchParams,
+    parkingLotSearchParams,
+    isMapReady,
+    searchLevel,
+  } = useMapContext()
   const { parentIdToPrefixMap } = useCategoryContext()
 
   const { data: storeData } = useQuery({
-    queryKey: ['stores', 'mapSearch', storeSearchParams, queryCenter],
+    queryKey: ['stores', 'mapSearch', storeSearchParams, queryCenter, searchLevel],
     queryFn: async () => {
-      if (!queryCenter) return null
+      if (!queryCenter || searchLevel === null) return null
       const { data } = await storeService.postStoreMapSearch({
         ...storeSearchParams,
         lat: queryCenter.lat,
         lon: queryCenter.lng,
+        // searchLevel, // 백엔드 작업 완료 후 주석 해제
       })
       return data
     },
     select: (data) => data?.data,
-    enabled: isMapReady && mapDisplayType === MapDisplayType.STORE && !!queryCenter,
+    enabled: isMapReady && mapDisplayType === MapDisplayType.STORE && !!queryCenter && searchLevel !== null,
   })
 
   const { data: parkingLotData } = useQuery({
-    queryKey: ['parkingLots', 'mapSearch', parkingLotSearchParams, queryCenter],
+    queryKey: ['parkingLots', 'mapSearch', parkingLotSearchParams, queryCenter, searchLevel],
     queryFn: async () => {
-      if (!queryCenter) return null
+      if (!queryCenter || searchLevel === null) return null
       const { data } = await parkingLotService.postParkingLotMapSearch({
         ...parkingLotSearchParams,
         lat: queryCenter.lat,
         lon: queryCenter.lng,
+        // searchLevel, // 백엔드 작업 완료 후 주석 해제
       })
       return data
     },
     select: (data) => data?.data,
-    enabled: isMapReady && mapDisplayType === MapDisplayType.PARKING_LOT && !!queryCenter,
+    enabled: isMapReady && mapDisplayType === MapDisplayType.PARKING_LOT && !!queryCenter && searchLevel !== null,
   })
 
   const markersRef = useRef<naver.maps.Marker[]>([])
@@ -97,7 +106,7 @@ export const MapMarkers = () => {
   useEffect(() => {
     if (!mapInstance) return
 
-    listenersRef.current.forEach((listener) => window.naver.maps.Event.removeListener(listener))
+    listenersRef.current.forEach((listener) => naver.maps.Event.removeListener(listener))
     listenersRef.current = []
     markersRef.current.forEach((marker) => marker.setMap(null))
     markersRef.current = []
@@ -115,9 +124,9 @@ export const MapMarkers = () => {
       if (mapDisplayType === 'store') {
         const store = item as StoreListResponse
         const options = createStoreMarkerOptions(store, parentIdToPrefixMap, mapInstance)
-        marker = new window.naver.maps.Marker(options)
+        marker = new naver.maps.Marker(options)
 
-        const listener = window.naver.maps.Event.addListener(marker, 'click', () => {
+        const listener = naver.maps.Event.addListener(marker, 'click', () => {
           console.log(`Store ID: ${store.storeId}, Name: ${store.name}`)
           //Todo 가게 상세 페이지로 이동
         })
@@ -125,9 +134,9 @@ export const MapMarkers = () => {
       } else {
         const parkingLot = item as ParkingLotListResponse
         const options = createParkingLotMarkerOptions(parkingLot, mapInstance)
-        marker = new window.naver.maps.Marker(options)
+        marker = new naver.maps.Marker(options)
 
-        const listener = window.naver.maps.Event.addListener(marker, 'click', () => {
+        const listener = naver.maps.Event.addListener(marker, 'click', () => {
           console.log(`${parkingLot.name} 주차장 마커 클릭됨`)
           //Todo 주차장 상세 페이지로 이동
         })

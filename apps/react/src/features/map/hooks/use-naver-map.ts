@@ -8,6 +8,12 @@ export interface MapInfo {
   zoom: number
 }
 
+export type SearchLevel = 1 | 2 | null
+
+// 네이버 지도 줌 레벨에 따른 경계값 설정 (지도 줌 레벨이 나타내는 미터 기준)
+const ZOOM_LEVEL_FOR_300M = 15 // 이 레벨 이상이면 300m 미만 (5m~300m)
+const ZOOM_LEVEL_FOR_1KM = 13 // 이 레벨 이상이면 1km 미만 (300m~1km)
+
 // 훅의 반환 타입을 정의합니다.
 interface UseNaverMapResult {
   isMapReady: boolean
@@ -17,6 +23,7 @@ interface UseNaverMapResult {
   moveToCurrentLocation: () => void
   setZoom: (newZoom: number) => void
   moveTo: (position: naver.maps.CoordLiteral, zoom?: number) => void
+  searchLevel: SearchLevel
 }
 
 export const useNaverMap = (mapId = 'map'): UseNaverMapResult => {
@@ -26,8 +33,23 @@ export const useNaverMap = (mapId = 'map'): UseNaverMapResult => {
   const [queryCenter, setQueryCenter] = useState<MapInfo['center'] | null>(null)
   const [currentMapInfo, setCurrentMapInfo] = useState<MapInfo>({
     center: { lat: 37.498095, lng: 127.02761 }, // 기본 위치 (서울 강남구)
-    zoom: 14, // 기본 줌 레벨 500m
+    zoom: 15, // 기본 줌 레벨 300m
   })
+  const [searchLevel, setSearchLevel] = useState<SearchLevel>(1)
+
+  useEffect(() => {
+    const currentZoom = currentMapInfo.zoom
+    if (currentZoom >= ZOOM_LEVEL_FOR_300M) {
+      setSearchLevel(1) // 2km 검색 (5m~300m 줌 레벨)
+      console.log('2km 검색 (5m~300m 줌 레벨)')
+    } else if (currentZoom >= ZOOM_LEVEL_FOR_1KM) {
+      setSearchLevel(2) // 4km 검색 (300m~1km 줌 레벨)
+      console.log('4km 검색 (300m~1km 줌 레벨)')
+    } else {
+      setSearchLevel(null) // 검색 불가 (1km 이상 줌 레벨)
+      console.log('검색 불가 (1km 이상 줌 레벨)')
+    }
+  }, [currentMapInfo.zoom])
 
   // Naver Map 스크립트를 동적으로 로드하는 함수
   const loadNaverMapScript = useCallback((): Promise<void> => {
@@ -184,5 +206,6 @@ export const useNaverMap = (mapId = 'map'): UseNaverMapResult => {
     setZoom,
     moveToCurrentLocation,
     isMapReady,
+    searchLevel,
   }
 }
