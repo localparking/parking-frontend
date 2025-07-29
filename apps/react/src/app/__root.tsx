@@ -1,9 +1,7 @@
-import React from 'react'
 import { AuthContext } from '@/features/auth/hooks/use-auth'
 import { QueryClient } from '@tanstack/react-query'
 import { createRootRouteWithContext, Outlet, redirect } from '@tanstack/react-router'
 import { match } from 'path-to-regexp'
-import { cn } from '@ui/common/lib/utils'
 import { isWebView } from '@/shared/utils/webview'
 import bridge from '@/shared/bridge'
 
@@ -62,7 +60,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 function RootComponent() {
   return (
     <div className="flex min-h-screen w-full flex-col bg-gray-09">
-      <main className={cn('mx-auto flex h-full w-full max-w-[600px] flex-1 bg-white')}>
+      <main className={'mx-auto flex h-full w-full max-w-[600px] flex-1 bg-white'}>
         <Outlet />
       </main>
     </div>
