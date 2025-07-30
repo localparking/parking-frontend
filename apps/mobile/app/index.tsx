@@ -30,7 +30,7 @@ export default function App() {
     console.log('Current insets:', insets)
 
     setIntent(insets)
-  }, [insets])
+  }, [insets, setIntent])
 
   return (
     <View style={styles.container}>
@@ -42,6 +42,10 @@ export default function App() {
         ref={webviewRef}
         source={{ uri: webviewUrl }}
         style={styles.webview}
+        onShouldStartLoadWithRequest={(event) => {
+          console.log('WebView should start load with request:', event)
+          return true
+        }}
         geolocationEnabled={true}
         javaScriptEnabled={true}
         allowsFullscreenVideo={true}
@@ -70,7 +74,6 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  // 스타일 이름을 container로 변경하여 명확성을 높입니다.
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
