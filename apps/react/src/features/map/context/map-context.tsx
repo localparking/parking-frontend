@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, ReactNode } from 'react'
 import { ParkingLotSearchRequestSortEnum, StoreSearchRequestSortEnum } from '@data/user-api-axios/api'
-import { MapInfo, useNaverMap, SearchLevel } from '../hooks/use-naver-map'
+import { MapInfo, useNaverMap, DistanceLevel } from '../hooks/use-naver-map'
 
 enum DayOfWeek {
   MONDAY = 'MONDAY',
@@ -56,7 +56,7 @@ interface MapContextType {
   moveToCurrentLocation: () => void
   setZoom: (newZoom: number) => void
   moveTo: (position: naver.maps.CoordLiteral, zoom?: number) => void
-  searchLevel: SearchLevel
+  distanceLevel: DistanceLevel
 
   // --- MapProvider에서 관리하는 앱의 비즈니스 로직 상태 및 함수 ---
   mapDisplayType: MapDisplayType
@@ -70,8 +70,16 @@ interface MapContextType {
 const MapContext = createContext<MapContextType | undefined>(undefined)
 
 export function MapProvider({ children }: { children: ReactNode }) {
-  const { isMapReady, mapInstance, currentMapInfo, queryCenter, moveTo, setZoom, moveToCurrentLocation, searchLevel } =
-    useNaverMap('map')
+  const {
+    isMapReady,
+    mapInstance,
+    currentMapInfo,
+    queryCenter,
+    moveTo,
+    setZoom,
+    moveToCurrentLocation,
+    distanceLevel,
+  } = useNaverMap('map')
 
   const [mapDisplayType, setMapDisplayType] = useState<MapDisplayType>(MapDisplayType.STORE)
   const [storeSearchParams, setStoreSearchParams] = useState<StoreSearchParams>({
@@ -93,7 +101,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
         moveToCurrentLocation,
         setZoom,
         moveTo,
-        searchLevel,
+        distanceLevel,
         mapDisplayType,
         setMapDisplayType,
         storeSearchParams,

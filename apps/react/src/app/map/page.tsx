@@ -36,18 +36,17 @@ const SearchListContent = () => (
 )
 
 function Map() {
+  const { distanceLevel } = useMapContext()
 
-  const { searchLevel } = useMapContext();
-  
-  const { open, close, BottomSheetComponent } = useBottomSheet();
-  
+  const { open, close, BottomSheetComponent } = useBottomSheet()
+
   const handleOpenPlaceInfo = () => {
-    open(<PlaceInfoContent />);
-  };
+    open(<PlaceInfoContent />)
+  }
 
   const handleOpenSearchList = () => {
-    open(<SearchListContent />);
-  };
+    open(<SearchListContent />)
+  }
 
   return (
     <div className="relative">
@@ -55,7 +54,7 @@ function Map() {
       <MapTypeToggle />
       <MapControl />
       <MapMarkers />
-      {searchLevel === null && (
+      {distanceLevel === null && (
         <div
           className="absolute top-20 left-1/2 z-10 -translate-x-1/2 rounded-lg bg-black/60 p-3 text-sm text-white shadow-lg"
           aria-live="polite"
@@ -63,7 +62,7 @@ function Map() {
           지도를 확대하여 주변 정보를 확인하세요.
         </div>
       )}
-      <div className="absolute top-4 left-4 z-10 flex flex-col space-y-2">
+      {/* <div className="absolute top-4 left-4 z-10 flex flex-col space-y-2">
         <button onClick={handleOpenPlaceInfo} className="rounded bg-blue-500 px-4 py-2 text-white shadow-md">
           (임시) 장소 정보 열기
         </button>
@@ -73,9 +72,9 @@ function Map() {
         <button onClick={close} className="rounded bg-red-500 px-4 py-2 text-white shadow-md">
           (임시) 바텀시트 닫기
         </button>
-      </div>
+      </div> */}
       {BottomSheetComponent}
       {/* <Search /> */}
     </div>
-  );
+  )
 }

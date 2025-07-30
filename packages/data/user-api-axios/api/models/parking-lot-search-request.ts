@@ -19,6 +19,12 @@
  */
 export interface ParkingLotSearchRequest {
   /**
+   * 검색 반경 레벨 (1: 2km, 2: 4km)
+   * @type {number}
+   * @memberof ParkingLotSearchRequest
+   */
+  distanceLevel: number
+  /**
    * 위도
    * @type {number}
    * @memberof ParkingLotSearchRequest

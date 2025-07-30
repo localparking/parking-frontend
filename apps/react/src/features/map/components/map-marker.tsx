@@ -64,40 +64,40 @@ export const MapMarkers = () => {
     storeSearchParams,
     parkingLotSearchParams,
     isMapReady,
-    searchLevel,
+    distanceLevel,
   } = useMapContext()
   const { parentIdToPrefixMap } = useCategoryContext()
 
   const { data: storeData } = useQuery({
-    queryKey: ['stores', 'mapSearch', storeSearchParams, queryCenter, searchLevel],
+    queryKey: ['stores', 'mapSearch', storeSearchParams, queryCenter, distanceLevel],
     queryFn: async () => {
-      if (!queryCenter || searchLevel === null) return null
+      if (!queryCenter || distanceLevel === null) return null
       const { data } = await storeService.postStoreMapSearch({
         ...storeSearchParams,
         lat: queryCenter.lat,
         lon: queryCenter.lng,
-        // searchLevel, // 백엔드 작업 완료 후 주석 해제
+        distanceLevel,
       })
       return data
     },
     select: (data) => data?.data,
-    enabled: isMapReady && mapDisplayType === MapDisplayType.STORE && !!queryCenter && searchLevel !== null,
+    enabled: isMapReady && mapDisplayType === MapDisplayType.STORE && !!queryCenter && distanceLevel !== null,
   })
 
   const { data: parkingLotData } = useQuery({
-    queryKey: ['parkingLots', 'mapSearch', parkingLotSearchParams, queryCenter, searchLevel],
+    queryKey: ['parkingLots', 'mapSearch', parkingLotSearchParams, queryCenter, distanceLevel],
     queryFn: async () => {
-      if (!queryCenter || searchLevel === null) return null
+      if (!queryCenter || distanceLevel === null) return null
       const { data } = await parkingLotService.postParkingLotMapSearch({
         ...parkingLotSearchParams,
         lat: queryCenter.lat,
         lon: queryCenter.lng,
-        // searchLevel, // 백엔드 작업 완료 후 주석 해제
+        distanceLevel,
       })
       return data
     },
     select: (data) => data?.data,
-    enabled: isMapReady && mapDisplayType === MapDisplayType.PARKING_LOT && !!queryCenter && searchLevel !== null,
+    enabled: isMapReady && mapDisplayType === MapDisplayType.PARKING_LOT && !!queryCenter && distanceLevel !== null,
   })
 
   const markersRef = useRef<naver.maps.Marker[]>([])
