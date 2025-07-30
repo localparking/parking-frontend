@@ -1,9 +1,10 @@
 import { AuthContext } from '@/features/auth/hooks/use-auth'
 import { QueryClient } from '@tanstack/react-query'
-import { createRootRouteWithContext, Outlet, redirect } from '@tanstack/react-router'
+import { createRootRouteWithContext, Outlet, redirect, useRouterState } from '@tanstack/react-router'
 import { match } from 'path-to-regexp'
 import { isWebView } from '@/shared/utils/webview'
 import bridge from '@/shared/bridge'
+import { useBridge } from '@webview-bridge/react'
 
 interface RouterContext {
   queryClient: QueryClient
@@ -58,9 +59,21 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 })
 
 function RootComponent() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname })
+  const isMapPage = pathname === '/map'
+
+  const insets = useBridge(bridge.store, (state) => state.intent)
+
+  const mainStyle = isMapPage
+    ? {}
+    : {
+        paddingTop: `${insets?.top ?? 0}px`,
+        paddingBottom: `${insets?.bottom ?? 0}px`,
+      }
+
   return (
-    <div className="flex min-h-screen w-full flex-col bg-gray-09">
-      <main className={'mx-auto flex h-full w-full max-w-[600px] flex-1 bg-white'}>
+    <div className="flex min-h-screen w-full flex-col">
+      <main className="mx-auto flex h-full w-full max-w-[600px] flex-1 bg-white" style={mainStyle}>
         <Outlet />
       </main>
     </div>

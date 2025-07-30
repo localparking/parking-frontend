@@ -1,7 +1,8 @@
 import React, { useRef, useCallback } from 'react'
-import { SafeAreaView, View, StyleSheet, StatusBar, Platform } from 'react-native'
-import { createWebView, type BridgeWebView } from '@webview-bridge/react-native'
+import { View, StyleSheet, StatusBar, Platform } from 'react-native' // SafeAreaView 대신 View를 import합니다.
+import { createWebView, useBridge, type BridgeWebView } from '@webview-bridge/react-native'
 import { appBridge, appSchema } from './bridge'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export const { WebView, postMessage } = createWebView({
   bridge: appBridge,
@@ -14,6 +15,8 @@ export const { WebView, postMessage } = createWebView({
 
 export default function App() {
   const webviewRef = useRef<BridgeWebView>(null)
+  const { setIntent } = useBridge(appBridge)
+  const insets = useSafeAreaInsets()
 
   const webviewUrl =
     Platform.OS === 'android' ? process.env.EXPO_PUBLIC_ANDROID_WEB_VIEW_URL : process.env.EXPO_PUBLIC_IOS_WEB_VIEW_URL
@@ -22,60 +25,55 @@ export default function App() {
     throw new Error('Webview URL is not set')
   }
 
-  // 웹뷰 로드 완료 시 처리
   const handleLoadEnd = useCallback(() => {
     console.log('WebView loading finished')
-  }, [])
+    console.log('Current insets:', insets)
+
+    setIntent(insets)
+  }, [insets])
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="dark-content" />
+    <View style={styles.container}>
+      <StatusBar backgroundColor={'transparent'} translucent={true} barStyle="dark-content" />
 
       {/* WebView 영역 */}
-      <View style={styles.webviewContainer}>
-        <WebView
-          bounces={false}
-          ref={webviewRef}
-          source={{ uri: webviewUrl }}
-          style={styles.webview}
-          geolocationEnabled={true}
-          javaScriptEnabled={true}
-          allowsFullscreenVideo={true}
-          allowsInlineMediaPlayback={true}
-          mediaPlaybackRequiresUserAction={false}
-          originWhitelist={['*']}
-          mixedContentMode="compatibility"
-          onLoadEnd={handleLoadEnd}
-          thirdPartyCookiesEnabled={true}
-          domStorageEnabled={true}
-          // iOS 특정 설정
-          allowsLinkPreview={false}
-          // 네트워크 오류 처리
-          onError={(syntheticEvent) => {
-            const { nativeEvent } = syntheticEvent
-            console.error('WebView error: ', nativeEvent)
-          }}
-          onHttpError={(syntheticEvent) => {
-            const { nativeEvent } = syntheticEvent
-            console.error('WebView HTTP error: ', nativeEvent)
-          }}
-          // 로딩 상태 처리
-          onLoadStart={() => {
-            console.log('WebView loading started')
-          }}
-        />
-      </View>
-    </SafeAreaView>
+      <WebView
+        bounces={false}
+        ref={webviewRef}
+        source={{ uri: webviewUrl }}
+        style={styles.webview}
+        geolocationEnabled={true}
+        javaScriptEnabled={true}
+        allowsFullscreenVideo={true}
+        allowsInlineMediaPlayback={true}
+        mediaPlaybackRequiresUserAction={false}
+        originWhitelist={['*']}
+        mixedContentMode="compatibility"
+        onLoadEnd={handleLoadEnd}
+        thirdPartyCookiesEnabled={true}
+        domStorageEnabled={true}
+        allowsLinkPreview={false}
+        onError={(syntheticEvent) => {
+          const { nativeEvent } = syntheticEvent
+          console.error('WebView error: ', nativeEvent)
+        }}
+        onHttpError={(syntheticEvent) => {
+          const { nativeEvent } = syntheticEvent
+          console.error('WebView HTTP error: ', nativeEvent)
+        }}
+        onLoadStart={() => {
+          console.log('WebView loading started')
+        }}
+      />
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
+  // 스타일 이름을 container로 변경하여 명확성을 높입니다.
+  container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-  },
-  webviewContainer: {
-    flex: 1,
   },
   webview: {
     height: '100%',
