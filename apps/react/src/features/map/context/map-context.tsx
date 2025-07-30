@@ -57,7 +57,7 @@ interface MapContextType {
   queryCenter: MapInfo['center'] | null
   moveToCurrentLocation: () => void
   setZoom: (newZoom: number) => void
-  moveTo: (position: naver.maps.CoordLiteral, zoom?: number) => void
+  moveTo: (position: naver.maps.LatLngObjectLiteral, zoom?: number) => void
   distanceLevel: DistanceLevel
 
   // --- MapProvider에서 관리하는 앱의 비즈니스 로직 상태 및 함수 ---
@@ -68,6 +68,11 @@ interface MapContextType {
   parkingLotSearchParams: ParkingLotSearchParams
   setParkingLotSearchParams: React.Dispatch<React.SetStateAction<ParkingLotSearchParams>>
 
+  // 검색어 상태 관리
+  searchKeyword: string
+  setSearchKeyword: React.Dispatch<React.SetStateAction<string>>
+
+  // 브릿지에서 전달받은 인셋 정보
   insets: {
     top: number
     right: number
@@ -99,6 +104,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
     sort: ParkingLotSearchRequestSortEnum.Distance,
     page: 0,
   })
+  const [searchKeyword, setSearchKeyword] = useState<string>('')
 
   const insets = useBridge(bridge.store, (state) => state.intent)
 
@@ -119,6 +125,8 @@ export function MapProvider({ children }: { children: ReactNode }) {
         setStoreSearchParams,
         parkingLotSearchParams,
         setParkingLotSearchParams,
+        searchKeyword,
+        setSearchKeyword,
         insets,
       }}
     >

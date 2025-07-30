@@ -22,7 +22,7 @@ interface UseNaverMapResult {
   queryCenter: MapInfo['center'] | null
   moveToCurrentLocation: () => void
   setZoom: (newZoom: number) => void
-  moveTo: (position: naver.maps.CoordLiteral, zoom?: number) => void
+  moveTo: (position: naver.maps.LatLngObjectLiteral, zoom?: number) => void
   distanceLevel: DistanceLevel
 }
 
@@ -78,12 +78,13 @@ export const useNaverMap = (mapId = 'map'): UseNaverMapResult => {
   }, [])
 
   // 특정 위치와 줌 레벨로 지도를 부드럽게 이동시키는 함수
-  const moveTo = useCallback((position: naver.maps.CoordLiteral, zoom?: number) => {
+  const moveTo = useCallback((position: naver.maps.LatLngObjectLiteral, zoom?: number) => {
     const map = mapInstanceRef.current
     if (!map) return
 
     // morph 메서드는 좌표 이동과 줌 변경을 부드럽게 처리합니다.
     map.morph(position, zoom)
+    setCurrentMapInfo({ center: position, zoom: zoom ?? currentMapInfo.zoom })
   }, [])
 
   // 줌 레벨을 설정하는 함수

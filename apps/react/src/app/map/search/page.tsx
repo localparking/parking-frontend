@@ -1,53 +1,68 @@
-import { useMapContext } from '@/features/map/context/map-context'
+import { useState } from 'react'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { SearchIcon, X } from 'lucide-react'
+import { useMapContext } from '@/features/map/context/map-context'
+import { useNaverSearch } from '@/shared/services/search.service'
+import { SearchResults } from '@/features/search/search-results'
 
 export const Route = createFileRoute('/map/search/')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  return (
-    <div className="flex flex-col gap-2">
-      <div className="flex w-full items-center gap-[10px] px-[35px] pt-[10px]">
-        <div className="flex flex-1 items-center gap-[10px] rounded-[30px] border border-gray-3 bg-white px-[17px] py-[7px]">
-          <SearchIcon className="h-6 w-6" />
-          <p className="text-caption-2 text-gray-2">검색어를 입력하세요</p>
-        </div>
+  const { setSearchKeyword } = useMapContext()
 
+  const [query, setQuery] = useState('')
+  const [submittedQuery, setSubmittedQuery] = useState('')
+
+  const { data, isLoading, error } = useNaverSearch(submittedQuery)
+
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (!query.trim()) return
+    setSubmittedQuery(query)
+  }
+
+  const clearQuery = () => {
+    setQuery('')
+    setSubmittedQuery('')
+    setSearchKeyword('')
+  }
+
+  const stripHtml = (html: string) => html.replace(/<[^>]*>?/gm, '')
+
+  return (
+    <div className="flex h-full w-full flex-col">
+      {/* 검색창 */}
+      <div className="flex items-center gap-[10px] px-[35px]">
+        <form onSubmit={handleSearch} className="relative flex-1">
+          <SearchIcon className="absolute top-1/2 left-[17px] h-6 w-6 -translate-y-1/2 text-gray-3" />
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="검색어를 입력하세요"
+            className="h-[39px] w-full rounded-[30px] border border-gray-3 bg-white pr-[40px] pl-[50px] text-caption-1 text-gray-1 focus:outline-none"
+          />
+          {query && (
+            <button type="button" onClick={clearQuery} className="absolute top-1/2 right-[17px] -translate-y-1/2">
+              <X className="h-5 w-5 text-gray-3" />
+            </button>
+          )}
+        </form>
         <Link to="..">
           <p className="text-caption-2 text-gray-3">취소</p>
         </Link>
       </div>
 
-      <div></div>
-
-      <div className="flex flex-col gap-3 pr-[35px] pl-[49px]">
-        <p className="text-end text-caption-2 text-gray-3">전체삭제</p>
-
-        <div className="flex items-center justify-between">
-          <p className="text-caption-2 text-gray-1">검색기록1</p>
-          <div className="flex items-center gap-2">
-            <p className="text-caption-2">YYYY-MM-DD</p>
-            <X className="text-gray2 h-4 w-4" />
-          </div>
-        </div>
-
-        <div className="flex items-center justify-between">
-          <p className="text-caption-2 text-gray-1">검색기록1</p>
-          <div className="flex items-center gap-2">
-            <p className="text-caption-2">YYYY-MM-DD</p>
-            <X className="text-gray2 h-4 w-4" />
-          </div>
-        </div>
-
-        <div className="flex items-center justify-between">
-          <p className="text-caption-2 text-gray-1">검색기록1</p>
-          <div className="flex items-center gap-2">
-            <p className="text-caption-2">YYYY-MM-DD</p>
-            <X className="text-gray2 h-4 w-4" />
-          </div>
-        </div>
+      {/* 검색 결과 */}
+      <div className="mt-4 flex-1 overflow-y-auto px-[35px]">
+        <SearchResults
+          query={submittedQuery}
+          data={data?.items.map((item) => ({ ...item, title: stripHtml(item.title) }))}
+          isLoading={isLoading}
+          error={error as Error | null}
+        />
       </div>
     </div>
   )
