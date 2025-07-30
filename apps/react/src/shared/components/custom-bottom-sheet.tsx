@@ -98,7 +98,7 @@ const BottomSheet = ({
       onDragEnd={onDragEnd}
       initial={{ y: snapPoints[activeSnapIndex] }}
       animate={controls}
-      className="fixed bottom-0 mx-auto flex h-full w-full max-w-[600px] flex-col rounded-t-[40px] bg-white shadow-lg"
+      className="fixed bottom-0 z-15 mx-auto flex h-full w-full max-w-[600px] flex-col rounded-t-[40px] bg-white shadow-lg"
       style={{ y: snapPoints[activeSnapIndex] }}
     >
       <div className="flex w-full flex-shrink-0 cursor-grab justify-center py-5">

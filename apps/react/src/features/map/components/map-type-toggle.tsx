@@ -1,5 +1,8 @@
+import bridge from '@/shared/bridge'
+import { useBridge } from '@webview-bridge/react'
 import { useMapContext } from '../context/map-context'
 import { Store, CircleParking } from 'lucide-react'
+import { cn } from '@ui/common/lib/utils'
 
 enum MapDisplayType {
   STORE = 'store',
@@ -20,14 +23,14 @@ const toggleOptions = [
 ]
 
 export const MapTypeToggle = () => {
-  const { mapDisplayType, setMapDisplayType } = useMapContext()
+  const { mapDisplayType, setMapDisplayType, insets } = useMapContext()
 
   const handleToggle = (type: MapDisplayType) => {
     setMapDisplayType(type)
   }
 
   return (
-    <div className="absolute top-4 left-4 z-10">
+    <div className={'absolute right-9 z-10'} style={{ top: insets?.top + 55 }}>
       <div className="flex flex-col gap-2.5">
         {toggleOptions.map((option) => {
           const IconComponent = option.icon

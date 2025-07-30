@@ -37,7 +37,6 @@ const SearchListContent = () => (
 
 function Map() {
   const { distanceLevel } = useMapContext()
-
   const { open, close, BottomSheetComponent } = useBottomSheet()
 
   const handleOpenPlaceInfo = () => {

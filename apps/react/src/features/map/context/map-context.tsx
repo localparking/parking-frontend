@@ -1,6 +1,8 @@
 import { createContext, useContext, useState, ReactNode } from 'react'
 import { ParkingLotSearchRequestSortEnum, StoreSearchRequestSortEnum } from '@data/user-api-axios/api'
 import { MapInfo, useNaverMap, DistanceLevel } from '../hooks/use-naver-map'
+import bridge from '@/shared/bridge'
+import { useBridge } from '@webview-bridge/react'
 
 enum DayOfWeek {
   MONDAY = 'MONDAY',
@@ -65,6 +67,13 @@ interface MapContextType {
   setStoreSearchParams: React.Dispatch<React.SetStateAction<StoreSearchParams>>
   parkingLotSearchParams: ParkingLotSearchParams
   setParkingLotSearchParams: React.Dispatch<React.SetStateAction<ParkingLotSearchParams>>
+
+  insets: {
+    top: number
+    right: number
+    bottom: number
+    left: number
+  }
 }
 
 const MapContext = createContext<MapContextType | undefined>(undefined)
@@ -91,6 +100,8 @@ export function MapProvider({ children }: { children: ReactNode }) {
     page: 0,
   })
 
+  const insets = useBridge(bridge.store, (state) => state.intent)
+
   return (
     <MapContext.Provider
       value={{
@@ -108,6 +119,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
         setStoreSearchParams,
         parkingLotSearchParams,
         setParkingLotSearchParams,
+        insets,
       }}
     >
       {children}

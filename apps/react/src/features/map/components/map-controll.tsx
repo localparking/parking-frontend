@@ -21,7 +21,7 @@ const controlOptions = [
 ]
 
 export const MapControl: React.FC = () => {
-  const { moveToCurrentLocation, mapInstance, setZoom, isMapReady } = useMapContext()
+  const { moveToCurrentLocation, mapInstance, setZoom, isMapReady, insets } = useMapContext()
 
   const handleZoomIn = () => {
     if (!mapInstance) return
@@ -50,7 +50,7 @@ export const MapControl: React.FC = () => {
   }
 
   return (
-    <div className="absolute right-4 bottom-10 z-10">
+    <div className="absolute right-4 z-10" style={{ bottom: insets?.bottom + 95 }}>
       <div className="flex w-[33px] flex-col gap-[5px]">
         {controlOptions.map((option, index) => {
           const IconComponent = option.icon
