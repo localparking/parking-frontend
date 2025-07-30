@@ -1,6 +1,6 @@
-import { isWebView } from '@/shared/utils/webview'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { getDistance } from '../utils/geo'
+import { getCurrentLocation, getDefaultLocation } from '../services/location.service'
 
 // 훅이 반환할 지도 정보의 타입을 정의합니다.
 export interface MapInfo {
@@ -8,25 +8,48 @@ export interface MapInfo {
   zoom: number
 }
 
+export type DistanceLevel = 1 | 2 | null
+
+// 네이버 지도 줌 레벨에 따른 경계값 설정 (지도 줌 레벨이 나타내는 미터 기준)
+const ZOOM_LEVEL_FOR_300M = 15 // 이 레벨 이상이면 300m 미만 (5m~300m)
+const ZOOM_LEVEL_FOR_1KM = 13 // 이 레벨 이상이면 1km 미만 (300m~1km)
+
 // 훅의 반환 타입을 정의합니다.
 interface UseNaverMapResult {
+  isMapReady: boolean
   mapInstance: naver.maps.Map | null
   currentMapInfo: MapInfo
   queryCenter: MapInfo['center'] | null
-  moveTo: (position: naver.maps.CoordLiteral, zoom?: number) => void
-  setZoom: (newZoom: number) => void
   moveToCurrentLocation: () => void
-  isMapReady: boolean
+  setZoom: (newZoom: number) => void
+  moveTo: (position: naver.maps.CoordLiteral, zoom?: number) => void
+  distanceLevel: DistanceLevel
 }
 
 export const useNaverMap = (mapId = 'map'): UseNaverMapResult => {
   const mapInstanceRef = useRef<naver.maps.Map | null>(null)
+  const userMarkerRef = useRef<naver.maps.Marker | null>(null) // 사용자 마커 ref
   const [isMapReady, setIsMapReady] = useState<boolean>(false)
   const [queryCenter, setQueryCenter] = useState<MapInfo['center'] | null>(null)
   const [currentMapInfo, setCurrentMapInfo] = useState<MapInfo>({
     center: { lat: 37.498095, lng: 127.02761 }, // 기본 위치 (서울 강남구)
-    zoom: 14, // 기본 줌 레벨 500m
+    zoom: 15, // 기본 줌 레벨 300m
   })
+  const [distanceLevel, setDistanceLevel] = useState<DistanceLevel>(1)
+
+  useEffect(() => {
+    const currentZoom = currentMapInfo.zoom
+    if (currentZoom >= ZOOM_LEVEL_FOR_300M) {
+      setDistanceLevel(1) // 2km 검색 (5m~300m 줌 레벨)
+      console.log('2km 검색 (5m~300m 줌 레벨)')
+    } else if (currentZoom >= ZOOM_LEVEL_FOR_1KM) {
+      setDistanceLevel(2) // 4km 검색 (300m~1km 줌 레벨)
+      console.log('4km 검색 (300m~1km 줌 레벨)')
+    } else {
+      setDistanceLevel(null) // 검색 불가 (1km 이상 줌 레벨)
+      console.log('검색 불가 (1km 이상 줌 레벨)')
+    }
+  }, [currentMapInfo.zoom])
 
   // Naver Map 스크립트를 동적으로 로드하는 함수
   const loadNaverMapScript = useCallback((): Promise<void> => {
@@ -71,21 +94,41 @@ export const useNaverMap = (mapId = 'map'): UseNaverMapResult => {
   }, [])
 
   /**
-   * TODO 사용자의 현재 GPS 위치로 지도를 이동시킵니다.
-   * WEB / WebView 환경 분기처리 필수
+   * 사용자의 현재 GPS 위치로 지도를 이동시킵니다.
    */
-  const moveToCurrentLocation = useCallback(() => {
+  const moveToCurrentLocation = useCallback(async () => {
     const map = mapInstanceRef.current
     if (!map) return
 
-    if (isWebView()) {
-      // bridge 기반 현재 위치정보 요청해 가져옵니다.
+    const locationResult = await getCurrentLocation()
+
+    if (locationResult.success && locationResult.data) {
+      const { latitude, longitude } = locationResult.data
+
+      moveTo({ lat: latitude, lng: longitude }, 15)
+
+      // 사용자 마커 생성 또는 위치 업데이트
+      if (!userMarkerRef.current) {
+        // 마커가 없으면 새로 생성
+        userMarkerRef.current = new window.naver.maps.Marker({
+          position: { lat: latitude, lng: longitude },
+          map: map,
+          icon: {
+            content: `
+              <div style="width: 18px; height: 18px; background-color: #007AFF; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"></div>
+            `,
+            anchor: new window.naver.maps.Point(12, 12),
+          },
+        })
+      } else {
+        // 이미 마커가 있으면 위치만 업데이트
+        userMarkerRef.current.setPosition({ lat: latitude, lng: longitude })
+      }
     } else {
-      // 브라우저 Geolocation API를 사용하여 현재 위치를 가져옵니다.
+      const defaultLocation = getDefaultLocation()
+      moveTo({ lat: defaultLocation.latitude, lng: defaultLocation.longitude }, 15)
     }
-    // moveTo({ lat: 37.498095, lng: 127.02761 }, 15) // 예시로 강남구 위치로 이동
-    // 실제로는 위치정보를 통해 현재 위치를 받아와야 합니다.
-  }, [])
+  }, [moveTo])
 
   // 현재 지도 상태를 감지하고, queryCenter를 업데이트하는 200M 기준으로 데이터 Fetch하도록 설정
   useEffect(() => {
@@ -151,6 +194,7 @@ export const useNaverMap = (mapId = 'map'): UseNaverMapResult => {
     // 컴포넌트 언마운트 시 이벤트 리스너 메모리 해제
     return () => {
       naver.maps.Event.removeListener(idleListener)
+      userMarkerRef.current?.setMap(null) // 사용자 마커 제거
     }
   }, [isMapReady])
 
@@ -162,5 +206,6 @@ export const useNaverMap = (mapId = 'map'): UseNaverMapResult => {
     setZoom,
     moveToCurrentLocation,
     isMapReady,
+    distanceLevel,
   }
 }

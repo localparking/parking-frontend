@@ -13,33 +13,27 @@
  */
 
 /**
- * 텍스트 기반 가게 검색 요청 DTO
+ *
  * @export
- * @interface StoreTextSearchRequest
+ * @interface ParkingBenefitDto
  */
-export interface StoreTextSearchRequest {
+export interface ParkingBenefitDto {
   /**
-   * 현재 위치 위도
+   *
    * @type {number}
-   * @memberof StoreTextSearchRequest
+   * @memberof ParkingBenefitDto
    */
-  lat?: number
+  benefitId: number
   /**
-   * 현재 위치 경도
+   *
    * @type {number}
-   * @memberof StoreTextSearchRequest
+   * @memberof ParkingBenefitDto
    */
-  lon?: number
+  purchaseAmount: number
   /**
-   * 검색어
-   * @type {string}
-   * @memberof StoreTextSearchRequest
-   */
-  query: string
-  /**
-   * 페이지 번호 (0부터 시작)
+   *
    * @type {number}
-   * @memberof StoreTextSearchRequest
+   * @memberof ParkingBenefitDto
    */
-  page: number
+  discountMin: number
 }

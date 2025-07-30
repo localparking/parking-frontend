@@ -19,6 +19,12 @@
  */
 export interface StoreSearchRequest {
   /**
+   * 검색 반경 레벨 (1: 2km, 2: 4km)
+   * @type {number}
+   * @memberof StoreSearchRequest
+   */
+  distanceLevel: number
+  /**
    * 위도
    * @type {number}
    * @memberof StoreSearchRequest
@@ -31,6 +37,12 @@ export interface StoreSearchRequest {
    */
   lon?: number
   /**
+   * 검색어 (텍스트 검색 시 사용)
+   * @type {string}
+   * @memberof StoreSearchRequest
+   */
+  query?: string
+  /**
    * 카테고리 ID
    * @type {number}
    * @memberof StoreSearchRequest
@@ -41,7 +53,7 @@ export interface StoreSearchRequest {
    * @type {string}
    * @memberof StoreSearchRequest
    */
-  sort: StoreSearchRequestSortEnum
+  sort?: StoreSearchRequestSortEnum
   /**
    * 최대 무료 주차(분)
    * @type {number}

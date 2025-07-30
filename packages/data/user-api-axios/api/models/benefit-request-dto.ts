@@ -12,12 +12,22 @@
  * Do not edit the class manually.
  */
 
-export * from './apis/admin-api'
-export * from './apis/auth-api'
-export * from './apis/category-api'
-export * from './apis/onboarding-api'
-export * from './apis/parking-api'
-export * from './apis/register-api'
-export * from './apis/store-api'
-export * from './apis/storekeeper-api'
-export * from './apis/user-api'
+/**
+ *
+ * @export
+ * @interface BenefitRequestDto
+ */
+export interface BenefitRequestDto {
+  /**
+   *
+   * @type {number}
+   * @memberof BenefitRequestDto
+   */
+  purchaseAmount: number
+  /**
+   *
+   * @type {number}
+   * @memberof BenefitRequestDto
+   */
+  discountMin: number
+}

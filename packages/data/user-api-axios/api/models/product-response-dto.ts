@@ -13,33 +13,39 @@
  */
 
 /**
- * 텍스트 기반 주차장 검색 요청 DTO
+ * 가게 상품 정보 응답 DTO
  * @export
- * @interface ParkingLotTextSearchRequest
+ * @interface ProductResponseDto
  */
-export interface ParkingLotTextSearchRequest {
+export interface ProductResponseDto {
   /**
-   * 현재 위치 위도
+   * 상품 ID
    * @type {number}
-   * @memberof ParkingLotTextSearchRequest
+   * @memberof ProductResponseDto
    */
-  lat?: number
+  productId: number
   /**
-   * 현재 위치 경도
-   * @type {number}
-   * @memberof ParkingLotTextSearchRequest
-   */
-  lon?: number
-  /**
-   * 검색어
+   * 상품 이름
    * @type {string}
-   * @memberof ParkingLotTextSearchRequest
+   * @memberof ProductResponseDto
    */
-  query: string
+  name: string
   /**
-   * 페이지 번호 (0부터 시작)
-   * @type {number}
-   * @memberof ParkingLotTextSearchRequest
+   * 상품 이미지 URL
+   * @type {string}
+   * @memberof ProductResponseDto
    */
-  page: number
+  imageUrl: string
+  /**
+   * 상품 설명
+   * @type {string}
+   * @memberof ProductResponseDto
+   */
+  description: string
+  /**
+   * 상품 가격
+   * @type {number}
+   * @memberof ProductResponseDto
+   */
+  price: number
 }

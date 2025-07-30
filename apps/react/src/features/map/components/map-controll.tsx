@@ -1,1 +1,74 @@
-// 혜택 가게, 주차장 검색설정 그리고 + - 현재 위치로 이동 등의 버튼을 배치하고 동작을 담당하는 컴포넌트입니다.
+import React from 'react'
+import { Plus, Minus, LocateFixed } from 'lucide-react'
+import { useMapContext } from '@/features/map/context/map-context'
+
+const controlOptions = [
+  {
+    icon: Plus,
+    onClick: 'zoomIn',
+    title: '확대',
+  },
+  {
+    icon: Minus,
+    onClick: 'zoomOut',
+    title: '축소',
+  },
+  {
+    icon: LocateFixed,
+    onClick: 'location',
+    title: '현재 위치로 이동',
+  },
+]
+
+export const MapControl: React.FC = () => {
+  const { moveToCurrentLocation, mapInstance, setZoom, isMapReady } = useMapContext()
+
+  const handleZoomIn = () => {
+    if (!mapInstance) return
+    const currentZoom = mapInstance.getZoom()
+    setZoom(currentZoom + 1)
+  }
+
+  const handleZoomOut = () => {
+    if (!mapInstance) return
+    const currentZoom = mapInstance.getZoom()
+    setZoom(currentZoom - 1)
+  }
+
+  const handleClick = (action: string) => {
+    switch (action) {
+      case 'zoomIn':
+        handleZoomIn()
+        break
+      case 'zoomOut':
+        handleZoomOut()
+        break
+      case 'location':
+        moveToCurrentLocation()
+        break
+    }
+  }
+
+  return (
+    <div className="absolute right-4 bottom-10 z-10">
+      <div className="flex w-[33px] flex-col gap-[5px]">
+        {controlOptions.map((option, index) => {
+          const IconComponent = option.icon
+          const isLocationButton = option.onClick === 'location'
+
+          return (
+            <button
+              key={index}
+              onClick={() => handleClick(option.onClick)}
+              disabled={!isMapReady}
+              className="flex h-[33px] w-[33px] items-center justify-center rounded-full border border-white/25 bg-[rgba(255,255,255,0.25)] shadow-[0px_0px_3.33px_0px_rgba(0,0,0,0.25)] backdrop-blur-[1.66px] transition-all duration-200 hover:bg-[rgba(255,255,255,0.35)] disabled:opacity-50"
+              title={option.title}
+            >
+              <IconComponent size={16} color={isLocationButton ? '#00C800' : '#222222'} />
+            </button>
+          )
+        })}
+      </div>
+    </div>
+  )
+}

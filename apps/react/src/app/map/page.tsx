@@ -1,6 +1,10 @@
 // page.tsx
 import { useBottomSheet } from '@/features/map/hooks/use-bottom-sheet'
 import { createFileRoute } from '@tanstack/react-router'
+import { MapControl } from '@/features/map/components/map-controll'
+import { MapMarkers } from '@/features/map/components/map-marker'
+import { MapTypeToggle } from '@/features/map/components/map-type-toggle'
+import { useMapContext } from '@/features/map/context/map-context'
 
 export const Route = createFileRoute('/map/')({
   component: Map,
@@ -32,6 +36,8 @@ const SearchListContent = () => (
 )
 
 function Map() {
+  const { distanceLevel } = useMapContext()
+
   const { open, close, BottomSheetComponent } = useBottomSheet()
 
   const handleOpenPlaceInfo = () => {
@@ -43,24 +49,32 @@ function Map() {
   }
 
   return (
-    <div>
-      <div id="map" className="h-screen bg-gray-200" />
-
-      {/* 외부에서 BottomSheet를 제어하는 버튼 예시 */}
-      <div className="fixed top-4 left-4 z-10 flex flex-col space-y-2">
-        <button onClick={handleOpenPlaceInfo} className="rounded bg-blue-500 px-4 py-2 text-white">
-          장소 정보 열기
+    <div className="relative">
+      <div id="map" className="h-screen" />
+      <MapTypeToggle />
+      <MapControl />
+      <MapMarkers />
+      {distanceLevel === null && (
+        <div
+          className="absolute top-20 left-1/2 z-10 -translate-x-1/2 rounded-lg bg-black/60 p-3 text-sm text-white shadow-lg"
+          aria-live="polite"
+        >
+          지도를 확대하여 주변 정보를 확인하세요.
+        </div>
+      )}
+      {/* <div className="absolute top-4 left-4 z-10 flex flex-col space-y-2">
+        <button onClick={handleOpenPlaceInfo} className="rounded bg-blue-500 px-4 py-2 text-white shadow-md">
+          (임시) 장소 정보 열기
         </button>
-        <button onClick={handleOpenSearchList} className="rounded bg-green-500 px-4 py-2 text-white">
-          검색 목록 열기
+        <button onClick={handleOpenSearchList} className="rounded bg-green-500 px-4 py-2 text-white shadow-md">
+          (임시) 검색 목록 열기
         </button>
-        <button onClick={close} className="rounded bg-red-500 px-4 py-2 text-white">
-          바텀시트 닫기
+        <button onClick={close} className="rounded bg-red-500 px-4 py-2 text-white shadow-md">
+          (임시) 바텀시트 닫기
         </button>
-      </div>
-
-      {/* 훅이 반환하는 컴포넌트를 렌더링하기만 하면 끝 */}
+      </div> */}
       {BottomSheetComponent}
+      {/* <Search /> */}
     </div>
   )
 }

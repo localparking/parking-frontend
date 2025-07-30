@@ -14,24 +14,24 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { SearchSuggestionResponse } from './search-suggestion-response'
+import type { MyStoreInfo } from './my-store-info'
 
 /**
  *
  * @export
- * @interface ResponseDtoSearchSuggestionResponse
+ * @interface ResponseDtoListMyStoreInfo
  */
-export interface ResponseDtoSearchSuggestionResponse {
+export interface ResponseDtoListMyStoreInfo {
   /**
    *
    * @type {string}
-   * @memberof ResponseDtoSearchSuggestionResponse
+   * @memberof ResponseDtoListMyStoreInfo
    */
   message: string
   /**
    *
-   * @type {SearchSuggestionResponse}
-   * @memberof ResponseDtoSearchSuggestionResponse
+   * @type {Array<MyStoreInfo>}
+   * @memberof ResponseDtoListMyStoreInfo
    */
-  data?: SearchSuggestionResponse
+  data?: Array<MyStoreInfo>
 }

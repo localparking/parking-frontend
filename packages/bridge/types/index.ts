@@ -13,10 +13,14 @@ export interface LocationData {
   accuracy: number
 }
 
+export interface LocationResult {
+  success: boolean
+  data: LocationData | null
+}
+
 // 브릿지 스토어 타입 (상태)
 export interface BridgeStore {
   isLoggedIn: boolean
-  currentLocation: LocationData | null
 }
 
 // 브릿지 액션 타입 (함수)
@@ -25,8 +29,7 @@ export interface BridgeActions {
   getAuthStatus(): Promise<{ isLoggedIn: boolean }>
   getAuthToken(): Promise<{ accessToken: string | null }>
   logout(): Promise<{ success: boolean; message?: string }>
-  getCurrentLocation(): Promise<LocationData | null>
-  requestLocationPermission(): Promise<boolean>
+  getCurrentLocation(): Promise<LocationResult>
   notifyTokenExpired(): Promise<{ accessToken: string | null }>
   setLandingStatus(): Promise<void>
   getLandingStatus(): Promise<boolean>

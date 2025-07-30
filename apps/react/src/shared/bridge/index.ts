@@ -1,5 +1,5 @@
 import { BridgeStore, linkBridge } from '@webview-bridge/web'
-import { SocialLoginType, SocialLoginResult } from '@bridge/types'
+import { SocialLoginType, SocialLoginResult, LocationData, LocationResult } from '@bridge/types'
 
 // 웹에서 사용할 브릿지 타입 정의
 export interface WebBridge extends BridgeStore<WebBridge> {
@@ -15,6 +15,7 @@ export interface WebBridge extends BridgeStore<WebBridge> {
   [key: string]: any
   setLandingStatus(): Promise<void>
   getLandingStatus(): Promise<boolean>
+  getCurrentLocation(): Promise<LocationResult>
 }
 
 // 브릿지 인스턴스 생성
@@ -23,8 +24,6 @@ export const bridge = linkBridge<WebBridge>({
   timeout: 20000,
   initialBridge: {
     socialLogin: async (type: SocialLoginType) => {
-      // 네이티브에서 실제 구현이 되어야 함
-      // 현재는 기본값 반환 (네이티브에서 오버라이드됨)
       return {
         success: false,
         message: '네이티브 소셜 로그인 구현이 필요합니다.',
@@ -36,6 +35,7 @@ export const bridge = linkBridge<WebBridge>({
     notifyTokenExpired: async () => ({ accessToken: null }),
     setLandingStatus: async (): Promise<void> => {},
     getLandingStatus: async () => false,
+    getCurrentLocation: async () => ({ success: false, data: null }),
   },
 })
 

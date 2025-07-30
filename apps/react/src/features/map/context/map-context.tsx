@@ -1,14 +1,6 @@
-import { createContext, useContext, useState, ReactNode, useEffect } from 'react'
-import {
-  PageResponseStoreListResponse,
-  ParkingLotSearchRequestSortEnum,
-  ResponseDtoPageResponseStoreListResponse,
-  StoreSearchRequestSortEnum,
-} from '@data/user-api-axios/api'
-import { MapInfo, useNaverMap } from '../hooks/use-naver-map'
-import storeService from '@/shared/services/store.service'
-import { useQuery } from '@tanstack/react-query'
-import { getDistance } from '../utils/geo'
+import { createContext, useContext, useState, ReactNode } from 'react'
+import { ParkingLotSearchRequestSortEnum, StoreSearchRequestSortEnum } from '@data/user-api-axios/api'
+import { MapInfo, useNaverMap, DistanceLevel } from '../hooks/use-naver-map'
 
 enum DayOfWeek {
   MONDAY = 'MONDAY',
@@ -26,12 +18,12 @@ enum Congestion {
   HIGH = '혼잡',
 }
 
-enum MapDisplayType {
+export enum MapDisplayType {
   STORE = 'store',
   PARKING_LOT = 'parkingLot',
 }
 
-interface StoreSearchParams {
+export interface StoreSearchParams {
   sort: StoreSearchRequestSortEnum
   categoryId?: number
   maxFreeMin?: number
@@ -42,7 +34,7 @@ interface StoreSearchParams {
   page: number
 }
 
-interface ParkingLotSearchParams {
+export interface ParkingLotSearchParams {
   sort: ParkingLotSearchRequestSortEnum
   isFree?: boolean
   isRealtime?: boolean
@@ -56,21 +48,39 @@ interface ParkingLotSearchParams {
 }
 
 interface MapContextType {
+  // --- useNaverMap에서 직접 제공하는 상태 및 함수 ---
   isMapReady: boolean
+  mapInstance: naver.maps.Map | null
+  currentMapInfo: MapInfo
+  queryCenter: MapInfo['center'] | null
+  moveToCurrentLocation: () => void
+  setZoom: (newZoom: number) => void
+  moveTo: (position: naver.maps.CoordLiteral, zoom?: number) => void
+  distanceLevel: DistanceLevel
+
+  // --- MapProvider에서 관리하는 앱의 비즈니스 로직 상태 및 함수 ---
   mapDisplayType: MapDisplayType
   setMapDisplayType: React.Dispatch<React.SetStateAction<MapDisplayType>>
   storeSearchParams: StoreSearchParams
   setStoreSearchParams: React.Dispatch<React.SetStateAction<StoreSearchParams>>
   parkingLotSearchParams: ParkingLotSearchParams
   setParkingLotSearchParams: React.Dispatch<React.SetStateAction<ParkingLotSearchParams>>
-  storeData?: PageResponseStoreListResponse
-  isStoreDataLoading: boolean
-  storeDataError?: Error | null
 }
 
 const MapContext = createContext<MapContextType | undefined>(undefined)
 
 export function MapProvider({ children }: { children: ReactNode }) {
+  const {
+    isMapReady,
+    mapInstance,
+    currentMapInfo,
+    queryCenter,
+    moveTo,
+    setZoom,
+    moveToCurrentLocation,
+    distanceLevel,
+  } = useNaverMap('map')
+
   const [mapDisplayType, setMapDisplayType] = useState<MapDisplayType>(MapDisplayType.STORE)
   const [storeSearchParams, setStoreSearchParams] = useState<StoreSearchParams>({
     sort: StoreSearchRequestSortEnum.Distance,
@@ -81,44 +91,23 @@ export function MapProvider({ children }: { children: ReactNode }) {
     page: 0,
   })
 
-  const { moveTo, currentMapInfo, isMapReady, queryCenter } = useNaverMap()
-
-  // TODO useInfiniteQuery로 변경 필요 ( 무한 스크롤 )
-  const {
-    data: storeData,
-    isLoading: isStoreDataLoading,
-    error: storeDataError,
-  } = useQuery({
-    queryKey: ['stores', 'mapSearch', storeSearchParams, queryCenter],
-
-    queryFn: async () => {
-      if (!queryCenter) return null
-
-      const { data } = await storeService.postStoreMapSearch({
-        ...storeSearchParams,
-        lat: queryCenter.lat,
-        lon: queryCenter.lng,
-      })
-      return data
-    },
-    select: (data) => data?.data,
-
-    enabled: isMapReady && mapDisplayType === MapDisplayType.STORE && !!queryCenter,
-  })
-
   return (
     <MapContext.Provider
       value={{
         isMapReady,
+        mapInstance,
+        currentMapInfo,
+        queryCenter,
+        moveToCurrentLocation,
+        setZoom,
+        moveTo,
+        distanceLevel,
         mapDisplayType,
         setMapDisplayType,
         storeSearchParams,
         setStoreSearchParams,
         parkingLotSearchParams,
         setParkingLotSearchParams,
-        storeData,
-        isStoreDataLoading,
-        storeDataError,
       }}
     >
       {children}

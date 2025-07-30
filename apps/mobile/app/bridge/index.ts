@@ -1,7 +1,14 @@
 import { Bridge, bridge, postMessageSchema } from '@webview-bridge/react-native'
 import * as Location from 'expo-location'
 import { z } from 'zod'
-import { BridgeStore, BridgeActions, SocialLoginType, SocialLoginResult, LocationData } from '@bridge/types'
+import {
+  BridgeStore,
+  BridgeActions,
+  SocialLoginType,
+  SocialLoginResult,
+  LocationData,
+  LocationResult,
+} from '@bridge/types'
 import { kakaoLogin } from '../features/auth/social/kakao-login'
 import { appleLogin } from '../features/auth/social/apple-login'
 import { refreshToken } from '../features/auth/token/refresh-token'
@@ -67,53 +74,41 @@ export const appBridge = bridge<AppBridgeState>(({ set }) => {
       const accessToken = await AuthStorage.getAccessToken()
       return { accessToken }
     },
-    async getCurrentLocation() {
+    async getCurrentLocation(): Promise<LocationResult> {
       try {
-        // 권한 확인
-        const { status } = await Location.getForegroundPermissionsAsync()
-        if (status !== 'granted') {
-          console.warn('위치 권한이 없습니다.')
-          return null
-        }
-
-        // 현재 위치 가져오기
-        const location = await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.High,
-          timeInterval: 5000,
-          distanceInterval: 0,
-        })
-
-        const locationData: LocationData = {
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-          accuracy: location.coords.accuracy || 0,
-        }
-
-        // 브릿지 상태에 저장
-        // set({ currentLocation: locationData })
-
-        console.log('네이티브에서 위치 정보 획득:', locationData)
-        return locationData
-      } catch (error) {
-        console.error('네이티브 위치 정보 가져오기 실패:', error)
-        return null
-      }
-    },
-    async requestLocationPermission() {
-      try {
+        // 1. 권한 확인 (기존과 동일)
         let { status } = await Location.getForegroundPermissionsAsync()
 
         if (status !== 'granted') {
           const { status: newStatus } = await Location.requestForegroundPermissionsAsync()
-          status = newStatus
+          if (newStatus !== 'granted') {
+            // 2. 실패 시, 웹뷰에 '이유'를 알려주며 실패 반환
+            console.log('PERMISSION_DENIED')
+            return { success: false, data: null }
+          }
         }
 
-        return status === 'granted'
+        // 3. 기기 GPS 활성화 확인 (에러 방지)
+        if (!(await Location.hasServicesEnabledAsync())) {
+          console.log('SERVICE_DISABLED')
+          return { success: false, data: null }
+        }
+
+        // 4. 성공 로직
+        const location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High })
+        const locationData = {
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+          accuracy: location.coords.accuracy || 0,
+        }
+        return { success: true, data: locationData }
       } catch (error) {
-        console.error('위치 권한 요청 실패:', error)
-        return false
+        // 5. 그 외 모든 에러 처리
+        console.error('위치 정보 가져오기 실패:', error)
+        return { success: false, data: null }
       }
     },
+
     async notifyTokenExpired(): Promise<{ accessToken: string | null }> {
       const { accessToken } = await refreshToken()
       return { accessToken }

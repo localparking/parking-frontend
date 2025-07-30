@@ -32,6 +32,8 @@ import {
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, type RequestArgs, BaseAPI, RequiredError, operationServerMap } from '../base'
 // @ts-ignore
+import type { ResponseDtoListProductResponseDto } from '../models'
+// @ts-ignore
 import type { ResponseDtoPageResponseStoreListResponse } from '../models'
 // @ts-ignore
 import type { ResponseDtoPageSearchResponseStoreListResponse } from '../models'
@@ -39,8 +41,6 @@ import type { ResponseDtoPageSearchResponseStoreListResponse } from '../models'
 import type { ResponseDtoStoreDetailResponse } from '../models'
 // @ts-ignore
 import type { StoreSearchRequest } from '../models'
-// @ts-ignore
-import type { StoreTextSearchRequest } from '../models'
 /**
  * StoreApi - axios parameter creator
  * @export
@@ -58,6 +58,41 @@ export const StoreApiAxiosParamCreator = function (configuration?: Configuration
       // verify required parameter 'storeId' is not null or undefined
       assertParamExists('getStoreDetail', 'storeId', storeId)
       const localVarPath = `/store/detail/{storeId}`.replace(`{${'storeId'}}`, encodeURIComponent(String(storeId)))
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication Bearer Token required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * 특정 가게에 등록된 상품 목록을 조회합니다.
+     * @summary 가게 상품 목록 조회
+     * @param {number} storeId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getStoreProducts: async (storeId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'storeId' is not null or undefined
+      assertParamExists('getStoreProducts', 'storeId', storeId)
+      const localVarPath = `/store/{storeId}/products`.replace(`{${'storeId'}}`, encodeURIComponent(String(storeId)))
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -126,16 +161,16 @@ export const StoreApiAxiosParamCreator = function (configuration?: Configuration
     /**
      * 검색어로 가게를 검색하는 API입니다.
      * @summary 텍스트 기반 가게 검색
-     * @param {StoreTextSearchRequest} storeTextSearchRequest
+     * @param {StoreSearchRequest} storeSearchRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     searchByText: async (
-      storeTextSearchRequest: StoreTextSearchRequest,
+      storeSearchRequest: StoreSearchRequest,
       options: RawAxiosRequestConfig = {}
     ): Promise<RequestArgs> => {
-      // verify required parameter 'storeTextSearchRequest' is not null or undefined
-      assertParamExists('searchByText', 'storeTextSearchRequest', storeTextSearchRequest)
+      // verify required parameter 'storeSearchRequest' is not null or undefined
+      assertParamExists('searchByText', 'storeSearchRequest', storeSearchRequest)
       const localVarPath = `/store/text-search`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -157,7 +192,7 @@ export const StoreApiAxiosParamCreator = function (configuration?: Configuration
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
-      localVarRequestOptions.data = serializeDataIfNeeded(storeTextSearchRequest, localVarRequestOptions, configuration)
+      localVarRequestOptions.data = serializeDataIfNeeded(storeSearchRequest, localVarRequestOptions, configuration)
 
       return {
         url: toPathString(localVarUrlObj),
@@ -198,6 +233,29 @@ export const StoreApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
+     * 특정 가게에 등록된 상품 목록을 조회합니다.
+     * @summary 가게 상품 목록 조회
+     * @param {number} storeId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getStoreProducts(
+      storeId: number,
+      options?: RawAxiosRequestConfig
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoListProductResponseDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getStoreProducts(storeId, options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['StoreApi.getStoreProducts']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
      * 지도에서 가게를 검색하는 API입니다.
      * @summary 지도 기반 가게 검색
      * @param {StoreSearchRequest} storeSearchRequest
@@ -222,17 +280,17 @@ export const StoreApiFp = function (configuration?: Configuration) {
     /**
      * 검색어로 가게를 검색하는 API입니다.
      * @summary 텍스트 기반 가게 검색
-     * @param {StoreTextSearchRequest} storeTextSearchRequest
+     * @param {StoreSearchRequest} storeSearchRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async searchByText(
-      storeTextSearchRequest: StoreTextSearchRequest,
+      storeSearchRequest: StoreSearchRequest,
       options?: RawAxiosRequestConfig
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoPageSearchResponseStoreListResponse>
     > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.searchByText(storeTextSearchRequest, options)
+      const localVarAxiosArgs = await localVarAxiosParamCreator.searchByText(storeSearchRequest, options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
         operationServerMap['StoreApi.searchByText']?.[localVarOperationServerIndex]?.url
@@ -268,6 +326,19 @@ export const StoreApiFactory = function (configuration?: Configuration, basePath
       return localVarFp.getStoreDetail(requestParameters.storeId, options).then((request) => request(axios, basePath))
     },
     /**
+     * 특정 가게에 등록된 상품 목록을 조회합니다.
+     * @summary 가게 상품 목록 조회
+     * @param {StoreApiGetStoreProductsRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getStoreProducts(
+      requestParameters: StoreApiGetStoreProductsRequest,
+      options?: RawAxiosRequestConfig
+    ): AxiosPromise<ResponseDtoListProductResponseDto> {
+      return localVarFp.getStoreProducts(requestParameters.storeId, options).then((request) => request(axios, basePath))
+    },
+    /**
      * 지도에서 가게를 검색하는 API입니다.
      * @summary 지도 기반 가게 검색
      * @param {StoreApiSearchRequest} requestParameters Request parameters.
@@ -294,7 +365,7 @@ export const StoreApiFactory = function (configuration?: Configuration, basePath
       options?: RawAxiosRequestConfig
     ): AxiosPromise<ResponseDtoPageSearchResponseStoreListResponse> {
       return localVarFp
-        .searchByText(requestParameters.storeTextSearchRequest, options)
+        .searchByText(requestParameters.storeSearchRequest, options)
         .then((request) => request(axios, basePath))
     },
   }
@@ -310,6 +381,20 @@ export interface StoreApiGetStoreDetailRequest {
    *
    * @type {number}
    * @memberof StoreApiGetStoreDetail
+   */
+  readonly storeId: number
+}
+
+/**
+ * Request parameters for getStoreProducts operation in StoreApi.
+ * @export
+ * @interface StoreApiGetStoreProductsRequest
+ */
+export interface StoreApiGetStoreProductsRequest {
+  /**
+   *
+   * @type {number}
+   * @memberof StoreApiGetStoreProducts
    */
   readonly storeId: number
 }
@@ -336,10 +421,10 @@ export interface StoreApiSearchRequest {
 export interface StoreApiSearchByTextRequest {
   /**
    *
-   * @type {StoreTextSearchRequest}
+   * @type {StoreSearchRequest}
    * @memberof StoreApiSearchByText
    */
-  readonly storeTextSearchRequest: StoreTextSearchRequest
+  readonly storeSearchRequest: StoreSearchRequest
 }
 
 /**
@@ -360,6 +445,20 @@ export class StoreApi extends BaseAPI {
   public getStoreDetail(requestParameters: StoreApiGetStoreDetailRequest, options?: RawAxiosRequestConfig) {
     return StoreApiFp(this.configuration)
       .getStoreDetail(requestParameters.storeId, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * 특정 가게에 등록된 상품 목록을 조회합니다.
+   * @summary 가게 상품 목록 조회
+   * @param {StoreApiGetStoreProductsRequest} requestParameters Request parameters.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof StoreApi
+   */
+  public getStoreProducts(requestParameters: StoreApiGetStoreProductsRequest, options?: RawAxiosRequestConfig) {
+    return StoreApiFp(this.configuration)
+      .getStoreProducts(requestParameters.storeId, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -387,7 +486,7 @@ export class StoreApi extends BaseAPI {
    */
   public searchByText(requestParameters: StoreApiSearchByTextRequest, options?: RawAxiosRequestConfig) {
     return StoreApiFp(this.configuration)
-      .searchByText(requestParameters.storeTextSearchRequest, options)
+      .searchByText(requestParameters.storeSearchRequest, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

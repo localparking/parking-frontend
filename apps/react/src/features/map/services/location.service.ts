@@ -1,67 +1,75 @@
-import type { LocationData, CurrentLocation, GeolocationOptions } from '../model'
-import { createLocationIcon } from './marker.service'
+import { isWebView } from '@/shared/utils/webview'
+import { bridge } from '@/shared/bridge'
+import { LocationData, LocationResult } from '@bridge/types'
 
-export const updateMapWithNativeLocation = (locationData: LocationData) => {
-  if (!window.currentMap || !window.naver) return
-
-  const { latitude, longitude } = locationData
-  const newCenter = new window.naver.maps.LatLng(latitude, longitude)
-
-  window.currentMap.setCenter(newCenter)
-  window.currentMap.setZoom(15)
-
-  if (window.currentLocationMarker) {
-    window.currentLocationMarker.setMap(null)
-  }
-
-  window.currentLocationMarker = new window.naver.maps.Marker({
-    position: newCenter,
-    map: window.currentMap,
-    title: '현재 위치',
-    icon: createLocationIcon('#4285f4'),
-  })
-
-  console.log('네이티브 위치로 지도 업데이트 완료:', { latitude, longitude })
+const DEFAULT_LOCATION: LocationData = {
+  latitude: 37.498095,
+  longitude: 127.02761,
+  accuracy: 0,
 }
 
-export const getCurrentLocation = (options?: GeolocationOptions): Promise<CurrentLocation> => {
-  return new Promise((resolve, reject) => {
-    if (!navigator.geolocation) {
-      reject(new Error('이 브라우저는 위치 정보를 지원하지 않습니다.'))
-      return
+/**
+ * 현재 위치를 가져오는 서비스
+ * Web/WebView 환경을 자동으로 분기처리
+ */
+export const getCurrentLocation = async (): Promise<LocationResult> => {
+  try {
+    if (isWebView()) {
+      return await getWebViewLocation()
+    } else {
+      return await getBrowserLocation()
     }
+  } catch (error) {
+    console.error('위치 가져오기 실패:', error)
+    return { success: false, data: null }
+  }
+}
 
-    const defaultOptions: GeolocationOptions = {
-      enableHighAccuracy: true,
-      timeout: 8000,
-      maximumAge: 30000,
-      ...options,
+/**
+ * WebView 환경에서 bridge를 통해 현재 위치 가져오기
+ */
+const getWebViewLocation = async (): Promise<LocationResult> => {
+  try {
+    const result = await bridge.getCurrentLocation()
+    return result
+  } catch (error) {
+    console.error('WebView 위치 가져오기 실패:', error)
+    return { success: false, data: null }
+  }
+}
+
+/**
+ * 브라우저 환경에서 Geolocation API로 현재 위치 가져오기
+ */
+const getBrowserLocation = (): Promise<LocationResult> => {
+  return new Promise((resolve) => {
+    if (!navigator.geolocation) {
+      resolve({ success: false, data: null })
+      return
     }
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        console.log('웹 위치 정보 획득 성공:', position.coords)
-        resolve(position as CurrentLocation)
+        const { latitude, longitude, accuracy } = position.coords
+        resolve({
+          success: true,
+          data: { latitude, longitude, accuracy: accuracy || 0 },
+        })
       },
       (error) => {
-        console.error('위치 정보 획득 실패:', error)
-        let errorMessage = '위치 정보를 가져올 수 없습니다.'
-
-        switch (error.code) {
-          case error.PERMISSION_DENIED:
-            errorMessage = '위치 접근 권한이 거부되었습니다.'
-            break
-          case error.POSITION_UNAVAILABLE:
-            errorMessage = '위치 정보를 사용할 수 없습니다.'
-            break
-          case error.TIMEOUT:
-            errorMessage = '위치 정보 요청 시간이 초과되었습니다.'
-            break
-        }
-
-        reject(new Error(errorMessage))
+        console.error('브라우저 위치 가져오기 실패:', error)
+        resolve({ success: false, data: null })
       },
-      defaultOptions
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 60000,
+      }
     )
   })
 }
+
+/**
+ * 기본 위치 반환
+ */
+export const getDefaultLocation = (): LocationData => DEFAULT_LOCATION

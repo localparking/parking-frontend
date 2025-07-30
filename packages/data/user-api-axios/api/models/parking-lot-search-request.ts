@@ -19,6 +19,12 @@
  */
 export interface ParkingLotSearchRequest {
   /**
+   * 검색 반경 레벨 (1: 2km, 2: 4km)
+   * @type {number}
+   * @memberof ParkingLotSearchRequest
+   */
+  distanceLevel: number
+  /**
    * 위도
    * @type {number}
    * @memberof ParkingLotSearchRequest
@@ -31,11 +37,17 @@ export interface ParkingLotSearchRequest {
    */
   lon?: number
   /**
+   * 검색어 (텍스트 검색 시 사용)
+   * @type {string}
+   * @memberof ParkingLotSearchRequest
+   */
+  query?: string
+  /**
    * 검색 정렬 (예: DISTANCE, PRICE)
    * @type {string}
    * @memberof ParkingLotSearchRequest
    */
-  sort: ParkingLotSearchRequestSortEnum
+  sort?: ParkingLotSearchRequestSortEnum
   /**
    * 무료 여부
    * @type {boolean}
