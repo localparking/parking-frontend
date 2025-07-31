@@ -51,13 +51,18 @@ export function CategoryProvider({ children }: { children: ReactNode }) {
 
     categoriesById.forEach((node) => {
       if (node.parentId === null || node.parentId === undefined) {
+        // 부모 카테고리인 경우
         tree.push(node)
         const prefix = CATEGORY_NAME_TO_PREFIX_MAP[node.categoryName || ''] || 'store'
         idToPrefixMap.set(node.categoryId, prefix)
       } else {
+        // 자식 카테고리인 경우
         const parent = categoriesById.get(node.parentId)
         if (parent) {
           parent.children.push(node)
+          // 자식 카테고리는 부모의 prefix를 상속받음
+          const parentPrefix = CATEGORY_NAME_TO_PREFIX_MAP[parent.categoryName || ''] || 'store'
+          idToPrefixMap.set(node.categoryId, parentPrefix)
         }
       }
     })
