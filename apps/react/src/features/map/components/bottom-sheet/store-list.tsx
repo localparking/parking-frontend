@@ -90,10 +90,10 @@ export const StoreList: React.FC<StoreListProps> = ({ pages, hasNextPage, isFetc
                     <h3 className="text-sm font-semibold text-gray-900">{store.name}</h3>
                     {/* 영업 상태 - isOpen으로 판단 */}
                     <span
-                      className={cn(
-                        'rounded-full px-2 py-1 text-[10px] font-semibold',
-                        store.isOpen ? 'bg-gray-50 text-gray-1' : 'bg-red-50 text-red-600'
-                      )}
+                      className={cn('rounded-full px-2 py-1 text-[10px] font-semibold', {
+                        'bg-gray-50 text-gray-1': store.isOpen,
+                        'bg-red-50 text-red-600': !store.isOpen,
+                      })}
                     >
                       {store.isOpen ? '영업중' : '영업마감'}
                     </span>

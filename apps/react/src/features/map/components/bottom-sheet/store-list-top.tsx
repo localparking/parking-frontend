@@ -46,17 +46,18 @@ export const StoreTopFilter: React.FC<StoreTopFilterProps> = ({ onFilterIconClic
               onClick={() =>
                 setStoreSearchParams((prev) => ({
                   ...prev,
-                  categoryIds: prev.categoryIds?.includes(category.categoryId) 
-                    ? undefined 
-                    : [category.categoryId],
+                  categoryIds: prev.categoryIds?.includes(category.categoryId) ? undefined : [category.categoryId],
                   page: 0,
                 }))
               }
               className={cn(
                 'flex items-center justify-center rounded-full border px-3 py-1 text-xs font-semibold whitespace-nowrap transition-colors',
-                storeSearchParams.categoryIds?.includes(category.categoryId)
-                  ? 'border-gray-1 bg-gray-1 text-white'
-                  : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                {
+                  'border-gray-1 bg-gray-1 text-white': storeSearchParams.categoryIds?.includes(category.categoryId),
+                  'border-gray-300 text-gray-700 hover:bg-gray-50': !storeSearchParams.categoryIds?.includes(
+                    category.categoryId
+                  ),
+                }
               )}
             >
               <img src={getIconPath(category.categoryId)} alt={category.categoryName} className="h-4 w-4" />
@@ -71,10 +72,9 @@ export const StoreTopFilter: React.FC<StoreTopFilterProps> = ({ onFilterIconClic
             onClick={() =>
               setStoreSearchParams((prev) => ({ ...prev, sort: StoreSearchRequestSortEnum.Distance, page: 0 }))
             }
-            className={cn(
-              'font-semibold',
-              storeSearchParams.sort === StoreSearchRequestSortEnum.Distance ? 'text-gray-1' : ''
-            )}
+            className={cn('font-semibold', {
+              'text-gray-1': storeSearchParams.sort === StoreSearchRequestSortEnum.Distance,
+            })}
           >
             거리순
           </button>
@@ -82,10 +82,9 @@ export const StoreTopFilter: React.FC<StoreTopFilterProps> = ({ onFilterIconClic
             onClick={() =>
               setStoreSearchParams((prev) => ({ ...prev, sort: StoreSearchRequestSortEnum.Price, page: 0 }))
             }
-            className={cn(
-              'font-semibold',
-              storeSearchParams.sort === StoreSearchRequestSortEnum.Price ? 'text-gray-1' : ''
-            )}
+            className={cn('font-semibold', {
+              'text-gray-1': storeSearchParams.sort === StoreSearchRequestSortEnum.Price,
+            })}
           >
             가격순
           </button>

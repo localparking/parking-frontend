@@ -55,7 +55,6 @@ export const StoreFilter: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const findParentCategory = (categoryIds: number[] | undefined) => {
     if (!categoryIds || categoryIds.length === 0) return null
 
-    // 첫 번째 선택된 카테고리의 부모를 찾습니다
     const firstCategoryId = categoryIds[0]
     const directParent = categoryTree.find((cat) => cat.categoryId === firstCategoryId)
     if (directParent && (directParent.parentId === null || directParent.parentId === undefined)) {
@@ -96,9 +95,12 @@ export const StoreFilter: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                 onClick={() => updateFilter({ categoryIds: undefined })}
                 className={cn(
                   'flex items-center rounded-full border px-3 py-1 text-xs font-semibold transition-colors',
-                  !filterState.categoryIds || filterState.categoryIds.length === 0
-                    ? 'border-gray-1 bg-gray-1 text-white'
-                    : 'border-gray-300 bg-white text-gray-900'
+                  {
+                    'border-gray-1 bg-gray-1 text-white':
+                      !filterState.categoryIds || filterState.categoryIds.length === 0,
+                    'border-gray-300 bg-white text-gray-900':
+                      filterState.categoryIds && filterState.categoryIds.length > 0,
+                  }
                 )}
               >
                 <span>전체</span>
@@ -110,9 +112,11 @@ export const StoreFilter: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                   onClick={() => handleParentCategorySelect(category.categoryId)}
                   className={cn(
                     'flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-semibold transition-colors',
-                    selectedParentCategory?.categoryId === category.categoryId
-                      ? 'border-gray-1 bg-gray-1 text-white'
-                      : 'border-gray-300 bg-white text-gray-900'
+                    {
+                      'border-gray-1 bg-gray-1 text-white': selectedParentCategory?.categoryId === category.categoryId,
+                      'border-gray-300 bg-white text-gray-900':
+                        selectedParentCategory?.categoryId !== category.categoryId,
+                    }
                   )}
                 >
                   <img src={getIconPath(category.categoryId)} alt={category.categoryName} className="h-4 w-4" />
