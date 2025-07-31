@@ -27,7 +27,6 @@ export enum MapDisplayType {
 
 export interface StoreSearchParams {
   sort: StoreSearchRequestSortEnum
-  categoryId?: number
   categoryIds?: number[]
   maxFreeMin?: number
   isOpen?: boolean

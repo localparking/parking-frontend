@@ -46,13 +46,15 @@ export const StoreTopFilter: React.FC<StoreTopFilterProps> = ({ onFilterIconClic
               onClick={() =>
                 setStoreSearchParams((prev) => ({
                   ...prev,
-                  categoryId: prev.categoryId === category.categoryId ? undefined : category.categoryId,
+                  categoryIds: prev.categoryIds?.includes(category.categoryId) 
+                    ? undefined 
+                    : [category.categoryId],
                   page: 0,
                 }))
               }
               className={cn(
                 'flex items-center justify-center rounded-full border px-3 py-1 text-xs font-semibold whitespace-nowrap transition-colors',
-                storeSearchParams.categoryId === category.categoryId
+                storeSearchParams.categoryIds?.includes(category.categoryId)
                   ? 'border-gray-1 bg-gray-1 text-white'
                   : 'border-gray-300 text-gray-700 hover:bg-gray-50'
               )}

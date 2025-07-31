@@ -38,7 +38,10 @@ export const StoreFilter: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     filterState,
     selectedOperatingTime,
     updateFilter,
-    handleChildCategoryToggle,
+    handleCategoryToggle,
+    handleParentCategorySelect,
+    handleChildCategoryReset,
+    isParentOnlySelected,
     handleOperatingTimeChange,
     handleDateTimeChange,
     handleReset,
@@ -49,23 +52,25 @@ export const StoreFilter: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     (category) => category.parentId === null || category.parentId === undefined
   )
 
-  const findParentCategory = (categoryId: number | undefined) => {
-    if (!categoryId) return null
+  const findParentCategory = (categoryIds: number[] | undefined) => {
+    if (!categoryIds || categoryIds.length === 0) return null
 
-    const directParent = categoryTree.find((cat) => cat.categoryId === categoryId)
+    // 첫 번째 선택된 카테고리의 부모를 찾습니다
+    const firstCategoryId = categoryIds[0]
+    const directParent = categoryTree.find((cat) => cat.categoryId === firstCategoryId)
     if (directParent && (directParent.parentId === null || directParent.parentId === undefined)) {
       return directParent
     }
 
     for (const parent of categoryTree) {
-      if (parent.children.some((child) => child.categoryId === categoryId)) {
+      if (parent.children.some((child) => child.categoryId === firstCategoryId)) {
         return parent
       }
     }
     return null
   }
 
-  const selectedParentCategory = findParentCategory(filterState.categoryId)
+  const selectedParentCategory = findParentCategory(filterState.categoryIds)
   const childCategories = selectedParentCategory?.children || []
 
   const getIconPath = (categoryId: number) => {
@@ -88,10 +93,10 @@ export const StoreFilter: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             <div className="flex flex-wrap gap-2">
               {/* 전체 */}
               <button
-                onClick={() => updateFilter({ categoryId: undefined })}
+                onClick={() => updateFilter({ categoryIds: undefined })}
                 className={cn(
                   'flex items-center rounded-full border px-3 py-1 text-xs font-semibold transition-colors',
-                  !filterState.categoryId
+                  !filterState.categoryIds || filterState.categoryIds.length === 0
                     ? 'border-gray-1 bg-gray-1 text-white'
                     : 'border-gray-300 bg-white text-gray-900'
                 )}
@@ -102,7 +107,7 @@ export const StoreFilter: React.FC<{ onClose: () => void }> = ({ onClose }) => {
               {parentCategories.map((category) => (
                 <button
                   key={category.categoryId}
-                  onClick={() => updateFilter({ categoryId: category.categoryId })}
+                  onClick={() => handleParentCategorySelect(category.categoryId)}
                   className={cn(
                     'flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-semibold transition-colors',
                     selectedParentCategory?.categoryId === category.categoryId
@@ -129,12 +134,16 @@ export const StoreFilter: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                     value: category.categoryId,
                   })),
                 ]}
-                selectedValue={filterState.categoryIds || undefined}
+                selectedValue={
+                  selectedParentCategory && isParentOnlySelected(selectedParentCategory.categoryId)
+                    ? undefined // "전체" 버튼 선택 상태
+                    : filterState.categoryIds || undefined
+                }
                 onSelect={(value) => {
-                  if (value === undefined) {
-                    updateFilter({ categoryIds: undefined })
+                  if (value === undefined && selectedParentCategory) {
+                    handleChildCategoryReset(selectedParentCategory.categoryId)
                   } else if (typeof value === 'number') {
-                    handleChildCategoryToggle(value)
+                    handleCategoryToggle(value)
                   }
                 }}
                 multiSelect

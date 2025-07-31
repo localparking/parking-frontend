@@ -14,7 +14,7 @@ export const useStoreFilter = () => {
     setFilterState((prev) => ({ ...prev, ...updates }))
   }, [])
 
-  const handleChildCategoryToggle = useCallback(
+  const handleCategoryToggle = useCallback(
     (categoryId: number) => {
       const current = filterState.categoryIds || []
       const exists = current.includes(categoryId)
@@ -22,6 +22,27 @@ export const useStoreFilter = () => {
       updateFilter({ categoryIds: next.length > 0 ? next : undefined })
     },
     [filterState.categoryIds, updateFilter]
+  )
+
+  const handleParentCategorySelect = useCallback(
+    (parentCategoryId: number) => {
+      updateFilter({ categoryIds: [parentCategoryId] })
+    },
+    [updateFilter]
+  )
+
+  const handleChildCategoryReset = useCallback(
+    (parentCategoryId: number) => {
+      updateFilter({ categoryIds: [parentCategoryId] })
+    },
+    [updateFilter]
+  )
+
+  const isParentOnlySelected = useCallback(
+    (parentCategoryId: number) => {
+      return filterState.categoryIds?.length === 1 && filterState.categoryIds[0] === parentCategoryId
+    },
+    [filterState.categoryIds]
   )
 
   const handleOperatingTimeChange = useCallback(
@@ -78,7 +99,6 @@ export const useStoreFilter = () => {
     const resetState: StoreSearchParams = {
       sort: storeSearchParams.sort,
       page: 0,
-      categoryId: undefined,
       categoryIds: undefined,
       maxFreeMin: undefined,
       isOpen: undefined,
@@ -101,7 +121,10 @@ export const useStoreFilter = () => {
     filterState,
     selectedOperatingTime,
     updateFilter,
-    handleChildCategoryToggle,
+    handleCategoryToggle,
+    handleParentCategorySelect,
+    handleChildCategoryReset,
+    isParentOnlySelected,
     handleOperatingTimeChange,
     handleDateTimeChange,
     handleReset,
