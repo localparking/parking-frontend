@@ -1,0 +1,99 @@
+import React, { useMemo } from 'react'
+import { SlidersHorizontal, RefreshCw } from 'lucide-react'
+import { useCategoryContext } from '@/shared/context/category-context'
+import { useMapContext } from '../../context/map-context'
+import { StoreSearchRequestSortEnum } from '@data/user-api-axios/api'
+import { cn } from '@ui/common/lib/utils'
+
+interface StoreTopFilterProps {
+  onFilterIconClick: () => void
+  onRefresh: () => void
+}
+
+export const StoreTopFilter: React.FC<StoreTopFilterProps> = ({ onFilterIconClick, onRefresh }) => {
+  const { categoryTree, parentIdToPrefixMap } = useCategoryContext()
+  const { storeSearchParams, setStoreSearchParams } = useMapContext()
+
+  const parentCategories = useMemo(
+    () => categoryTree.filter((category) => category.parentId === null || category.parentId === undefined),
+    [categoryTree]
+  )
+
+  const ICON_MAP = {
+    cafe: '/icons/cafe-icon.png',
+    food: '/icons/food-icon.png',
+    culture: '/icons/culture-icon.png',
+    leisure: '/icons/leisure-icon.png',
+    shopping: '/icons/shopping-icon.png',
+    parking: '/icons/parking-icon.png',
+  } as const
+
+  const getIconPath = (categoryId: number) => {
+    const prefix = parentIdToPrefixMap.get(categoryId) || 'food'
+    return ICON_MAP[prefix as keyof typeof ICON_MAP] || ICON_MAP.food
+  }
+
+  return (
+    <div className="border-b border-gray-100 px-4 py-3">
+      <div className="mb-4 flex items-center justify-between">
+        <button onClick={onFilterIconClick} className="flex items-center gap-1 px-2 py-1 text-gray-600">
+          <SlidersHorizontal size={16} />
+        </button>
+        <div className="flex gap-2 overflow-x-auto">
+          {parentCategories.map((category) => (
+            <button
+              key={category.categoryId}
+              onClick={() =>
+                setStoreSearchParams((prev) => ({
+                  ...prev,
+                  categoryIds: prev.categoryIds?.includes(category.categoryId) ? undefined : [category.categoryId],
+                  page: 0,
+                }))
+              }
+              className={cn(
+                'flex items-center justify-center rounded-full border px-3 py-1 text-xs font-semibold whitespace-nowrap transition-colors',
+                {
+                  'border-gray-1 bg-gray-1 text-white': storeSearchParams.categoryIds?.includes(category.categoryId),
+                  'border-gray-300 text-gray-700 hover:bg-gray-50': !storeSearchParams.categoryIds?.includes(
+                    category.categoryId
+                  ),
+                }
+              )}
+            >
+              <img src={getIconPath(category.categoryId)} alt={category.categoryName} className="h-4 w-4" />
+              <span>{category.categoryName}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="flex items-center justify-between text-xs text-gray-500">
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() =>
+              setStoreSearchParams((prev) => ({ ...prev, sort: StoreSearchRequestSortEnum.Distance, page: 0 }))
+            }
+            className={cn('font-semibold', {
+              'text-gray-1': storeSearchParams.sort === StoreSearchRequestSortEnum.Distance,
+            })}
+          >
+            거리순
+          </button>
+          <button
+            onClick={() =>
+              setStoreSearchParams((prev) => ({ ...prev, sort: StoreSearchRequestSortEnum.Price, page: 0 }))
+            }
+            className={cn('font-semibold', {
+              'text-gray-1': storeSearchParams.sort === StoreSearchRequestSortEnum.Price,
+            })}
+          >
+            가격순
+          </button>
+        </div>
+        <button onClick={onRefresh} className="flex items-center gap-1 hover:text-gray-700">
+          <RefreshCw size={12} />
+          <span>새로고침</span>
+        </button>
+      </div>
+    </div>
+  )
+}
