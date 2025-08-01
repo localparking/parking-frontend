@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useMapContext, Congestion, DayOfWeek, ParkingLotSearchParams } from '../context/map-context'
+import { formatPrice } from '@/shared/utils/format'
 
 export const useParkingLotFilter = () => {
   const { parkingLotSearchParams, setParkingLotSearchParams } = useMapContext()
@@ -13,7 +14,15 @@ export const useParkingLotFilter = () => {
   }, [parkingLotSearchParams])
 
   const updateFilter = useCallback((updates: Partial<ParkingLotSearchParams>) => {
-    setFilterState((prev) => ({ ...prev, ...updates }))
+    setFilterState((prev) => {
+      const newState = { ...prev, ...updates }
+
+      if (updates.isFree === true) {
+        setSliderValue(0)
+      }
+
+      return newState
+    })
   }, [])
 
   const handleCongestionToggle = useCallback(
@@ -80,17 +89,10 @@ export const useParkingLotFilter = () => {
     return 'all'
   }, [filterState.isOpen, filterState.is24Hours, filterState.checkDayOfWeek, filterState.checkTime])
 
-  // 유료가 아닐 때 슬라이더 값 동기화
-  useEffect(() => {
-    if (filterState.isFree !== false) {
-      setSliderValue(0)
-    }
-  }, [filterState.isFree])
-
   const formatSliderValue = useCallback((value: number) => {
     if (value === 0) return '무료'
     if (value >= 10000) return '10,000원+'
-    return `${value.toLocaleString()}원`
+    return formatPrice(value)
   }, [])
 
   const handleApply = useCallback(() => {

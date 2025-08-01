@@ -24,10 +24,15 @@ export const FilterButtonGroup = <T extends string | number | boolean | undefine
   return (
     <div className={className}>
       {options.map(({ label, value }) => {
-        const isSelected = multiSelect
-          ? (Array.isArray(selectedValue) && selectedValue.includes(value)) ||
-            (value === undefined && selectedValue === undefined)
-          : selectedValue === value
+        const isArray = Array.isArray(selectedValue)
+        const isValueUndefined = value === undefined
+        const isSelectedValueUndefined = selectedValue === undefined
+
+        const isMultiSelectSelected = isArray && selectedValue.includes(value)
+        const isUndefinedMatch = isValueUndefined && isSelectedValueUndefined
+        const isSingleSelectSelected = selectedValue === value
+
+        const isSelected = multiSelect ? isMultiSelectSelected || isUndefinedMatch : isSingleSelectSelected
 
         return (
           <button

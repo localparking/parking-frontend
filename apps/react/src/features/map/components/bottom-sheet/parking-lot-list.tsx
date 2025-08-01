@@ -1,6 +1,7 @@
 import React, { useRef, useCallback, useMemo } from 'react'
 import { PageResponseParkingLotListResponse } from '@data/user-api-axios/api'
 import { cn } from '@ui/common/lib/utils'
+import { formatPrice } from '@/shared/utils/format'
 
 interface ParkingLotListProps {
   pages: PageResponseParkingLotListResponse[] | undefined
@@ -67,7 +68,7 @@ export const ParkingLotList: React.FC<ParkingLotListProps> = ({
                   <div className="rounded-full bg-green-50 px-2 py-0.5">
                     {parkingLot.hourlyFee && parkingLot.hourlyFee > 0 ? (
                       <span className="text-[10px] font-semibold text-green-600">
-                        {parkingLot.hourlyFee.toLocaleString()}원
+                        {formatPrice(parkingLot.hourlyFee)}
                       </span>
                     ) : (
                       <span className="text-[10px] font-semibold text-green-600">무료</span>

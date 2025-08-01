@@ -1,9 +1,9 @@
 // page.tsx
-import React from 'react'
-import { useBottomSheet } from '@/features/map/hooks/use-bottom-sheet'
+import React, { useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { MapControl, MapMarkers, MapTypeToggle } from '@/features/map/components'
 import { useMapContext } from '@/features/map/context/map-context'
+import BottomSheet from '@/shared/components/custom-bottom-sheet'
 
 export const Route = createFileRoute('/map/')({
   component: Map,
@@ -12,21 +12,12 @@ export const Route = createFileRoute('/map/')({
 import { StoreContent, ParkingLotContent } from '@/features/map/components'
 
 function Map() {
-  const { distanceLevel } = useMapContext()
-  const { open, close, BottomSheetComponent } = useBottomSheet()
+  const { distanceLevel, mapDisplayType } = useMapContext()
+  const [bottomSheetIndex, setBottomSheetIndex] = useState(0)
 
-  const { mapDisplayType } = useMapContext()
+  const bottomSheetContent =
+    mapDisplayType === 'store' ? <StoreContent key="store-content" /> : <ParkingLotContent key="parking-lot-content" />
 
-  // mapDisplayType 변경을 감지하여 바텀시트 내용 업데이트
-  React.useEffect(() => {
-    const content =
-      mapDisplayType === 'store' ? (
-        <StoreContent key="store-content" />
-      ) : (
-        <ParkingLotContent key="parking-lot-content" />
-      )
-    open(content)
-  }, [mapDisplayType, open])
   return (
     <div className="relative">
       <div id="map" className="h-screen" />
@@ -42,7 +33,9 @@ function Map() {
         </div>
       )}
 
-      {BottomSheetComponent}
+      <BottomSheet activeSnapIndex={bottomSheetIndex} setActiveSnapIndex={setBottomSheetIndex}>
+        {bottomSheetContent}
+      </BottomSheet>
       {/* <Search /> */}
     </div>
   )
