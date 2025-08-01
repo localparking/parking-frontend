@@ -21,6 +21,8 @@ import { Route as OnboardingLandingPageImport } from './app/onboarding/landing/p
 import { Route as OnboardingFinalOnboardingPageImport } from './app/onboarding/final-onboarding/page'
 import { Route as LoginSuccessPageImport } from './app/login/success/page'
 import { Route as OnboardingTermsDetailPageImport } from './app/onboarding/terms/detail/page'
+import { Route as MapStoreStoreIdPageImport } from './app/map/store/$storeId/page'
+import { Route as MapParkingLotParkingLotIdPageImport } from './app/map/parking-lot/$parkingLotId/page'
 
 // Create/Update Routes
 
@@ -84,6 +86,19 @@ const OnboardingTermsDetailPageRoute = OnboardingTermsDetailPageImport.update({
   path: '/terms/detail/',
   getParentRoute: () => OnboardingLayoutRoute,
 } as any)
+
+const MapStoreStoreIdPageRoute = MapStoreStoreIdPageImport.update({
+  id: '/store/$storeId/',
+  path: '/store/$storeId/',
+  getParentRoute: () => MapLayoutRoute,
+} as any)
+
+const MapParkingLotParkingLotIdPageRoute =
+  MapParkingLotParkingLotIdPageImport.update({
+    id: '/parking-lot/$parkingLotId/',
+    path: '/parking-lot/$parkingLotId/',
+    getParentRoute: () => MapLayoutRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -152,6 +167,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingTermsPageImport
       parentRoute: typeof OnboardingLayoutImport
     }
+    '/map/parking-lot/$parkingLotId/': {
+      id: '/map/parking-lot/$parkingLotId/'
+      path: '/parking-lot/$parkingLotId'
+      fullPath: '/map/parking-lot/$parkingLotId'
+      preLoaderRoute: typeof MapParkingLotParkingLotIdPageImport
+      parentRoute: typeof MapLayoutImport
+    }
+    '/map/store/$storeId/': {
+      id: '/map/store/$storeId/'
+      path: '/store/$storeId'
+      fullPath: '/map/store/$storeId'
+      preLoaderRoute: typeof MapStoreStoreIdPageImport
+      parentRoute: typeof MapLayoutImport
+    }
     '/onboarding/terms/detail/': {
       id: '/onboarding/terms/detail/'
       path: '/terms/detail'
@@ -166,10 +195,14 @@ declare module '@tanstack/react-router' {
 
 interface MapLayoutRouteChildren {
   MapPageRoute: typeof MapPageRoute
+  MapParkingLotParkingLotIdPageRoute: typeof MapParkingLotParkingLotIdPageRoute
+  MapStoreStoreIdPageRoute: typeof MapStoreStoreIdPageRoute
 }
 
 const MapLayoutRouteChildren: MapLayoutRouteChildren = {
   MapPageRoute: MapPageRoute,
+  MapParkingLotParkingLotIdPageRoute: MapParkingLotParkingLotIdPageRoute,
+  MapStoreStoreIdPageRoute: MapStoreStoreIdPageRoute,
 }
 
 const MapLayoutRouteWithChildren = MapLayoutRoute._addFileChildren(
@@ -203,6 +236,8 @@ export interface FileRoutesByFullPath {
   '/onboarding/final-onboarding': typeof OnboardingFinalOnboardingPageRoute
   '/onboarding/landing': typeof OnboardingLandingPageRoute
   '/onboarding/terms': typeof OnboardingTermsPageRoute
+  '/map/parking-lot/$parkingLotId': typeof MapParkingLotParkingLotIdPageRoute
+  '/map/store/$storeId': typeof MapStoreStoreIdPageRoute
   '/onboarding/terms/detail': typeof OnboardingTermsDetailPageRoute
 }
 
@@ -215,6 +250,8 @@ export interface FileRoutesByTo {
   '/onboarding/final-onboarding': typeof OnboardingFinalOnboardingPageRoute
   '/onboarding/landing': typeof OnboardingLandingPageRoute
   '/onboarding/terms': typeof OnboardingTermsPageRoute
+  '/map/parking-lot/$parkingLotId': typeof MapParkingLotParkingLotIdPageRoute
+  '/map/store/$storeId': typeof MapStoreStoreIdPageRoute
   '/onboarding/terms/detail': typeof OnboardingTermsDetailPageRoute
 }
 
@@ -229,6 +266,8 @@ export interface FileRoutesById {
   '/onboarding/final-onboarding/': typeof OnboardingFinalOnboardingPageRoute
   '/onboarding/landing/': typeof OnboardingLandingPageRoute
   '/onboarding/terms/': typeof OnboardingTermsPageRoute
+  '/map/parking-lot/$parkingLotId/': typeof MapParkingLotParkingLotIdPageRoute
+  '/map/store/$storeId/': typeof MapStoreStoreIdPageRoute
   '/onboarding/terms/detail/': typeof OnboardingTermsDetailPageRoute
 }
 
@@ -244,6 +283,8 @@ export interface FileRouteTypes {
     | '/onboarding/final-onboarding'
     | '/onboarding/landing'
     | '/onboarding/terms'
+    | '/map/parking-lot/$parkingLotId'
+    | '/map/store/$storeId'
     | '/onboarding/terms/detail'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -255,6 +296,8 @@ export interface FileRouteTypes {
     | '/onboarding/final-onboarding'
     | '/onboarding/landing'
     | '/onboarding/terms'
+    | '/map/parking-lot/$parkingLotId'
+    | '/map/store/$storeId'
     | '/onboarding/terms/detail'
   id:
     | '__root__'
@@ -267,6 +310,8 @@ export interface FileRouteTypes {
     | '/onboarding/final-onboarding/'
     | '/onboarding/landing/'
     | '/onboarding/terms/'
+    | '/map/parking-lot/$parkingLotId/'
+    | '/map/store/$storeId/'
     | '/onboarding/terms/detail/'
   fileRoutesById: FileRoutesById
 }
@@ -310,7 +355,9 @@ export const routeTree = rootRoute
     "/map": {
       "filePath": "map/layout.tsx",
       "children": [
-        "/map/"
+        "/map/",
+        "/map/parking-lot/$parkingLotId/",
+        "/map/store/$storeId/"
       ]
     },
     "/onboarding": {
@@ -343,6 +390,14 @@ export const routeTree = rootRoute
     "/onboarding/terms/": {
       "filePath": "onboarding/terms/page.tsx",
       "parent": "/onboarding"
+    },
+    "/map/parking-lot/$parkingLotId/": {
+      "filePath": "map/parking-lot/$parkingLotId/page.tsx",
+      "parent": "/map"
+    },
+    "/map/store/$storeId/": {
+      "filePath": "map/store/$storeId/page.tsx",
+      "parent": "/map"
     },
     "/onboarding/terms/detail/": {
       "filePath": "onboarding/terms/detail/page.tsx",

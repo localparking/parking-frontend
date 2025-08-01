@@ -1,6 +1,7 @@
 import React, { useRef, useCallback, useMemo } from 'react'
 import { PageResponseParkingLotListResponse } from '@data/user-api-axios/api'
 import { cn } from '@ui/common/lib/utils'
+import { useNavigation } from '../../hooks/use-navigation'
 
 interface ParkingLotListProps {
   pages: PageResponseParkingLotListResponse[] | undefined
@@ -16,6 +17,7 @@ export const ParkingLotList: React.FC<ParkingLotListProps> = ({
   onFetchNextPage,
 }) => {
   const parkingLots = useMemo(() => pages?.flatMap((page) => page.content || []) || [], [pages])
+  const { navigateToParkingLotDetail } = useNavigation()
 
   const observer = useRef<IntersectionObserver | undefined>(undefined)
   const lastParkingLotElementRef = useCallback(
@@ -51,7 +53,10 @@ export const ParkingLotList: React.FC<ParkingLotListProps> = ({
             className="mx-4"
             ref={index === parkingLots.length - 1 ? lastParkingLotElementRef : undefined}
           >
-            <div className="rounded-lg border border-white bg-white p-3 shadow-sm">
+            <div
+              className="cursor-pointer rounded-lg border border-white bg-white p-3 shadow-sm transition-shadow hover:shadow-md"
+              onClick={() => navigateToParkingLotDetail(parkingLot.parkingCode)}
+            >
               <div className="flex items-start justify-between">
                 {/* 왼쪽 상단: 주차 정보 */}
                 <div className="text-left">

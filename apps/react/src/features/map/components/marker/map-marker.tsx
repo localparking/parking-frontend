@@ -6,6 +6,7 @@ import { getMarkerIconUrl } from '../../utils/marker-assets'
 import { useQuery } from '@tanstack/react-query'
 import storeService from '@/shared/services/store.service'
 import parkingLotService from '@/shared/services/parking-lot.service'
+import { useNavigation } from '../../hooks/use-navigation'
 
 const getMarkerAssetForStore = (store: StoreListResponse, prefixMap: Map<number, string>): string => {
   const parentCategoryId = store.categories?.[0]?.parentId
@@ -67,6 +68,7 @@ export const MapMarkers = () => {
     distanceLevel,
   } = useMapContext()
   const { parentIdToPrefixMap } = useCategoryContext()
+  const { navigateToStoreDetail, navigateToParkingLotDetail } = useNavigation()
 
   const { data: storeData } = useQuery({
     queryKey: ['stores', 'mapSearch', storeSearchParams, queryCenter, distanceLevel],
@@ -128,7 +130,7 @@ export const MapMarkers = () => {
 
         const listener = naver.maps.Event.addListener(marker, 'click', () => {
           console.log(`Store ID: ${store.storeId}, Name: ${store.name}`)
-          //Todo 가게 상세 페이지로 이동
+          navigateToStoreDetail(store.storeId.toString())
         })
         listenersRef.current.push(listener)
       } else {
@@ -138,7 +140,7 @@ export const MapMarkers = () => {
 
         const listener = naver.maps.Event.addListener(marker, 'click', () => {
           console.log(`${parkingLot.name} 주차장 마커 클릭됨`)
-          //Todo 주차장 상세 페이지로 이동
+          navigateToParkingLotDetail(parkingLot.parkingCode)
         })
         listenersRef.current.push(listener)
       }

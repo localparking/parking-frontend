@@ -2,6 +2,7 @@ import React, { useRef, useCallback, useMemo } from 'react'
 import { PageResponseStoreListResponse, StoreListResponse } from '@data/user-api-axios/api'
 import { useCategoryContext } from '@/shared/context/category-context'
 import { cn } from '@ui/common/lib/utils'
+import { useNavigation } from '../../hooks/use-navigation'
 
 const ICON_MAP = {
   cafe: '/icons/cafe-icon.png',
@@ -28,6 +29,7 @@ interface StoreListProps {
 export const StoreList: React.FC<StoreListProps> = ({ pages, hasNextPage, isFetchingNextPage, onFetchNextPage }) => {
   const { parentIdToPrefixMap } = useCategoryContext()
   const stores = useMemo(() => pages?.flatMap((page) => page.content || []) || [], [pages])
+  const { navigateToStoreDetail } = useNavigation()
 
   // 무한스크롤을 위한 Intersection Observer
   const observer = useRef<IntersectionObserver | undefined>(undefined)
@@ -64,7 +66,10 @@ export const StoreList: React.FC<StoreListProps> = ({ pages, hasNextPage, isFetc
             className="mx-4 my-2"
             ref={index === stores.length - 1 ? lastStoreElementRef : undefined}
           >
-            <div className="flex gap-3 rounded-lg border border-white bg-white p-3 shadow-sm">
+            <div
+              className="flex cursor-pointer gap-3 rounded-lg border border-white bg-white p-3 shadow-sm transition-shadow active:shadow-md"
+              onClick={() => navigateToStoreDetail(store.storeId.toString())}
+            >
               {/* 카테고리 아이콘 영역 */}
               <div className="flex-shrink-0">
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-50">
