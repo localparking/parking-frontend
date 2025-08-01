@@ -83,8 +83,8 @@ export const ParkingLotList: React.FC<ParkingLotListProps> = ({
                   <h3 className="text-sm font-semibold text-gray-900">{parkingLot.name}</h3>
                   <span
                     className={cn('rounded-full px-2 py-0.5 text-[10px] font-semibold', {
-                      'bg-green-100 text-green-600': parkingLot.isOpen,
-                      'bg-red-100 text-red-600': !parkingLot.isOpen,
+                      'bg-blue-50 text-blue-600': parkingLot.isOpen,
+                      'bg-red-50 text-red-600': !parkingLot.isOpen,
                     })}
                   >
                     {parkingLot.isOpen ? '영업중' : '영업종료'}
