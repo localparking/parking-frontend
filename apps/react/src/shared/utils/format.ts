@@ -31,3 +31,4 @@ export const formatTime = (slot?: { begin: string; end: string }) => {
 
   return `${formatTimeString(slot.begin)}~${formatTimeString(slot.end)}`
 }
+

@@ -1,6 +1,5 @@
 // page.tsx
-import React from 'react'
-import { useBottomSheet } from '@/features/map/hooks/use-bottom-sheet'
+import React, { useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { MapControl, MapMarkers, MapTypeToggle } from '@/features/map/components'
 import { useMapContext } from '@/features/map/context/map-context'
@@ -122,7 +121,9 @@ function Map() {
         </div>
       )}
 
-      {BottomSheetComponent}
+      <BottomSheet activeSnapIndex={bottomSheetIndex} setActiveSnapIndex={setBottomSheetIndex}>
+        {bottomSheetContent}
+      </BottomSheet>
       {/* <Search /> */}
     </div>
   )

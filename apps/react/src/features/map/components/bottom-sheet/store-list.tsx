@@ -58,12 +58,12 @@ export const StoreList: React.FC<StoreListProps> = ({ pages, hasNextPage, isFetc
             >
               {/* 카테고리 아이콘 영역 */}
               <div className="flex-shrink-0">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-50">
+                <div className="flex h-15 w-15 items-center justify-center rounded-full bg-green-50">
                   {/* 카테고리별 아이콘 (마커와 동일한 방식) */}
                   <img
                     src={getStoreIconPath(store, parentIdToPrefixMap)}
                     alt={store.categories?.[0]?.categoryName || '스토어'}
-                    className="h-8 w-8"
+                    className="h-15 w-15"
                   />
                 </div>
               </div>
@@ -77,12 +77,12 @@ export const StoreList: React.FC<StoreListProps> = ({ pages, hasNextPage, isFetc
                   )}
 
                   {/* 상호명과 영업상태 */}
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-start gap-[5px]">
                     <h3 className="text-sm font-semibold text-gray-900">{store.name}</h3>
                     {/* 영업 상태 - isOpen으로 판단 */}
                     <span
                       className={cn('rounded-full px-2 py-1 text-[10px] font-semibold', {
-                        'bg-gray-50 text-gray-1': store.isOpen,
+                        'bg-blue-50 text-blue-600': store.isOpen,
                         'bg-red-50 text-red-600': !store.isOpen,
                       })}
                     >
