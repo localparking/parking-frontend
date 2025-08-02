@@ -20,6 +20,7 @@ const ParkingLotCard: React.FC<{ parkingLot: AssociatedParkingLotDto }> = React.
         <div className="flex items-center gap-1">
           <span className="rounded-full bg-gray-100 px-2 py-0.5 text-center text-xs font-semibold whitespace-nowrap text-gray-500">
             영업시간
+            {/* TODO: 영업중인지 아닌지 표시로 변경 */}
           </span>
           <span className="rounded-full bg-green-50 px-2 py-0.5 text-xs font-semibold whitespace-nowrap text-green-600">
             {formatPrice(parkingLot.hourlyFee || 0)}
