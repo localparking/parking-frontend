@@ -5,20 +5,28 @@ export const useNavigation = () => {
 
   const navigateToStoreDetail = (storeId: string) => {
     navigate({
-      to: '/map/store/$storeId',
-      params: { storeId: storeId.toString() },
+      to: '/map',
+      search: { storeId: storeId.toString(), parkingLotId: undefined },
     })
   }
 
   const navigateToParkingLotDetail = (parkingLotId: string) => {
     navigate({
-      to: '/map/parking-lot/$parkingLotId',
-      params: { parkingLotId: parkingLotId.toString() },
+      to: '/map',
+      search: { parkingLotId: parkingLotId.toString(), storeId: undefined },
+    })
+  }
+
+  const navigateToMapList = () => {
+    navigate({
+      to: '/map',
+      search: { parkingLotId: undefined, storeId: undefined },
     })
   }
 
   return {
     navigateToStoreDetail,
     navigateToParkingLotDetail,
+    navigateToMapList,
   }
 }

@@ -54,36 +54,22 @@ export const ParkingLotList: React.FC<ParkingLotListProps> = ({
             ref={index === parkingLots.length - 1 ? lastParkingLotElementRef : undefined}
           >
             <div
-              className="cursor-pointer rounded-lg border border-white bg-white p-3 shadow-sm transition-shadow hover:shadow-md"
+              className="cursor-pointer rounded-lg border border-white bg-white p-3 shadow-sm active:shadow-md"
               onClick={() => navigateToParkingLotDetail(parkingLot.parkingCode)}
             >
-              <div className="flex items-start justify-between">
-                {/* 왼쪽 상단: 주차 정보 */}
+              <div className="flex items-start justify-between pb-2">
                 <div className="text-left">
-                  <div className="mb-1 text-[10px] text-gray-500">
+                  <div className="text-[10px] text-gray-500">
                     {parkingLot.capacity && parkingLot.curCapacity
                       ? `주차 ${parkingLot.curCapacity}면 / ${parkingLot.capacity}면`
                       : '주차 정보 없음'}
                   </div>
                 </div>
 
-                {/* 오른쪽 상단: 요금 정보 */}
-                <div className="text-right">
-                  <div className="rounded-full bg-green-50 px-2 py-0.5">
-                    {parkingLot.hourlyFee && parkingLot.hourlyFee > 0 ? (
-                      <span className="text-[10px] font-semibold text-green-600">
-                        {parkingLot.hourlyFee.toLocaleString()}원
-                      </span>
-                    ) : (
-                      <span className="text-[10px] font-semibold text-green-600">무료</span>
-                    )}
-                  </div>
-                </div>
+                <div className="text-[10px] text-gray-500">1시간 요금</div>
               </div>
 
-              {/* 하단 정보 */}
-              <div className="mt-2 flex items-center justify-between">
-                {/* 왼쪽 하단: 상호명과 영업시간 */}
+              <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1">
                   <h3 className="text-sm font-semibold text-gray-900">{parkingLot.name}</h3>
                   <span
@@ -96,8 +82,17 @@ export const ParkingLotList: React.FC<ParkingLotListProps> = ({
                   </span>
                 </div>
 
-                {/* 오른쪽 하단: 1시간 요금 라벨 */}
-                <div className="text-[10px] text-gray-500">1시간 요금</div>
+                <div className="text-right">
+                  <div className="rounded-full bg-green-50 px-2 py-0.5 text-[10px] font-semibold">
+                    {parkingLot.hourlyFee && parkingLot.hourlyFee > 0 ? (
+                      <span className="text-[10px] font-semibold text-green-600">
+                        {parkingLot.hourlyFee.toLocaleString()}원
+                      </span>
+                    ) : (
+                      <span className="text-[10px] font-semibold text-green-600">무료</span>
+                    )}
+                  </div>
+                </div>
               </div>
 
               {/* 태그들 */}
