@@ -44,7 +44,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
     // 2. 미인증 사용자 (로그아웃 상태)
     else if (!authenticated || !user) {
       // 2-1. 접근하려는 페이지가 접근 불가능한 페이지인 경우 리다이렉트
-      if (onRestricted) throw redirect({ to: '/map' })
+      if (onRestricted) throw redirect({ to: '/map', search: { parkingLotId: undefined, storeId: undefined } })
 
       // 2-2. (설치 후 첫 방문자) 랜딩 페이지로 보내는 로직
       const hasCompletedLanding = isWebView()
