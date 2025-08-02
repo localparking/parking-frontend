@@ -28,11 +28,11 @@ export const StoreHeader: React.FC<StoreHeaderProps> = React.memo(({ info }) => 
 
         <div className="flex flex-col">
           <div className="mb-1 text-xs text-gray-500">{mainCategory?.categoryName || '카테고리'}</div>
-          <div className="flex items-center gap-1.5">
-            <h2 className="max-w-[140px] truncate text-sm font-semibold text-gray-900">{info.name}</h2>
+          <div className="flex items-start gap-1.5">
+            <h2 className="text-sm font-semibold text-gray-900">{info.name}</h2>
             <span
               className={cn(
-                'rounded-full px-2 py-0.5 text-xs font-semibold',
+                'rounded-full px-2 py-0.5 text-xs font-semibold whitespace-nowrap',
                 info.isOpen ? 'bg-blue-50 text-blue-600' : 'bg-red-50 text-red-600'
               )}
             >
