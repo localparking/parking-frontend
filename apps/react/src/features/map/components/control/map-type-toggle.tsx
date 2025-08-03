@@ -1,6 +1,7 @@
 import bridge from '@/shared/bridge'
 import { useBridge } from '@webview-bridge/react'
-import { useMapContext } from '../context/map-context'
+import { useMapContext } from '../../context/map-context'
+
 import { Store, CircleParking } from 'lucide-react'
 import { cn } from '@ui/common/lib/utils'
 

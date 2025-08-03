@@ -1,19 +1,20 @@
-// page.tsx
-import { useBottomSheet } from '@/features/map/hooks/use-bottom-sheet'
+import { useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-import { MapControl } from '@/features/map/components/map-controll'
-import { MapMarkers } from '@/features/map/components/map-marker'
-import { MapTypeToggle } from '@/features/map/components/map-type-toggle'
+import { MapControl, MapMarkers, MapTypeToggle } from '@/features/map/components'
 import { useMapContext } from '@/features/map/context/map-context'
 import MapSearchInputBox from '@/features/map/components/map-search'
+import { StoreContent, ParkingLotContent } from '@/features/map/components'
 
 export const Route = createFileRoute('/map/')({
   component: Map,
 })
 
 function Map() {
-  const { distanceLevel } = useMapContext()
-  const { open, close, BottomSheetComponent } = useBottomSheet()
+  const { mapDisplayType, naverMap } = useMapContext()
+  const [bottomSheetIndex, setBottomSheetIndex] = useState(0)
+
+  const bottomSheetContent =
+    mapDisplayType === 'store' ? <StoreContent key="store-content" /> : <ParkingLotContent key="parking-lot-content" />
 
   return (
     <>
@@ -22,7 +23,7 @@ function Map() {
       <MapControl />
       <MapMarkers />
 
-      {distanceLevel === null && (
+      {naverMap.distanceLevel === null && (
         <div
           className="absolute top-20 left-1/2 z-10 -translate-x-1/2 rounded-lg bg-black/60 p-3 text-sm text-white shadow-lg"
           aria-live="polite"
@@ -31,7 +32,7 @@ function Map() {
         </div>
       )}
 
-      {BottomSheetComponent}
+      {bottomSheetContent}
     </>
   )
 }

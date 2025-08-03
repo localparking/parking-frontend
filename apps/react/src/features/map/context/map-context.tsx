@@ -5,7 +5,7 @@ import bridge from '@/shared/bridge'
 import { useBridge } from '@webview-bridge/react'
 import storeService from '@/shared/services/store.service'
 
-enum DayOfWeek {
+export enum DayOfWeek {
   MONDAY = 'MONDAY',
   TUESDAY = 'TUESDAY',
   WEDNESDAY = 'WEDNESDAY',
@@ -15,7 +15,7 @@ enum DayOfWeek {
   SUNDAY = 'SUNDAY',
 }
 
-enum Congestion {
+export enum Congestion {
   LOW = '여유',
   MEDIUM = '보통',
   HIGH = '혼잡',
@@ -28,7 +28,7 @@ export enum MapDisplayType {
 
 export interface StoreSearchParams {
   sort: StoreSearchRequestSortEnum
-  categoryId?: number
+  categoryIds?: number[]
   maxFreeMin?: number
   isOpen?: boolean
   is24Hours?: boolean
