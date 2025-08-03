@@ -1,24 +1,25 @@
 // page.tsx
-import React, { useState } from 'react'
+import React from 'react'
+import { z } from 'zod'
+import { useBottomSheet } from '@/features/map/hooks/use-bottom-sheet'
 import { createFileRoute } from '@tanstack/react-router'
 import { MapControl, MapMarkers, MapTypeToggle } from '@/features/map/components'
 import { useMapContext } from '@/features/map/context/map-context'
 import { useQuery } from '@tanstack/react-query'
 import { ParkingApi, StoreApi } from '@data/user-api-axios/api'
 import apiInstance from '@/shared/libs/api'
+import { StoreContent, ParkingLotContent } from '@/features/map/components'
+import { ParkingLotDetail, StoreDetail } from '@/features/map/components/detail'
+
+const searchSchema = z.object({
+  parkingLotId: z.string().optional(),
+  storeId: z.string().optional(),
+})
 
 export const Route = createFileRoute('/map/')({
   component: Map,
-  validateSearch: (search: Record<string, unknown>) => {
-    return {
-      parkingLotId: (search.parkingLotId as string) || undefined,
-      storeId: (search.storeId as string) || undefined,
-    }
-  },
+  validateSearch: searchSchema,
 })
-
-import { StoreContent, ParkingLotContent } from '@/features/map/components'
-import { ParkingLotDetail, StoreDetail } from '@/features/map/components/detail'
 
 function Map() {
   const { distanceLevel, mapDisplayType } = useMapContext()
@@ -121,9 +122,7 @@ function Map() {
         </div>
       )}
 
-      <BottomSheet activeSnapIndex={bottomSheetIndex} setActiveSnapIndex={setBottomSheetIndex}>
-        {bottomSheetContent}
-      </BottomSheet>
+      {BottomSheetComponent}
       {/* <Search /> */}
     </div>
   )
