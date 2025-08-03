@@ -4,7 +4,6 @@ import { SearchIcon, X } from 'lucide-react'
 import { useMapContext } from '@/features/map/context/map-context'
 import { SearchResults } from '@/features/search/search-results'
 import searchService from '@/shared/services/search.service'
-import storeService from '@/shared/services/store.service'
 
 export const Route = createFileRoute('/map/search/')({
   component: RouteComponent,

@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, ReactNode } from 'react'
 import { ParkingLotSearchRequestSortEnum, StoreSearchRequestSortEnum } from '@data/user-api-axios/api'
-import { MapInfo, useNaverMap, DistanceLevel, UseNaverMapResult } from '../hooks/use-naver-map'
+import { useNaverMap, UseNaverMapResult } from '../hooks/use-naver-map'
 import bridge from '@/shared/bridge'
 import { useBridge } from '@webview-bridge/react'
 import storeService from '@/shared/services/store.service'

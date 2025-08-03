@@ -66,7 +66,7 @@ export const StoreTopFilter: React.FC<StoreTopFilterProps> = ({ onFilterIconClic
           ))}
         </div>
       </div>
-      <div className="flex items-center justify-between text-xs text-gray-500">
+      <div className="flex items-center justify-between px-9 text-caption-2 text-gray-2">
         <div className="flex items-center gap-4">
           <button
             onClick={() =>

@@ -1,20 +1,21 @@
 import { useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-import { MapControl, MapMarkers, MapTypeToggle } from '@/features/map/components'
-import { useMapContext } from '@/features/map/context/map-context'
+import { MapControl, MapMarkers, MapTypeToggle, ParkingLotContent, StoreContent } from '@/features/map/components'
+import { MapDisplayType, useMapContext } from '@/features/map/context/map-context'
 import MapSearchInputBox from '@/features/map/components/map-search'
-import { StoreContent, ParkingLotContent } from '@/features/map/components'
+import { useBottomSheet } from '@/features/map/hooks/use-bottom-sheet'
 
 export const Route = createFileRoute('/map/')({
   component: Map,
 })
 
 function Map() {
-  const { mapDisplayType, naverMap } = useMapContext()
-  const [bottomSheetIndex, setBottomSheetIndex] = useState(0)
+  const { naverMap, mapDisplayType } = useMapContext()
 
-  const bottomSheetContent =
-    mapDisplayType === 'store' ? <StoreContent key="store-content" /> : <ParkingLotContent key="parking-lot-content" />
+  // ✅ BottomSheet 생성 로직을 여기로 이동시킵니다.
+  const { BottomSheetComponent } = useBottomSheet({
+    initialContent: mapDisplayType === MapDisplayType.STORE ? <StoreContent /> : <ParkingLotContent />,
+  })
 
   return (
     <>
@@ -32,7 +33,7 @@ function Map() {
         </div>
       )}
 
-      {bottomSheetContent}
+      {BottomSheetComponent}
     </>
   )
 }

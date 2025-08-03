@@ -83,44 +83,42 @@ export const StoreFilter: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   }
 
   return (
-    <div className="flex h-full flex-col">
-      <div className="flex-1 overflow-y-auto">
-        <div className="flex flex-col space-y-6 pb-4">
+    <div className="flex h-full flex-col pl-[21px]">
+      <div className="flex-1 overflow-y-auto pb-10">
+        <div className="flex flex-col gap-7 pb-4">
           {/* 가게 종류 */}
           <div>
-            <h4 className="mb-2 text-xs font-bold text-gray-900">가게 종류</h4>
+            <h4 className="mb-2 text-caption-1 text-gray-900">가게 종류</h4>
             <div className="flex flex-wrap gap-2">
               {/* 전체 */}
               <button
                 onClick={() => updateFilter({ categoryIds: undefined })}
                 className={cn(
-                  'flex items-center rounded-full border px-3 py-1 text-xs font-semibold transition-colors',
+                  'flex items-center rounded-full border border-gray-1 bg-gray-1 px-3 py-1 text-white transition-colors',
                   {
-                    'border-gray-1 bg-gray-1 text-white':
-                      !filterState.categoryIds || filterState.categoryIds.length === 0,
                     'border-gray-300 bg-white text-gray-900':
                       filterState.categoryIds && filterState.categoryIds.length > 0,
                   }
                 )}
               >
-                <span>전체</span>
+                <span className="text-caption-2">전체</span>
               </button>
+
               {/* 부모 카테고리 */}
               {parentCategories.map((category) => (
                 <button
                   key={category.categoryId}
                   onClick={() => handleParentCategorySelect(category.categoryId)}
                   className={cn(
-                    'flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-semibold transition-colors',
+                    'flex items-center gap-1 rounded-full border border-gray-1 bg-gray-1 py-1 pr-3 pl-2 text-white transition-colors',
                     {
-                      'border-gray-1 bg-gray-1 text-white': selectedParentCategory?.categoryId === category.categoryId,
                       'border-gray-300 bg-white text-gray-900':
                         selectedParentCategory?.categoryId !== category.categoryId,
                     }
                   )}
                 >
                   <img src={getIconPath(category.categoryId)} alt={category.categoryName} className="h-4 w-4" />
-                  <span>{category.categoryName}</span>
+                  <span className="text-caption-2">{category.categoryName}</span>
                 </button>
               ))}
             </div>
@@ -157,7 +155,7 @@ export const StoreFilter: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
           {/* 최대 무료 주차시간 */}
           <div>
-            <h4 className="mb-2 text-xs font-bold text-gray-900">최대 무료 주차시간</h4>
+            <h4 className="mb-2 text-caption-1 text-gray-900">최대 무료 주차시간</h4>
             <FilterButtonGroup
               options={PARKING_TIME_OPTIONS}
               selectedValue={filterState.maxFreeMin}
@@ -167,7 +165,7 @@ export const StoreFilter: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
           {/* 운영시간 */}
           <div>
-            <h4 className="mb-2 text-xs font-bold text-gray-900">운영시간</h4>
+            <h4 className="mb-2 text-caption-1 text-gray-900">운영시간</h4>
             <div className="space-y-3">
               <FilterButtonGroup
                 options={OPERATING_TIME_OPTIONS}
@@ -205,7 +203,7 @@ export const StoreFilter: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                     onChange={(value) => handleDateTimeChange({ checkTime: value })}
                     className="w-full"
                   />
-                  <div className="text-xs text-gray-600">
+                  <div className="text-caption-2 text-gray-600">
                     선택된 시간: {new Date().toLocaleDateString('ko-KR')} {filterState.checkTime?.substring(0, 2)}:
                     {filterState.checkTime?.substring(2, 4)}
                   </div>
@@ -214,18 +212,18 @@ export const StoreFilter: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="flex gap-4 border-t border-gray-100 bg-white p-4 pb-12">
-        <button
-          onClick={handleReset}
-          className="flex-1 rounded-lg bg-gray-200 px-5 py-3 text-xs font-bold text-gray-600"
-        >
-          초기화
-        </button>
-        <button onClick={onApply} className="flex-2 rounded-lg bg-gray-1 px-5 py-3 text-xs font-bold text-white">
-          적용하기
-        </button>
+        <div className="flex gap-4 border-gray-100 bg-white pt-1">
+          <button
+            onClick={handleReset}
+            className="flex-1 rounded-lg bg-gray-200 px-5 py-3 text-xs font-bold text-gray-600"
+          >
+            초기화
+          </button>
+          <button onClick={onApply} className="flex-2 rounded-lg bg-gray-1 px-5 py-3 text-xs font-bold text-white">
+            적용하기
+          </button>
+        </div>
       </div>
     </div>
   )
