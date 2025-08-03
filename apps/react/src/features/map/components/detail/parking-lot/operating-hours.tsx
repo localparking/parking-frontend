@@ -20,23 +20,29 @@ export const OperatingHours: React.FC<OperatingHoursProps> = React.memo(({ opera
   const holiday = hoursMap.get('공휴일')
 
   return (
-    <div className="space-y-1">
-      <h4 className="pb-2 text-xs font-semibold text-gray-900">운영시간</h4>
-      <div className="flex flex-wrap gap-[16px]">
-        <div className="flex w-full items-center justify-between gap-[30px]">
-          <div className="flex w-full items-center justify-between gap-[30px]">
-            <span className="text-xs font-semibold text-gray-500">평일</span>
-            <span className="text-xs font-semibold text-gray-500">{weekday ? formatTime(weekday) : '정보 없음'}</span>
+    <div>
+      <h4 className="pb-1 text-xs font-semibold text-gray-900">운영시간</h4>
+      <div className="flex flex-wrap gap-[10px]">
+        <div className="flex h-full w-full items-center justify-between gap-[30px]">
+          <div className="flex h-full w-full items-center justify-between gap-[30px]">
+            <span className="text-xs leading-[20px] font-semibold text-gray-500">평일</span>
+            <span className="text-xs leading-[20px] font-semibold text-gray-500">
+              {weekday ? formatTime(weekday) : '정보 없음'}
+            </span>
           </div>
           <div className="flex w-full items-center justify-between gap-[30px]">
-            <span className="text-xs font-semibold text-gray-500">주말</span>
-            <span className="text-xs font-semibold text-gray-500">{weekend ? formatTime(weekend) : '정보 없음'}</span>
+            <span className="text-xs leading-[20px] font-semibold text-gray-500">주말</span>
+            <span className="text-xs leading-[20px] font-semibold text-gray-500">
+              {weekend ? formatTime(weekend) : '정보 없음'}
+            </span>
           </div>
         </div>
         <div className="flex w-[calc(50%-15px)] items-center justify-between">
           <div className="flex w-full items-center justify-between gap-[30px] whitespace-nowrap">
-            <span className="text-xs font-semibold text-gray-500">공휴일</span>
-            <span className="text-xs font-semibold text-gray-500">{holiday ? formatTime(holiday) : '정보 없음'}</span>
+            <span className="text-xs leading-[20px] font-semibold text-gray-500">공휴일</span>
+            <span className="text-xs leading-[20px] font-semibold text-gray-500">
+              {holiday ? formatTime(holiday) : '정보 없음'}
+            </span>
           </div>
         </div>
       </div>

@@ -12,10 +12,10 @@ export const ParkingBenefits: React.FC<ParkingBenefitsProps> = React.memo(({ ben
   return (
     <div className="space-y-2.5">
       <h4 className="text-xs font-semibold text-gray-900">주차 정보 상세</h4>
-      <div className="space-y-1">
+      <div className="space-y-2.5">
         {benefits.map((benefit) => (
           <div key={benefit.benefitId} className="rounded-md bg-gray-900 px-5 py-1.5 text-center">
-            <span className="text-xs font-bold text-white">
+            <span className="text-xs leading-[20px] font-bold text-white">
               {formatPrice(benefit.purchaseAmount)} 구매시 {benefit.discountMin}시간 무료 주차
             </span>
           </div>

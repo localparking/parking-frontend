@@ -8,7 +8,7 @@ interface ParkingFeeInfoProps {
 
 const FeeInfoRow: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <div className="rounded-md bg-gray-900 px-5 py-1.5 text-center">
-    <span className="text-xs font-bold text-white">{children}</span>
+    <span className="text-xs leading-[20px] font-bold text-white">{children}</span>
   </div>
 )
 
@@ -27,7 +27,7 @@ export const ParkingFeeInfo: React.FC<ParkingFeeInfoProps> = React.memo(({ feePo
   return (
     <div className="space-y-2.5">
       <h4 className="text-xs font-semibold text-gray-900">주차 정보 상세</h4>
-      <div className="space-y-1">
+      <div className="space-y-2.5">
         {items.map((text, idx) => (text ? <FeeInfoRow key={idx}>{text}</FeeInfoRow> : null))}
       </div>
     </div>
