@@ -1,3 +1,4 @@
+import { useQuery } from '@tanstack/react-query'
 import apiInstance from '../libs/api'
 import { StoreApi, StoreSearchRequest } from '@data/user-api-axios/api'
 
@@ -15,14 +16,22 @@ class StoreService extends StoreApi {
 
   async postStoreMapSearch(body: StoreSearchRequest) {
     try {
-      const { data } = await this.search({
-        storeSearchRequest: { ...body },
-      })
+      const { data } = await this.search({ storeSearchRequest: { ...body } })
       return { data }
     } catch (error) {
       console.error('Error posting store map search:', error)
       throw error
     }
+  }
+
+  useStoreMapSearch = (body: StoreSearchRequest) => {
+    return useQuery({
+      queryKey: ['storeMapSearch', body],
+      queryFn: () => this.postStoreMapSearch(body),
+      select: (data) => data.data,
+      enabled: !!body.query,
+      staleTime: 5 * 60 * 1000,
+    })
   }
 }
 

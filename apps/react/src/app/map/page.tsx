@@ -5,7 +5,7 @@ import { MapControl } from '@/features/map/components/map-controll'
 import { MapMarkers } from '@/features/map/components/map-marker'
 import { MapTypeToggle } from '@/features/map/components/map-type-toggle'
 import { useMapContext } from '@/features/map/context/map-context'
-import MapSearch from '@/features/map/components/map-search'
+import MapSearchInputBox from '@/features/map/components/map-search'
 
 export const Route = createFileRoute('/map/')({
   component: Map,
@@ -17,7 +17,7 @@ function Map() {
 
   return (
     <>
-      <MapSearch />
+      <MapSearchInputBox />
       <MapTypeToggle />
       <MapControl />
       <MapMarkers />

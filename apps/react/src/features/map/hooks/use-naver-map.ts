@@ -15,7 +15,7 @@ const ZOOM_LEVEL_FOR_300M = 15 // 이 레벨 이상이면 300m 미만 (5m~300m)
 const ZOOM_LEVEL_FOR_1KM = 13 // 이 레벨 이상이면 1km 미만 (300m~1km)
 
 // 훅의 반환 타입을 정의합니다.
-interface UseNaverMapResult {
+export interface UseNaverMapResult {
   isMapReady: boolean
   mapInstance: naver.maps.Map | null
   currentMapInfo: MapInfo
