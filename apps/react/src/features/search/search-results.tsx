@@ -1,10 +1,10 @@
-import { LocalSearchItem } from '@/shared/services/search.service'
+import { SearchItemResponse } from '@data/user-api-axios/api'
 import { useMapContext } from '../map/context/map-context'
 import { useNavigate } from '@tanstack/react-router'
 
 interface SearchResultsProps {
   query: string
-  data?: LocalSearchItem[]
+  data?: SearchItemResponse[]
   isLoading: boolean
   error: Error | null
 }
@@ -41,19 +41,9 @@ export const SearchResults = ({ query, data, isLoading, error }: SearchResultsPr
     )
   }
 
-  const handleItemClick = (item: LocalSearchItem) => {
-    const mapx = parseInt(item.mapx, 10)
-    const mapy = parseInt(item.mapy, 10)
-
-    if (isNaN(mapx) || isNaN(mapy)) {
-      console.error('Invalid coordinates:', item)
-      return
-    }
-
-    const lng = mapx / 10000000
-    const lat = mapy / 10000000
-
-    console.log(`Converted Coords: lat=${lat}, lng=${lng}`)
+  const handleItemClick = (item: SearchItemResponse) => {
+    const lng = item.lon / 10000000
+    const lat = item.lat / 10000000
 
     moveTo({ lat, lng }, 15)
     setSearchKeyword(query)
@@ -63,13 +53,12 @@ export const SearchResults = ({ query, data, isLoading, error }: SearchResultsPr
   return (
     <ul className="divide-y divide-gray-08">
       {data.map((item, index) => (
-        <li key={index} className="py-4">
-          <div onClick={() => handleItemClick(item)} className="cursor-pointer">
+        <div onClick={() => handleItemClick(item)} className="cursor-pointer">
+          <li key={index} className="py-4">
             <h3 className="text-body-5 font-semibold text-gray-1">{item.title}</h3>
-            <p className="mt-1 text-caption-2 text-gray-2">{item.category}</p>
             <p className="mt-2 text-caption-2 text-gray-3">{item.roadAddress}</p>
-          </div>
-        </li>
+          </li>
+        </div>
       ))}
     </ul>
   )

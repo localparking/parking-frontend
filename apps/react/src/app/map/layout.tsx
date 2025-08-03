@@ -13,7 +13,7 @@ function MapLayout() {
   const isMapVisible = location.pathname === '/map'
 
   return (
-    <div className="h-screen w-full">
+    <div className="relative h-screen w-full">
       <div
         id="map"
         className="absolute top-0 left-0 h-full w-full"

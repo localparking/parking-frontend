@@ -2,20 +2,20 @@ import { useState } from 'react'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { SearchIcon, X } from 'lucide-react'
 import { useMapContext } from '@/features/map/context/map-context'
-import { useNaverSearch } from '@/shared/services/search.service'
 import { SearchResults } from '@/features/search/search-results'
+import searchService from '@/shared/services/search.service'
 
 export const Route = createFileRoute('/map/search/')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  const { setSearchKeyword } = useMapContext()
+  const { setSearchKeyword, insets } = useMapContext()
 
   const [query, setQuery] = useState('')
   const [submittedQuery, setSubmittedQuery] = useState('')
 
-  const { data, isLoading, error } = useNaverSearch(submittedQuery)
+  const { data: naverSearch, isLoading: naverLoading, error: naverError } = searchService.useNaverSearch(submittedQuery)
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -32,7 +32,7 @@ function RouteComponent() {
   const stripHtml = (html: string) => html.replace(/<[^>]*>?/gm, '')
 
   return (
-    <div className="flex h-full w-full flex-col">
+    <div className="flex h-full w-full flex-col" style={{ paddingTop: insets?.top + 10 }}>
       {/* 검색창 */}
       <div className="flex items-center gap-[10px] px-[35px]">
         <form onSubmit={handleSearch} className="relative flex-1">
@@ -59,9 +59,9 @@ function RouteComponent() {
       <div className="mt-4 flex-1 overflow-y-auto px-[35px]">
         <SearchResults
           query={submittedQuery}
-          data={data?.items.map((item) => ({ ...item, title: stripHtml(item.title) }))}
-          isLoading={isLoading}
-          error={error as Error | null}
+          data={naverSearch?.map((item) => ({ ...item, title: stripHtml(item.title) }))}
+          isLoading={naverLoading}
+          error={naverError as Error | null}
         />
       </div>
     </div>
