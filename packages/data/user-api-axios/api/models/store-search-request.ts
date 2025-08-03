@@ -44,10 +44,10 @@ export interface StoreSearchRequest {
   query?: string
   /**
    * 카테고리 ID
-   * @type {number}
+   * @type {Array<number>}
    * @memberof StoreSearchRequest
    */
-  categoryId?: number
+  categoryIds?: Array<number>
   /**
    * 검색 정렬 (예: DISTANCE)
    * @type {string}

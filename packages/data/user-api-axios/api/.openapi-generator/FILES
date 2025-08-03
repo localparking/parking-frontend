@@ -8,6 +8,7 @@ apis/category-api.ts
 apis/onboarding-api.ts
 apis/parking-api.ts
 apis/register-api.ts
+apis/search-api.ts
 apis/store-api.ts
 apis/storekeeper-api.ts
 apis/user-api.ts
@@ -47,6 +48,7 @@ models/register-request.ts
 models/response-dto-category-response.ts
 models/response-dto-list-my-store-info.ts
 models/response-dto-list-product-response-dto.ts
+models/response-dto-list-search-item-response.ts
 models/response-dto-list-store-ownership-req-response.ts
 models/response-dto-page-response-parking-lot-list-response.ts
 models/response-dto-page-response-store-list-response.ts
@@ -58,6 +60,7 @@ models/response-dto-terms-response.ts
 models/response-dto-token-response.ts
 models/response-dto-unit.ts
 models/response-dto-user-info-response.ts
+models/search-item-response.ts
 models/store-detail-response.ts
 models/store-list-response.ts
 models/store-ownership-req-response.ts

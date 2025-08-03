@@ -36,6 +36,12 @@ export interface AssociatedParkingLotDto {
   name: string
   /**
    *
+   * @type {boolean}
+   * @memberof AssociatedParkingLotDto
+   */
+  isOpen?: boolean
+  /**
+   *
    * @type {number}
    * @memberof AssociatedParkingLotDto
    */
