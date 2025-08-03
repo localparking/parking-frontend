@@ -1,5 +1,6 @@
 import React from 'react'
 import { formatPrice } from '@/shared/utils/format'
+import { cn } from '@ui/common/lib/utils'
 import type { AssociatedParkingLotDto } from '@data/user-api-axios/api'
 
 interface AssociatedParkingLotsProps {
@@ -18,9 +19,13 @@ const ParkingLotCard: React.FC<{ parkingLot: AssociatedParkingLotDto }> = React.
       <div className="flex w-full items-start justify-between gap-1">
         <span className="text-sm font-semibold text-gray-900">{parkingLot.name || '주차장명'}</span>
         <div className="flex items-center gap-1">
-          <span className="rounded-full bg-gray-100 px-2 py-0.5 text-center text-xs font-semibold whitespace-nowrap text-gray-500">
-            영업시간
-            {/* TODO: 영업중인지 아닌지 표시로 변경 */}
+          <span
+            className={cn(
+              'rounded-full px-2 py-0.5 text-center text-xs font-semibold whitespace-nowrap',
+              parkingLot.isOpen ? 'bg-blue-50 text-blue-600' : 'bg-red-50 text-red-600'
+            )}
+          >
+            {parkingLot.isOpen ? '영업중' : '영업종료'}
           </span>
           <span className="rounded-full bg-green-50 px-2 py-0.5 text-xs font-semibold whitespace-nowrap text-green-600">
             {formatPrice(parkingLot.hourlyFee || 0)}
