@@ -15,9 +15,12 @@ function MapSearchInputBox() {
         <p className="text-caption-2 text-gray-2">{searchKeyword || '검색어를 입력하세요'}</p>
       </Link>
 
-      <div className="flex h-[38px] w-[38px] cursor-pointer items-center justify-center rounded-full bg-white">
+      <Link
+        className="flex h-[38px] w-[38px] cursor-pointer items-center justify-center rounded-full bg-white"
+        to="/login"
+      >
         <UserRound className="h-6 w-6 text-gray-3" />
-      </div>
+      </Link>
     </div>
   )
 }
