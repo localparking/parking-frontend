@@ -4,6 +4,7 @@ import { useCategoryContext } from '@/shared/context/category-context'
 import { useMapContext } from '../../context/map-context'
 import { StoreSearchRequestSortEnum } from '@data/user-api-axios/api'
 import { cn } from '@ui/common/lib/utils'
+import { getCategoryIconPath } from '@/shared/utils/category'
 
 interface StoreTopFilterProps {
   onFilterIconClick: () => void
@@ -18,20 +19,6 @@ export const StoreTopFilter: React.FC<StoreTopFilterProps> = ({ onFilterIconClic
     () => categoryTree.filter((category) => category.parentId === null || category.parentId === undefined),
     [categoryTree]
   )
-
-  const ICON_MAP = {
-    cafe: '/icons/cafe-icon.png',
-    food: '/icons/food-icon.png',
-    culture: '/icons/culture-icon.png',
-    leisure: '/icons/leisure-icon.png',
-    shopping: '/icons/shopping-icon.png',
-    parking: '/icons/parking-icon.png',
-  } as const
-
-  const getIconPath = (categoryId: number) => {
-    const prefix = parentIdToPrefixMap.get(categoryId) || 'food'
-    return ICON_MAP[prefix as keyof typeof ICON_MAP] || ICON_MAP.food
-  }
 
   return (
     <div className="border-b border-gray-100 px-4 py-3">
@@ -60,7 +47,11 @@ export const StoreTopFilter: React.FC<StoreTopFilterProps> = ({ onFilterIconClic
                 }
               )}
             >
-              <img src={getIconPath(category.categoryId)} alt={category.categoryName} className="h-4 w-4" />
+              <img
+                src={getCategoryIconPath(category.categoryId, parentIdToPrefixMap)}
+                alt={category.categoryName}
+                className="h-4 w-4"
+              />
               <span>{category.categoryName}</span>
             </button>
           ))}

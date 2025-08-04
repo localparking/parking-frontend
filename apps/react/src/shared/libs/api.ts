@@ -4,10 +4,8 @@ import { bridge } from '../bridge'
 import Cookies from 'js-cookie'
 import { saveTokens } from './token'
 import { AuthApi } from '@data/user-api-axios/api'
-const { VITE_API_URL } = import.meta.env
 
-// TODO: 동적으로 개발 환경에 따라 BASE_URL을 설정할 수 있도록 개선
-const BASE_URL = '/api'
+const BASE_URL = import.meta.env.PROD ? import.meta.env.VITE_API_URL : '/api'
 const AUTH_ROUTE = '/login'
 
 interface QueueItem {
