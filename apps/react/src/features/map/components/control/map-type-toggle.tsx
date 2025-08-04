@@ -1,5 +1,7 @@
+import { useQueryClient } from '@tanstack/react-query'
 import { useMapContext } from '../../context/map-context'
 import { Store, CircleParking } from 'lucide-react'
+import storeService from '@/shared/services/store.service'
 
 enum MapDisplayType {
   STORE = 'store',
@@ -20,9 +22,16 @@ const toggleOptions = [
 ]
 
 export const MapTypeToggle = () => {
-  const { mapDisplayType, setMapDisplayType, insets } = useMapContext()
+  const { mapDisplayType, setMapDisplayType, insets, setSearchKeyword } = useMapContext()
+  const queryClient = useQueryClient()
 
   const handleToggle = (type: MapDisplayType) => {
+    if (type === MapDisplayType.STORE) {
+      queryClient.invalidateQueries({ queryKey: ['storeMapSearch'] })
+    } else {
+      queryClient.invalidateQueries({ queryKey: ['parkingLotSearch'] })
+    }
+    setSearchKeyword('')
     setMapDisplayType(type)
   }
 

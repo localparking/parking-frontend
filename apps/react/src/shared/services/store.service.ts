@@ -49,7 +49,7 @@ class StoreService extends StoreApi {
       queryKey: ['storeKeywordSearch', body],
       queryFn: () => this.postStoreKeywordSearch(body),
       select: (data) => data.data.data?.content,
-      enabled: enabled && !!body.query,
+      enabled: !!body.query,
       staleTime: 5 * 60 * 1000,
     })
   }
