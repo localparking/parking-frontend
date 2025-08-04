@@ -1,5 +1,10 @@
 import { createContext, useContext, useState, ReactNode } from 'react'
-import { ParkingLotSearchRequestSortEnum, StoreSearchRequestSortEnum } from '@data/user-api-axios/api'
+import {
+  PageSearchResponseStoreListResponse,
+  ParkingLotSearchRequestSortEnum,
+  StoreListResponse,
+  StoreSearchRequestSortEnum,
+} from '@data/user-api-axios/api'
 import { useNaverMap, UseNaverMapResult } from '../hooks/use-naver-map'
 import bridge from '@/shared/bridge'
 import { useBridge } from '@webview-bridge/react'
@@ -73,8 +78,6 @@ interface MapContextType {
     bottom: number
     left: number
   }
-
-  storeSearch: any // Store 검색 결과 데이터, 구체적인 타입은 필요에 따라 정의할 수 있습니다
 }
 
 const MapContext = createContext<MapContextType | undefined>(undefined)
@@ -92,18 +95,6 @@ export function MapProvider({ children }: { children: ReactNode }) {
     page: 0,
   })
   const [searchKeyword, setSearchKeyword] = useState<string>('')
-
-  const {
-    data: storeSearch,
-    isLoading: storeLoading,
-    error: storeError,
-  } = storeService.useStoreMapSearch({
-    query: searchKeyword,
-    distanceLevel: naverMap.distanceLevel || 15,
-    lat: naverMap.currentMapInfo.center.lat,
-    lon: naverMap.currentMapInfo.center.lng,
-    ...storeSearchParams,
-  })
 
   const insets = useBridge(bridge.store, (state) => state.intent)
 
@@ -130,8 +121,6 @@ export function MapProvider({ children }: { children: ReactNode }) {
           bottom: insets?.bottom || 0,
           left: insets?.left || 0,
         },
-
-        storeSearch,
       }}
     >
       {children}

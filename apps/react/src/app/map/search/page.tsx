@@ -3,19 +3,15 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { SearchIcon, X } from 'lucide-react'
 import { useMapContext } from '@/features/map/context/map-context'
 import { SearchResults } from '@/features/search/search-results'
-import searchService from '@/shared/services/search.service'
 
 export const Route = createFileRoute('/map/search/')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  const { setSearchKeyword, searchKeyword, insets, storeSearch } = useMapContext()
-  console.log('Store Search:', storeSearch)
+  const { setSearchKeyword, searchKeyword, insets } = useMapContext()
 
   const [query, setQuery] = useState(searchKeyword)
-
-  const { data: naverSearch, isLoading: naverLoading, error: naverError } = searchService.useNaverSearch(searchKeyword)
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -27,8 +23,6 @@ function RouteComponent() {
     setQuery('')
     setSearchKeyword('')
   }
-
-  const stripHtml = (html: string) => html.replace(/<[^>]*>?/gm, '')
 
   return (
     <div className="flex h-full w-full flex-col" style={{ paddingTop: insets?.top + 10 }}>
@@ -57,12 +51,7 @@ function RouteComponent() {
 
       {/* 검색 결과 */}
       <div className="mt-4 flex-1 overflow-y-auto px-[35px]">
-        <SearchResults
-          query={searchKeyword}
-          data={naverSearch?.map((item) => ({ ...item, title: stripHtml(item.title) }))}
-          isLoading={naverLoading}
-          error={naverError as Error | null}
-        />
+        <SearchResults query={searchKeyword} />
       </div>
     </div>
   )
