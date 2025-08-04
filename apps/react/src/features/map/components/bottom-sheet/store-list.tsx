@@ -2,21 +2,8 @@ import React, { useRef, useCallback, useMemo } from 'react'
 import { PageResponseStoreListResponse, StoreListResponse } from '@data/user-api-axios/api'
 import { useCategoryContext } from '@/shared/context/category-context'
 import { cn } from '@ui/common/lib/utils'
-
-const ICON_MAP = {
-  cafe: '/icons/cafe-icon.png',
-  food: '/icons/food-icon.png',
-  culture: '/icons/culture-icon.png',
-  leisure: '/icons/leisure-icon.png',
-  shopping: '/icons/shopping-icon.png',
-  parking: '/icons/parking-icon.png',
-} as const
-
-const getStoreIcon = (store: StoreListResponse, prefixMap: Map<number, string>): string => {
-  const parentCategoryId = store.categories?.[0]?.parentId
-  const prefix = parentCategoryId ? prefixMap.get(parentCategoryId) : 'food'
-  return ICON_MAP[prefix as keyof typeof ICON_MAP] || ICON_MAP.food
-}
+import { useNavigation } from '../../hooks/use-navigation'
+import { getStoreIconPath } from '@/shared/utils/category'
 
 interface StoreListProps {
   pages: PageResponseStoreListResponse[] | undefined
@@ -28,6 +15,7 @@ interface StoreListProps {
 export const StoreList: React.FC<StoreListProps> = ({ pages, hasNextPage, isFetchingNextPage, onFetchNextPage }) => {
   const { parentIdToPrefixMap } = useCategoryContext()
   const stores = useMemo(() => pages?.flatMap((page) => page.content || []) || [], [pages])
+  const { navigateToStoreDetail } = useNavigation()
 
   // 무한스크롤을 위한 Intersection Observer
   const observer = useRef<IntersectionObserver | undefined>(undefined)
@@ -64,13 +52,16 @@ export const StoreList: React.FC<StoreListProps> = ({ pages, hasNextPage, isFetc
             className="mx-4 my-2"
             ref={index === stores.length - 1 ? lastStoreElementRef : undefined}
           >
-            <div className="flex gap-3 rounded-lg border border-white bg-white p-3 shadow-sm">
+            <div
+              className="flex cursor-pointer gap-3 rounded-lg border border-white bg-white p-3 shadow-sm transition-shadow active:shadow-md"
+              onClick={() => navigateToStoreDetail(store.storeId.toString())}
+            >
               {/* 카테고리 아이콘 영역 */}
               <div className="flex-shrink-0">
                 <div className="flex h-15 w-15 items-center justify-center rounded-full bg-green-50">
                   {/* 카테고리별 아이콘 (마커와 동일한 방식) */}
                   <img
-                    src={getStoreIcon(store, parentIdToPrefixMap)}
+                    src={getStoreIconPath(store, parentIdToPrefixMap)}
                     alt={store.categories?.[0]?.categoryName || '스토어'}
                     className="h-15 w-15"
                   />

@@ -32,6 +32,12 @@ export interface ParkingLotListResponse {
   name: string
   /**
    *
+   * @type {string}
+   * @memberof ParkingLotListResponse
+   */
+  address?: string
+  /**
+   *
    * @type {number}
    * @memberof ParkingLotListResponse
    */

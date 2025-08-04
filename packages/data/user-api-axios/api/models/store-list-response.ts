@@ -39,6 +39,12 @@ export interface StoreListResponse {
    * @type {string}
    * @memberof StoreListResponse
    */
+  address: string
+  /**
+   *
+   * @type {string}
+   * @memberof StoreListResponse
+   */
   storeType?: string
   /**
    *
