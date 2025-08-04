@@ -58,15 +58,8 @@ const createParkingLotMarkerOptions = (
 }
 
 export const MapMarkers = () => {
-  const {
-    mapInstance,
-    mapDisplayType,
-    queryCenter,
-    storeSearchParams,
-    parkingLotSearchParams,
-    isMapReady,
-    distanceLevel,
-  } = useMapContext()
+  const { mapDisplayType, storeSearchParams, parkingLotSearchParams } = useMapContext()
+  const { mapInstance, isMapReady, queryCenter, distanceLevel } = useMapContext().naverMap
   const { parentIdToPrefixMap } = useCategoryContext()
   const { navigateToStoreDetail, navigateToParkingLotDetail } = useNavigation()
 

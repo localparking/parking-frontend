@@ -21,7 +21,8 @@ const controlOptions = [
 ]
 
 export const MapControl: React.FC = () => {
-  const { moveToCurrentLocation, mapInstance, setZoom, isMapReady, insets } = useMapContext()
+  const { insets } = useMapContext()
+  const { mapInstance, isMapReady, setZoom, moveToCurrentLocation } = useMapContext().naverMap
 
   const handleZoomIn = () => {
     if (!mapInstance) return

@@ -10,7 +10,7 @@ interface SearchResultsProps {
 }
 
 export const SearchResults = ({ query, data, isLoading, error }: SearchResultsProps) => {
-  const { moveTo, setSearchKeyword } = useMapContext()
+  const { naverMap, setSearchKeyword } = useMapContext()
   const navigate = useNavigate()
 
   if (isLoading) {
@@ -45,7 +45,7 @@ export const SearchResults = ({ query, data, isLoading, error }: SearchResultsPr
     const lng = item.lon / 10000000
     const lat = item.lat / 10000000
 
-    moveTo({ lat, lng }, 15)
+    naverMap.moveTo({ lat, lng }, 15)
     setSearchKeyword(query)
     navigate({ to: '..', replace: true })
   }
