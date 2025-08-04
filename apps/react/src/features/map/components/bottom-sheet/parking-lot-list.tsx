@@ -55,20 +55,13 @@ export const ParkingLotList: React.FC<ParkingLotListProps> = ({
             ref={index === parkingLots.length - 1 ? lastParkingLotElementRef : undefined}
           >
             <div
-              className="cursor-pointer rounded-lg border border-white bg-white p-3 shadow-sm active:shadow-md"
+              className="cursor-pointer rounded-lg border border-white bg-white p-3"
               onClick={() => navigateToParkingLotDetail(parkingLot.parkingCode)}
             >
-              <div className="flex items-start justify-between pb-2">
-                <div className="text-left">
-                  <div className="text-[10px] text-gray-500">
-                    {parkingLot.capacity && parkingLot.curCapacity
-                      ? `주차 ${parkingLot.curCapacity}면 / ${parkingLot.capacity}면`
-                      : '주차 정보 없음'}
-                  </div>
-                </div>
-                
-                <div className="text-[10px] text-gray-500">1시간 요금</div>
-
+              <div className="text-[10px] text-gray-500">
+                {parkingLot.curCapacity
+                  ? `주차 ${parkingLot.curCapacity}면 / ${parkingLot.capacity}면`
+                  : `주차 ${parkingLot.capacity}면`}
               </div>
 
               <div className="flex items-center justify-between">
@@ -84,7 +77,8 @@ export const ParkingLotList: React.FC<ParkingLotListProps> = ({
                   </span>
                 </div>
 
-                <div className="text-right">
+                <div className="text-center">
+                  <div className="text-[10px] text-gray-500">1시간 요금</div>
                   <div className="rounded-full bg-green-50 px-2 py-0.5 text-[10px] font-semibold">
                     {parkingLot.hourlyFee && parkingLot.hourlyFee > 0 ? (
                       <span className="text-[10px] font-semibold text-green-600">
@@ -116,6 +110,7 @@ export const ParkingLotList: React.FC<ParkingLotListProps> = ({
           </li>
         ))}
       </ul>
+
       {isFetchingNextPage && (
         <div className="p-4 text-center">
           <div className="text-sm text-gray-500">더 불러오는 중...</div>
