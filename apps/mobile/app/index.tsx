@@ -1,8 +1,7 @@
 import React, { useRef, useCallback } from 'react'
-import { View, StyleSheet, StatusBar, Platform } from 'react-native' // SafeAreaView 대신 View를 import합니다.
-import { createWebView, useBridge, type BridgeWebView } from '@webview-bridge/react-native'
+import { View, StyleSheet, StatusBar, Platform } from 'react-native'
+import { createWebView, type BridgeWebView } from '@webview-bridge/react-native'
 import { appBridge, appSchema } from './bridge'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export const { WebView, postMessage } = createWebView({
   bridge: appBridge,
@@ -15,8 +14,6 @@ export const { WebView, postMessage } = createWebView({
 
 export default function App() {
   const webviewRef = useRef<BridgeWebView>(null)
-  const { setIntent } = useBridge(appBridge)
-  const insets = useSafeAreaInsets()
 
   const webviewUrl =
     Platform.OS === 'android' ? process.env.EXPO_PUBLIC_ANDROID_WEB_VIEW_URL : process.env.EXPO_PUBLIC_IOS_WEB_VIEW_URL
@@ -27,10 +24,7 @@ export default function App() {
 
   const handleLoadEnd = useCallback(() => {
     console.log('WebView loading finished')
-    console.log('Current insets:', insets)
-
-    setIntent(insets)
-  }, [insets, setIntent])
+  }, [])
 
   return (
     <View style={styles.container}>

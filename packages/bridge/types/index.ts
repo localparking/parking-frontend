@@ -18,23 +18,10 @@ export interface LocationResult {
   data: LocationData | null
 }
 
-export interface EdgeInsets {
-  top: number
-  right: number
-  bottom: number
-  left: number
-}
-
 // 브릿지 스토어 타입 (상태)
 export interface BridgeStore {
   isLoggedIn: boolean
   currentLocation: LocationData | null
-  intent: {
-    top: number
-    right: number
-    bottom: number
-    left: number
-  }
 }
 
 // 브릿지 액션 타입 (함수)
@@ -47,5 +34,4 @@ export interface BridgeActions {
   notifyTokenExpired(): Promise<{ accessToken: string | null }>
   setLandingStatus(): Promise<void>
   getLandingStatus(): Promise<boolean>
-  setIntent(intent: EdgeInsets): Promise<void>
 }

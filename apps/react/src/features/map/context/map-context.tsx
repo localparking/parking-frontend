@@ -70,14 +70,6 @@ interface MapContextType {
   // 검색어 상태 관리
   searchKeyword: string
   setSearchKeyword: React.Dispatch<React.SetStateAction<string>>
-
-  // 브릿지에서 전달받은 인셋 정보
-  insets: {
-    top: number
-    right: number
-    bottom: number
-    left: number
-  }
 }
 
 const MapContext = createContext<MapContextType | undefined>(undefined)
@@ -96,8 +88,6 @@ export function MapProvider({ children }: { children: ReactNode }) {
   })
   const [searchKeyword, setSearchKeyword] = useState<string>('')
 
-  const insets = useBridge(bridge.store, (state) => state.intent)
-
   return (
     <MapContext.Provider
       value={{
@@ -114,13 +104,6 @@ export function MapProvider({ children }: { children: ReactNode }) {
 
         searchKeyword,
         setSearchKeyword,
-
-        insets: {
-          top: insets?.top || 36,
-          right: insets?.right || 0,
-          bottom: insets?.bottom || 0,
-          left: insets?.left || 0,
-        },
       }}
     >
       {children}

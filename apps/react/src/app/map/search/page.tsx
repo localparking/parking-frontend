@@ -9,7 +9,7 @@ export const Route = createFileRoute('/map/search/')({
 })
 
 function RouteComponent() {
-  const { setSearchKeyword, searchKeyword, insets } = useMapContext()
+  const { setSearchKeyword, searchKeyword } = useMapContext()
 
   const [query, setQuery] = useState(searchKeyword)
 
@@ -25,7 +25,7 @@ function RouteComponent() {
   }
 
   return (
-    <div className="flex h-full w-full flex-col" style={{ paddingTop: insets?.top + 10 }}>
+    <div className="flex h-full w-full flex-col pt-[10px]">
       {/* 검색창 */}
       <div className="flex items-center gap-[10px] px-[35px]">
         <form onSubmit={handleSearch} className="relative flex-1">

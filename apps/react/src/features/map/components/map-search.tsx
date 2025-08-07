@@ -3,10 +3,10 @@ import { useMapContext } from '../context/map-context'
 import { Link } from '@tanstack/react-router'
 
 function MapSearchInputBox() {
-  const { insets, searchKeyword } = useMapContext()
+  const { searchKeyword } = useMapContext()
 
   return (
-    <div className="absolute flex w-full gap-[10px] px-[35px]" style={{ top: insets?.top + 10 }}>
+    <div className="absolute top-[calc(var(--spacing-safe-top)+10px)] flex w-full gap-[10px] px-[35px]">
       <Link
         className="flex flex-1 items-center gap-[10px] rounded-[30px] border border-white bg-white px-[17px] py-[7px]"
         to="/map/search"

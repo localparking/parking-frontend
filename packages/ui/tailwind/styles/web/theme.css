@@ -1,6 +1,11 @@
 @import 'tw-animate-css';
 
 @theme inline {
+  --spacing-safe-top: env(safe-area-inset-top);
+  --spacing-safe-bottom: env(safe-area-inset-bottom);
+  --spacing-safe-left: env(safe-area-inset-left);
+  --spacing-safe-right: env(safe-area-inset-right);
+
   --font-pretendard: var(--font-pretendard);
   --container-2xl: 1400px;
   --breakpoint-xl: 1160px;

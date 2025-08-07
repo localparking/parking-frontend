@@ -6,7 +6,6 @@ import { kakaoLogin } from '../features/auth/social/kakao-login'
 import { appleLogin } from '../features/auth/social/apple-login'
 import { refreshToken } from '../features/auth/token/refresh-token'
 import { AuthStorage } from '../features/auth/lib/auth-storage'
-import { EdgeInsets } from 'react-native-safe-area-context'
 
 export type AppBridgeState = Bridge & BridgeStore & BridgeActions
 
@@ -114,15 +113,11 @@ export const appBridge = bridge<AppBridgeState>(({ get, set }) => {
       const hasCompletedLanding = await AuthStorage.getLandingStatus()
       return hasCompletedLanding
     },
-    async setIntent(intent: EdgeInsets): Promise<void> {
-      set({ intent })
-    },
   }
 
   return {
     isLoggedIn: false,
     currentLocation: null,
-    intent: { top: 0, right: 0, bottom: 0, left: 0 },
     ...actions,
   }
 })

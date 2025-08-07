@@ -62,13 +62,11 @@ function RootComponent() {
   const pathname = useRouterState({ select: (s) => s.location.pathname })
   const isMapPage = pathname === '/map'
 
-  const insets = useBridge(bridge.store, (state) => state.intent)
-
   const mainStyle = isMapPage
     ? {}
     : {
-        paddingTop: `${insets?.top ?? 0}px`,
-        paddingBottom: `${insets?.bottom ?? 0}px`,
+        paddingTop: 'pt-safe-top',
+        paddingBottom: 'pt-safe-bottom',
       }
 
   return (

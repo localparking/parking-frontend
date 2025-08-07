@@ -21,7 +21,6 @@ const controlOptions = [
 ]
 
 export const MapControl: React.FC = () => {
-  const { insets } = useMapContext()
   const { mapInstance, isMapReady, setZoom, moveToCurrentLocation } = useMapContext().naverMap
 
   const handleZoomIn = () => {
@@ -51,7 +50,7 @@ export const MapControl: React.FC = () => {
   }
 
   return (
-    <div className="absolute right-4 z-10" style={{ bottom: insets?.bottom + 95 }}>
+    <div className="absolute right-4 bottom-[calc(var(--spacing-safe-bottom)+95px)] z-10">
       <div className="flex w-[33px] flex-col gap-[5px]">
         {controlOptions.map((option, index) => {
           const IconComponent = option.icon
