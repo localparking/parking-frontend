@@ -39,7 +39,7 @@ const OnboardingCheckboxComponent: React.FC<OnboardingCheckboxProps> = ({
           </div>
         </div>
 
-        <label htmlFor={id} className="ml-6 cursor-pointer text-body-4 text-gray-1 select-none">
+        <label htmlFor={id} className="ml-6 cursor-pointer text-body-4 select-none">
           {label}
         </label>
       </div>

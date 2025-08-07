@@ -22,7 +22,7 @@ export const ParkingPreference: React.FC = () => {
 
   return (
     <div>
-      <h1 className="align-text-bottom text-body-3 text-gray-1">
+      <h1 className="align-text-bottom text-body-3">
         주차 중 가장 중요하게
         <br />
         여기는 것은 무엇인가요?
@@ -39,7 +39,7 @@ export const ParkingPreference: React.FC = () => {
                 className={cn(
                   'relative flex h-[140px] w-[130px] flex-col items-center justify-center rounded-[20px] border border-primary p-4',
                   {
-                    'bg-primary-lighter shadow-[0_0_5px_1px_var(--color-primary-light)]': isSelected,
+                    'bg-primary-1-lighter shadow-[0_0_5px_1px_var(--color-primary-light)]': isSelected,
                     'bg-white': !isSelected,
                   },
                   {
@@ -52,7 +52,7 @@ export const ParkingPreference: React.FC = () => {
                   alt={preference.label}
                   className={cn(preference.imageSize, '-translate-y-3 transform object-contain')}
                 />
-                <span className="absolute bottom-3 left-1/2 -translate-x-1/2 transform text-center text-body-5 whitespace-nowrap text-gray-1">
+                <span className="absolute bottom-3 left-1/2 -translate-x-1/2 transform text-center text-body-5 whitespace-nowrap">
                   {preference.label}
                 </span>
               </button>

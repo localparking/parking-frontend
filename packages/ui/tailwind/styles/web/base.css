@@ -1,5 +1,6 @@
 @layer base {
   body {
     font-family: var(--font-pretendard, 'Pretendard');
+    color: var(--color-gray-1);
   }
 }

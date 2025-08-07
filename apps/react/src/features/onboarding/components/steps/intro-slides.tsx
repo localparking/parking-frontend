@@ -39,7 +39,7 @@ export const IntroSlides = () => {
   return (
     <>
       <div className="mb-[30px] flex h-auto min-h-[50px] flex-col justify-center">
-        <p className="text-body-4 text-gray-1">{commonText.line1}</p>
+        <p className="text-body-4">{commonText.line1}</p>
 
         <AnimatePresence>
           {isSecondSlide && (
@@ -47,7 +47,7 @@ export const IntroSlides = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
-              className="text-body-4 text-nowrap text-gray-1"
+              className="text-body-4 text-nowrap"
             >
               {commonText.line2}
             </motion.p>

@@ -94,8 +94,8 @@ export const SearchResults = ({ query }: SearchResultsProps) => {
       {/* 가게 리스트 */}
       {hasStores && (
         <div className="mb-6">
-          <h2 className="text-body-5 font-bold text-gray-1">추천 가게</h2>
-          <ul className="mt-2 divide-y divide-gray-08">
+          <h2 className="text-body-5 font-bold">추천 가게</h2>
+          <ul className="divide-gray-08 mt-2 divide-y">
             {stores.map((store) => (
               <li
                 key={store.storeId}
@@ -104,11 +104,11 @@ export const SearchResults = ({ query }: SearchResultsProps) => {
                   handleItemClick({ lat: store.lat, lng: store.lon, search: { storeId: store.storeId.toString() } })
                 }
               >
-                <h3 className="text-body-5 font-semibold text-gray-1">{store.name}</h3>
+                <h3 className="text-body-5 font-semibold">{store.name}</h3>
                 <p className="mt-1 text-caption-2 text-gray-3">{store.address}</p>
                 <div className="mt-2 flex gap-1">
                   {store.categories && store.categories[0]?.categoryName && (
-                    <span className="rounded bg-gray-08 px-2 py-1 text-caption-2 text-gray-2">
+                    <span className="bg-gray-08 rounded px-2 py-1 text-caption-2 text-gray-2">
                       {store.categories[0].categoryName}
                     </span>
                   )}
@@ -120,8 +120,8 @@ export const SearchResults = ({ query }: SearchResultsProps) => {
       )}
       {hasParkingLots && (
         <div className="mb-6">
-          <h2 className="text-body-5 font-bold text-gray-1">추천 주차장</h2>
-          <ul className="mt-2 divide-y divide-gray-08">
+          <h2 className="text-body-5 font-bold">추천 주차장</h2>
+          <ul className="divide-gray-08 mt-2 divide-y">
             {parkings.map((parking) => (
               <li
                 key={parking.parkingCode}
@@ -130,11 +130,11 @@ export const SearchResults = ({ query }: SearchResultsProps) => {
                   handleItemClick({ lat: parking.lat, lng: parking.lon, search: { parkingLotId: parking.parkingCode } })
                 }
               >
-                <h3 className="text-body-5 font-semibold text-gray-1">{parking.name}</h3>
+                <h3 className="text-body-5 font-semibold">{parking.name}</h3>
                 <p className="mt-1 text-caption-2 text-gray-3">{parking.address}</p>
                 <div className="mt-2 flex gap-1">
                   {parking && parking.hourlyFee && (
-                    <span className="rounded bg-gray-08 px-2 py-1 text-caption-2 text-gray-2">
+                    <span className="bg-gray-08 rounded px-2 py-1 text-caption-2 text-gray-2">
                       1시간당 {parking.hourlyFee}원
                     </span>
                   )}
@@ -149,7 +149,7 @@ export const SearchResults = ({ query }: SearchResultsProps) => {
       {hasNaverResults && (
         <div>
           <hr className="my-4" />
-          <ul className="mt-2 divide-y divide-gray-08">
+          <ul className="divide-gray-08 mt-2 divide-y">
             {naverSearch.map((item, index) => (
               <div
                 key={index}
@@ -157,7 +157,7 @@ export const SearchResults = ({ query }: SearchResultsProps) => {
                 className="cursor-pointer"
               >
                 <li className="py-4">
-                  <h3 className="text-body-5 font-semibold text-gray-1">{stripHtml(item.title)}</h3>
+                  <h3 className="text-body-5 font-semibold">{stripHtml(item.title)}</h3>
                   <p className="mt-2 text-caption-2 text-gray-3">{item.roadAddress}</p>
                 </li>
               </div>

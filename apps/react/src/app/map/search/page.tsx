@@ -29,14 +29,14 @@ function RouteComponent() {
       {/* 검색창 */}
       <div className="flex items-center gap-[10px] px-[35px]">
         <form onSubmit={handleSearch} className="relative flex-1">
-          <SearchIcon className="absolute top-1/2 left-[17px] h-6 w-6 -translate-y-1/2 text-gray-1" />
+          <SearchIcon className="absolute top-1/2 left-[17px] h-6 w-6 -translate-y-1/2" />
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="검색어를 입력하세요"
             autoFocus
-            className="h-[39px] w-full rounded-[30px] border border-gray-3 bg-white pr-[40px] pl-[50px] text-caption-1 text-gray-1 focus:outline-none"
+            className="h-[39px] w-full rounded-[30px] border border-gray-3 bg-white pr-[40px] pl-[50px] text-caption-1 focus:outline-none"
           />
           {query && (
             <button type="button" onClick={clearQuery} className="absolute top-1/2 right-[17px] -translate-y-1/2">

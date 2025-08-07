@@ -25,7 +25,7 @@ export const AgeSelection: React.FC<AgeSelectionProps> = () => {
 
   return (
     <div>
-      <h1 className="text-body-3 text-gray-1">연령대를 선택하세요</h1>
+      <h1 className="text-body-3">연령대를 선택하세요</h1>
 
       <div className="mt-[75px] w-full space-y-[21px]">
         {ageRanges.map((age) => (
@@ -35,9 +35,9 @@ export const AgeSelection: React.FC<AgeSelectionProps> = () => {
             className={cn(
               'flex h-[38px] w-full items-center justify-center rounded-[10px] border py-[12px] text-caption-1',
               {
-                'border-primary bg-primary-lighter text-primary shadow-[0_0_5px_1px_var(--color-primary-light)]':
+                'bg-primary-1-lighter border-primary text-primary shadow-[0_0_5px_1px_var(--color-primary-light)]':
                   ageGroup === age.value,
-                'border-primary bg-white text-gray-1': ageGroup !== age.value,
+                'border-primary bg-white': ageGroup !== age.value,
               }
             )}
           >

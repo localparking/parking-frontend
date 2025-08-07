@@ -11,7 +11,7 @@ function MapSearchInputBox() {
         className="flex flex-1 items-center gap-[10px] rounded-[30px] border border-white bg-white px-[17px] py-[7px]"
         to="/map/search"
       >
-        <SearchIcon className="h-6 w-6 text-gray-1" />
+        <SearchIcon className="h-6 w-6" />
         <p className="text-caption-2 text-gray-2">{searchKeyword || '검색어를 입력하세요'}</p>
       </Link>
 

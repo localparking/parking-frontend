@@ -18,7 +18,7 @@ export const OnboardingButton: React.FC<OnboardingButtonProps> = ({
     'inline-flex items-center justify-center gap-2 whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 font-semibold text-xs rounded-[10px] h-[39px] w-[292px] px-8'
 
   const variantClasses = {
-    primary: 'bg-primary text-white active:scale-95',
+    primary: 'bg-primary-1 text-white active:scale-95',
     secondary: 'bg-gray-1 text-white active:scale-95',
   }
 

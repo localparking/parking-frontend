@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, ReactNode } from 'react'
-import BottomSheet from '@/shared/components/custom-bottom-sheet'
+import BottomSheet from '@/shared/ui/custom-bottom-sheet'
 
 interface UseBottomSheetProps {
   initialContent?: ReactNode

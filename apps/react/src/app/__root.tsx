@@ -5,6 +5,7 @@ import { match } from 'path-to-regexp'
 import { isWebView } from '@/shared/utils/webview'
 import bridge from '@/shared/bridge'
 import { useBridge } from '@webview-bridge/react'
+import { cn } from '@ui/common/lib/utils'
 
 interface RouterContext {
   queryClient: QueryClient
@@ -62,16 +63,13 @@ function RootComponent() {
   const pathname = useRouterState({ select: (s) => s.location.pathname })
   const isMapPage = pathname === '/map'
 
-  const mainStyle = isMapPage
-    ? {}
-    : {
-        paddingTop: 'pt-safe-top',
-        paddingBottom: 'pt-safe-bottom',
-      }
-
   return (
-    <div className="flex min-h-dvh w-full flex-col">
-      <main className="mx-auto flex h-full w-full max-w-[600px] flex-1 bg-white" style={mainStyle}>
+    <div className="flex min-h-dvh w-full flex-col bg-gray-4">
+      <main
+        className={cn('mx-auto flex h-full w-full max-w-[600px] flex-1 bg-white', {
+          'pt-safe-top pb-safe-bottom': isMapPage,
+        })}
+      >
         <Outlet />
       </main>
     </div>
