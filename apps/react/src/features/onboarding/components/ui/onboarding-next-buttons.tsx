@@ -1,6 +1,5 @@
 import Button from '@/shared/ui/button'
 import { cn } from '@ui/common/lib/utils'
-import React from 'react'
 
 export interface OnboardingNavigationButtonsProps {
   onNext: () => void
@@ -25,9 +24,7 @@ export function OnboardingNavigationButtons(props: OnboardingNavigationButtonsPr
 
   return (
     <div className="flex w-full flex-col items-center gap-4 pb-[35px]">
-      <Button onClick={onNext} disabled={disabled}>
-        {nextButtonText}
-      </Button>
+      <Button onClick={onNext} disabled={disabled} text={nextButtonText} />
 
       {(showSkipButton || hideSkipButton) && (
         <Button
@@ -38,9 +35,8 @@ export function OnboardingNavigationButtons(props: OnboardingNavigationButtonsPr
               ? 'pointer-events-none text-transparent decoration-transparent'
               : 'text-gray-2 decoration-gray-3'
           )}
-        >
-          {skipButtonText}
-        </Button>
+          text={skipButtonText}
+        />
       )}
     </div>
   )

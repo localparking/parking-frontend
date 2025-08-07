@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 import CoffeeImage from '@ui/common/assets/3d/coffee.png'
@@ -12,6 +12,17 @@ const introSlidesData = [
 const commonText = {
   line1: '주차요금, 아직도 제값 다 내고 계세요?',
   line2: '어차피 마실 커피 사고, 주차는 공짜로 즐기세요.',
+}
+
+const slideVariants = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+  exit: { opacity: 0 },
+}
+
+const textVariants = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
 }
 
 export const IntroSlides = () => {
@@ -28,6 +39,10 @@ export const IntroSlides = () => {
     }
   }, [currentSlideIndex])
 
+  useEffect(() => {
+    setImageLoaded(false)
+  }, [currentSlideIndex])
+
   const currentSlideData = introSlidesData[currentSlideIndex]
 
   if (!currentSlideData) {
@@ -38,16 +53,15 @@ export const IntroSlides = () => {
 
   return (
     <>
-      <div className="mb-[30px] flex h-auto min-h-[50px] flex-col justify-center">
-        <p className="text-body-4">{commonText.line1}</p>
-
+      <div className="mb-10 h-[70px] px-[9px] py-[10px] text-body-4">
+        <p>{commonText.line1}</p>
         <AnimatePresence>
           {isSecondSlide && (
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
-              className="text-body-4 text-nowrap"
+              variants={textVariants}
+              initial="initial"
+              animate="animate"
+              transition={{ duration: 0.5, delay: 0.2 }}
             >
               {commonText.line2}
             </motion.p>
@@ -58,18 +72,17 @@ export const IntroSlides = () => {
       <AnimatePresence mode="wait">
         <motion.div
           key={currentSlideIndex}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-          className="h-[266px] w-[266px]"
+          variants={slideVariants}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          transition={{ duration: 0.4 }}
+          className={`h-[228px] w-[246px] transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
         >
           <img
             src={currentSlideData.image}
             alt={currentSlideData.alt}
-            className={`h-full w-full object-contain transition-opacity duration-500 ${
-              imageLoaded ? 'opacity-100' : 'opacity-0'
-            }`}
+            className="h-full w-full object-contain"
             onLoad={() => setImageLoaded(true)}
           />
         </motion.div>
