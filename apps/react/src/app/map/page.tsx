@@ -1,10 +1,10 @@
-// page.tsx
-import React from 'react'
-import { z } from 'zod'
-import { useBottomSheet } from '@/features/map/hooks/use-bottom-sheet'
+import { useEffect, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
+import { MapDisplayType, useMapContext } from '@/features/map/context/map-context'
+import MapSearchInputBox from '@/features/map/components/map-search'
+import { useBottomSheet } from '@/features/map/hooks/use-bottom-sheet'
+import { z } from 'zod'
 import { MapControl, MapMarkers, MapTypeToggle } from '@/features/map/components'
-import { useMapContext } from '@/features/map/context/map-context'
 import { useQuery } from '@tanstack/react-query'
 import { ParkingApi, StoreApi } from '@data/user-api-axios/api'
 import apiInstance from '@/shared/libs/api'
@@ -22,8 +22,10 @@ export const Route = createFileRoute('/map/')({
 })
 
 function Map() {
-  const { distanceLevel, mapDisplayType } = useMapContext()
-  const { open, close, BottomSheetComponent } = useBottomSheet()
+  const { naverMap, mapDisplayType } = useMapContext()
+  const { open, BottomSheetComponent } = useBottomSheet({
+    initialContent: mapDisplayType === MapDisplayType.STORE ? <StoreContent /> : <ParkingLotContent />,
+  })
   const { parkingLotId, storeId } = Route.useSearch()
   const parkingApi = new ParkingApi(undefined, '', apiInstance)
   const storeApi = new StoreApi(undefined, '', apiInstance)
@@ -49,7 +51,7 @@ function Map() {
   })
 
   // 바텀시트 내용 결정 및 업데이트
-  React.useEffect(() => {
+  useEffect(() => {
     let content: React.ReactNode
 
     if (parkingLotId) {
@@ -108,12 +110,13 @@ function Map() {
     open,
   ])
   return (
-    <div className="relative">
-      <div id="map" className="h-screen" />
+    <>
+      <MapSearchInputBox />
       <MapTypeToggle />
       <MapControl />
       <MapMarkers />
-      {distanceLevel === null && (
+
+      {naverMap.distanceLevel === null && (
         <div
           className="absolute top-20 left-1/2 z-10 -translate-x-1/2 rounded-lg bg-black/60 p-3 text-sm text-white shadow-lg"
           aria-live="polite"
@@ -123,7 +126,6 @@ function Map() {
       )}
 
       {BottomSheetComponent}
-      {/* <Search /> */}
-    </div>
+    </>
   )
 }

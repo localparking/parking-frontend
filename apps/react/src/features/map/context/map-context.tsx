@@ -1,8 +1,14 @@
 import { createContext, useContext, useState, ReactNode } from 'react'
-import { ParkingLotSearchRequestSortEnum, StoreSearchRequestSortEnum } from '@data/user-api-axios/api'
-import { MapInfo, useNaverMap, DistanceLevel } from '../hooks/use-naver-map'
+import {
+  PageSearchResponseStoreListResponse,
+  ParkingLotSearchRequestSortEnum,
+  StoreListResponse,
+  StoreSearchRequestSortEnum,
+} from '@data/user-api-axios/api'
+import { useNaverMap, UseNaverMapResult } from '../hooks/use-naver-map'
 import bridge from '@/shared/bridge'
 import { useBridge } from '@webview-bridge/react'
+import storeService from '@/shared/services/store.service'
 
 export enum DayOfWeek {
   MONDAY = 'MONDAY',
@@ -51,14 +57,7 @@ export interface ParkingLotSearchParams {
 
 interface MapContextType {
   // --- useNaverMap에서 직접 제공하는 상태 및 함수 ---
-  isMapReady: boolean
-  mapInstance: naver.maps.Map | null
-  currentMapInfo: MapInfo
-  queryCenter: MapInfo['center'] | null
-  moveToCurrentLocation: () => void
-  setZoom: (newZoom: number) => void
-  moveTo: (position: naver.maps.CoordLiteral, zoom?: number) => void
-  distanceLevel: DistanceLevel
+  naverMap: UseNaverMapResult
 
   // --- MapProvider에서 관리하는 앱의 비즈니스 로직 상태 및 함수 ---
   mapDisplayType: MapDisplayType
@@ -68,6 +67,11 @@ interface MapContextType {
   parkingLotSearchParams: ParkingLotSearchParams
   setParkingLotSearchParams: React.Dispatch<React.SetStateAction<ParkingLotSearchParams>>
 
+  // 검색어 상태 관리
+  searchKeyword: string
+  setSearchKeyword: React.Dispatch<React.SetStateAction<string>>
+
+  // 브릿지에서 전달받은 인셋 정보
   insets: {
     top: number
     right: number
@@ -79,16 +83,7 @@ interface MapContextType {
 const MapContext = createContext<MapContextType | undefined>(undefined)
 
 export function MapProvider({ children }: { children: ReactNode }) {
-  const {
-    isMapReady,
-    mapInstance,
-    currentMapInfo,
-    queryCenter,
-    moveTo,
-    setZoom,
-    moveToCurrentLocation,
-    distanceLevel,
-  } = useNaverMap('map')
+  const naverMap = useNaverMap('map')
 
   const [mapDisplayType, setMapDisplayType] = useState<MapDisplayType>(MapDisplayType.STORE)
   const [storeSearchParams, setStoreSearchParams] = useState<StoreSearchParams>({
@@ -99,27 +94,33 @@ export function MapProvider({ children }: { children: ReactNode }) {
     sort: ParkingLotSearchRequestSortEnum.Distance,
     page: 0,
   })
+  const [searchKeyword, setSearchKeyword] = useState<string>('')
 
   const insets = useBridge(bridge.store, (state) => state.intent)
 
   return (
     <MapContext.Provider
       value={{
-        isMapReady,
-        mapInstance,
-        currentMapInfo,
-        queryCenter,
-        moveToCurrentLocation,
-        setZoom,
-        moveTo,
-        distanceLevel,
+        naverMap,
+
         mapDisplayType,
         setMapDisplayType,
+
         storeSearchParams,
         setStoreSearchParams,
+
         parkingLotSearchParams,
         setParkingLotSearchParams,
-        insets,
+
+        searchKeyword,
+        setSearchKeyword,
+
+        insets: {
+          top: insets?.top || 36,
+          right: insets?.right || 0,
+          bottom: insets?.bottom || 0,
+          left: insets?.left || 0,
+        },
       }}
     >
       {children}

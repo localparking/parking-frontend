@@ -19,6 +19,7 @@ import { Route as LoginPageImport } from './app/login/page'
 import { Route as OnboardingTermsPageImport } from './app/onboarding/terms/page'
 import { Route as OnboardingLandingPageImport } from './app/onboarding/landing/page'
 import { Route as OnboardingFinalOnboardingPageImport } from './app/onboarding/final-onboarding/page'
+import { Route as MapSearchPageImport } from './app/map/search/page'
 import { Route as LoginSuccessPageImport } from './app/login/success/page'
 import { Route as OnboardingTermsDetailPageImport } from './app/onboarding/terms/detail/page'
 
@@ -72,6 +73,12 @@ const OnboardingFinalOnboardingPageRoute =
     path: '/final-onboarding/',
     getParentRoute: () => OnboardingLayoutRoute,
   } as any)
+
+const MapSearchPageRoute = MapSearchPageImport.update({
+  id: '/search/',
+  path: '/search/',
+  getParentRoute: () => MapLayoutRoute,
+} as any)
 
 const LoginSuccessPageRoute = LoginSuccessPageImport.update({
   id: '/login/success/',
@@ -131,6 +138,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginSuccessPageImport
       parentRoute: typeof rootRoute
     }
+    '/map/search/': {
+      id: '/map/search/'
+      path: '/search'
+      fullPath: '/map/search'
+      preLoaderRoute: typeof MapSearchPageImport
+      parentRoute: typeof MapLayoutImport
+    }
     '/onboarding/final-onboarding/': {
       id: '/onboarding/final-onboarding/'
       path: '/final-onboarding'
@@ -166,10 +180,12 @@ declare module '@tanstack/react-router' {
 
 interface MapLayoutRouteChildren {
   MapPageRoute: typeof MapPageRoute
+  MapSearchPageRoute: typeof MapSearchPageRoute
 }
 
 const MapLayoutRouteChildren: MapLayoutRouteChildren = {
   MapPageRoute: MapPageRoute,
+  MapSearchPageRoute: MapSearchPageRoute,
 }
 
 const MapLayoutRouteWithChildren = MapLayoutRoute._addFileChildren(
@@ -200,6 +216,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginPageRoute
   '/map/': typeof MapPageRoute
   '/login/success': typeof LoginSuccessPageRoute
+  '/map/search': typeof MapSearchPageRoute
   '/onboarding/final-onboarding': typeof OnboardingFinalOnboardingPageRoute
   '/onboarding/landing': typeof OnboardingLandingPageRoute
   '/onboarding/terms': typeof OnboardingTermsPageRoute
@@ -212,6 +229,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginPageRoute
   '/map': typeof MapPageRoute
   '/login/success': typeof LoginSuccessPageRoute
+  '/map/search': typeof MapSearchPageRoute
   '/onboarding/final-onboarding': typeof OnboardingFinalOnboardingPageRoute
   '/onboarding/landing': typeof OnboardingLandingPageRoute
   '/onboarding/terms': typeof OnboardingTermsPageRoute
@@ -226,6 +244,7 @@ export interface FileRoutesById {
   '/login/': typeof LoginPageRoute
   '/map/': typeof MapPageRoute
   '/login/success/': typeof LoginSuccessPageRoute
+  '/map/search/': typeof MapSearchPageRoute
   '/onboarding/final-onboarding/': typeof OnboardingFinalOnboardingPageRoute
   '/onboarding/landing/': typeof OnboardingLandingPageRoute
   '/onboarding/terms/': typeof OnboardingTermsPageRoute
@@ -241,6 +260,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/map/'
     | '/login/success'
+    | '/map/search'
     | '/onboarding/final-onboarding'
     | '/onboarding/landing'
     | '/onboarding/terms'
@@ -252,6 +272,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/map'
     | '/login/success'
+    | '/map/search'
     | '/onboarding/final-onboarding'
     | '/onboarding/landing'
     | '/onboarding/terms'
@@ -264,6 +285,7 @@ export interface FileRouteTypes {
     | '/login/'
     | '/map/'
     | '/login/success/'
+    | '/map/search/'
     | '/onboarding/final-onboarding/'
     | '/onboarding/landing/'
     | '/onboarding/terms/'
@@ -310,7 +332,8 @@ export const routeTree = rootRoute
     "/map": {
       "filePath": "map/layout.tsx",
       "children": [
-        "/map/"
+        "/map/",
+        "/map/search/"
       ]
     },
     "/onboarding": {
@@ -331,6 +354,10 @@ export const routeTree = rootRoute
     },
     "/login/success/": {
       "filePath": "login/success/page.tsx"
+    },
+    "/map/search/": {
+      "filePath": "map/search/page.tsx",
+      "parent": "/map"
     },
     "/onboarding/final-onboarding/": {
       "filePath": "onboarding/final-onboarding/page.tsx",

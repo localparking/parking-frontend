@@ -64,7 +64,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-white px-[34px] pb-6">
+    <div className="flex w-full flex-1 flex-col bg-white px-[34px]">
       <div className="flex flex-1 flex-col items-center justify-center">
         <div className="mb-12 text-center">
           <h1 className="text-body-1 text-gray-1">
@@ -82,7 +82,7 @@ export default function LoginPage() {
       <div className="flex w-full flex-col gap-4 pb-8">
         <Button
           onClick={handleKakaoLogin}
-          className="relative flex h-[39px] w-full items-center justify-center gap-2 rounded-[10px] bg-kakao text-caption-1 text-gray-1 transition-all duration-150 active:scale-[0.98] active:bg-[#FFE600]"
+          className="relative flex h-[39px] w-full items-center justify-center gap-2 rounded-[10px] bg-kakao text-caption-1 text-gray-1 transition-all duration-150 hover:bg-[#FFE600] active:scale-[0.98] active:bg-[#FFE600]"
         >
           <KakaoLogoIcon className="absolute left-[30px] h-[20px] w-[20px]" />
           카카오로 시작하기

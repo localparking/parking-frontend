@@ -72,7 +72,7 @@ function RootComponent() {
       }
 
   return (
-    <div className="flex min-h-screen w-full flex-col">
+    <div className="flex min-h-dvh w-full flex-col">
       <main className="mx-auto flex h-full w-full max-w-[600px] flex-1 bg-white" style={mainStyle}>
         <Outlet />
       </main>

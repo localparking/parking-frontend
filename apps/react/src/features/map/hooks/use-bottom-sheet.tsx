@@ -1,10 +1,13 @@
-// hooks/useBottomSheet.ts
 import { useState, useCallback, useMemo, ReactNode } from 'react'
 import BottomSheet from '@/shared/components/custom-bottom-sheet'
 
-export const useBottomSheet = () => {
+interface UseBottomSheetProps {
+  initialContent?: ReactNode
+}
+
+export const useBottomSheet = (props: UseBottomSheetProps) => {
   const [activeSnapIndex, setActiveSnapIndex] = useState(1)
-  const [content, setContent] = useState<ReactNode | null>(null)
+  const [content, setContent] = useState<ReactNode | null>(props.initialContent)
 
   const open = useCallback((newContent: ReactNode) => {
     setContent(newContent)
@@ -16,8 +19,6 @@ export const useBottomSheet = () => {
   }, [])
 
   const BottomSheetComponent = useMemo(() => {
-    // 렌더링할 컨텐츠가 없으면 null을 반환하여 렌더링하지 않음
-
     return (
       <BottomSheet activeSnapIndex={activeSnapIndex} setActiveSnapIndex={(index) => setActiveSnapIndex(index)}>
         {content}

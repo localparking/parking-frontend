@@ -7,7 +7,9 @@ import { ParkingLotList } from './parking-lot-list'
 import { ParkingLotTopFilter } from './parking-lot-list-top'
 
 export const ParkingLotContent: React.FC = () => {
-  const { queryCenter, parkingLotSearchParams, isMapReady, distanceLevel } = useMapContext()
+  const { parkingLotSearchParams } = useMapContext()
+  const { isMapReady, queryCenter, distanceLevel } = useMapContext().naverMap
+
   const [isFilterMode, setIsFilterMode] = React.useState(false)
 
   const queryKey = useMemo(
