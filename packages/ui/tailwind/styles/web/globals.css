@@ -15,63 +15,18 @@
   --color-black: oklch(0% 0 0);
   --color-white: oklch(100% 0 0);
 
-  --color-gray: oklch(55.55% 0 0);
-  --color-gray-50: oklch(98.21% 0 0);
-  --color-gray-100: oklch(96.72% 0 0);
-  --color-gray-200: oklch(92.49% 0 0);
-  --color-gray-300: oklch(87.3% 0 0);
-  --color-gray-400: oklch(71.87% 0 0);
-  --color-gray-500: oklch(55.55% 0 0);
-  --color-gray-600: oklch(43.86% 0 0);
-  --color-gray-700: oklch(37.15% 0 0);
-  --color-gray-800: oklch(27.27% 0 0);
-  --color-gray-900: oklch(22.62% 0.0041 264.49);
-
   /* Figma Design System Colors */
-  --color-primary: #00c800;
-  --color-primary-light: #bbf7d0;
-  --color-primary-lighter: #ecfdf5;
-  --color-primary-foreground: var(--color-white);
+  --color-primary-1: #00c800;
+  --color-primary-2: #bbf7d0;
+  --color-primary-3: #ecfdf5;
 
   --color-gray-1: #222222;
   --color-gray-2: #717171;
   --color-gray-3: #c4c4c4;
   --color-gray-4: #f5f5f5;
 
-  --color-success: var(--color-primary);
-  --color-success-foreground: var(--color-white);
-  --color-destructive: oklch(65% 0.2035 23.91);
-  --color-destructive-foreground: var(--color-white);
-  --color-kakao: #fee500;
-
-  /* shadcn/ui 호환 색상 */
-  --color-background: var(--color-white);
-  --color-foreground: var(--color-black);
-  --color-card: var(--color-white);
-  --color-card-foreground: var(--color-black);
-  --color-popover: var(--color-white);
-  --color-popover-foreground: var(--color-black);
-  --color-secondary: var(--color-gray-600);
-  --color-secondary-foreground: var(--color-white);
-  --color-muted: var(--color-gray-600);
-  --color-muted-foreground: var(--color-gray-400);
-  --color-accent: var(--color-primary);
-  --color-accent-foreground: var(--color-white);
-  --color-border: var(--color-gray-600);
-  --color-input: var(--color-gray-600);
-  --color-ring: var(--color-primary);
-
-  --color-card-selected: var(--color-primary-lighter);
-  --color-card-selected-border: var(--color-primary);
-  --color-card-unselected: var(--color-white);
-  --color-card-unselected-border: var(--color-gray-3);
-
-  /* 반지름 */
-  --radius: 8px;
-  --radius-lg: var(--radius);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-onboarding: 16px;
-  --radius-card: 12px;
-  --common-max-width: 560px;
+  --color-gray-100: rgba(113, 113, 113, 1);
+  --color-gray-80: rgba(113, 113, 113, 0.8);
+  --color-gray-50: rgba(113, 113, 113, 0.5);
+  --color-gray-20: rgba(113, 113, 113, 0.2);
 }

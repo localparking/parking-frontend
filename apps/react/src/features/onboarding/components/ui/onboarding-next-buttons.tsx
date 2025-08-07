@@ -25,7 +25,7 @@ export const OnboardingNavigationButtons: React.FC<OnboardingNavigationButtonsPr
       <Button
         onClick={onNext}
         disabled={disabled}
-        className="h-[39px] w-full rounded-[10px] bg-primary text-caption-0 text-white transition-all duration-150 active:scale-[0.98] active:bg-[#00B800] disabled:bg-[#BCBCBC] disabled:active:scale-100 disabled:active:bg-[#BCBCBC]"
+        className="h-[39px] w-full rounded-[10px] bg-primary text-caption-1 text-white transition-all duration-150 active:scale-[0.98] active:bg-[#00B800] disabled:bg-[#BCBCBC] disabled:active:scale-100 disabled:active:bg-[#BCBCBC]"
       >
         {nextButtonText}
       </Button>
