@@ -29,16 +29,18 @@ function LandingPage() {
   }
 
   return (
-    <div className="relative flex w-full flex-1 flex-col text-center">
-      <section className="flex w-full flex-1 flex-col items-center justify-center">
-        {currentStep === 'intro' && <IntroSlides />}
-        {currentStep === 'guide' && <BenefitGuide />}
-      </section>
+    <div className="mt-[168px] flex h-full flex-col">
+      <section className="flex flex-1 flex-col justify-between">
+        <div className="flex flex-col items-center text-center">
+          {currentStep === 'intro' && <IntroSlides />}
+          {currentStep === 'guide' && <BenefitGuide />}
+        </div>
 
-      <OnboardingNavigationButtons
-        onNext={currentStep === 'intro' ? handleIntroComplete : handleGuideComplete}
-        onSkip={handleGuideComplete}
-      />
+        <OnboardingNavigationButtons
+          onNext={currentStep === 'intro' ? handleIntroComplete : handleGuideComplete}
+          onSkip={handleGuideComplete}
+        />
+      </section>
     </div>
   )
 }

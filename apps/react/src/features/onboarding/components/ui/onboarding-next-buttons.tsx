@@ -1,5 +1,4 @@
 import Button from '@/shared/ui/button'
-import { cn } from '@ui/common/lib/utils'
 
 export interface OnboardingNavigationButtonsProps {
   onNext: () => void
@@ -7,7 +6,6 @@ export interface OnboardingNavigationButtonsProps {
   nextButtonText?: string
   skipButtonText?: string
   disabled?: boolean
-  showSkipButton?: boolean
   hideSkipButton?: boolean
 }
 
@@ -18,26 +16,18 @@ export function OnboardingNavigationButtons(props: OnboardingNavigationButtonsPr
     nextButtonText = '다음으로',
     skipButtonText = '건너뛰기',
     disabled = false,
-    showSkipButton = true,
     hideSkipButton = false,
   } = props
 
   return (
-    <div className="flex w-full flex-col items-center gap-4 pb-[35px]">
-      <Button onClick={onNext} disabled={disabled} text={nextButtonText} />
+    <div className="flex flex-col gap-1">
+      <Button onClick={onNext} disabled={disabled}>
+        {nextButtonText}
+      </Button>
 
-      {(showSkipButton || hideSkipButton) && (
-        <Button
-          onClick={hideSkipButton ? undefined : onSkip}
-          className={cn(
-            'h-5 bg-transparent text-caption-2 underline',
-            hideSkipButton
-              ? 'pointer-events-none text-transparent decoration-transparent'
-              : 'text-gray-2 decoration-gray-3'
-          )}
-          text={skipButtonText}
-        />
-      )}
+      <Button onClick={onSkip} className="bg-transparent">
+        {!hideSkipButton && <p className="text-caption-2 text-gray-2">{skipButtonText}</p>}
+      </Button>
     </div>
   )
 }
