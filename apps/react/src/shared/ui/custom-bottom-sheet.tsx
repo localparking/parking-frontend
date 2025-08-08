@@ -23,7 +23,7 @@ const BottomSheet = ({
     if (customSnapPoints) return customSnapPoints
     if (windowHeight === null) return null
 
-    const SNAP_MID = windowHeight - 400
+    const SNAP_MID = Math.floor(windowHeight * 0.4)
     const SNAP_BOTTOM = windowHeight - 100
     return [SNAP_MID, SNAP_BOTTOM]
   }, [windowHeight, customSnapPoints])
