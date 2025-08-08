@@ -7,55 +7,18 @@
   --spacing-safe-right: env(safe-area-inset-right);
 
   --font-pretendard: var(--font-pretendard);
-  --container-2xl: 1400px;
-  --breakpoint-xl: 1160px;
 
   --color-black: var(--color-black);
   --color-white: var(--color-white);
 
-  --color-gray: var(--color-gray);
-  --color-gray-50: var(--color-gray-50);
-  --color-gray-100: var(--color-gray-100);
-  --color-gray-200: var(--color-gray-200);
-  --color-gray-300: var(--color-gray-300);
-  --color-gray-400: var(--color-gray-400);
-  --color-gray-500: var(--color-gray-500);
-  --color-gray-600: var(--color-gray-600);
-  --color-gray-700: var(--color-gray-700);
-  --color-gray-800: var(--color-gray-800);
-  --color-gray-900: var(--color-gray-900);
-
-  --color-primary: var(--color-primary);
-  --color-primary-50: var(--color-primary-50);
-  --color-primary-100: var(--color-primary-100);
-  --color-primary-200: var(--color-primary-200);
-  --color-primary-300: var(--color-primary-300);
-  --color-primary-400: var(--color-primary-400);
-  --color-primary-500: var(--color-primary);
-  --color-primary-600: var(--color-primary-600);
-  --color-primary-700: var(--color-primary-700);
-  --color-primary-800: var(--color-primary-800);
-  --color-primary-900: var(--color-primary-900);
-
-  --color-sub-1: var(--color-sub-1);
-  --color-sub-2: var(--color-sub-2);
-  --color-stroke: var(--color-stroke);
-  --color-success: var(--color-success);
-  --color-destructive: var(--color-destructive);
-
   /* Figma Design System Colors */
-  --color-primary-light: var(--color-primary-light);
-  --color-primary-lighter: var(--color-primary-lighter);
+  --color-primary-2: var(--color-primary-2);
+  --color-primary-2er: var(--color-primary-2er);
   --color-gray-1: var(--color-gray-1);
   --color-gray-2: var(--color-gray-2);
   --color-gray-3: var(--color-gray-3);
   --color-gray-4: var(--color-gray-4);
   --color-kakao: var(--color-kakao);
-
-  --color-card-selected: var(--color-card-selected);
-  --color-card-selected-border: var(--color-card-selected-border);
-  --color-card-unselected: var(--color-card-unselected);
-  --color-card-unselected-border: var(--color-card-unselected-border);
 
   /* font size */
   /* Figma Typography System */
@@ -138,8 +101,6 @@
   --color-gray-2: var(--color-gray-2);
   --color-gray-3: var(--color-gray-3);
   --color-gray-4: var(--color-gray-4);
-
-  --color-kakao: var(--color-kakao);
 
   --color-gray-100: var(--color-gray-100);
   --color-gray-80: var(--color-gray-80);

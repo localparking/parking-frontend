@@ -60,14 +60,14 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 })
 
 function RootComponent() {
-  // const { location } = useRouterState()
-  // const isMapPage = location.pathname === '/map'
+  const { location } = useRouterState()
+  const isMapPage = location.pathname === '/map'
 
   return (
     <div className="flex min-h-dvh w-full flex-col bg-gray-4">
       <main
         className={cn('mx-auto flex w-full max-w-[600px] flex-1 bg-white', {
-          // 'pt-safe-top pb-safe-bottom': !isMapPage,
+          'pt-safe-top pb-safe-bottom': !isMapPage,
         })}
       >
         <Outlet />

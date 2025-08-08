@@ -15,9 +15,9 @@ const commonText = {
 }
 
 const slideVariants = {
-  initial: { opacity: 0 },
-  animate: { opacity: 1 },
-  exit: { opacity: 0 },
+  initial: { opacity: 0, scale: 0.98 },
+  animate: { opacity: 1, scale: 1 },
+  exit: { opacity: 0, scale: 0.98 },
 }
 
 const textVariants = {
@@ -25,9 +25,19 @@ const textVariants = {
   animate: { opacity: 1 },
 }
 
+const usePreloadImages = (imageUrls: string[]) => {
+  useEffect(() => {
+    imageUrls.forEach((url) => {
+      const img = new Image()
+      img.src = url
+    })
+  }, [imageUrls])
+}
+
 export const IntroSlides = () => {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0)
-  const [imageLoaded, setImageLoaded] = useState(false)
+
+  usePreloadImages(introSlidesData.map((slide) => slide.image))
 
   useEffect(() => {
     if (currentSlideIndex === 0) {
@@ -39,15 +49,8 @@ export const IntroSlides = () => {
     }
   }, [currentSlideIndex])
 
-  useEffect(() => {
-    setImageLoaded(false)
-  }, [currentSlideIndex])
-
   const currentSlideData = introSlidesData[currentSlideIndex]
-
-  if (!currentSlideData) {
-    return null
-  }
+  if (!currentSlideData) return null
 
   const isSecondSlide = currentSlideIndex === 1
 
@@ -76,15 +79,10 @@ export const IntroSlides = () => {
           initial="initial"
           animate="animate"
           exit="exit"
-          transition={{ duration: 0.4 }}
-          className={`h-[228px] w-[246px] transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+          transition={{ duration: 0.3 }}
+          className="h-[228px] w-[246px]"
         >
-          <img
-            src={currentSlideData.image}
-            alt={currentSlideData.alt}
-            className="h-full w-full object-contain"
-            onLoad={() => setImageLoaded(true)}
-          />
+          <img src={currentSlideData.image} alt={currentSlideData.alt} className="h-full w-full object-contain" />
         </motion.div>
       </AnimatePresence>
     </>

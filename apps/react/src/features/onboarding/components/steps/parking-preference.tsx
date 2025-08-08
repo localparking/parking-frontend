@@ -37,9 +37,9 @@ export const ParkingPreference: React.FC = () => {
                 key={preference.key}
                 onClick={() => setWeight(preference.key)}
                 className={cn(
-                  'relative flex h-[140px] w-[130px] flex-col items-center justify-center rounded-[20px] border border-primary p-4',
+                  'relative flex h-[140px] w-[130px] flex-col items-center justify-center rounded-[20px] border border-primary-1 p-4',
                   {
-                    'bg-primary-1-lighter shadow-[0_0_5px_1px_var(--color-primary-light)]': isSelected,
+                    'bg-primary-1-lighter shadow-[0_0_5px_1px_var(--color-primary-2)]': isSelected,
                     'bg-white': !isSelected,
                   },
                   {

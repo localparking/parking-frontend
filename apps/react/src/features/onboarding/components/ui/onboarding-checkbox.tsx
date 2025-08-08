@@ -34,7 +34,7 @@ const OnboardingCheckboxComponent: React.FC<OnboardingCheckboxProps> = ({
             {checked ? (
               <CheckIcon className="h-[22px] w-[22px]" />
             ) : (
-              <div className="h-[22px] w-[22px] rounded-full border-[1.3px] border-[#BCBCBC] transition-colors duration-200 hover:border-primary active:border-primary" />
+              <div className="h-[22px] w-[22px] rounded-full border-[1.3px] border-[#BCBCBC] transition-colors duration-200 hover:border-primary-1 active:border-primary-1" />
             )}
           </div>
         </div>
@@ -46,7 +46,7 @@ const OnboardingCheckboxComponent: React.FC<OnboardingCheckboxProps> = ({
 
       {showArrow && (
         <Link
-          className="text-[#09090B] transition-colors duration-150 hover:text-primary active:text-primary"
+          className="text-[#09090B] transition-colors duration-150 hover:text-primary-1 active:text-primary-1"
           to={`/onboarding/terms/detail`}
           search={{ termId: id }}
         >

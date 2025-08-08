@@ -51,9 +51,9 @@ export const VisitPurpose = ({ categories }: { categories?: CategoryResponse }) 
                   })
                 }
                 className={cn(
-                  'flex h-[58px] w-full items-center rounded-[15px] border border-primary px-[18px] py-[9px]',
+                  'flex h-[58px] w-full items-center rounded-[15px] border border-primary-1 px-[18px] py-[9px]',
                   {
-                    'bg-primary-1-lighter shadow-[0_0_5px_1px_var(--color-primary-light)]': isSelected,
+                    'bg-primary-1-lighter shadow-[0_0_5px_1px_var(--color-primary-2)]': isSelected,
                     'bg-white': !isSelected,
                   }
                 )}

@@ -35,9 +35,9 @@ export const AgeSelection: React.FC<AgeSelectionProps> = () => {
             className={cn(
               'flex h-[38px] w-full items-center justify-center rounded-[10px] border py-[12px] text-caption-1',
               {
-                'bg-primary-1-lighter border-primary text-primary shadow-[0_0_5px_1px_var(--color-primary-light)]':
+                'border-primary-1 bg-primary-1 text-primary-1 shadow-[0_0_5px_1px_var(--color-primary-2)]':
                   ageGroup === age.value,
-                'border-primary bg-white': ageGroup !== age.value,
+                'border-primary-1 bg-white': ageGroup !== age.value,
               }
             )}
           >
