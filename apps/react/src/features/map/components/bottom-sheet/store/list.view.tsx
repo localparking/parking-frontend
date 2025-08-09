@@ -2,7 +2,7 @@ import React, { useRef, useCallback, useMemo } from 'react'
 import { PageResponseStoreListResponse, StoreListResponse } from '@data/user-api-axios/api'
 import { useCategoryContext } from '@/shared/context/category-context'
 import { cn } from '@ui/common/lib/utils'
-import { useNavigation } from '../../hooks/use-navigation'
+import { useNavigation } from '../../../hooks/use-navigation'
 import { getStoreIconPath } from '@/shared/utils/category'
 
 interface StoreListProps {

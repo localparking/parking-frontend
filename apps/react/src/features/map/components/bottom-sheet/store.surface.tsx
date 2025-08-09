@@ -3,9 +3,9 @@ import { useInfiniteQuery } from '@tanstack/react-query'
 import { useMapContext } from '../../context/map-context'
 import storeService from '@/shared/services/store.service'
 
-import { StoreList } from './store-list'
-import { StoreFilter } from './store-filter'
-import { StoreTopFilter } from './store-list-top'
+import { StoreList } from './store/list.view'
+import { StoreFilter } from './store/filter.panel'
+import { StoreTopFilter } from './store/top-filter.view'
 
 export const StoreContent: React.FC = () => {
   const { storeSearchParams } = useMapContext()

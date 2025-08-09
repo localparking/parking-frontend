@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import { SlidersHorizontal, RefreshCw } from 'lucide-react'
 import { useCategoryContext } from '@/shared/context/category-context'
-import { useMapContext } from '../../context/map-context'
+import { useMapContext } from '../../../context/map-context'
 import { StoreSearchRequestSortEnum } from '@data/user-api-axios/api'
 import { cn } from '@ui/common/lib/utils'
 import { getCategoryIconPath } from '@/shared/utils/category'

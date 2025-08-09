@@ -1,10 +1,10 @@
 import React from 'react'
-import { useParkingLotFilter } from '../../hooks/use-parking-lot-filter'
-import { FilterButtonGroup } from './filter-button'
-import { PriceRangeSlider } from './price-range-slider'
+import { useParkingLotFilter } from '../../../hooks/use-parking-lot-filter'
+import { FilterButtonGroup } from '../ui/filter-button'
+import { PriceRangeSlider } from '../ui/price-range-slider'
 import { DatePicker } from '@ui/common/components/date-picker'
 import { TimePicker } from '@ui/common/components/time-picker'
-import { Congestion, DayOfWeek } from '../../context/map-context'
+import { Congestion, DayOfWeek } from '../../../context/map-context'
 
 const FREE_STATUS_OPTIONS = [
   { label: '무료', value: true as boolean },

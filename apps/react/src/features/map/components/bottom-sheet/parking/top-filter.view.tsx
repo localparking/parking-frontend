@@ -1,6 +1,6 @@
 import React from 'react'
 import { SlidersHorizontal, RefreshCw } from 'lucide-react'
-import { useMapContext } from '../../context/map-context'
+import { useMapContext } from '../../../context/map-context'
 import { ParkingLotSearchRequestSortEnum } from '@data/user-api-axios/api'
 import { cn } from '@ui/common/lib/utils'
 

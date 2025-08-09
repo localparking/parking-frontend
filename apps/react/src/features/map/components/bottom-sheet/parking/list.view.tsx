@@ -1,7 +1,7 @@
 import React, { useRef, useCallback, useMemo } from 'react'
 import { PageResponseParkingLotListResponse } from '@data/user-api-axios/api'
 import { cn } from '@ui/common/lib/utils'
-import { useNavigation } from '../../hooks/use-navigation'
+import { useNavigation } from '../../../hooks/use-navigation'
 import { formatPrice } from '@/shared/utils/format'
 
 interface ParkingLotListProps {
