@@ -130,7 +130,7 @@ export const ParkingLotFilter: React.FC<{ onClose: () => void }> = ({ onClose })
         </div>
       </div>
 
-      <div className="flex gap-4 border-t border-gray-100 bg-white p-4 pb-12">
+      <div className="flex gap-4 bg-white p-4 pb-12">
         <button
           onClick={handleReset}
           className="flex-1 rounded-lg bg-gray-200 px-5 py-3 text-xs font-bold text-gray-600"

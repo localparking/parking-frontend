@@ -59,7 +59,7 @@ export const ParkingLotContent: React.FC = () => {
     <div className="flex h-full flex-col rounded-t-[40px] bg-white">
       {isFilterMode ? (
         <div className="flex flex-col">
-          <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
+          <div className="flex items-center justify-between px-4 py-3">
             <div className="flex-1"></div>
             <h3 className="flex-1 text-center text-base font-semibold whitespace-nowrap text-gray-900">
               내 주변 주차장 설정

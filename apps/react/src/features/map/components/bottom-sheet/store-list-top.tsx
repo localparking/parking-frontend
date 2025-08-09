@@ -21,9 +21,9 @@ export const StoreTopFilter: React.FC<StoreTopFilterProps> = ({ onFilterIconClic
   )
 
   return (
-    <div className="border-b border-gray-100 px-4 py-3">
-      <div className="mb-4 flex items-center justify-between">
-        <button onClick={onFilterIconClick} className="flex items-center gap-1 px-2 py-1 text-gray-600">
+    <div className="px-6 py-3">
+      <div className="mb-4 flex items-center justify-between gap-2">
+        <button onClick={onFilterIconClick} className="flex items-center text-gray-600">
           <SlidersHorizontal size={16} />
         </button>
         <div className="flex gap-2 overflow-x-auto">
@@ -57,8 +57,8 @@ export const StoreTopFilter: React.FC<StoreTopFilterProps> = ({ onFilterIconClic
           ))}
         </div>
       </div>
-      <div className="flex items-center justify-between px-9 text-caption-2 text-gray-2">
-        <div className="flex items-center gap-4">
+      <div className="flex items-center justify-between text-caption-2 text-gray-2">
+        <div className="flex items-center gap-[14px]">
           <button
             onClick={() =>
               setStoreSearchParams((prev) => ({ ...prev, sort: StoreSearchRequestSortEnum.Distance, page: 0 }))
