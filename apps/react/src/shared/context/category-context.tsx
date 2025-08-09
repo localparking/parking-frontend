@@ -21,7 +21,7 @@ const CATEGORY_NAME_TO_PREFIX_MAP: Record<string, string> = {
   음식점: 'food',
   문화: 'culture',
   여가: 'leisure',
-  상점: 'shopping',
+  상점: 'store',
 }
 
 export function CategoryProvider({ children }: { children: ReactNode }) {

@@ -22,11 +22,11 @@ export const StoreTopFilter: React.FC<StoreTopFilterProps> = ({ onFilterIconClic
 
   return (
     <div className="px-6 py-3">
-      <div className="mb-4 flex items-center justify-between gap-2">
-        <button onClick={onFilterIconClick} className="flex items-center text-gray-600">
+      <div className="mb-4 flex items-center justify-start gap-2">
+        <button onClick={onFilterIconClick} className="flex text-gray-1">
           <SlidersHorizontal size={16} />
         </button>
-        <div className="flex gap-2 overflow-x-auto">
+        <div className="flex gap-2 overflow-x-auto text-caption-2">
           {parentCategories.map((category) => (
             <button
               key={category.categoryId}
@@ -38,7 +38,7 @@ export const StoreTopFilter: React.FC<StoreTopFilterProps> = ({ onFilterIconClic
                 }))
               }
               className={cn(
-                'flex items-center justify-center rounded-full border px-3 py-1 text-xs font-semibold whitespace-nowrap transition-colors',
+                'flex h-[31px] flex-shrink-0 items-center justify-center gap-x-1 rounded-[50px] border px-2 py-[6px] transition-colors',
                 {
                   'border-gray-1 bg-gray-1 text-white': storeSearchParams.categoryIds?.includes(category.categoryId),
                   'border-gray-300 text-gray-700 hover:bg-gray-50': !storeSearchParams.categoryIds?.includes(
@@ -50,7 +50,7 @@ export const StoreTopFilter: React.FC<StoreTopFilterProps> = ({ onFilterIconClic
               <img
                 src={getCategoryIconPath(category.categoryId, parentIdToPrefixMap)}
                 alt={category.categoryName}
-                className="h-4 w-4"
+                className="h-5 w-5"
               />
               <span>{category.categoryName}</span>
             </button>
@@ -63,9 +63,7 @@ export const StoreTopFilter: React.FC<StoreTopFilterProps> = ({ onFilterIconClic
             onClick={() =>
               setStoreSearchParams((prev) => ({ ...prev, sort: StoreSearchRequestSortEnum.Distance, page: 0 }))
             }
-            className={cn('font-semibold', {
-              '': storeSearchParams.sort === StoreSearchRequestSortEnum.Distance,
-            })}
+            className={storeSearchParams.sort === StoreSearchRequestSortEnum.Distance ? 'text-gray-1' : ''}
           >
             거리순
           </button>
@@ -73,15 +71,13 @@ export const StoreTopFilter: React.FC<StoreTopFilterProps> = ({ onFilterIconClic
             onClick={() =>
               setStoreSearchParams((prev) => ({ ...prev, sort: StoreSearchRequestSortEnum.Price, page: 0 }))
             }
-            className={cn('font-semibold', {
-              '': storeSearchParams.sort === StoreSearchRequestSortEnum.Price,
-            })}
+            className={storeSearchParams.sort === StoreSearchRequestSortEnum.Price ? 'text-gray-1' : ''}
           >
             가격순
           </button>
         </div>
-        <button onClick={onRefresh} className="flex items-center gap-1 hover:text-gray-700">
-          <RefreshCw size={12} />
+        <button onClick={onRefresh} className="flex items-center gap-[3px]">
+          <RefreshCw size={12} className="text-gray-3" />
           <span>새로고침</span>
         </button>
       </div>
