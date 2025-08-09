@@ -37,7 +37,7 @@ export const ParkingLotTopFilter: React.FC<ParkingLotTopFilterProps> = ({ onFilt
         <button onClick={onFilterIconClick} className="flex items-center text-gray-1">
           <SlidersHorizontal size={16} />
         </button>
-        <div className="flex gap-2 overflow-x-auto text-caption-2">
+        <div className="flex gap-2 overflow-x-auto text-caption-2 scrollbar-hide">
           {FEE_OPTIONS.map(({ label, value }) => {
             const isSelected = parkingLotSearchParams.maxFeePerHour === value
             return (

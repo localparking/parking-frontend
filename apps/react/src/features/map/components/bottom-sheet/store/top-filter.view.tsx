@@ -26,7 +26,7 @@ export const StoreTopFilter: React.FC<StoreTopFilterProps> = ({ onFilterIconClic
         <button onClick={onFilterIconClick} className="flex text-gray-1">
           <SlidersHorizontal size={16} />
         </button>
-        <div className="flex gap-2 overflow-x-auto text-caption-2">
+        <div className="flex gap-2 overflow-x-auto text-caption-2 scrollbar-hide">
           {parentCategories.map((category) => (
             <button
               key={category.categoryId}
