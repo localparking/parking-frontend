@@ -8,7 +8,7 @@ import { useAuth } from '@/features/auth'
 import MainLogoImage from '@ui/common/assets/3d/mainlogo.png'
 import KakaoLogoIcon from '@ui/common/assets/icons/kakao-logo.svg'
 import AppleLogoIcon from '@ui/common/assets/icons/apple-logo.svg'
-import { Button } from '@ui/common/components/button'
+import Button from '@/shared/ui/button'
 
 export const Route = createFileRoute('/login/')({
   component: LoginPage,
@@ -64,11 +64,11 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex w-full flex-1 flex-col bg-white px-[34px]">
-      <div className="flex flex-1 flex-col items-center justify-center">
+    <div className="flex w-full flex-1 flex-col bg-white px-6 pt-[170px] pb-6">
+      <div className="flex flex-1 flex-col items-center">
         <div className="mb-12 text-center">
-          <h1 className="text-body-1 text-gray-1">
-            가장 가까운 <span className="text-primary">무료주차 혜택</span>,
+          <h1 className="text-body-1">
+            가장 가까운 <span className="text-primary-1">무료주차 혜택</span>,
             <br />
             지금 찾아볼까요?
           </h1>
@@ -79,34 +79,26 @@ export default function LoginPage() {
         </div>
       </div>
 
-      <div className="flex w-full flex-col gap-4 pb-8">
-        <Button
-          onClick={handleKakaoLogin}
-          className="relative flex h-[39px] w-full items-center justify-center gap-2 rounded-[10px] bg-kakao text-caption-1 text-gray-1 transition-all duration-150 hover:bg-[#FFE600] active:scale-[0.98] active:bg-[#FFE600]"
-        >
+      <div className="mb-3 flex w-full flex-col gap-2">
+        <Button onClick={handleKakaoLogin} className="bg-[#FFE600]">
           <KakaoLogoIcon className="absolute left-[30px] h-[20px] w-[20px]" />
-          카카오로 시작하기
+          <p className="text-gray-1">카카오로 시작하기</p>
         </Button>
 
         {isWebView() && (
-          <Button
-            onClick={handleAppleLogin}
-            className="relative flex h-[39px] w-full items-center justify-center gap-2 rounded-[10px] bg-gray-1 text-caption-1 text-white transition-all duration-150 active:scale-[0.98] active:bg-[#111111]"
-          >
+          <Button onClick={handleAppleLogin} className="bg-gray-1">
             <AppleLogoIcon className="absolute left-[30px] h-[20px] w-[20px]" />
             애플로 시작하기
           </Button>
         )}
-
-        <div className="text-center">
-          <button
-            onClick={() => navigate({ to: '/map', replace: true })}
-            className="text-caption-2 text-gray-2 underline decoration-gray-3 decoration-[0.7px] underline-offset-2"
-          >
-            로그인 없이 시작하기
-          </button>
-        </div>
       </div>
+
+      <Button
+        onClick={() => navigate({ to: '/map', replace: true })}
+        className="bg-transparent underline decoration-gray-3 underline-offset-4"
+      >
+        <p className="text-caption-2 text-gray-2">로그인 없이 시작하기</p>
+      </Button>
     </div>
   )
 }

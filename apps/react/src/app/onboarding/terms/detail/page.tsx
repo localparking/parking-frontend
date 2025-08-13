@@ -33,8 +33,8 @@ function RouteComponent() {
         <ArrowLeft className="h-6 w-6" />
       </button>
 
-      <h1 className="mb-8 text-body-3 text-gray-1">{term?.title}</h1>
-      <p className="text-caption-2 text-gray-01">{term?.content}</p>
+      <h1 className="mb-8 text-body-3">{term?.title}</h1>
+      <p className="text-gray-01 text-caption-2">{term?.content}</p>
 
       <div className="absolute bottom-0 mt-auto w-full pt-8">
         <OnboardingNavigationButtons onNext={handleGoBack} nextButtonText="뒤로가기" hideSkipButton />

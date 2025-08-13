@@ -5,12 +5,6 @@ import { SocialLoginType, SocialLoginResult, LocationData, LocationResult } from
 export interface WebBridge extends BridgeStore<WebBridge> {
   // 상태
   isLoggedIn: boolean
-  intent: {
-    top: number
-    right: number
-    bottom: number
-    left: number
-  }
 
   // 액션
   socialLogin(type: SocialLoginType): Promise<SocialLoginResult>
@@ -29,11 +23,10 @@ export const bridge = linkBridge<WebBridge>({
   throwOnError: true,
   timeout: 20000,
   initialBridge: {
+    isLoggedIn: false,
+    currentLocation: null,
     socialLogin: async (type: SocialLoginType) => {
-      return {
-        success: false,
-        message: '네이티브 소셜 로그인 구현이 필요합니다.',
-      }
+      return { success: false, message: '네이티브 소셜 로그인 구현이 필요합니다.' }
     },
     getAuthStatus: async () => ({ isLoggedIn: false }),
     getAuthToken: async () => ({ accessToken: null }),
@@ -42,9 +35,6 @@ export const bridge = linkBridge<WebBridge>({
     setLandingStatus: async (): Promise<void> => {},
     getLandingStatus: async () => false,
     getCurrentLocation: async () => ({ success: false, data: null }),
-    isLoggedIn: false,
-    currentLocation: null,
-    intent: { top: 0, right: 0, bottom: 0, left: 0 },
   },
 })
 

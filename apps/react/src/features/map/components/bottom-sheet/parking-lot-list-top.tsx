@@ -57,7 +57,7 @@ export const ParkingLotTopFilter: React.FC<ParkingLotTopFilterProps> = ({ onFilt
               }))
             }
             className={cn('font-semibold', {
-              'text-gray-1': parkingLotSearchParams.sort === ParkingLotSearchRequestSortEnum.Distance,
+              '': parkingLotSearchParams.sort === ParkingLotSearchRequestSortEnum.Distance,
             })}
           >
             거리순
@@ -67,7 +67,7 @@ export const ParkingLotTopFilter: React.FC<ParkingLotTopFilterProps> = ({ onFilt
               setParkingLotSearchParams((prev) => ({ ...prev, sort: ParkingLotSearchRequestSortEnum.Price, page: 0 }))
             }
             className={cn('font-semibold', {
-              'text-gray-1': parkingLotSearchParams.sort === ParkingLotSearchRequestSortEnum.Price,
+              '': parkingLotSearchParams.sort === ParkingLotSearchRequestSortEnum.Price,
             })}
           >
             가격순

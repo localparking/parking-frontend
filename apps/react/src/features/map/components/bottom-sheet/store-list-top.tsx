@@ -64,7 +64,7 @@ export const StoreTopFilter: React.FC<StoreTopFilterProps> = ({ onFilterIconClic
               setStoreSearchParams((prev) => ({ ...prev, sort: StoreSearchRequestSortEnum.Distance, page: 0 }))
             }
             className={cn('font-semibold', {
-              'text-gray-1': storeSearchParams.sort === StoreSearchRequestSortEnum.Distance,
+              '': storeSearchParams.sort === StoreSearchRequestSortEnum.Distance,
             })}
           >
             거리순
@@ -74,7 +74,7 @@ export const StoreTopFilter: React.FC<StoreTopFilterProps> = ({ onFilterIconClic
               setStoreSearchParams((prev) => ({ ...prev, sort: StoreSearchRequestSortEnum.Price, page: 0 }))
             }
             className={cn('font-semibold', {
-              'text-gray-1': storeSearchParams.sort === StoreSearchRequestSortEnum.Price,
+              '': storeSearchParams.sort === StoreSearchRequestSortEnum.Price,
             })}
           >
             가격순

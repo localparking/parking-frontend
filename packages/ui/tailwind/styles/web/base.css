@@ -1,13 +1,6 @@
 @layer base {
-  * {
-    @apply border-border;
-  }
-
   body {
-    @apply bg-background text-foreground;
-    min-width: 100vw;
-    @apply min-h-screen;
-    @apply min-h-dvh;
     font-family: var(--font-pretendard, 'Pretendard');
+    color: var(--color-gray-1);
   }
 }

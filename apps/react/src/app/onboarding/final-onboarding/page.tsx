@@ -87,7 +87,6 @@ function OnboardingFlow() {
         <OnboardingNavigationButtons
           onNext={handleNextStep}
           onSkip={handleOnboardingSubmit}
-          showSkipButton
           disabled={disabled()}
           nextButtonText={currentStep === 3 ? '시작하기' : '다음으로'}
         />

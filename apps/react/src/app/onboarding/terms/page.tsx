@@ -52,7 +52,7 @@ function TermsPage() {
 
       <div className="mt-[70px]">
         <img src={MainLogoImage} alt="메인 로고" className="h-[64px] w-[64px] object-contain" />
-        <h1 className="text-body-3 text-gray-1">서비스 이용 동의</h1>
+        <h1 className="text-body-3">서비스 이용 동의</h1>
       </div>
 
       <div className="mt-[30px] flex w-full flex-col items-center">
@@ -67,7 +67,7 @@ function TermsPage() {
             showArrow={false}
           />
 
-          <div className="mt-[11px] mb-[19px] h-[2px] rounded-[2px] bg-primary" />
+          <div className="mt-[11px] mb-[19px] h-[2px] rounded-[2px] bg-primary-1" />
 
           <div className="space-y-[15px]">
             {terms.map((term) => (

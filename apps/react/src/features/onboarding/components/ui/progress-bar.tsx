@@ -12,7 +12,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }) => {
       {Array.from({ length: progressSteps }, (_, index) => (
         <div
           key={index}
-          className={`h-[3px] flex-1 rounded-full ${index < currentStep ? 'bg-primary' : 'bg-gray-3'}`}
+          className={`h-[3px] flex-1 rounded-full ${index < currentStep ? 'bg-primary-1' : 'bg-gray-3'}`}
         />
       ))}
     </div>

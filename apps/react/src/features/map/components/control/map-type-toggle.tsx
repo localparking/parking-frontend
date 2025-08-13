@@ -1,7 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { useMapContext } from '../../context/map-context'
 import { Store, CircleParking } from 'lucide-react'
-import storeService from '@/shared/services/store.service'
 
 enum MapDisplayType {
   STORE = 'store',
@@ -22,7 +21,7 @@ const toggleOptions = [
 ]
 
 export const MapTypeToggle = () => {
-  const { mapDisplayType, setMapDisplayType, insets, setSearchKeyword } = useMapContext()
+  const { mapDisplayType, setMapDisplayType, setSearchKeyword } = useMapContext()
   const queryClient = useQueryClient()
 
   const handleToggle = (type: MapDisplayType) => {
@@ -36,7 +35,7 @@ export const MapTypeToggle = () => {
   }
 
   return (
-    <div className={'absolute right-9 z-10'} style={{ top: insets?.top + 55 }}>
+    <div className={'absolute top-[calc(var(--spacing-safe-top)+55px)] right-9 z-10'}>
       <div className="flex flex-col gap-2.5">
         {toggleOptions.map((option) => {
           const IconComponent = option.icon

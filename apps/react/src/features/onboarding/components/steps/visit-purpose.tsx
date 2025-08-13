@@ -25,7 +25,7 @@ export const VisitPurpose = ({ categories }: { categories?: CategoryResponse }) 
 
   return (
     <div className="space-y-[15px]">
-      <h1 className="text-body-3 text-gray-1">
+      <h1 className="text-body-3">
         주로 차량을 이용해서
         <br />
         어디로 방문하시나요?
@@ -51,9 +51,9 @@ export const VisitPurpose = ({ categories }: { categories?: CategoryResponse }) 
                   })
                 }
                 className={cn(
-                  'flex h-[58px] w-full items-center rounded-[15px] border border-primary px-[18px] py-[9px]',
+                  'flex h-[58px] w-full items-center rounded-[15px] border border-primary-1 px-[18px] py-[9px]',
                   {
-                    'bg-primary-lighter shadow-[0_0_5px_1px_var(--color-primary-light)]': isSelected,
+                    'bg-primary-1-lighter shadow-[0_0_5px_1px_var(--color-primary-2)]': isSelected,
                     'bg-white': !isSelected,
                   }
                 )}
@@ -71,7 +71,7 @@ export const VisitPurpose = ({ categories }: { categories?: CategoryResponse }) 
                       />
                     </div>
                   </div>
-                  <span className="text-body-5 text-gray-1">{purpose.label}</span>
+                  <span className="text-body-5">{purpose.label}</span>
                 </div>
               </button>
             )
