@@ -1,5 +1,5 @@
 import React from 'react'
-import { Clock, MapPin, Phone } from 'lucide-react'
+import { Clock, MapPin, Phone, type LucideIcon } from 'lucide-react'
 import type { ParkingLotDetailResponse } from '@data/user-api-axios/api'
 
 type ParkingLotHeaderInfo = Omit<ParkingLotDetailResponse, 'feePolicy' | 'operatingTable' | 'associatedStores'>
@@ -24,24 +24,19 @@ function getParkingCapacityText(info: ParkingLotHeaderInfo): string {
   return '주차 정보 없음'
 }
 
-function getCongestionColors(congestion?: string): string {
-  switch (congestion) {
-    case '여유로움':
-      return 'bg-blue-50 text-blue-600'
-    case '보통':
-      return 'bg-yellow-50 text-yellow-600'
-    case '혼잡함':
-      return 'bg-red-50 text-red-600'
-    default:
-      return 'bg-gray-1 text-gray-600'
-  }
-}
+const CONGESTION_INFO = {
+  여유: { label: '여유로움', className: 'bg-blue-50 text-blue-600' },
+  보통: { label: '보통', className: 'bg-yellow-50 text-yellow-600' },
+  혼잡: { label: '혼잡함', className: 'bg-red-50 text-red-600' },
+} as const
 
 export const ParkingLotHeader: React.FC<ParkingLotHeaderProps> = React.memo(({ info }) => {
+  const congestion = info.congestion ? CONGESTION_INFO[info.congestion as keyof typeof CONGESTION_INFO] : undefined
+
   return (
     <div>
       <div className="flex items-start gap-2">
-        <div className="flex h-[85px] w-[85px] flex-shrink-0">
+        <div className="h-[85px] w-[85px] flex-shrink-0">
           <img src="/icons/parking-icon.png" alt="주차장" className="rounded-full" />
         </div>
 
@@ -49,11 +44,11 @@ export const ParkingLotHeader: React.FC<ParkingLotHeaderProps> = React.memo(({ i
           <div className="text-caption-3 text-gray-2">{getParkingCapacityText(info)}</div>
           <div className="flex items-start gap-1">
             <h2 className="text-body-4 text-gray-1">{info.name}</h2>
-            {info.congestion && (
+            {congestion && (
               <span
-                className={`rounded-full px-2 py-0.5 text-[10px] font-semibold whitespace-nowrap ${getCongestionColors(info.congestion)}`}
+                className={`rounded-full px-2 py-0.5 text-[10px] font-semibold whitespace-nowrap ${congestion.className}`}
               >
-                {info.congestion}
+                {congestion.label}
               </span>
             )}
           </div>
