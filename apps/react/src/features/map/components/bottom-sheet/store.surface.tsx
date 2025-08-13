@@ -42,7 +42,7 @@ export const StoreContent: React.FC = () => {
     if (isFetching && !isFetchingNextPage) {
       return (
         <div className="flex flex-1 items-center justify-center text-center text-gray-500">
-          <p className="text-sm">가게 목록을 불러오는 중...</p>
+          <p className="text-caption-2">가게 목록을 불러오는 중...</p>
         </div>
       )
     }
@@ -52,7 +52,7 @@ export const StoreContent: React.FC = () => {
         <div className="flex flex-1 items-center justify-center">
           <div className="text-center text-gray-500">
             <div className="mb-2 text-2xl">❌</div>
-            <p className="text-sm">에러가 발생했습니다.</p>
+            <p className="text-caption-2">에러가 발생했습니다.</p>
           </div>
         </div>
       )

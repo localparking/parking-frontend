@@ -37,7 +37,7 @@ export const StoreList: React.FC<StoreListProps> = ({ pages, hasNextPage, isFetc
     return (
       <div className="flex flex-1 items-center justify-center p-8">
         <div className="text-center text-gray-500">
-          <p className="text-sm">주변에 가게가 없습니다.</p>
+          <p className="text-caption-2">주변에 가게가 없습니다.</p>
         </div>
       </div>
     )
@@ -78,7 +78,7 @@ export const StoreList: React.FC<StoreListProps> = ({ pages, hasNextPage, isFetc
 
                   {/* 상호명과 영업상태 */}
                   <div className="flex items-center justify-start gap-[5px]">
-                    <h3 className="text-sm font-semibold text-gray-900">{store.name}</h3>
+                    <h3 className="text-body-4 text-gray-1">{store.name}</h3>
                     {/* 영업 상태 - isOpen으로 판단 */}
                     <span
                       className={cn('rounded-full px-2 py-1 text-[10px] font-semibold', {
@@ -91,7 +91,7 @@ export const StoreList: React.FC<StoreListProps> = ({ pages, hasNextPage, isFetc
                   </div>
 
                   {/* 주차 혜택 정보 */}
-                  <p className="text-xs text-gray-500">
+                  <p className="text-caption-2 text-gray-2">
                     {store.discountMin && store.purchaseAmount
                       ? `${store.purchaseAmount}원 이상 구매시 ${store.discountMin}분 무료 주차`
                       : '주차 혜택 정보 없음'}
@@ -106,7 +106,7 @@ export const StoreList: React.FC<StoreListProps> = ({ pages, hasNextPage, isFetc
       {/* 로딩 인디케이터 */}
       {isFetchingNextPage && (
         <div className="p-4 text-center">
-          <div className="text-sm text-gray-500">더 불러오는 중...</div>
+          <div className="text-caption-2 text-gray-2">더 불러오는 중...</div>
         </div>
       )}
     </div>

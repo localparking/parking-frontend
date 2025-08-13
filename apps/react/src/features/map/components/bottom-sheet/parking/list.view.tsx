@@ -39,7 +39,7 @@ export const ParkingLotList: React.FC<ParkingLotListProps> = ({
     return (
       <div className="flex flex-1 items-center justify-center p-8">
         <div className="text-center text-gray-500">
-          <p className="text-sm">주변에 주차장이 없습니다.</p>
+          <p className="text-caption-2">주변에 주차장이 없습니다.</p>
         </div>
       </div>
     )
@@ -66,7 +66,7 @@ export const ParkingLotList: React.FC<ParkingLotListProps> = ({
                       : `주차 ${parkingLot.capacity}면`}
                   </div>
                   <div className="flex items-center gap-1">
-                    <h3 className="text-sm font-semibold text-gray-900">{parkingLot.name}</h3>
+                    <h3 className="text-body-4 text-gray-1">{parkingLot.name}</h3>
                     <span
                       className={cn('rounded-full px-2 py-0.5 text-[10px] font-semibold', {
                         'bg-blue-50 text-blue-600': parkingLot.isOpen,
@@ -83,22 +83,6 @@ export const ParkingLotList: React.FC<ParkingLotListProps> = ({
                   <span className="text-caption-2 text-gray-1">{formatPrice(parkingLot.hourlyFee || 0)}</span>
                 </div>
               </div>
-
-              {/* 태그들 */}
-              {(parkingLot.hourlyFee === 0 || parkingLot.isRealtime) && (
-                <div className="mt-2 flex flex-wrap gap-1">
-                  {parkingLot.hourlyFee === 0 && (
-                    <span className="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800">
-                      무료
-                    </span>
-                  )}
-                  {parkingLot.isRealtime && (
-                    <span className="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">
-                      실시간
-                    </span>
-                  )}
-                </div>
-              )}
             </div>
           </li>
         ))}
@@ -106,7 +90,7 @@ export const ParkingLotList: React.FC<ParkingLotListProps> = ({
 
       {isFetchingNextPage && (
         <div className="p-4 text-center">
-          <div className="text-sm text-gray-500">더 불러오는 중...</div>
+          <div className="text-caption-2 text-gray-2">더 불러오는 중...</div>
         </div>
       )}
     </div>
