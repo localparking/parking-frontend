@@ -19,7 +19,7 @@ export const FilterButtonGroup = <T extends string | number | boolean | undefine
   selectedValue,
   onSelect,
   multiSelect = false,
-  className = 'flex flex-wrap gap-2',
+  className = 'flex flex-wrap gap-2 py-4 text-caption-1',
 }: FilterButtonGroupProps<T>) => {
   return (
     <div className={className}>
@@ -38,9 +38,9 @@ export const FilterButtonGroup = <T extends string | number | boolean | undefine
           <button
             key={String(value)}
             onClick={() => onSelect(value)}
-            className={cn('rounded-full border px-4 py-1 text-xs font-semibold transition-colors', {
-              'border-gray-900 bg-gray-1 text-white': isSelected,
-              'border-gray-300 bg-white text-gray-900': !isSelected,
+            className={cn('flex h-[35px] items-center rounded-[50px] border px-3 transition-colors', {
+              'border-gray-1 bg-gray-1 text-white': isSelected,
+              'border-gray-3 bg-white text-gray-1': !isSelected,
             })}
           >
             {label}

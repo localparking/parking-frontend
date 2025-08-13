@@ -15,10 +15,7 @@ export const StoreTopFilter: React.FC<StoreTopFilterProps> = ({ onFilterIconClic
   const { categoryTree, parentIdToPrefixMap } = useCategoryContext()
   const { storeSearchParams, setStoreSearchParams } = useMapContext()
 
-  const parentCategories = useMemo(
-    () => categoryTree.filter((category) => category.parentId === null || category.parentId === undefined),
-    [categoryTree]
-  )
+  const parentCategories = categoryTree
 
   return (
     <div className="px-6 py-3">

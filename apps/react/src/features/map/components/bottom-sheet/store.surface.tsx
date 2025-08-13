@@ -71,8 +71,8 @@ export const StoreContent: React.FC = () => {
   return (
     <div className="flex h-full flex-col rounded-t-[40px] bg-white">
       {isFilterMode ? (
-        <div className="flex flex-1 flex-col gap-[25px] px-4">
-          <h3 className="text-center text-body-5">내 주변 조건 설정</h3>
+        <div className="flex flex-1 flex-col gap-[12px] px-4">
+          <h3 className="text-center text-body-4">내 주변 조건 설정</h3>
           <StoreFilter onClose={() => setIsFilterMode(false)} />
         </div>
       ) : (

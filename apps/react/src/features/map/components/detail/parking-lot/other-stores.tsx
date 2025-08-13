@@ -1,17 +1,19 @@
 import React from 'react'
-import type { AssociatedStoreDto } from '@data/user-api-axios/api'
 import { cn } from '@ui/common/lib/utils'
+import type { ParkingLotDetailResponse } from '@data/user-api-axios/api'
 
-interface OtherStoresProps {
-  stores: AssociatedStoreDto[]
+interface AssociatedStoresProps {
+  stores: NonNullable<ParkingLotDetailResponse['associatedStores']>
 }
 
-const OtherStoreCard: React.FC<{ store: AssociatedStoreDto }> = React.memo(({ store }) => {
+type AssociatedStore = NonNullable<ParkingLotDetailResponse['associatedStores']>[number]
+
+const OtherStoreCard: React.FC<{ store: AssociatedStore }> = React.memo(({ store }) => {
   return (
     <div className="flex h-[74px] w-[102px] flex-col justify-center gap-0.5 rounded-[15px] border border-gray-3 bg-white px-3 py-2">
-      <div className="text-[6px] text-gray-2">{store.categories?.[0]?.categoryName || '카테고리'}</div>
+      <div className="text-[6px] text-gray-2">{store.categories?.[0]?.categoryName ?? '카테고리'}</div>
       <div className="flex items-start justify-between gap-1">
-        <div className="text-[8px] text-gray-1">{store.storeName || '상호명'}</div>
+        <div className="text-[8px] text-gray-1">{store.storeName ?? '상호명'}</div>
         <span
           className={cn(
             'rounded-full px-1 py-0.5 text-[6px] font-semibold whitespace-nowrap',
@@ -27,15 +29,15 @@ const OtherStoreCard: React.FC<{ store: AssociatedStoreDto }> = React.memo(({ st
 
 OtherStoreCard.displayName = 'OtherStoreCard'
 
-export const OtherStores: React.FC<OtherStoresProps> = React.memo(({ stores }) => {
+export const OtherStores: React.FC<AssociatedStoresProps> = React.memo(({ stores }) => {
   if (stores.length === 0) return null
 
   return (
     <div className="space-y-2">
       <h3 className="text-body-5 text-gray-1">같은 주차장 내 다른 가게</h3>
       <div className="flex gap-2 overflow-x-auto pb-2">
-        {stores.map((store) => (
-          <OtherStoreCard key={store.storeId ?? `${store.storeName}`} store={store} />
+        {stores.map((store, index) => (
+          <OtherStoreCard key={store.storeId ?? index} store={store} />
         ))}
       </div>
     </div>

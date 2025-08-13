@@ -58,36 +58,29 @@ export const ParkingLotList: React.FC<ParkingLotListProps> = ({
               className="cursor-pointer rounded-lg border border-white bg-white p-3"
               onClick={() => navigateToParkingLotDetail(parkingLot.parkingCode)}
             >
-              <div className="text-[10px] text-gray-500">
-                {parkingLot.curCapacity
-                  ? `주차 ${parkingLot.curCapacity}면 / ${parkingLot.capacity}면`
-                  : `주차 ${parkingLot.capacity}면`}
-              </div>
-
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1">
-                  <h3 className="text-sm font-semibold text-gray-900">{parkingLot.name}</h3>
-                  <span
-                    className={cn('rounded-full px-2 py-0.5 text-[10px] font-semibold', {
-                      'bg-blue-50 text-blue-600': parkingLot.isOpen,
-                      'bg-red-50 text-red-600': !parkingLot.isOpen,
-                    })}
-                  >
-                    {parkingLot.isOpen ? '영업중' : '영업종료'}
-                  </span>
+                <div className="flex flex-col gap-1">
+                  <div className="text-[10px] text-gray-500">
+                    {parkingLot.curCapacity
+                      ? `주차 ${parkingLot.curCapacity}면 / ${parkingLot.capacity}면`
+                      : `주차 ${parkingLot.capacity}면`}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <h3 className="text-sm font-semibold text-gray-900">{parkingLot.name}</h3>
+                    <span
+                      className={cn('rounded-full px-2 py-0.5 text-[10px] font-semibold', {
+                        'bg-blue-50 text-blue-600': parkingLot.isOpen,
+                        'bg-red-50 text-red-600': !parkingLot.isOpen,
+                      })}
+                    >
+                      {parkingLot.isOpen ? '영업중' : '영업종료'}
+                    </span>
+                  </div>
                 </div>
 
-                <div className="text-center">
-                  <div className="text-[10px] text-gray-500">1시간 요금</div>
-                  <div className="rounded-full bg-green-50 px-2 py-0.5 text-[10px] font-semibold">
-                    {parkingLot.hourlyFee && parkingLot.hourlyFee > 0 ? (
-                      <span className="text-[10px] font-semibold text-green-600">
-                        {formatPrice(parkingLot.hourlyFee)}
-                      </span>
-                    ) : (
-                      <span className="text-[10px] font-semibold text-green-600">무료</span>
-                    )}
-                  </div>
+                <div className="flex flex-col items-center gap-0.5 rounded-[5px] bg-gray-4 px-1.5 py-1">
+                  <span className="text-caption-3 text-gray-2">1시간당 요금</span>
+                  <span className="text-caption-2 text-gray-1">{formatPrice(parkingLot.hourlyFee || 0)}</span>
                 </div>
               </div>
 

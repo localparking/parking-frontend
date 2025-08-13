@@ -5,7 +5,7 @@ import { useNavigation } from '../../hooks/use-navigation'
 import { ParkingLotHeader } from './parking-lot/parking-lot-header'
 import { ParkingFeeInfo } from './parking-lot/parking-fee-info'
 import { OperatingHours } from './parking-lot/operating-hours'
-import { AssociatedStores } from './parking-lot/associated-stores'
+import { OtherStores } from './parking-lot/other-stores'
 
 interface ParkingLotDetailProps {
   parkingLot: ParkingLotDetailResponse
@@ -22,7 +22,7 @@ export const ParkingLotDetail: React.FC<ParkingLotDetailProps> = ({ parkingLot }
 
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-t-[40px] bg-white px-8">
-      <div className="flex-1 space-y-4 overflow-y-auto px-4 pb-8">
+      <div className="flex-1 space-y-6 overflow-y-auto px-4 pb-8">
         <div className="absolute top-8 left-10">
           <button onClick={navigateToMapList}>
             <ArrowLeft size={18} />
@@ -39,7 +39,7 @@ export const ParkingLotDetail: React.FC<ParkingLotDetailProps> = ({ parkingLot }
         {hasOperatingTable && <OperatingHours operatingTable={operatingTable} />}
 
         {/* 4. 연관 상점 */}
-        {hasAssociatedStores && <AssociatedStores stores={associatedStores} />}
+        {hasAssociatedStores && <OtherStores stores={associatedStores} />}
       </div>
     </div>
   )

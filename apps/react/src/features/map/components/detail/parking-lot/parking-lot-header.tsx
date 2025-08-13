@@ -1,6 +1,5 @@
 import React from 'react'
-import { Phone } from 'lucide-react'
-import { CongestionBadge } from './congestion-badge'
+import { Clock, MapPin, Phone } from 'lucide-react'
 import type { ParkingLotDetailResponse } from '@data/user-api-axios/api'
 
 type ParkingLotHeaderInfo = Omit<ParkingLotDetailResponse, 'feePolicy' | 'operatingTable' | 'associatedStores'>
@@ -9,36 +8,76 @@ interface ParkingLotHeaderProps {
   info: ParkingLotHeaderInfo
 }
 
+function getParkingCapacityText(info: ParkingLotHeaderInfo): string {
+  const hasCapacity = typeof info.capacity === 'number'
+  const hasCurrent = typeof info.curCapacity === 'number'
+
+  if (hasCapacity && hasCurrent) {
+    return `주차 ${info.curCapacity}면 / 총 ${info.capacity}면`
+  }
+  if (hasCapacity) {
+    return `총 ${info.capacity}면`
+  }
+  if (hasCurrent) {
+    return `주차 ${info.curCapacity}면`
+  }
+  return '주차 정보 없음'
+}
+
+function getCongestionColors(congestion?: string): string {
+  switch (congestion) {
+    case '여유로움':
+      return 'bg-blue-50 text-blue-600'
+    case '보통':
+      return 'bg-yellow-50 text-yellow-600'
+    case '혼잡함':
+      return 'bg-red-50 text-red-600'
+    default:
+      return 'bg-gray-1 text-gray-600'
+  }
+}
+
 export const ParkingLotHeader: React.FC<ParkingLotHeaderProps> = React.memo(({ info }) => {
   return (
     <div>
-      <div className="flex items-start gap-6">
-        <div className="flex h-[82px] w-[82px] flex-shrink-0 items-center justify-center">
-          <img src="/icons/parking-icon.png" alt="주차장" className="h-full w-full rounded-lg" />
+      <div className="flex items-start gap-2">
+        <div className="flex h-[85px] w-[85px] flex-shrink-0">
+          <img src="/icons/parking-icon.png" alt="주차장" className="rounded-full" />
         </div>
 
-        <div className="flex flex-col">
-          <div className="mb-1 text-xs text-gray-500">
-            {info.capacity && info.curCapacity ? `주차 ${info.curCapacity}면 / ${info.capacity}면` : '주차 정보 없음'}
-          </div>
-          <div className="flex items-center gap-1.5">
-            <h2 className="text-sm font-semibold text-gray-900">{info.name}</h2>
-            <CongestionBadge congestion={info.congestion} />
-          </div>
-          <div className="my-1 text-xs font-semibold text-gray-900">
-            {info.isOpen ? '영업중' : '영업종료'} {info.todayClosingTime ? `${info.todayClosingTime}까지` : ''}
+        <div className="flex flex-col gap-1">
+          <div className="text-caption-3 text-gray-2">{getParkingCapacityText(info)}</div>
+          <div className="flex items-start gap-1">
+            <h2 className="text-body-4 text-gray-1">{info.name}</h2>
+            {info.congestion && (
+              <span
+                className={`rounded-full px-2 py-0.5 text-[10px] font-semibold whitespace-nowrap ${getCongestionColors(info.congestion)}`}
+              >
+                {info.congestion}
+              </span>
+            )}
           </div>
           {info.tel && (
-            <div className="flex w-fit items-center gap-2.5 rounded-full bg-gray-50 px-4 py-[5px]">
-              <div className="rounded-full p-1">
-                <Phone size={12} />
-              </div>
-              <span className="text-xs font-semibold text-gray-900">{info.tel}</span>
+            <div className="flex w-fit gap-2">
+              <Phone size={12} className="flex-shrink-0" />
+              <span className="text-caption-3 text-gray-2">{info.tel}</span>
+            </div>
+          )}
+          {info.todayClosingTime && (
+            <div className="flex w-fit gap-2">
+              <Clock size={12} className="flex-shrink-0" />
+              <span className="text-caption-3 text-gray-2">{info.todayClosingTime}까지 영업</span>
+            </div>
+          )}
+
+          {info.address && (
+            <div className="flex w-fit gap-2">
+              <MapPin size={12} className="flex-shrink-0" />
+              <div className="text-caption-3 text-gray-2">{info.address}</div>
             </div>
           )}
         </div>
       </div>
-      <div className="mt-2.5 text-xs text-gray-500">{info.address || '주소 정보 없음'}</div>
     </div>
   )
 })
