@@ -1,11 +1,12 @@
 import React from 'react'
-import { useParkingLotFilter } from '../../../hooks/use-parking-lot-filter'
+import { useParkingLotFilter } from '@/features/map'
 import { FilterButtonGroup } from '../ui/filter-button'
 import { PriceRangeSlider } from '../ui/price-range-slider'
 import { DatePicker } from '@ui/common/components/date-picker'
 import { TimePicker } from '@ui/common/components/time-picker'
-import { Congestion, DayOfWeek } from '../../../context/map-context'
+import { Congestion } from '../../../context/map-context'
 import { cn } from '@ui/common/lib/utils'
+import { formatTime } from '@/shared/utils/format'
 
 const FREE_STATUS_OPTIONS = [
   { label: '무료', value: true as boolean },
@@ -55,10 +56,10 @@ export const ParkingLotFilter: React.FC<{ onClose: () => void }> = ({ onClose })
             {/* 실시간 버튼 */}
             <button
               onClick={() => updateFilter({ isRealtime: !filterState.isRealtime })}
-              className={cn('flex h-[35px] items-center rounded-[50px] border px-3 transition-colors', {
-                'border-gray-1 bg-gray-1 text-white': filterState.isRealtime,
-                'border-gray-3 bg-white text-gray-1': !filterState.isRealtime,
-              })}
+              className={cn(
+                'flex h-[35px] items-center rounded-[50px] border px-3 transition-colors',
+                filterState.isRealtime ? 'border-gray-1 bg-gray-1 text-white' : 'border-gray-3 bg-white text-gray-1'
+              )}
             >
               실시간
             </button>
@@ -119,8 +120,7 @@ export const ParkingLotFilter: React.FC<{ onClose: () => void }> = ({ onClose })
                   className="w-full"
                 />
                 <div className="text-xs text-gray-600">
-                  선택된 시간: {new Date().toLocaleDateString('ko-KR')} {filterState.checkTime?.substring(0, 2)}:
-                  {filterState.checkTime?.substring(2, 4)}
+                  선택된 시간: {new Date().toLocaleDateString('ko-KR')} {formatTime(filterState.checkTime)}
                 </div>
               </div>
             )}

@@ -2,7 +2,6 @@ import React, { useMemo } from 'react'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { useMapContext } from '../../context/map-context'
 import storeService from '@/shared/services/store.service'
-
 import { StoreList } from './store/list.view'
 import { StoreFilter } from './store/filter.panel'
 import { StoreTopFilter } from './store/top-filter.view'
@@ -72,7 +71,6 @@ export const StoreContent: React.FC = () => {
     <div className="flex h-full flex-col rounded-t-[40px] bg-white">
       {isFilterMode ? (
         <div className="flex flex-1 flex-col gap-[12px] px-4">
-          <h3 className="text-center text-body-4">내 주변 조건 설정</h3>
           <StoreFilter onClose={() => setIsFilterMode(false)} />
         </div>
       ) : (

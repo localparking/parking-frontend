@@ -20,14 +20,15 @@ export const ParkingLotContent: React.FC = () => {
   const { data, error, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage, refetch } = useInfiniteQuery({
     queryKey,
     initialPageParam: 0,
-    queryFn: ({ pageParam }) =>
-      parkingLotService.postParkingLotMapSearch({
+    queryFn: ({ pageParam }) => {
+      return parkingLotService.postParkingLotMapSearch({
         ...parkingLotSearchParams,
         page: pageParam,
         lat: queryCenter!.lat,
         lon: queryCenter!.lng,
         distanceLevel: distanceLevel!,
-      }),
+      })
+    },
     getNextPageParam: (lastPage, allPages) => {
       const currentPage = lastPage.data?.data?.paging?.page || 0
       const totalPages = lastPage.data?.data?.paging?.totalPages || 0
@@ -36,22 +37,33 @@ export const ParkingLotContent: React.FC = () => {
     enabled: isMapReady && !!queryCenter && distanceLevel !== null,
   })
 
-  if (isFetching && !isFetchingNextPage) {
-    return (
-      <div className="flex flex-1 justify-center text-center text-gray-500">
-        <p className="text-caption-2">주차장 목록을 불러오는 중...</p>
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className="flex flex-1 items-center justify-center">
-        <div className="text-center text-gray-500">
-          <div className="mb-2 text-2xl">❌</div>
-          <p className="text-caption-2">에러가 발생했습니다.</p>
+  const renderContent = () => {
+    if (isFetching && !isFetchingNextPage) {
+      return (
+        <div className="flex flex-1 items-center justify-center text-center text-gray-500">
+          <p className="text-caption-2">주차장 목록을 불러오는 중...</p>
         </div>
-      </div>
+      )
+    }
+
+    if (error) {
+      return (
+        <div className="flex flex-1 items-center justify-center">
+          <div className="text-center text-gray-500">
+            <div className="mb-2 text-2xl">❌</div>
+            <p className="text-caption-2">에러가 발생했습니다.</p>
+          </div>
+        </div>
+      )
+    }
+
+    return (
+      <ParkingLotList
+        pages={data?.pages.map((p) => p.data!.data!)}
+        hasNextPage={!!hasNextPage}
+        isFetchingNextPage={isFetchingNextPage}
+        onFetchNextPage={fetchNextPage}
+      />
     )
   }
 
@@ -77,14 +89,7 @@ export const ParkingLotContent: React.FC = () => {
       ) : (
         <>
           <ParkingLotTopFilter onFilterIconClick={() => setIsFilterMode(true)} onRefresh={refetch} />
-          <div className="flex-1 overflow-y-auto">
-            <ParkingLotList
-              pages={data?.pages.map((p) => p.data!.data!)}
-              hasNextPage={!!hasNextPage}
-              isFetchingNextPage={isFetchingNextPage}
-              onFetchNextPage={fetchNextPage}
-            />
-          </div>
+          <div className="flex-1 overflow-y-auto">{renderContent()}</div>
         </>
       )}
     </div>

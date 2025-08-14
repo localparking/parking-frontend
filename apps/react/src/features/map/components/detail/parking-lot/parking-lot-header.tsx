@@ -1,5 +1,6 @@
 import React from 'react'
-import { Clock, MapPin, Phone, type LucideIcon } from 'lucide-react'
+import { cn } from '@ui/common/lib/utils'
+import { Clock, MapPin, Phone } from 'lucide-react'
 import type { ParkingLotDetailResponse } from '@data/user-api-axios/api'
 
 type ParkingLotHeaderInfo = Omit<ParkingLotDetailResponse, 'feePolicy' | 'operatingTable' | 'associatedStores'>
@@ -46,7 +47,10 @@ export const ParkingLotHeader: React.FC<ParkingLotHeaderProps> = React.memo(({ i
             <h2 className="text-body-4 text-gray-1">{info.name}</h2>
             {congestion && (
               <span
-                className={`rounded-full px-2 py-0.5 text-[10px] font-semibold whitespace-nowrap ${congestion.className}`}
+                className={cn(
+                  'rounded-full px-2 py-0.5 text-[10px] font-semibold whitespace-nowrap',
+                  congestion.className
+                )}
               >
                 {congestion.label}
               </span>

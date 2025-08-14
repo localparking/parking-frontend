@@ -1,12 +1,13 @@
 import React from 'react'
 import { useCategoryContext } from '@/shared/context/category-context'
 import { DayOfWeek } from '../../../context/map-context'
-import { useStoreFilter } from '../../../hooks/use-store-filter'
+import { useStoreFilter } from '@/features/map'
 import { FilterButtonGroup } from '../ui/filter-button'
 import { DatePicker } from '@ui/common/components/date-picker'
 import { TimePicker } from '@ui/common/components/time-picker'
 import { cn } from '@ui/common/lib/utils'
-import { getCategoryIconPath } from '@/shared/utils/category'
+import { getCategoryIconPath, findParentCategoryByIds } from '@/shared/utils/category'
+import { formatTime } from '@/shared/utils/format'
 
 const PARKING_TIME_OPTIONS = [
   { label: '전체', value: undefined },
@@ -42,24 +43,7 @@ export const StoreFilter: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
   const parentCategories = categoryTree
 
-  const findParentCategory = (categoryIds: number[] | undefined) => {
-    if (!categoryIds || categoryIds.length === 0) return null
-
-    const firstCategoryId = categoryIds[0]
-    const directParent = categoryTree.find((cat) => cat.categoryId === firstCategoryId)
-    if (directParent && (directParent.parentId === null || directParent.parentId === undefined)) {
-      return directParent
-    }
-
-    for (const parent of categoryTree) {
-      if (parent.children.some((child) => child.categoryId === firstCategoryId)) {
-        return parent
-      }
-    }
-    return null
-  }
-
-  const selectedParentCategory = findParentCategory(filterState.categoryIds)
+  const selectedParentCategory = findParentCategoryByIds(categoryTree, filterState.categoryIds)
   const childCategories = selectedParentCategory?.children || []
 
   const onApply = () => {
@@ -191,8 +175,7 @@ export const StoreFilter: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                   className="w-full"
                 />
                 <div className="text-caption-2 text-gray-600">
-                  선택된 시간: {new Date().toLocaleDateString('ko-KR')} {filterState.checkTime?.substring(0, 2)}:
-                  {filterState.checkTime?.substring(2, 4)}
+                  선택된 시간: {new Date().toLocaleDateString('ko-KR')} {formatTime(filterState.checkTime)}
                 </div>
               </div>
             )}

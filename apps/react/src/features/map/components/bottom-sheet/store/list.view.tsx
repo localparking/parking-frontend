@@ -1,8 +1,9 @@
-import React, { useRef, useCallback, useMemo } from 'react'
-import { PageResponseStoreListResponse, StoreListResponse } from '@data/user-api-axios/api'
+import React, { useRef, useMemo, useEffect } from 'react'
+import { PageResponseStoreListResponse } from '@data/user-api-axios/api'
 import { useCategoryContext } from '@/shared/context/category-context'
 import { cn } from '@ui/common/lib/utils'
-import { useNavigation } from '../../../hooks/use-navigation'
+import { useNavigation } from '@/features/map'
+import { useMapContext } from '@/features/map'
 import { getStoreIconPath } from '@/shared/utils/category'
 
 interface StoreListProps {
@@ -16,22 +17,34 @@ export const StoreList: React.FC<StoreListProps> = ({ pages, hasNextPage, isFetc
   const { parentIdToPrefixMap } = useCategoryContext()
   const stores = useMemo(() => pages?.flatMap((page) => page.content || []) || [], [pages])
   const { navigateToStoreDetail } = useNavigation()
+  const { moveTo } = useMapContext().naverMap
 
-  // 무한스크롤을 위한 Intersection Observer
-  const observer = useRef<IntersectionObserver | undefined>(undefined)
-  const lastStoreElementRef = useCallback(
-    (node: HTMLLIElement | null) => {
-      if (isFetchingNextPage) return
-      if (observer.current) observer.current.disconnect()
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0]?.isIntersecting && hasNextPage) {
+  const observerTarget = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    if (!onFetchNextPage) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting && hasNextPage && !isFetchingNextPage) {
           onFetchNextPage()
         }
-      })
-      if (node) observer.current.observe(node)
-    },
-    [isFetchingNextPage, hasNextPage, onFetchNextPage]
-  )
+      },
+      { threshold: 1.0 } // 타겟이 100% 보였을 때 콜백 실행{ threshold: 1.0 }
+    )
+
+    const currentTarget = observerTarget.current
+    if (currentTarget) {
+      observer.observe(currentTarget)
+    }
+
+    // 컴포넌트가 언마운트되거나, 의존성이 변경되어 effect가 재실행되기 전에 관찰을 중단
+    return () => {
+      if (currentTarget) {
+        observer.unobserve(currentTarget)
+      }
+    }
+  }, [onFetchNextPage, hasNextPage, isFetchingNextPage])
 
   if (stores.length === 0) {
     return (
@@ -46,15 +59,14 @@ export const StoreList: React.FC<StoreListProps> = ({ pages, hasNextPage, isFetc
   return (
     <div className="flex-1 overflow-y-auto">
       <ul className="space-y-1">
-        {stores.map((store, index) => (
-          <li
-            key={store.storeId}
-            className="mx-4 my-2"
-            ref={index === stores.length - 1 ? lastStoreElementRef : undefined}
-          >
+        {stores.map((store) => (
+          <li key={store.storeId} className="mx-4 my-2">
             <div
-              className="flex cursor-pointer gap-3 rounded-lg border border-white bg-white p-3 shadow-sm transition-shadow active:shadow-md"
-              onClick={() => navigateToStoreDetail(store.storeId.toString())}
+              className="flex cursor-pointer gap-3 rounded-lg border border-white bg-white p-3"
+              onClick={() => {
+                moveTo({ lat: store.lat, lng: store.lon })
+                navigateToStoreDetail(store.storeId.toString())
+              }}
             >
               {/* 카테고리 아이콘 영역 */}
               <div className="flex-shrink-0">
@@ -103,7 +115,11 @@ export const StoreList: React.FC<StoreListProps> = ({ pages, hasNextPage, isFetc
         ))}
       </ul>
 
-      {/* 로딩 인디케이터 */}
+      <div
+        ref={observerTarget}
+        className={cn('h-1', { invisible: isFetchingNextPage || !hasNextPage })}
+        // 로딩 중이거나 더 이상 페이지가 없을 때는 높이를 0으로 만들어 보이지 않게 처리
+      />
       {isFetchingNextPage && (
         <div className="p-4 text-center">
           <div className="text-caption-2 text-gray-2">더 불러오는 중...</div>

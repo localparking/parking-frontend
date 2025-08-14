@@ -1,14 +1,6 @@
 import { createContext, useContext, useState, ReactNode } from 'react'
-import {
-  PageSearchResponseStoreListResponse,
-  ParkingLotSearchRequestSortEnum,
-  StoreListResponse,
-  StoreSearchRequestSortEnum,
-} from '@data/user-api-axios/api'
+import { ParkingLotSearchRequestSortEnum, StoreSearchRequestSortEnum } from '@data/user-api-axios/api'
 import { useNaverMap, UseNaverMapResult } from '../hooks/use-naver-map'
-import bridge from '@/shared/bridge'
-import { useBridge } from '@webview-bridge/react'
-import storeService from '@/shared/services/store.service'
 
 export enum DayOfWeek {
   MONDAY = 'MONDAY',
@@ -70,6 +62,10 @@ interface MapContextType {
   // 검색어 상태 관리
   searchKeyword: string
   setSearchKeyword: React.Dispatch<React.SetStateAction<string>>
+
+  // 필터 리셋 유틸
+  resetStoreFilters: () => void
+  resetParkingLotFilters: () => void
 }
 
 const MapContext = createContext<MapContextType | undefined>(undefined)
@@ -88,6 +84,14 @@ export function MapProvider({ children }: { children: ReactNode }) {
   })
   const [searchKeyword, setSearchKeyword] = useState<string>('')
 
+  const resetStoreFilters = () => {
+    setStoreSearchParams((prev) => ({ sort: prev.sort, page: 0 }))
+  }
+
+  const resetParkingLotFilters = () => {
+    setParkingLotSearchParams((prev) => ({ sort: prev.sort, page: 0 }))
+  }
+
   return (
     <MapContext.Provider
       value={{
@@ -104,6 +108,9 @@ export function MapProvider({ children }: { children: ReactNode }) {
 
         searchKeyword,
         setSearchKeyword,
+
+        resetStoreFilters,
+        resetParkingLotFilters,
       }}
     >
       {children}
