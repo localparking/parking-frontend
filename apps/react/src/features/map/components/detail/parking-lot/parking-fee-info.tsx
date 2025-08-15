@@ -1,36 +1,64 @@
 import React from 'react'
 import { formatPrice } from '@/shared/utils/format'
 import type { ParkingLotDetailResponse } from '@data/user-api-axios/api'
+import { CircleDollarSign } from 'lucide-react'
 
 interface ParkingFeeInfoProps {
   feePolicy: ParkingLotDetailResponse['feePolicy']
 }
 
-const FeeInfoRow: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <div className="rounded-md bg-gray-900 px-5 py-1.5 text-center">
-    <span className="text-xs leading-[20px] font-bold text-white">{children}</span>
-  </div>
-)
+const isValidFee = (value: unknown): value is number => typeof value === 'number' && value > 0
 
 export const ParkingFeeInfo: React.FC<ParkingFeeInfoProps> = React.memo(({ feePolicy }) => {
-  const items: Array<string | null> = [
-    feePolicy.baseTimeMin ? `기본 무료 회차 ${feePolicy.baseTimeMin}분` : null,
-    feePolicy.baseFee ? `기본요금 ${feePolicy.baseTimeMin || 30}분 ${formatPrice(feePolicy.baseFee)}` : null,
-    feePolicy.additionalFee
-      ? `추가요금 ${feePolicy.additionalTimeMin || 10}분당 ${formatPrice(feePolicy.additionalFee)}`
-      : null,
-    feePolicy.dayPassFee ? `1일 최대요금 ${formatPrice(feePolicy.dayPassFee)}` : null,
+  const feeDescriptors = [
+    {
+      shouldRender: isValidFee(feePolicy.baseTimeMin) && isValidFee(feePolicy.baseFee),
+      label: `기본요금 ${feePolicy.baseTimeMin}분`,
+      badgeValue: feePolicy.baseFee,
+    },
+    {
+      shouldRender: isValidFee(feePolicy.additionalTimeMin) && isValidFee(feePolicy.additionalFee),
+      label: `추가요금 ${feePolicy.additionalTimeMin}분당`,
+      badgeValue: feePolicy.additionalFee,
+    },
+    {
+      shouldRender: isValidFee(feePolicy.dayPassFee),
+      label: '1일 최대요금',
+      badgeValue: feePolicy.dayPassFee,
+    },
+    {
+      shouldRender: isValidFee(feePolicy.monthlyPassFee),
+      label: '월 정기권',
+      badgeValue: feePolicy.monthlyPassFee,
+    },
   ]
 
-  if (items.every((item) => item === null)) return null
+  const visibleFeeItems = feeDescriptors
+    .filter((item) => item.shouldRender)
+    .map((item) => ({
+      label: item.label,
+      badge: formatPrice(item.badgeValue!),
+    }))
+
+  if (visibleFeeItems.length === 0) {
+    return null
+  }
 
   return (
-    <div className="space-y-2.5">
-      <h4 className="text-xs font-semibold text-gray-900">주차 정보 상세</h4>
-      <div className="space-y-2.5">
-        {items.map((text, idx) => (text ? <FeeInfoRow key={idx}>{text}</FeeInfoRow> : null))}
-      </div>
-    </div>
+    <section className="flex flex-col gap-2">
+      <h3 className="text-body-5 text-gray-1">주차 정보 상세</h3>
+      <ul className="space-y-2">
+        {visibleFeeItems.map((item) => (
+          <li key={item.label} className="flex items-center justify-between">
+            <span className="text-caption-2 text-gray-2">{item.label}</span>
+            <span className="flex gap-1 rounded-[5px] bg-primary-3 px-2 py-1 text-caption-4 text-primary-1">
+              <CircleDollarSign size={12} className="flex-shrink-0" />
+              {item.badge}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
   )
 })
 

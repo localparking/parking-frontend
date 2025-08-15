@@ -16,8 +16,22 @@ export const formatNumber = (value?: number): string => {
   return value ? value.toLocaleString('ko-KR') : '0'
 }
 
-export const formatTime = (slot?: { begin: string; end: string }) => {
-  if (!slot || !slot.begin || !slot.end) return '정보 없음'
+export function formatTime(slot?: { begin: string; end: string }): string
+export function formatTime(time?: string): string
+export function formatTime(arg?: { begin: string; end: string } | string): string {
+  if (!arg) return '정보 없음'
+  if (typeof arg === 'string') {
+    // 단일 시간 문자열 처리: 'HHmm' 또는 'HH:mm' → 'HH:mm'
+    if (/^\d{2}:\d{2}$/.test(arg)) return arg
+    const digitsOnly = arg.replace(':', '')
+    if (/^\d{4}$/.test(digitsOnly)) {
+      return `${digitsOnly.substring(0, 2)}:${digitsOnly.substring(2, 4)}`
+    }
+    return arg
+  }
+
+  const slot = arg
+  if (!slot.begin || !slot.end) return '정보 없음'
   if ((slot.begin === '0000' && slot.end === '2400') || (slot.begin === '00:00' && slot.end === '24:00'))
     return '24시간'
 
@@ -31,4 +45,3 @@ export const formatTime = (slot?: { begin: string; end: string }) => {
 
   return `${formatTimeString(slot.begin)}~${formatTimeString(slot.end)}`
 }
-

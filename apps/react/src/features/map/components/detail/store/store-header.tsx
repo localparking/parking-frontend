@@ -1,5 +1,5 @@
 import React from 'react'
-import { Phone } from 'lucide-react'
+import { MapPin, Phone } from 'lucide-react'
 import { cn } from '@ui/common/lib/utils'
 import { getCategoryIconPath } from '@/shared/utils/category'
 import { useCategoryContext } from '@/shared/context/category-context'
@@ -17,7 +17,7 @@ export const StoreHeader: React.FC<StoreHeaderProps> = React.memo(({ info }) => 
 
   return (
     <div>
-      <div className="flex items-start gap-6">
+      <div className="flex items-start gap-3">
         <div className="flex h-[82px] w-[82px] flex-shrink-0 items-center justify-center">
           <img
             src={getCategoryIconPath(mainCategory?.categoryId || 0, parentIdToPrefixMap)}
@@ -26,31 +26,34 @@ export const StoreHeader: React.FC<StoreHeaderProps> = React.memo(({ info }) => 
           />
         </div>
 
-        <div className="flex flex-col">
-          <div className="mb-1 text-xs text-gray-500">{mainCategory?.categoryName || '카테고리'}</div>
-          <div className="flex items-start gap-1.5">
-            <h2 className="text-sm font-semibold text-gray-900">{info.name}</h2>
+        <div className="flex flex-col gap-1">
+          <div className="mb-1 text-caption-3 text-gray-2">{mainCategory?.categoryName || '카테고리'}</div>
+          <div className="flex items-start">
+            <h2 className="text-body-4 text-gray-1">{info.name}</h2>
             <span
               className={cn(
-                'rounded-full px-2 py-0.5 text-xs font-semibold whitespace-nowrap',
+                'mt-1 rounded-full px-2 py-0.5 text-[10px] font-semibold whitespace-nowrap',
                 info.isOpen ? 'bg-blue-50 text-blue-600' : 'bg-red-50 text-red-600'
               )}
             >
-              {info.isOpen ? '영업중' : '영업종료'}
+              {info.isOpen ? '영업중' : '영업종료'} {info.todayClosingTime ? `${info.todayClosingTime}까지` : ''}
             </span>
           </div>
-          <div className="my-1 text-xs font-semibold text-gray-900">
-            {info.isOpen ? '영업중' : '영업종료'} {info.todayClosingTime ? `${info.todayClosingTime}까지` : ''}
-          </div>
           {info.tel && (
-            <div className="flex w-fit items-center gap-2.5 rounded-full bg-gray-50 px-4 py-[5px]">
+            <div className="flex w-fit gap-2">
               <Phone size={12} className="flex-shrink-0" />
-              <span className="text-xs font-semibold text-gray-900">{info.tel}</span>
+              <span className="text-caption-3 text-gray-2">{info.tel}</span>
+            </div>
+          )}
+
+          {info.address && (
+            <div className="flex w-fit gap-2">
+              <MapPin size={12} className="flex-shrink-0" />
+              <div className="text-caption-3 text-gray-2">{info.address}</div>
             </div>
           )}
         </div>
       </div>
-      <div className="mt-2.5 text-xs text-gray-500">{info.address || '주소 정보 없음'}</div>
     </div>
   )
 })

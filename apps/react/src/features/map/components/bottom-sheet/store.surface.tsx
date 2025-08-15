@@ -2,10 +2,9 @@ import React, { useMemo } from 'react'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { useMapContext } from '../../context/map-context'
 import storeService from '@/shared/services/store.service'
-
-import { StoreList } from './store-list'
-import { StoreFilter } from './store-filter'
-import { StoreTopFilter } from './store-list-top'
+import { StoreList } from './store/list.view'
+import { StoreFilter } from './store/filter.panel'
+import { StoreTopFilter } from './store/top-filter.view'
 
 export const StoreContent: React.FC = () => {
   const { storeSearchParams } = useMapContext()
@@ -42,7 +41,7 @@ export const StoreContent: React.FC = () => {
     if (isFetching && !isFetchingNextPage) {
       return (
         <div className="flex flex-1 items-center justify-center text-center text-gray-500">
-          <p className="text-sm">가게 목록을 불러오는 중...</p>
+          <p className="text-caption-2">가게 목록을 불러오는 중...</p>
         </div>
       )
     }
@@ -52,7 +51,7 @@ export const StoreContent: React.FC = () => {
         <div className="flex flex-1 items-center justify-center">
           <div className="text-center text-gray-500">
             <div className="mb-2 text-2xl">❌</div>
-            <p className="text-sm">에러가 발생했습니다.</p>
+            <p className="text-caption-2">에러가 발생했습니다.</p>
           </div>
         </div>
       )
@@ -71,8 +70,7 @@ export const StoreContent: React.FC = () => {
   return (
     <div className="flex h-full flex-col rounded-t-[40px] bg-white">
       {isFilterMode ? (
-        <div className="flex flex-1 flex-col gap-[25px] px-4">
-          <h3 className="text-center text-body-5">내 주변 조건 설정</h3>
+        <div className="flex flex-1 flex-col gap-[12px] px-4">
           <StoreFilter onClose={() => setIsFilterMode(false)} />
         </div>
       ) : (

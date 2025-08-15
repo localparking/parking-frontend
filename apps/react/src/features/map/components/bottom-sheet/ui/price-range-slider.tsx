@@ -33,15 +33,15 @@ export const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
 
   return (
     <div className={className}>
-      <h4 className="mb-2 text-xs font-bold text-gray-900">{label}</h4>
+      <h4 className="text-body-5 text-gray-1">{label}</h4>
       <div className="space-y-6">
-        <div className="relative px-8 py-4">
+        <div className="relative py-4">
           <div className="relative">
             {/* 배경 트랙 */}
-            <div className="absolute left-0 h-[10px] w-full rounded-[10px] bg-gray-200" />
+            <div className="absolute left-0 h-[11px] w-full rounded-[10px] bg-primary-2" />
             {/* 진행 바 */}
             <div
-              className="absolute left-0.5 h-[6px] rounded-[10px] bg-gray-400"
+              className="absolute left-1 h-[6px] rounded-[10px] bg-primary-1"
               style={{
                 width: `calc(${percentage}% - 5px)`,
                 top: '2px',
@@ -59,14 +59,14 @@ export const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
             />
             {/* 따라다니는 툴팁 */}
             <div className="absolute -bottom-8 -translate-x-1/2 transform" style={{ left: `${percentage}%` }}>
-              <div className="rounded bg-gray-500 px-2 py-1 text-xs whitespace-nowrap text-white shadow-md">
+              <div className="rounded bg-primary-2 px-2 py-1 text-xs whitespace-nowrap text-primary-1 shadow-md">
                 {formatValue(value)}
               </div>
             </div>
           </div>
         </div>
         {/* 하단 라벨 */}
-        <div className="flex justify-between text-xs text-gray-500">
+        <div className="flex justify-between pb-4 text-caption-2 text-gray-2">
           <span>{formatValue(min)}</span>
           <span>{formatValue(max)}</span>
         </div>
