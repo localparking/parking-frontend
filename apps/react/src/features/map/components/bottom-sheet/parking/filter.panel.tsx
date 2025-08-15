@@ -4,7 +4,7 @@ import { FilterButtonGroup } from '../ui/filter-button'
 import { PriceRangeSlider } from '../ui/price-range-slider'
 import { DatePicker } from '@ui/common/components/date-picker'
 import { TimePicker } from '@ui/common/components/time-picker'
-import { Congestion } from '../../../context/map-context'
+import { Congestion } from '@/features/map/context/map-context'
 import { cn } from '@ui/common/lib/utils'
 import { formatTime } from '@/shared/utils/format'
 

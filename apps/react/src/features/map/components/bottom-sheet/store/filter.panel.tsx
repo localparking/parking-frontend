@@ -1,6 +1,6 @@
 import React from 'react'
 import { useCategoryContext } from '@/shared/context/category-context'
-import { DayOfWeek } from '../../../context/map-context'
+import { DayOfWeek } from '@/features/map/context/map-context'
 import { useStoreFilter } from '@/features/map'
 import { FilterButtonGroup } from '../ui/filter-button'
 import { DatePicker } from '@ui/common/components/date-picker'
