@@ -43,8 +43,8 @@ export const StoreTopFilter: React.FC<StoreTopFilterProps> = ({ onFilterIconClic
   )
 
   return (
-    <div className="px-6 py-3">
-      <div className="mb-4 flex items-center justify-start gap-2">
+    <div className="flex flex-col gap-6">
+      <div className="flex items-center gap-2">
         <button onClick={onFilterIconClick} className="flex text-gray-1" aria-label="필터 열기" type="button">
           <SlidersHorizontal size={16} />
         </button>
@@ -60,17 +60,19 @@ export const StoreTopFilter: React.FC<StoreTopFilterProps> = ({ onFilterIconClic
                 aria-pressed={selected}
                 data-selected={selected ? '' : undefined}
                 className={cn(
-                  'flex h-[31px] flex-shrink-0 items-center justify-center gap-x-1 rounded-[50px] border px-2 py-[6px] transition-colors focus:ring-2 focus:ring-gray-300 focus:outline-none',
-                  selected ? 'border-gray-1 bg-gray-1 text-white' : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                  'flex items-center justify-center gap-x-1 rounded-[50px] border px-2 py-[6px] hover:cursor-pointer',
+                  selected ? 'border-gray-1 bg-gray-1 text-white' : 'border-gray-3 text-gray-700 hover:bg-gray-50'
                 )}
               >
-                <img
-                  src={getCategoryIconPath(category.categoryId, parentIdToPrefixMap)}
-                  alt=""
-                  loading="lazy"
-                  className="h-5 w-5"
-                  aria-hidden
-                />
+                <div className="h-5 w-5 rounded-full bg-white">
+                  <img
+                    src={getCategoryIconPath(category.categoryId, parentIdToPrefixMap)}
+                    alt=""
+                    loading="lazy"
+                    className="h-5 w-5"
+                    aria-hidden
+                  />
+                </div>
                 <span>{category.categoryName}</span>
               </button>
             )

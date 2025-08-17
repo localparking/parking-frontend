@@ -44,8 +44,8 @@ export const ParkingLotTopFilter: React.FC<ParkingLotTopFilterProps> = ({ onFilt
   )
 
   return (
-    <div className="px-6 py-3">
-      <div className="mb-4 flex items-center justify-start gap-2">
+    <div className="flex flex-col gap-6">
+      <div className="flex items-center gap-2">
         <button
           type="button"
           onClick={onFilterIconClick}
@@ -97,12 +97,7 @@ export const ParkingLotTopFilter: React.FC<ParkingLotTopFilterProps> = ({ onFilt
           </button>
         </div>
 
-        <button
-          type="button"
-          onClick={onRefresh}
-          className="flex items-center gap-[3px] rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-300"
-          aria-label="결과 새로고침"
-        >
+        <button type="button" onClick={onRefresh} className="flex items-center gap-[3px]" aria-label="결과 새로고침">
           <RefreshCw size={12} className="text-gray-3" />
           <span>새로고침</span>
         </button>

@@ -20,7 +20,7 @@ export function InfiniteListView<T extends { [key: string]: any }>({
   isFetchingNextPage,
   onFetchNextPage,
   emptyMessage,
-  className = 'space-y-1',
+  className,
 }: InfiniteListViewProps<T>) {
   const items = useMemo(() => pages?.flatMap((page) => page.content || []) || [], [pages])
   const observerTarget = useRef<HTMLDivElement | null>(null)
@@ -61,9 +61,7 @@ export function InfiniteListView<T extends { [key: string]: any }>({
     <div className="flex-1 overflow-y-auto">
       <ul className={className}>
         {items.map((item) => (
-          <li key={getKey(item)} className="mx-4 my-2">
-            {renderItem(item)}
-          </li>
+          <li key={getKey(item)}>{renderItem(item)}</li>
         ))}
       </ul>
 

@@ -52,13 +52,13 @@ export function ListSurface<T>({
   }
 
   return (
-    <div className="flex h-full flex-col rounded-t-[40px] bg-white">
+    <div className="flex h-full flex-col gap-6 px-6">
       {isFilterMode ? (
         <FilterPanelComponent onClose={() => setIsFilterMode(false)} />
       ) : (
         <>
           <TopFilterComponent onFilterIconClick={() => setIsFilterMode(true)} onRefresh={refetch} />
-          <div className="flex-1 overflow-y-auto">{renderContent()}</div>
+          <div className="flex-1 overflow-y-auto scrollbar-hide">{renderContent()}</div>
         </>
       )}
     </div>
