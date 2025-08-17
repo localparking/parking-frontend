@@ -24,8 +24,3 @@ export const getStoreMarkerIconUrl = (store: StoreListResponse, prefixMap: Map<n
   const iconFileName = `${categoryPrefix}-${stateSuffix}.svg`
   return getMarkerIconUrl(iconFileName)
 }
-
-export const getParkingLotMarkerIconUrl = (parkingLot: ParkingLotListResponse): string => {
-  const iconFileName = parkingLot.isRealtime ? 'parking-detail.svg' : 'parking-basic.svg'
-  return getMarkerIconUrl(iconFileName)
-}

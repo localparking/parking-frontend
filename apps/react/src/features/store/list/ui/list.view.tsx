@@ -3,7 +3,7 @@ import { StoreListResponse, PageResponseStoreListResponse } from '@data/user-api
 import { useNavigation, useMapContext } from '@/features/map'
 import { InfiniteListView } from '@/shared/ui'
 import StatusBadge from '@/shared/ui/status-badge'
-import { StoreCategoryIcon } from '@/shared/ui/store-cateogry-icon'
+import { StoreCategoryIcon } from '@/shared/ui/custom-icons'
 
 interface StoreListProps {
   pages: PageResponseStoreListResponse[] | undefined

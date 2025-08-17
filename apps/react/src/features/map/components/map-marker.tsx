@@ -4,9 +4,10 @@ import { useQuery } from '@tanstack/react-query'
 import storeService from '@/shared/services/store.service'
 import parkingLotService from '@/shared/services/parking-lot.service'
 import { useNavigation } from '@/features/map/hooks'
-import { getParkingLotMarkerIconUrl, StoreWithMarker, ParkingLotWithMarker } from '../utils/marker-icon'
+import { StoreWithMarker, ParkingLotWithMarker } from '../utils/marker-icon'
 import ReactDOMServer from 'react-dom/server'
-import { StoreCategoryIcon } from '@/shared/ui/store-cateogry-icon'
+import { StoreCategoryIcon } from '@/shared/ui/custom-icons'
+import ParkingIcon from '@/assets/icons/parking.png'
 
 const createStoreMarkerOptions = (store: StoreWithMarker, mapInstance: naver.maps.Map): naver.maps.MarkerOptions => {
   const htmlContent = ReactDOMServer.renderToString(
@@ -31,11 +32,17 @@ const createParkingLotMarkerOptions = (
   parkingLot: ParkingLotWithMarker,
   mapInstance: naver.maps.Map
 ): naver.maps.MarkerOptions => {
+  const htmlContent = ReactDOMServer.renderToString(
+    <div className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-2 bg-white">
+      <img src={ParkingIcon} className="h-8 w-8" />
+    </div>
+  )
+
   return {
     position: { lat: parkingLot.lat, lng: parkingLot.lon },
     map: mapInstance,
     icon: {
-      url: parkingLot.markerIconUrl,
+      content: htmlContent,
       size: new naver.maps.Size(40, 40),
       scaledSize: new naver.maps.Size(40, 40),
       anchor: new naver.maps.Point(20, 40),
@@ -82,11 +89,7 @@ export const MapMarkers = () => {
     },
     select: (data) => {
       if (!data?.data) return undefined
-      const content =
-        data.data.content?.map((lot) => ({
-          ...lot,
-          markerIconUrl: getParkingLotMarkerIconUrl(lot),
-        })) || []
+      const content = data.data.content?.map((lot) => ({ ...lot })) || []
       return { ...data.data, content }
     },
     enabled: isMapReady && mapDisplayType === MapDisplayType.PARKING_LOT && !!queryCenter && distanceLevel !== null,

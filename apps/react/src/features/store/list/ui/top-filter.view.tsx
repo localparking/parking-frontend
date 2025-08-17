@@ -4,7 +4,7 @@ import { useMapContext } from '@/features/map/context/map-context'
 import { StoreSearchRequestSortEnum } from '@data/user-api-axios/api'
 import { cn } from '@ui/common/lib/utils'
 import { useCategoryContext } from '@/shared/context/category-context'
-import { StoreCategoryIcon } from '@/shared/ui/store-cateogry-icon'
+import { StoreCategoryIcon } from '@/shared/ui/custom-icons'
 
 interface StoreTopFilterProps {
   onFilterIconClick: () => void
