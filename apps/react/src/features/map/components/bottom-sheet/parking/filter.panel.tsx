@@ -7,6 +7,7 @@ import { TimePicker } from '@ui/common/components/time-picker'
 import { Congestion } from '@/features/map/context/map-context'
 import { cn } from '@ui/common/lib/utils'
 import { formatTime } from '@/shared/utils/format'
+import { FilterPanelLayout } from '../generic/filter-panel-layout'
 
 const FREE_STATUS_OPTIONS = [
   { label: '무료', value: true as boolean },
@@ -41,13 +42,8 @@ export const ParkingLotFilter: React.FC<{ onClose: () => void }> = ({ onClose })
     formatSliderValue,
   } = useParkingLotFilter()
 
-  const onApply = () => {
-    handleApply()
-    onClose()
-  }
-
   return (
-    <div className="flex flex-col px-[24px]">
+    <FilterPanelLayout title="내 주변 주차장 설정" onClose={onClose} onReset={handleReset} onApply={handleApply}>
       <div className="flex flex-col">
         {/* 운영 형태 */}
         <div>
@@ -127,18 +123,6 @@ export const ParkingLotFilter: React.FC<{ onClose: () => void }> = ({ onClose })
           </div>
         </div>
       </div>
-
-      <div className="flex gap-3 border-gray-1 bg-white">
-        <button
-          onClick={handleReset}
-          className="flex-1 rounded-[10px] bg-gray-200 px-5 py-[9px] text-caption-1 text-gray-600"
-        >
-          초기화
-        </button>
-        <button onClick={onApply} className="flex-5 rounded-[10px] bg-gray-1 px-5 py-[9px] text-caption-1 text-white">
-          적용하기
-        </button>
-      </div>
-    </div>
+    </FilterPanelLayout>
   )
 }

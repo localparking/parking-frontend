@@ -8,6 +8,7 @@ import { TimePicker } from '@ui/common/components/time-picker'
 import { cn } from '@ui/common/lib/utils'
 import { getCategoryIconPath, findParentCategoryByIds } from '@/shared/utils/category'
 import { formatTime } from '@/shared/utils/format'
+import { FilterPanelLayout } from '../generic/filter-panel-layout'
 
 const PARKING_TIME_OPTIONS = [
   { label: '전체', value: undefined },
@@ -52,7 +53,7 @@ export const StoreFilter: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   }
 
   return (
-    <div className="flex flex-col px-[24px]">
+    <FilterPanelLayout title="내 주변 가게 설정" onClose={onClose} onReset={handleReset} onApply={handleApply}>
       <div className="flex flex-col">
         {/* 가게 종류 */}
         <div>
@@ -182,18 +183,6 @@ export const StoreFilter: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           </div>
         </div>
       </div>
-
-      <div className="flex gap-3 border-gray-1 bg-white pt-2">
-        <button
-          onClick={handleReset}
-          className="flex-1 rounded-[10px] bg-gray-200 px-5 py-[9px] text-caption-1 text-gray-600"
-        >
-          초기화
-        </button>
-        <button onClick={onApply} className="flex-5 rounded-[10px] bg-gray-1 px-5 py-[9px] text-caption-1 text-white">
-          적용하기
-        </button>
-      </div>
-    </div>
+    </FilterPanelLayout>
   )
 }
