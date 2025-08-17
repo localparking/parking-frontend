@@ -1,26 +1,28 @@
 import { useEffect, useRef } from 'react'
 import { MapDisplayType, useMapContext } from '@/features/map/context/map-context'
-import { useCategoryContext } from '@/shared/context/category-context'
 import { useQuery } from '@tanstack/react-query'
 import storeService from '@/shared/services/store.service'
 import parkingLotService from '@/shared/services/parking-lot.service'
 import { useNavigation } from '@/features/map/hooks'
-import {
-  getStoreMarkerIconUrl,
-  getParkingLotMarkerIconUrl,
-  StoreWithMarker,
-  ParkingLotWithMarker,
-} from '../utils/marker-icon'
+import { getParkingLotMarkerIconUrl, StoreWithMarker, ParkingLotWithMarker } from '../utils/marker-icon'
+import ReactDOMServer from 'react-dom/server'
+import { StoreCategoryIcon } from '@/shared/ui/store-cateogry-icon'
 
 const createStoreMarkerOptions = (store: StoreWithMarker, mapInstance: naver.maps.Map): naver.maps.MarkerOptions => {
+  const htmlContent = ReactDOMServer.renderToString(
+    <div className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-2 bg-white">
+      <StoreCategoryIcon category={store.categories?.[0]} className="h-8 w-8" />
+    </div>
+  )
+
   return {
     position: { lat: store.lat, lng: store.lon },
     map: mapInstance,
     icon: {
-      url: store.markerIconUrl,
-      size: new naver.maps.Size(40, 40),
-      scaledSize: new naver.maps.Size(40, 40),
-      anchor: new naver.maps.Point(20, 40),
+      content: htmlContent,
+      size: new naver.maps.Size(32, 32),
+      scaledSize: new naver.maps.Size(32, 32),
+      anchor: new naver.maps.Point(16, 32),
     },
   }
 }
@@ -44,7 +46,6 @@ const createParkingLotMarkerOptions = (
 export const MapMarkers = () => {
   const { mapDisplayType, storeSearchParams, parkingLotSearchParams } = useMapContext()
   const { mapInstance, isMapReady, queryCenter, distanceLevel } = useMapContext().naverMap
-  const { parentIdToPrefixMap } = useCategoryContext()
   const { navigateToStoreDetail, navigateToParkingLotDetail } = useNavigation()
 
   const { data: storeData } = useQuery({
@@ -61,11 +62,7 @@ export const MapMarkers = () => {
     },
     select: (data) => {
       if (!data?.data) return undefined
-      const content =
-        data.data.content?.map((store) => ({
-          ...store,
-          markerIconUrl: getStoreMarkerIconUrl(store, parentIdToPrefixMap),
-        })) || []
+      const content = data.data.content?.map((store) => ({ ...store })) || []
       return { ...data.data, content }
     },
     enabled: isMapReady && mapDisplayType === MapDisplayType.STORE && !!queryCenter && distanceLevel !== null,

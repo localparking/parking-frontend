@@ -1,19 +1,19 @@
 import { cn } from '@ui/common/lib/utils'
-import { useOnboardingContext } from '../../context/onboarding-context'
+import { useOnboardingContext } from '@/features/onboarding/context/onboarding-context'
 import { CategoryResponse } from '@data/user-api-axios/api'
 
-import CoffeeImage from '@/assets/icons/cafe.svg'
-import RestaurantImage from '@/assets/icons/food.svg'
-import CultureImage from '@/assets/icons/culture.svg'
-import LeisureImage from '@/assets/icons/leisure.svg'
-import StoreImage from '@/assets/icons/store.svg'
+import CoffeeImage from '@/assets/icons/cafe.png'
+import RestaurantImage from '@/assets/icons/food.png'
+import CultureImage from '@/assets/icons/culture.png'
+import LeisureImage from '@/assets/icons/leisure.png'
+import StoreImage from '@/assets/icons/store.png'
 
 const PURPOSE_DATA = {
-  1: { label: '카페를 방문할 때', bgColor: '#FFEF78', image: <CoffeeImage className="h-10 w-10" /> },
-  2: { label: '음식점을 방문할 때', bgColor: '#BBF7D0', image: <RestaurantImage className="h-10 w-10" /> },
-  3: { label: '문화 활동을 즐길 때', bgColor: '#FFD5D5', image: <CultureImage className="h-10 w-10" /> },
-  4: { label: '여가 활동을 즐길 때', bgColor: '#DFDEFF', image: <LeisureImage className="h-10 w-10" /> },
-  5: { label: '상점을 이용할 때', bgColor: '#F5F5F5', image: <StoreImage className="h-10 w-10" /> },
+  1: { label: '카페를 방문할 때', bgColor: '#FFEF78', image: CoffeeImage },
+  2: { label: '음식점을 방문할 때', bgColor: '#BBF7D0', image: RestaurantImage },
+  3: { label: '문화 활동을 즐길 때', bgColor: '#FFD5D5', image: CultureImage },
+  4: { label: '여가 활동을 즐길 때', bgColor: '#DFDEFF', image: LeisureImage },
+  5: { label: '상점을 이용할 때', bgColor: '#F5F5F5', image: StoreImage },
 }
 
 export const VisitPurpose = ({ categories }: { categories?: CategoryResponse }) => {
@@ -60,7 +60,7 @@ export const VisitPurpose = ({ categories }: { categories?: CategoryResponse }) 
                     className="flex h-[40px] w-[40px] items-center justify-center rounded-full"
                     style={{ backgroundColor: purpose.bgColor }}
                   >
-                    {purpose.image}
+                    <img src={purpose.image} alt={purpose.label} className="h-10 w-10" />
                   </div>
                 </div>
                 <span className="text-body-5">{purpose.label}</span>

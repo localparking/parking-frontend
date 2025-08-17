@@ -1,10 +1,11 @@
 import { CategoryDto } from '@data/user-api-axios/api'
+import { cn } from '@ui/common/lib/utils'
 
-import CafeIcon from '@/assets/icons/cafe.svg'
-import FoodIcon from '@/assets/icons/food.svg'
-import CultureIcon from '@/assets/icons/culture.svg'
-import LeisureIcon from '@/assets/icons/leisure.svg'
-import StoreIcon from '@/assets/icons/store.svg'
+import CafeIcon from '@/assets/icons/cafe.png'
+import FoodIcon from '@/assets/icons/food.png'
+import CultureIcon from '@/assets/icons/culture.png'
+import LeisureIcon from '@/assets/icons/leisure.png'
+import StoreIcon from '@/assets/icons/store.png'
 
 export const STORE_ICON_MAP = {
   1: CafeIcon,
@@ -14,15 +15,26 @@ export const STORE_ICON_MAP = {
   5: StoreIcon,
 }
 
-interface StoreCategoryIconProps {
+interface StoreCategoryIconProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   category: CategoryDto | undefined
   className?: string
 }
 
 export const StoreCategoryIcon = (props: StoreCategoryIconProps) => {
-  const { category, className = 'w-10 h-10' } = props
+  const { category, className = 'w-10 h-10', ...rest } = props
   if (!category) return null
 
-  const Icon = STORE_ICON_MAP[category.parentId ?? category.categoryId]
-  return Icon ? <Icon className={className} /> : null
+  const categoryId = category?.parentId ?? category?.categoryId
+  const icon = STORE_ICON_MAP[categoryId]
+
+  return (
+    <img
+      src={icon}
+      alt={icon}
+      className={cn('h-full w-full object-contain', className)}
+      loading="lazy"
+      decoding="async"
+      {...rest}
+    />
+  )
 }
