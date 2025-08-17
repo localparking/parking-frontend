@@ -4,7 +4,7 @@ import { useCallback, useState } from 'react'
 import { useAuth } from '@/features/auth'
 import { AgreementDto } from '@data/user-api-axios/api'
 import { OnboardingCheckbox, OnboardingNavigationButtons } from '@/features/onboarding/components'
-import MainLogoImage from '@ui/common/assets/3d/mainlogo.png'
+import MainLogoImage from '@/assets/images/logo.png'
 
 export const Route = createFileRoute('/onboarding/terms/')({
   component: TermsPage,
