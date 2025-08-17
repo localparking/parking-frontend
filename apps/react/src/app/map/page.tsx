@@ -1,15 +1,11 @@
-import { useEffect, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-import { MapDisplayType, useMapContext } from '@/features/map/context/map-context'
-import MapSearchInputBox from '@/features/map/components/map-search'
-import { useBottomSheet } from '@/features/map/hooks/use-bottom-sheet'
-import { z } from 'zod'
 import { MapControl, MapMarkers, MapTypeToggle } from '@/features/map/components'
-import { useQuery } from '@tanstack/react-query'
-import { ParkingApi, StoreApi } from '@data/user-api-axios/api'
-import apiInstance from '@/shared/libs/api'
-import { StoreContent, ParkingLotContent } from '@/features/map/components'
-import { ParkingLotDetail, StoreDetail } from '@/features/map/components/detail'
+import { useMapContext } from '@/features/map/context/map-context'
+import { useBottomSheet } from '@/features/map/context/bottom-sheet-context'
+import MapSearchInputBox from '@/features/map/components/map-search'
+import BottomSheet from '@/shared/ui/custom-bottom-sheet'
+import { z } from 'zod'
+import { useBottomSheetContent } from '@/features/map/hooks/use-bottom-sheet'
 
 const searchSchema = z.object({
   parkingLotId: z.string().optional(),
@@ -22,93 +18,13 @@ export const Route = createFileRoute('/map/')({
 })
 
 function Map() {
-  const { naverMap, mapDisplayType } = useMapContext()
-  const { open, BottomSheetComponent } = useBottomSheet({
-    initialContent: mapDisplayType === MapDisplayType.STORE ? <StoreContent /> : <ParkingLotContent />,
-  })
+  const { naverMap } = useMapContext()
   const { parkingLotId, storeId } = Route.useSearch()
-  const parkingApi = new ParkingApi(undefined, '', apiInstance)
-  const storeApi = new StoreApi(undefined, '', apiInstance)
+  const { content, activeSnapIndex, setActiveSnapIndex } = useBottomSheet()
 
-  // 주차장 상세 정보 쿼리
-  const { data: parkingLotResponse, isLoading: isParkingLotLoading } = useQuery({
-    queryKey: ['parkingLot', parkingLotId],
-    queryFn: async () => {
-      const { data } = await parkingApi.getParkingLotDetail({ parkingCode: parkingLotId! })
-      return data
-    },
-    enabled: !!parkingLotId,
-  })
+  // URL 파라미터와 지도 타입에 따라 BottomSheet 내용을 업데이트하는 훅 호출
+  useBottomSheetContent(storeId, parkingLotId)
 
-  // 매장 상세 정보 쿼리
-  const { data: storeResponse, isLoading: isStoreLoading } = useQuery({
-    queryKey: ['store', storeId],
-    queryFn: async () => {
-      const { data } = await storeApi.getStoreDetail({ storeId: parseInt(storeId!) })
-      return data
-    },
-    enabled: !!storeId,
-  })
-
-  // 바텀시트 내용 결정 및 업데이트
-  useEffect(() => {
-    let content: React.ReactNode
-
-    if (parkingLotId) {
-      // 주차장 상세 화면
-      if (isParkingLotLoading) {
-        content = (
-          <div className="flex h-[400px] items-center justify-center">
-            <div className="text-sm text-gray-500">로딩 중...</div>
-          </div>
-        )
-      } else if (parkingLotResponse?.data) {
-        content = <ParkingLotDetail key={`parking-detail-${parkingLotId}`} parkingLot={parkingLotResponse.data} />
-      } else {
-        content = (
-          <div className="flex h-[400px] items-center justify-center">
-            <div className="text-sm text-red-500">주차장 정보를 불러올 수 없습니다.</div>
-          </div>
-        )
-      }
-    } else if (storeId) {
-      // 매장 상세 화면
-      if (isStoreLoading) {
-        content = (
-          <div className="flex h-[400px] items-center justify-center">
-            <div className="text-sm text-gray-500">로딩 중...</div>
-          </div>
-        )
-      } else if (storeResponse?.data) {
-        content = <StoreDetail key={`store-detail-${storeId}`} store={storeResponse.data} />
-      } else {
-        content = (
-          <div className="flex h-[400px] items-center justify-center">
-            <div className="text-sm text-red-500">매장 정보를 불러올 수 없습니다.</div>
-          </div>
-        )
-      }
-    } else {
-      // 기본 리스트 화면
-      content =
-        mapDisplayType === 'store' ? (
-          <StoreContent key="store-content" />
-        ) : (
-          <ParkingLotContent key="parking-lot-content" />
-        )
-    }
-
-    open(content)
-  }, [
-    mapDisplayType,
-    parkingLotId,
-    storeId,
-    parkingLotResponse,
-    isParkingLotLoading,
-    storeResponse,
-    isStoreLoading,
-    open,
-  ])
   return (
     <>
       <MapSearchInputBox />
@@ -125,7 +41,9 @@ function Map() {
         </div>
       )}
 
-      {BottomSheetComponent}
+      <BottomSheet activeSnapIndex={activeSnapIndex} setActiveSnapIndex={setActiveSnapIndex}>
+        {content}
+      </BottomSheet>
     </>
   )
 }
