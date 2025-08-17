@@ -16,12 +16,12 @@ interface CategoryContextType {
 
 const CategoryContext = createContext<CategoryContextType | undefined>(undefined)
 
-const CATEGORY_NAME_TO_PREFIX_MAP: Record<string, string> = {
-  커피: 'cafe',
-  음식점: 'food',
-  문화: 'culture',
-  여가: 'leisure',
-  상점: 'store',
+const CATEGORY_NAME_TO_PREFIX_MAP: Record<number, string> = {
+  1: 'cafe',
+  2: 'food',
+  3: 'culture',
+  4: 'leisure',
+  5: 'store',
 }
 
 export function CategoryProvider({ children }: { children: ReactNode }) {
@@ -53,7 +53,7 @@ export function CategoryProvider({ children }: { children: ReactNode }) {
       if (node.parentId === null || node.parentId === undefined) {
         // 부모 카테고리인 경우
         tree.push(node)
-        const prefix = CATEGORY_NAME_TO_PREFIX_MAP[node.categoryName || ''] || 'store'
+        const prefix = CATEGORY_NAME_TO_PREFIX_MAP[node.categoryId] || 'store'
         idToPrefixMap.set(node.categoryId, prefix)
       } else {
         // 자식 카테고리인 경우
@@ -61,7 +61,7 @@ export function CategoryProvider({ children }: { children: ReactNode }) {
         if (parent) {
           parent.children.push(node)
           // 자식 카테고리는 부모의 prefix를 상속받음
-          const parentPrefix = CATEGORY_NAME_TO_PREFIX_MAP[parent.categoryName || ''] || 'store'
+          const parentPrefix = CATEGORY_NAME_TO_PREFIX_MAP[parent.categoryId] || 'store'
           idToPrefixMap.set(node.categoryId, parentPrefix)
         }
       }

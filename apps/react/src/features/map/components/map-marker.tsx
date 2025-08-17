@@ -1,38 +1,23 @@
 import { useEffect, useRef } from 'react'
 import { MapDisplayType, useMapContext } from '@/features/map/context/map-context'
 import { useCategoryContext } from '@/shared/context/category-context'
-import { StoreListResponse, ParkingLotListResponse } from '@data/user-api-axios/api'
-import { getMarkerIconUrl } from '@/features/map/utils/marker-assets'
 import { useQuery } from '@tanstack/react-query'
 import storeService from '@/shared/services/store.service'
 import parkingLotService from '@/shared/services/parking-lot.service'
 import { useNavigation } from '@/features/map/hooks'
+import {
+  getStoreMarkerIconUrl,
+  getParkingLotMarkerIconUrl,
+  StoreWithMarker,
+  ParkingLotWithMarker,
+} from '../utils/marker-icon'
 
-const getMarkerAssetForStore = (store: StoreListResponse, prefixMap: Map<number, string>): string => {
-  const parentCategoryId = store.categories?.[0]?.parentId
-  const categoryPrefix = parentCategoryId ? prefixMap.get(parentCategoryId) || 'store' : 'store'
-
-  let stateSuffix = 'basic'
-  if (store.storeType === 'COALITION') {
-    stateSuffix = 'partner'
-  } else if (store.discountMin && store.discountMin > 0) {
-    stateSuffix = 'detail'
-  }
-  return `${categoryPrefix}-${stateSuffix}.svg`
-}
-
-const createStoreMarkerOptions = (
-  store: StoreListResponse,
-  prefixMap: Map<number, string>,
-  mapInstance: naver.maps.Map
-): naver.maps.MarkerOptions => {
-  const iconFileName = getMarkerAssetForStore(store, prefixMap)
-  const iconUrl = getMarkerIconUrl(iconFileName)
+const createStoreMarkerOptions = (store: StoreWithMarker, mapInstance: naver.maps.Map): naver.maps.MarkerOptions => {
   return {
     position: { lat: store.lat, lng: store.lon },
     map: mapInstance,
     icon: {
-      url: iconUrl,
+      url: store.markerIconUrl,
       size: new naver.maps.Size(40, 40),
       scaledSize: new naver.maps.Size(40, 40),
       anchor: new naver.maps.Point(20, 40),
@@ -41,15 +26,14 @@ const createStoreMarkerOptions = (
 }
 
 const createParkingLotMarkerOptions = (
-  parkingLot: ParkingLotListResponse,
+  parkingLot: ParkingLotWithMarker,
   mapInstance: naver.maps.Map
 ): naver.maps.MarkerOptions => {
-  const iconUrl = getMarkerIconUrl('parking-detail.svg')
   return {
     position: { lat: parkingLot.lat, lng: parkingLot.lon },
     map: mapInstance,
     icon: {
-      url: iconUrl,
+      url: parkingLot.markerIconUrl,
       size: new naver.maps.Size(40, 40),
       scaledSize: new naver.maps.Size(40, 40),
       anchor: new naver.maps.Point(20, 40),
@@ -75,7 +59,15 @@ export const MapMarkers = () => {
       })
       return data
     },
-    select: (data) => data?.data,
+    select: (data) => {
+      if (!data?.data) return undefined
+      const content =
+        data.data.content?.map((store) => ({
+          ...store,
+          markerIconUrl: getStoreMarkerIconUrl(store, parentIdToPrefixMap),
+        })) || []
+      return { ...data.data, content }
+    },
     enabled: isMapReady && mapDisplayType === MapDisplayType.STORE && !!queryCenter && distanceLevel !== null,
   })
 
@@ -91,7 +83,15 @@ export const MapMarkers = () => {
       })
       return data
     },
-    select: (data) => data?.data,
+    select: (data) => {
+      if (!data?.data) return undefined
+      const content =
+        data.data.content?.map((lot) => ({
+          ...lot,
+          markerIconUrl: getParkingLotMarkerIconUrl(lot),
+        })) || []
+      return { ...data.data, content }
+    },
     enabled: isMapReady && mapDisplayType === MapDisplayType.PARKING_LOT && !!queryCenter && distanceLevel !== null,
   })
 
@@ -107,32 +107,32 @@ export const MapMarkers = () => {
     markersRef.current = []
 
     const currentData =
-      mapDisplayType === 'store' ? storeData?.content : mapDisplayType === 'parkingLot' ? parkingLotData?.content : null
+      mapDisplayType === MapDisplayType.STORE
+        ? storeData?.content
+        : mapDisplayType === MapDisplayType.PARKING_LOT
+          ? parkingLotData?.content
+          : null
 
-    if (!currentData) {
-      return
-    }
+    if (!currentData) return
 
     const newMarkers = currentData.map((item) => {
       let marker: naver.maps.Marker
 
-      if (mapDisplayType === 'store') {
-        const store = item as StoreListResponse
-        const options = createStoreMarkerOptions(store, parentIdToPrefixMap, mapInstance)
+      if (mapDisplayType === MapDisplayType.STORE) {
+        const store = item as StoreWithMarker
+        const options = createStoreMarkerOptions(store, mapInstance)
         marker = new naver.maps.Marker(options)
 
         const listener = naver.maps.Event.addListener(marker, 'click', () => {
-          console.log(`Store ID: ${store.storeId}, Name: ${store.name}`)
           navigateToStoreDetail(store.storeId.toString())
         })
         listenersRef.current.push(listener)
       } else {
-        const parkingLot = item as ParkingLotListResponse
+        const parkingLot = item as ParkingLotWithMarker
         const options = createParkingLotMarkerOptions(parkingLot, mapInstance)
         marker = new naver.maps.Marker(options)
 
         const listener = naver.maps.Event.addListener(marker, 'click', () => {
-          console.log(`${parkingLot.name} 주차장 마커 클릭됨`)
           navigateToParkingLotDetail(parkingLot.parkingCode)
         })
         listenersRef.current.push(listener)
@@ -141,7 +141,7 @@ export const MapMarkers = () => {
     })
 
     markersRef.current = newMarkers
-  }, [mapInstance, mapDisplayType, storeData, parkingLotData, parentIdToPrefixMap])
+  }, [mapInstance, mapDisplayType, storeData, parkingLotData, navigateToStoreDetail, navigateToParkingLotDetail])
 
   return null
 }
