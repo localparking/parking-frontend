@@ -1,11 +1,9 @@
 import React from 'react'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { useMapContext } from '../../context/map-context'
 import parkingLotService from '@/shared/services/parking-lot.service'
-import { ParkingLotFilter } from './parking/filter.panel'
-import { ParkingLotList } from './parking/list.view'
-import { ParkingLotTopFilter } from './parking/top-filter.view'
-import { ListSurface } from './generic/list-surface'
+import { useMapContext } from '@/features/map'
+import { ListSurface } from '@/shared/ui'
+import { ParkingLotFilter, ParkingLotList, ParkingLotTopFilter } from '.'
 
 export const ParkingLotContent: React.FC = () => {
   const { parkingLotSearchParams } = useMapContext()

@@ -1,5 +1,5 @@
 import { SearchIcon, UserRound } from 'lucide-react'
-import { useMapContext } from '../context/map-context'
+import { useMapContext } from '@/features/map/context/map-context'
 import { Link } from '@tanstack/react-router'
 
 function MapSearchInputBox() {

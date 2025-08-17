@@ -1,15 +1,13 @@
 import React from 'react'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { useMapContext } from '../../context/map-context'
 import storeService from '@/shared/services/store.service'
-import { StoreList } from './store/list.view'
-import { StoreFilter } from './store/filter.panel'
-import { StoreTopFilter } from './store/top-filter.view'
-import { ListSurface } from './generic/list-surface'
+import { StoreFilter, StoreList, StoreTopFilter } from '.'
+import { ListSurface } from '@/shared/ui/list-surface'
+import { useMapContext } from '@/features/map'
 
 export const StoreContent: React.FC = () => {
-  const { storeSearchParams } = useMapContext()
-  const { queryCenter, distanceLevel } = useMapContext().naverMap
+  const { storeSearchParams, naverMap } = useMapContext()
+  const { queryCenter, distanceLevel } = naverMap
 
   const useDataQuery = () =>
     useInfiniteQuery({

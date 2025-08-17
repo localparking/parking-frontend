@@ -1,12 +1,12 @@
 import { useEffect, useRef } from 'react'
-import { MapDisplayType, useMapContext } from '../../context/map-context'
+import { MapDisplayType, useMapContext } from '@/features/map/context/map-context'
 import { useCategoryContext } from '@/shared/context/category-context'
 import { StoreListResponse, ParkingLotListResponse } from '@data/user-api-axios/api'
-import { getMarkerIconUrl } from '../../utils/marker-assets'
+import { getMarkerIconUrl } from '@/features/map/utils/marker-assets'
 import { useQuery } from '@tanstack/react-query'
 import storeService from '@/shared/services/store.service'
 import parkingLotService from '@/shared/services/parking-lot.service'
-import { useNavigation } from '../../hooks/use-navigation'
+import { useNavigation } from '@/features/map/hooks'
 
 const getMarkerAssetForStore = (store: StoreListResponse, prefixMap: Map<number, string>): string => {
   const parentCategoryId = store.categories?.[0]?.parentId

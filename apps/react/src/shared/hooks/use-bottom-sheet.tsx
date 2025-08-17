@@ -3,9 +3,11 @@ import { useQuery } from '@tanstack/react-query'
 import { ParkingApi, StoreApi, ParkingLotDetailResponse, StoreDetailResponse } from '@data/user-api-axios/api'
 import apiInstance from '@/shared/libs/api'
 import { useMapContext } from '@/features/map/context/map-context'
-import { useBottomSheet } from '@/features/map/context/bottom-sheet-context'
-import { StoreContent, ParkingLotContent } from '@/features/map/components'
-import { ParkingLotDetail, StoreDetail } from '@/features/map/components/detail'
+import { useBottomSheet } from '@/shared/context/bottom-sheet-context'
+import { ParkingLotDetail } from '@/features/parking-lot/detail/parking-lot-detail'
+import { ParkingLotContent } from '@/features/parking-lot/list/parking.surface'
+import { StoreDetail } from '@/features/store/detail/store-detail'
+import { StoreContent } from '@/features/store/list/store.surface'
 
 interface StatusIndicatorProps {
   message: string

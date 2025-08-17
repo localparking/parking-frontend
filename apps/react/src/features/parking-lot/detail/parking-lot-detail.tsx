@@ -1,11 +1,8 @@
 import React from 'react'
 import { ParkingLotDetailResponse } from '@data/user-api-axios/api'
 import { ArrowLeft } from 'lucide-react'
-import { useNavigation } from '../../hooks/use-navigation'
-import { ParkingLotHeader } from './parking-lot/parking-lot-header'
-import { ParkingFeeInfo } from './parking-lot/parking-fee-info'
-import { OperatingHours } from './parking-lot/operating-hours'
-import { OtherStores } from './parking-lot/other-stores'
+import { useNavigation } from '@/features/map/hooks'
+import { ParkingLotHeader, ParkingFeeInfo, OperatingHours, OtherStores } from '.'
 
 interface ParkingLotDetailProps {
   parkingLot: ParkingLotDetailResponse

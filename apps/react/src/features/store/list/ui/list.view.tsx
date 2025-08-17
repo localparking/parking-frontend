@@ -4,7 +4,7 @@ import { useCategoryContext } from '@/shared/context/category-context'
 import { cn } from '@ui/common/lib/utils'
 import { useNavigation, useMapContext } from '@/features/map'
 import { getStoreIconPath } from '@/shared/utils/category'
-import { InfiniteListView } from '../generic/infinite-list-view'
+import { InfiniteListView } from '@/shared/ui'
 
 interface StoreListProps {
   pages: PageResponseStoreListResponse[] | undefined

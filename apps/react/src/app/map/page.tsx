@@ -1,11 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { MapControl, MapMarkers, MapTypeToggle } from '@/features/map/components'
 import { useMapContext } from '@/features/map/context/map-context'
-import { useBottomSheet } from '@/features/map/context/bottom-sheet-context'
+import { useBottomSheet } from '@/shared/context/bottom-sheet-context'
 import MapSearchInputBox from '@/features/map/components/map-search'
 import BottomSheet from '@/shared/ui/custom-bottom-sheet'
 import { z } from 'zod'
-import { useBottomSheetContent } from '@/features/map/hooks/use-bottom-sheet'
+import { useBottomSheetContent } from '@/shared/hooks/use-bottom-sheet'
 
 const searchSchema = z.object({
   parkingLotId: z.string().optional(),

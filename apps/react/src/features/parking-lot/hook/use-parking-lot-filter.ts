@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
-import { useMapContext, Congestion, DayOfWeek, ParkingLotSearchParams } from '../context/map-context'
+import { useMapContext, Congestion, DayOfWeek, ParkingLotSearchParams } from '@/features/map/context/map-context'
 import { formatPrice } from '@/shared/utils/format'
 
 export const useParkingLotFilter = () => {

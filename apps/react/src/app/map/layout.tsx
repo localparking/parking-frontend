@@ -1,4 +1,4 @@
-import { BottomSheetProvider } from '@/features/map/context/bottom-sheet-context'
+import { BottomSheetProvider } from '@/shared/context/bottom-sheet-context'
 import { MapProvider, useMapContext } from '@/features/map/context/map-context'
 import { createFileRoute, Outlet, useRouterState } from '@tanstack/react-router'
 

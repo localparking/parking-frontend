@@ -3,7 +3,7 @@ import { ParkingLotListResponse, PageResponseParkingLotListResponse } from '@dat
 import { cn } from '@ui/common/lib/utils'
 import { useNavigation, useMapContext } from '@/features/map'
 import { formatPrice } from '@/shared/utils/format'
-import { InfiniteListView } from '../generic/infinite-list-view'
+import { InfiniteListView } from '@/shared/ui'
 
 interface ParkingLotListProps {
   pages: PageResponseParkingLotListResponse[] | undefined

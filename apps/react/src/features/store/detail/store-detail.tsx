@@ -1,12 +1,8 @@
 import React from 'react'
 import { ArrowLeft } from 'lucide-react'
 import { StoreDetailResponse } from '@data/user-api-axios/api'
-import { useNavigation } from '../../hooks/use-navigation'
-
-import { StoreHeader } from './store/store-header'
-import { ParkingBenefits } from './store/parking-fee-info'
-import { ParkingLotCard } from './store/associated-parking-lots'
-import { OtherStores } from './store/other-stores'
+import { StoreHeader, ParkingBenefits, ParkingLotCard, OtherStores } from '.'
+import { useNavigation } from '@/features/map'
 
 interface StoreDetailProps {
   store: StoreDetailResponse

@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query'
-import { useMapContext } from '../../context/map-context'
+import { useMapContext } from '@/features/map/context/map-context'
 import { Store, CircleParking } from 'lucide-react'
 import { cn } from '@ui/common/lib/utils'
 
