@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useCallback } from 'react'
-import { DayOfWeek, StoreSearchParams, useMapContext } from '../context/map-context'
+import { DayOfWeek, StoreSearchParams, useMapContext } from '../../map/context/map-context'
 import { useCategoryContext } from '@/shared/context/category-context'
 
 export const useStoreFilter = () => {
