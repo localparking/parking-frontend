@@ -1,11 +1,7 @@
 import React from 'react'
-import { DatePicker } from '@ui/common/components/date-picker'
-import { TimePicker } from '@ui/common/components/time-picker'
 import { Congestion } from '@/features/map/context/map-context'
-import { cn } from '@ui/common/lib/utils'
-import { formatTime } from '@/shared/utils/format'
 
-import { FilterButtonGroup, FilterPanelLayout, PriceRangeSlider } from '@/shared/ui'
+import { FilterItem, FilterPanelLayout, PriceRangeSlider, DatePicker, TimePicker } from '@/shared/ui'
 import { useParkingLotFilter } from '@/features/parking-lot/hook/use-parking-lot-filter'
 
 const FREE_STATUS_OPTIONS = [
@@ -43,38 +39,24 @@ export const ParkingLotFilter: React.FC<{ onClose: () => void }> = ({ onClose })
 
   return (
     <FilterPanelLayout title="내 주변 주차장 설정" onClose={onClose} onReset={handleReset} onApply={handleApply}>
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-4">
         {/* 운영 형태 */}
-        <div>
-          <h4 className="text-body-5 text-gray-1">운영 형태</h4>
-          <div className="flex flex-wrap items-center gap-2 text-caption-1">
-            {/* 실시간 버튼 */}
-            <button
-              onClick={() => updateFilter({ isRealtime: !filterState.isRealtime })}
-              className={cn(
-                'flex h-[35px] items-center rounded-[50px] border px-3 transition-colors',
-                filterState.isRealtime ? 'border-gray-1 bg-gray-1 text-white' : 'border-gray-3 bg-white text-gray-1'
-              )}
-            >
-              실시간
-            </button>
-            <FilterButtonGroup
-              options={FREE_STATUS_OPTIONS}
-              selectedValue={filterState.isFree}
-              onSelect={(value) => updateFilter({ isFree: value as boolean | undefined })}
-            />
-          </div>
-        </div>
-
-        {/* 혼잡도 (개선된 FilterButtonGroup 사용) */}
-        <div>
-          <h4 className="text-body-5 text-gray-1">혼잡도</h4>
-          <FilterButtonGroup
-            options={CONGESTION_OPTIONS}
-            selectedValue={filterState.congestion || []}
-            onSelect={handleCongestionToggle}
-            multiSelect
+        <h4 className="text-body-5 text-gray-1">운영 형태</h4>
+        <div className="flex flex-wrap items-center gap-2">
+          {/* 실시간 버튼 */}
+          <FilterItem
+            isSelected={!!filterState.isRealtime}
+            onClick={() => updateFilter({ isRealtime: !filterState.isRealtime })}
+            label="실시간"
           />
+          {FREE_STATUS_OPTIONS.map((option) => (
+            <FilterItem
+              key={String(option.value)}
+              isSelected={filterState.isFree === option.value}
+              onClick={() => updateFilter({ isFree: option.value as boolean | undefined })}
+              label={option.label}
+            />
+          ))}
         </div>
 
         {/* 1시간 기준 주차비용 - 유료 선택시에만 표시 */}
@@ -90,37 +72,49 @@ export const ParkingLotFilter: React.FC<{ onClose: () => void }> = ({ onClose })
           />
         )}
 
+        {/* 혼잡도 */}
+        <h4 className="text-body-5 text-gray-1">혼잡도</h4>
+        <div className="flex flex-wrap items-center gap-2">
+          {CONGESTION_OPTIONS.map((option) => (
+            <FilterItem
+              key={option.value}
+              isSelected={filterState.congestion?.includes(option.value) ?? false}
+              onClick={() => handleCongestionToggle(option.value)}
+              label={option.label}
+            />
+          ))}
+        </div>
+
         {/* 운영시간 */}
-        <div>
-          <h4 className="text-body-5 text-gray-1">운영시간</h4>
-          <div className="space-y-3">
-            <FilterButtonGroup
-              options={OPERATING_TIME_OPTIONS}
-              selectedValue={selectedOperatingTime}
-              onSelect={handleOperatingTimeChange}
+
+        <h4 className="text-body-5 text-gray-1">운영시간</h4>
+        <div className="flex flex-wrap items-center gap-2">
+          {OPERATING_TIME_OPTIONS.map((option) => (
+            <FilterItem
+              key={option.value}
+              isSelected={selectedOperatingTime === option.value}
+              onClick={() => handleOperatingTimeChange(option.value)}
+              label={option.label}
+            />
+          ))}
+        </div>
+
+        {/* DateTimePicker 팝업 */}
+        {selectedOperatingTime === 'datetime' && (
+          <div className="flex gap-2">
+            <DatePicker
+              className="flex-1"
+              value={filterState.checkDayOfWeek ?? null}
+              onChange={(dow) => handleDateTimeChange({ checkDayOfWeek: dow as typeof filterState.checkDayOfWeek })}
             />
 
-            {/* DateTimePicker 팝업 */}
-            {selectedOperatingTime === 'datetime' && (
-              <div className="space-y-2">
-                <DatePicker
-                  value={new Date().toISOString()}
-                  onChange={(value) => handleDateTimeChange({ checkTime: filterState.checkTime })}
-                  placeholder="날짜를 선택하세요"
-                  className="w-full"
-                />
-                <TimePicker
-                  value={filterState.checkTime}
-                  onChange={(value) => handleDateTimeChange({ checkTime: value })}
-                  className="w-full"
-                />
-                <div className="text-xs text-gray-600">
-                  선택된 시간: {new Date().toLocaleDateString('ko-KR')} {formatTime(filterState.checkTime)}
-                </div>
-              </div>
-            )}
+            <TimePicker
+              className="flex-1"
+              value={filterState.checkTime ?? null}
+              onChange={(hhmm) => handleDateTimeChange({ checkTime: hhmm ?? undefined })}
+            />
           </div>
-        </div>
+        )}
       </div>
     </FilterPanelLayout>
   )

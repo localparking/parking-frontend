@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 import { SlidersHorizontal, RefreshCw } from 'lucide-react'
 import { useMapContext } from '@/features/map/context/map-context'
 import { ParkingLotSearchRequestSortEnum } from '@data/user-api-axios/api'
-import { cn } from '@ui/common/lib/utils'
+import { FilterItem } from '@/shared/ui/filter-item'
 
 interface ParkingLotTopFilterProps {
   onFilterIconClick: () => void
@@ -56,24 +56,15 @@ export const ParkingLotTopFilter: React.FC<ParkingLotTopFilterProps> = ({ onFilt
         </button>
 
         <div className="flex gap-2 overflow-x-auto text-caption-2 scrollbar-hide" aria-label="시간당 최대 요금 선택">
-          {FEE_OPTIONS.map(({ label, value }) => {
-            const isSelected = selectedFee === value
-            return (
-              <button
-                key={value}
-                type="button"
-                onClick={() => handleFeeToggle(value)}
-                aria-pressed={isSelected}
-                data-selected={isSelected ? '' : undefined}
-                className={cn(
-                  'flex flex-shrink-0 items-center justify-center rounded-[50px] border px-2 py-[6px] whitespace-nowrap',
-                  isSelected ? 'border-gray-1 bg-gray-1 text-white' : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                )}
-              >
-                {label}
-              </button>
-            )
-          })}
+          {FEE_OPTIONS.map(({ label, value }) => (
+            <FilterItem
+              key={value}
+              isSelected={selectedFee === value}
+              onClick={() => handleFeeToggle(value)}
+              className="text-caption-2"
+              label={label}
+            />
+          ))}
         </div>
       </div>
 

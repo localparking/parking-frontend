@@ -2,9 +2,9 @@ import React, { useCallback } from 'react'
 import { SlidersHorizontal, RefreshCw } from 'lucide-react'
 import { useMapContext } from '@/features/map/context/map-context'
 import { StoreSearchRequestSortEnum } from '@data/user-api-axios/api'
-import { cn } from '@ui/common/lib/utils'
 import { useCategoryContext } from '@/shared/context/category-context'
 import { StoreCategoryIcon } from '@/shared/ui/custom-icons'
+import { FilterItem } from '@/shared/ui/filter-item'
 
 interface StoreTopFilterProps {
   onFilterIconClick: () => void
@@ -50,27 +50,16 @@ export const StoreTopFilter: React.FC<StoreTopFilterProps> = ({ onFilterIconClic
         </button>
 
         <div className="flex gap-2 overflow-x-auto text-caption-2 scrollbar-hide" aria-label="상위 카테고리">
-          {categoryTree.map((category) => {
-            const selected = isSelected(category.categoryId)
-            return (
-              <button
-                key={category.categoryId}
-                type="button"
-                onClick={() => handleCategoryClick(category.categoryId)}
-                aria-pressed={selected}
-                data-selected={selected ? '' : undefined}
-                className={cn(
-                  'flex items-center justify-center gap-x-1 rounded-[50px] border px-2 py-[6px] whitespace-nowrap hover:cursor-pointer',
-                  selected ? 'border-gray-1 bg-gray-1 text-white' : 'border-gray-3 text-gray-700 hover:bg-gray-50'
-                )}
-              >
-                <div className="h-5 w-5 rounded-full bg-white">
-                  <StoreCategoryIcon category={category} className="h-5 w-5" />
-                </div>
-                <span>{category.categoryName}</span>
-              </button>
-            )
-          })}
+          {categoryTree.map((category) => (
+            <FilterItem
+              key={category.categoryId}
+              isSelected={isSelected(category.categoryId)}
+              onClick={() => handleCategoryClick(category.categoryId)}
+              icon={<StoreCategoryIcon category={category} className="h-5 w-5" />}
+              className="text-caption-2"
+              label={category.categoryName}
+            />
+          ))}
         </div>
       </div>
 

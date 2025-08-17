@@ -81,7 +81,7 @@ export default function BottomSheet({ children, activeSnapIndex, setActiveSnapIn
       role="dialog"
       aria-modal="true"
       className={cn(
-        'fixed bottom-0 z-[15] mx-auto w-full max-w-[768px] rounded-t-[24px] bg-white shadow-lg',
+        'fixed bottom-0 z-[15] mx-auto w-full max-w-[768px] rounded-t-[50px] bg-white shadow-lg',
         'flex min-h-0 flex-col', // 자식 스크롤 허용
         className
       )}
@@ -99,7 +99,7 @@ export default function BottomSheet({ children, activeSnapIndex, setActiveSnapIn
         className="flex cursor-grab items-center justify-center select-none active:cursor-grabbing"
         style={{ height: HANDLE_H }}
       >
-        <div className="h-[4px] w-[56px] rounded-full bg-gray-300" />
+        <div className="h-[3px] w-[150px] rounded-full bg-gray-3" />
       </div>
 
       {/* 스크롤 컨테이너: 정확한 높이 지정이 포인트 */}
