@@ -39,7 +39,7 @@ export const MapTypeToggle = () => {
   }
 
   return (
-    <div className={'absolute top-[calc(var(--spacing-safe-top)+55px)] right-9 z-10'}>
+    <div className={'absolute top-[calc(var(--spacing-safe-top)+70px)] right-9 z-10'}>
       <div className="flex flex-col gap-[12px]">
         {toggleOptions.map((option) => {
           const IconComponent = option.icon
@@ -50,15 +50,12 @@ export const MapTypeToggle = () => {
               key={option.type}
               onClick={() => handleToggle(option.type)}
               className={cn(
-                'flex h-[57px] flex-col items-center justify-center gap-1 rounded-[50px] border border-white/25 px-2.5 shadow-[0px_0px_3.36px_0px_rgba(0,0,0,0.25)] transition-all duration-200',
-                {
-                  'bg-[rgba(113,113,113,0.8)]': isSelected,
-                  'bg-[rgba(255,255,255,0.55)]': !isSelected,
-                }
+                'flex flex-col items-center justify-center gap-1 rounded-[50px] border border-white px-2.5 py-3 shadow-[0px_0px_3.36px_0px_rgba(0,0,0,0.25)]',
+                isSelected ? 'bg-gray-2' : 'bg-[rgba(255,255,255,0.55)]'
               )}
             >
               <div>
-                <IconComponent size={20} color={isSelected ? 'white' : '#222222'} />
+                <IconComponent size={20} className={isSelected ? 'text-white' : 'text-gray-2'} />
               </div>
               <span className={cn('text-caption-4', isSelected ? 'text-white' : 'text-gray-2')}>{option.text}</span>
             </button>

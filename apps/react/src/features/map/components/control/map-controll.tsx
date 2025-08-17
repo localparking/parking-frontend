@@ -50,8 +50,8 @@ export const MapControl: React.FC = () => {
   }
 
   return (
-    <div className="absolute right-4 bottom-[calc(var(--spacing-safe-bottom)+95px)] z-10">
-      <div className="flex w-[33px] flex-col gap-[5px]">
+    <div className="absolute right-6 bottom-[calc(var(--spacing-safe-bottom)+110px)] z-10">
+      <div className="flex flex-col gap-[5px]">
         {controlOptions.map((option, index) => {
           const IconComponent = option.icon
           const isLocationButton = option.onClick === 'location'
@@ -61,10 +61,10 @@ export const MapControl: React.FC = () => {
               key={index}
               onClick={() => handleClick(option.onClick)}
               disabled={!isMapReady}
-              className="flex h-[33px] w-[33px] items-center justify-center rounded-full border border-white/25 bg-[rgba(255,255,255,0.25)] shadow-[0px_0px_3.33px_0px_rgba(0,0,0,0.25)] backdrop-blur-[1.66px] transition-all duration-200 hover:bg-[rgba(255,255,255,0.35)] disabled:opacity-50"
+              className="flex h-12 w-12 items-center justify-center rounded-full border border-white/50 bg-white/25 shadow-[0px_0px_3.33px_0px_rgba(0,0,0,0.25)] backdrop-blur-[1.66px] transition-all duration-200 hover:bg-[rgba(255,255,255,0.35)] disabled:opacity-50"
               title={option.title}
             >
-              <IconComponent size={16} color={isLocationButton ? '#00C800' : '#222222'} />
+              <IconComponent size={28} color={isLocationButton ? '#00C800' : '#222222'} />
             </button>
           )
         })}
