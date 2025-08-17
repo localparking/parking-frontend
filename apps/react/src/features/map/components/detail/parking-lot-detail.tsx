@@ -21,7 +21,7 @@ export const ParkingLotDetail: React.FC<ParkingLotDetailProps> = ({ parkingLot }
   const hasAssociatedStores = associatedStores && associatedStores.length > 0
 
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-t-[40px] bg-white px-8">
+    <div className="flex h-full flex-col rounded-t-[50px] bg-white px-8">
       <div className="flex-1 space-y-6 overflow-y-auto px-4 pb-8">
         <div className="absolute top-8 left-10">
           <button onClick={navigateToMapList}>

@@ -11,7 +11,7 @@ const BottomSheetContext = createContext<BottomSheetContextType | undefined>(und
 
 export const BottomSheetProvider = ({ children }: { children: ReactNode }) => {
   const [content, setContent] = useState<ReactNode>(null)
-  const [activeSnapIndex, setActiveSnapIndex] = useState(1) // 기본 중간 스냅
+  const [activeSnapIndex, setActiveSnapIndex] = useState(2)
 
   return (
     <BottomSheetContext.Provider value={{ content, setContent, activeSnapIndex, setActiveSnapIndex }}>

@@ -7,8 +7,13 @@ import { useBottomSheet } from '@/features/map/context/bottom-sheet-context'
 import { StoreContent, ParkingLotContent } from '@/features/map/components'
 import { ParkingLotDetail, StoreDetail } from '@/features/map/components/detail'
 
+interface StatusIndicatorProps {
+  message: string
+  isError?: boolean
+}
+
 // 로딩 및 에러 상태를 표시하는 헬퍼 컴포넌트
-const StatusIndicator = ({ message, isError = false }: { message: string; isError?: boolean }) => (
+const StatusIndicator = ({ message, isError = false }: StatusIndicatorProps) => (
   <div className={`flex h-[400px] items-center justify-center text-sm ${isError ? 'text-red-500' : 'text-gray-500'}`}>
     {message}
   </div>
@@ -21,6 +26,7 @@ interface DetailViewProps<T> {
   errorMsg: string
 }
 
+// 상세 정보 컴포넌트를 렌더링하는 헬퍼 컴포넌트
 const DetailView = <T,>({ isLoading, data, render, errorMsg }: DetailViewProps<T>) => {
   if (isLoading) return <StatusIndicator message="로딩 중..." />
   if (data) return <>{render(data)}</>
@@ -45,9 +51,13 @@ export const useBottomSheetContent = (storeId?: string, parkingLotId?: string) =
     enabled: !!storeId,
   })
 
+  // 1. 상세 보기 전용 useEffect
   useEffect(() => {
+    if (!parkingLotId && !storeId) return
+
+    let detailContent: React.ReactNode
     if (parkingLotId) {
-      setContent(
+      detailContent = (
         <DetailView<ParkingLotDetailResponse>
           isLoading={isParkingLotLoading}
           data={parkingLotResponse?.data}
@@ -55,9 +65,8 @@ export const useBottomSheetContent = (storeId?: string, parkingLotId?: string) =
           errorMsg="주차장 정보를 불러올 수 없습니다."
         />
       )
-      setActiveSnapIndex(0)
     } else if (storeId) {
-      setContent(
+      detailContent = (
         <DetailView<StoreDetailResponse>
           isLoading={isStoreLoading}
           data={storeResponse?.data}
@@ -65,12 +74,11 @@ export const useBottomSheetContent = (storeId?: string, parkingLotId?: string) =
           errorMsg="매장 정보를 불러올 수 없습니다."
         />
       )
-      setActiveSnapIndex(0)
-    } else {
-      setContent(mapDisplayType === 'store' ? <StoreContent /> : <ParkingLotContent />)
     }
+
+    setContent(detailContent)
+    setActiveSnapIndex(0)
   }, [
-    mapDisplayType,
     parkingLotId,
     storeId,
     parkingLotResponse,
@@ -80,4 +88,12 @@ export const useBottomSheetContent = (storeId?: string, parkingLotId?: string) =
     setContent,
     setActiveSnapIndex,
   ])
+
+  // 2. 목록 보기 전용 useEffect
+  useEffect(() => {
+    if (parkingLotId || storeId) return
+
+    const listContent = mapDisplayType === 'store' ? <StoreContent /> : <ParkingLotContent />
+    setContent(listContent)
+  }, [mapDisplayType, parkingLotId, storeId, setContent])
 }
