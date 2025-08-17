@@ -36,7 +36,7 @@ export const StoreDetail: React.FC<StoreDetailProps> = ({ store }) => {
         {/* 3. 연관 주차장 && 주차 가능 안내*/}
         {mainParkingLot && <ParkingLotCard parkingLot={mainParkingLot} />}
 
-        {/* 4. 같은 주차장 내 다른 가게 */}
+        {/* 4. 같은 주차장 내 다른 매장 */}
         {hasOtherStores && <OtherStores stores={mainParkingLot.otherStores!} />}
       </div>
     </div>

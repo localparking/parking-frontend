@@ -1,9 +1,8 @@
 import React from 'react'
 import { MapPin, Phone } from 'lucide-react'
 import { cn } from '@ui/common/lib/utils'
-import { getCategoryIconPath } from '@/shared/utils/category'
-import { useCategoryContext } from '@/shared/context/category-context'
 import type { StoreDetailResponse } from '@data/user-api-axios/api'
+import { StoreCategoryIcon } from '@/shared/ui/custom-icons'
 
 type StoreHeaderInfo = Omit<StoreDetailResponse, 'parkingBenefits' | 'associatedParkingLots'>
 
@@ -12,18 +11,13 @@ interface StoreHeaderProps {
 }
 
 export const StoreHeader: React.FC<StoreHeaderProps> = React.memo(({ info }) => {
-  const { parentIdToPrefixMap } = useCategoryContext()
   const mainCategory = info.categories?.[0]
 
   return (
     <div>
       <div className="flex items-start gap-3">
         <div className="flex h-[82px] w-[82px] flex-shrink-0 items-center justify-center">
-          <img
-            src={getCategoryIconPath(mainCategory?.categoryId || 0, parentIdToPrefixMap)}
-            alt="가게"
-            className="h-full w-full rounded-lg"
-          />
+          <StoreCategoryIcon category={mainCategory} className="h-full w-full rounded-lg" />
         </div>
 
         <div className="flex flex-col gap-1">

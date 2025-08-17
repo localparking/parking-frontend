@@ -35,7 +35,7 @@ export const StoreContent: React.FC = () => {
       TopFilterComponent={StoreTopFilter}
       FilterPanelComponent={StoreFilter}
       ListComponent={StoreList}
-      loadingMessage="가게 목록을 불러오는 중..."
+      loadingMessage="매장 목록을 불러오는 중..."
       errorMessage="에러가 발생했습니다."
     />
   )

@@ -11,18 +11,9 @@ interface CategoryContextType {
   allCategories: CategoryDto[]
   categoryTree: CategoryNode[]
   isCategoriesLoading: boolean
-  parentIdToPrefixMap: Map<number, string>
 }
 
 const CategoryContext = createContext<CategoryContextType | undefined>(undefined)
-
-const CATEGORY_NAME_TO_PREFIX_MAP: Record<number, string> = {
-  1: 'cafe',
-  2: 'food',
-  3: 'culture',
-  4: 'leisure',
-  5: 'store',
-}
 
 export function CategoryProvider({ children }: { children: ReactNode }) {
   const { data: allCategories = [], isLoading: isCategoriesLoading } = useQuery({
@@ -36,13 +27,12 @@ export function CategoryProvider({ children }: { children: ReactNode }) {
     gcTime: Infinity,
   })
 
-  const { categoryTree, parentIdToPrefixMap } = useMemo(() => {
+  const { categoryTree } = useMemo(() => {
     const categoriesById = new Map<number, CategoryNode>()
     const tree: CategoryNode[] = []
-    const idToPrefixMap = new Map<number, string>()
 
     if (allCategories.length === 0) {
-      return { categoryTree: [], parentIdToPrefixMap: new Map() }
+      return { categoryTree: [] }
     }
 
     allCategories.forEach((cat) => {
@@ -53,21 +43,16 @@ export function CategoryProvider({ children }: { children: ReactNode }) {
       if (node.parentId === null || node.parentId === undefined) {
         // 부모 카테고리인 경우
         tree.push(node)
-        const prefix = CATEGORY_NAME_TO_PREFIX_MAP[node.categoryId] || 'store'
-        idToPrefixMap.set(node.categoryId, prefix)
       } else {
         // 자식 카테고리인 경우
         const parent = categoriesById.get(node.parentId)
         if (parent) {
           parent.children.push(node)
-          // 자식 카테고리는 부모의 prefix를 상속받음
-          const parentPrefix = CATEGORY_NAME_TO_PREFIX_MAP[parent.categoryId] || 'store'
-          idToPrefixMap.set(node.categoryId, parentPrefix)
         }
       }
     })
 
-    return { categoryTree: tree, parentIdToPrefixMap: idToPrefixMap }
+    return { categoryTree: tree }
   }, [allCategories])
 
   return (
@@ -76,7 +61,6 @@ export function CategoryProvider({ children }: { children: ReactNode }) {
         allCategories,
         categoryTree,
         isCategoriesLoading,
-        parentIdToPrefixMap,
       }}
     >
       {children}

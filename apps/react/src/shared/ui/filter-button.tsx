@@ -39,7 +39,7 @@ export const FilterButtonGroup = <T extends string | number | boolean | undefine
             key={String(value)}
             onClick={() => onSelect(value)}
             className={cn(
-              'flex h-[35px] items-center rounded-[50px] border px-3 transition-colors',
+              'flex items-center rounded-[50px] border px-3 py-[5px] text-body-6',
               isSelected ? 'border-gray-1 bg-gray-1 text-white' : 'border-gray-3 bg-white text-gray-1'
             )}
           >

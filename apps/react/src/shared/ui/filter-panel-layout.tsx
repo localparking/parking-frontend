@@ -17,7 +17,7 @@ export const FilterPanelLayout: React.FC<FilterPanelLayoutProps> = ({ title, onC
   return (
     <div className="flex h-full flex-col gap-3 pb-[calc(var(--spacing-safe-bottom)+24px)]">
       <h3 className="w-full text-center text-body-4">{title}</h3>
-      <div className="flex-1 overflow-y-auto px-6">{children}</div>
+      <div className="flex-1 overflow-y-auto px-6 scrollbar-hide">{children}</div>
       <div className="flex gap-3 bg-white">
         <button
           onClick={onReset}

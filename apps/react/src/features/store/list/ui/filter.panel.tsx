@@ -5,9 +5,10 @@ import { DayOfWeek } from '@/features/map/context/map-context'
 import { DatePicker } from '@ui/common/components/date-picker'
 import { TimePicker } from '@ui/common/components/time-picker'
 import { cn } from '@ui/common/lib/utils'
-import { getCategoryIconPath, findParentCategoryByIds, formatTime } from '@/shared/utils'
+import { findParentCategoryByIds, formatTime } from '@/shared/utils'
 import { FilterButtonGroup, FilterPanelLayout } from '@/shared/ui'
 import { useStoreFilter } from '@/features/store/hook/use-store-filter'
+import { StoreCategoryIcon } from '@/shared/ui/custom-icons'
 
 const PARKING_TIME_OPTIONS = [
   { label: '전체', value: undefined },
@@ -25,7 +26,7 @@ const OPERATING_TIME_OPTIONS = [
 ]
 
 export const StoreFilter: React.FC<{ onClose: () => void }> = ({ onClose }) => {
-  const { categoryTree, parentIdToPrefixMap } = useCategoryContext()
+  const { categoryTree } = useCategoryContext()
 
   const {
     filterState,
@@ -46,50 +47,43 @@ export const StoreFilter: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const selectedParentCategory = findParentCategoryByIds(categoryTree, filterState.categoryIds)
   const childCategories = selectedParentCategory?.children || []
 
-  const onApply = () => {
-    handleApply()
-    onClose()
-  }
-
   return (
-    <FilterPanelLayout title="내 주변 가게 설정" onClose={onClose} onReset={handleReset} onApply={handleApply}>
+    <FilterPanelLayout title="내 주변 매장 설정" onClose={onClose} onReset={handleReset} onApply={handleApply}>
       <div className="flex flex-col">
-        {/* 가게 종류 */}
+        {/* 매장 종류 */}
         <div>
-          <h4 className="text-body-5 text-gray-1">가게 종류</h4>
+          <h4 className="text-body-5 text-gray-1">매장 종류</h4>
           <div className="flex flex-wrap gap-2 py-4">
             {/* 전체 */}
             <button
               onClick={() => updateFilter({ categoryIds: undefined })}
               className={cn(
-                'flex h-[35px] items-center rounded-[50px] border border-gray-3 bg-gray-1 px-3 py-2 text-white transition-colors',
+                'flex items-center rounded-[50px] border border-gray-3 bg-gray-1 px-3 py-[6px] text-white transition-colors',
                 {
                   'border-gray-3 bg-white text-gray-1': filterState.categoryIds && filterState.categoryIds.length > 0,
                 }
               )}
             >
-              <span className="text-caption-1">전체</span>
+              <span className="text-body-6">전체</span>
             </button>
 
             {/* 부모 카테고리 */}
             {parentCategories.map((category) => (
               <button
                 key={category.categoryId}
+                type="button"
                 onClick={() => handleParentCategorySelect(category.categoryId)}
                 className={cn(
-                  'flex h-[35px] items-center gap-1 rounded-[50px] border border-gray-3 bg-gray-1 px-3 py-2 text-white transition-colors',
-                  {
-                    'border-gray-300 bg-white text-gray-900':
-                      selectedParentCategory?.categoryId !== category.categoryId,
-                  }
+                  'flex items-center justify-center gap-x-1 rounded-[50px] border px-2 py-[6px] whitespace-nowrap hover:cursor-pointer',
+                  selectedParentCategory?.categoryId !== category.categoryId
+                    ? 'border-gray-3 text-gray-700 hover:bg-gray-50'
+                    : 'border-gray-1 bg-gray-1 text-white'
                 )}
               >
-                <img
-                  src={getCategoryIconPath(category.categoryId, parentIdToPrefixMap)}
-                  alt={category.categoryName}
-                  className="h-5 w-5"
-                />
-                <span className="text-caption-1">{category.categoryName}</span>
+                <div className="h-5 w-5 rounded-full bg-white">
+                  <StoreCategoryIcon category={category} className="h-5 w-5" />
+                </div>
+                <span>{category.categoryName}</span>
               </button>
             ))}
           </div>
@@ -98,7 +92,7 @@ export const StoreFilter: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         {/* 자식 카테고리 */}
         {childCategories.length > 0 && (
           <div>
-            <h4 className="text-body-5 text-gray-1">가게 세부 종류</h4>
+            <h4 className="text-body-5 text-gray-1">매장 세부 종류</h4>
             <FilterButtonGroup
               options={[
                 { label: '전체', value: undefined },

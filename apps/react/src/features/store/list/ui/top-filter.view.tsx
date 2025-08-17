@@ -60,7 +60,7 @@ export const StoreTopFilter: React.FC<StoreTopFilterProps> = ({ onFilterIconClic
                 aria-pressed={selected}
                 data-selected={selected ? '' : undefined}
                 className={cn(
-                  'flex items-center justify-center gap-x-1 rounded-[50px] border px-2 py-[6px] hover:cursor-pointer',
+                  'flex items-center justify-center gap-x-1 rounded-[50px] border px-2 py-[6px] whitespace-nowrap hover:cursor-pointer',
                   selected ? 'border-gray-1 bg-gray-1 text-white' : 'border-gray-3 text-gray-700 hover:bg-gray-50'
                 )}
               >

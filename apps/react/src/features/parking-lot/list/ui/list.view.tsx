@@ -1,6 +1,5 @@
 import React from 'react'
 import { ParkingLotListResponse, PageResponseParkingLotListResponse } from '@data/user-api-axios/api'
-import { cn } from '@ui/common/lib/utils'
 import { useNavigation, useMapContext } from '@/features/map'
 import { formatPrice } from '@/shared/utils/format'
 import { InfiniteListView } from '@/shared/ui'

@@ -66,7 +66,7 @@ export const ParkingLotTopFilter: React.FC<ParkingLotTopFilterProps> = ({ onFilt
                 aria-pressed={isSelected}
                 data-selected={isSelected ? '' : undefined}
                 className={cn(
-                  'flex h-[31px] flex-shrink-0 items-center justify-center rounded-[50px] border px-2 py-[6px] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-300',
+                  'flex flex-shrink-0 items-center justify-center rounded-[50px] border px-2 py-[6px] whitespace-nowrap',
                   isSelected ? 'border-gray-1 bg-gray-1 text-white' : 'border-gray-300 text-gray-700 hover:bg-gray-50'
                 )}
               >

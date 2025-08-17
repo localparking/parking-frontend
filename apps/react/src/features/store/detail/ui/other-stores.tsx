@@ -32,7 +32,7 @@ export const OtherStores: React.FC<OtherStoresProps> = React.memo(({ stores }) =
 
   return (
     <div className="space-y-2">
-      <h3 className="text-body-5 text-gray-1">같은 주차장 내 다른 가게</h3>
+      <h3 className="text-body-5 text-gray-1">같은 주차장 내 다른 매장</h3>
       <div className="flex gap-2 overflow-x-auto pb-2">
         {stores.map((store) => (
           <OtherStoreCard key={store.storeId ?? `${store.storeName}`} store={store} />
