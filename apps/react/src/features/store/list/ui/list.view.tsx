@@ -1,11 +1,9 @@
 import React from 'react'
 import { StoreListResponse, PageResponseStoreListResponse } from '@data/user-api-axios/api'
-import { useCategoryContext } from '@/shared/context/category-context'
-import { cn } from '@ui/common/lib/utils'
 import { useNavigation, useMapContext } from '@/features/map'
-import { getStoreIconPath } from '@/shared/utils/category'
 import { InfiniteListView } from '@/shared/ui'
 import StatusBadge from '@/shared/ui/status-badge'
+import { StoreCategoryIcon } from '@/shared/ui/store-cateogry-icon'
 
 interface StoreListProps {
   pages: PageResponseStoreListResponse[] | undefined
@@ -15,7 +13,6 @@ interface StoreListProps {
 }
 
 const StoreItem: React.FC<{ store: StoreListResponse }> = ({ store }) => {
-  const { parentIdToPrefixMap } = useCategoryContext()
   const { navigateToStoreDetail } = useNavigation()
   const { moveTo } = useMapContext().naverMap
 
@@ -28,11 +25,7 @@ const StoreItem: React.FC<{ store: StoreListResponse }> = ({ store }) => {
       }}
     >
       <div className="flex h-15 w-15 items-center justify-center rounded-full bg-green-50">
-        <img
-          src={getStoreIconPath(store, parentIdToPrefixMap)}
-          alt={store.categories?.[0]?.categoryName || '스토어'}
-          className="h-15 w-15"
-        />
+        <StoreCategoryIcon category={store.categories?.[0]} className="h-[60px] w-[60px]" />
       </div>
 
       <div className="flex flex-1 flex-col gap-1">

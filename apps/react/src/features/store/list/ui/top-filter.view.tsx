@@ -1,10 +1,10 @@
 import React, { useCallback } from 'react'
 import { SlidersHorizontal, RefreshCw } from 'lucide-react'
-import { useCategoryContext } from '@/shared/context/category-context'
 import { useMapContext } from '@/features/map/context/map-context'
 import { StoreSearchRequestSortEnum } from '@data/user-api-axios/api'
 import { cn } from '@ui/common/lib/utils'
-import { getCategoryIconPath } from '@/shared/utils/category'
+import { useCategoryContext } from '@/shared/context/category-context'
+import { StoreCategoryIcon } from '@/shared/ui/store-cateogry-icon'
 
 interface StoreTopFilterProps {
   onFilterIconClick: () => void
@@ -12,7 +12,7 @@ interface StoreTopFilterProps {
 }
 
 export const StoreTopFilter: React.FC<StoreTopFilterProps> = ({ onFilterIconClick, onRefresh }) => {
-  const { categoryTree, parentIdToPrefixMap } = useCategoryContext()
+  const { categoryTree } = useCategoryContext()
   const { storeSearchParams, setStoreSearchParams } = useMapContext()
 
   // 단일/토글 선택을 명확히: 해제 시 []로
@@ -65,13 +65,7 @@ export const StoreTopFilter: React.FC<StoreTopFilterProps> = ({ onFilterIconClic
                 )}
               >
                 <div className="h-5 w-5 rounded-full bg-white">
-                  <img
-                    src={getCategoryIconPath(category.categoryId, parentIdToPrefixMap)}
-                    alt=""
-                    loading="lazy"
-                    className="h-5 w-5"
-                    aria-hidden
-                  />
+                  <StoreCategoryIcon category={category} className="h-5 w-5" />
                 </div>
                 <span>{category.categoryName}</span>
               </button>

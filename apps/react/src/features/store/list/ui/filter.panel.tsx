@@ -1,12 +1,13 @@
 import React from 'react'
 import { useCategoryContext } from '@/shared/context/category-context'
 import { DayOfWeek } from '@/features/map/context/map-context'
-import { useStoreFilter } from '@/features/map'
+
 import { DatePicker } from '@ui/common/components/date-picker'
 import { TimePicker } from '@ui/common/components/time-picker'
 import { cn } from '@ui/common/lib/utils'
 import { getCategoryIconPath, findParentCategoryByIds, formatTime } from '@/shared/utils'
 import { FilterButtonGroup, FilterPanelLayout } from '@/shared/ui'
+import { useStoreFilter } from '@/features/store/hook/use-store-filter'
 
 const PARKING_TIME_OPTIONS = [
   { label: '전체', value: undefined },
