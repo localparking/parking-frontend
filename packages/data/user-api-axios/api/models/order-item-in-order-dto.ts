@@ -13,33 +13,27 @@
  */
 
 /**
- * 가게 상품 추가 요청 DTO
+ *
  * @export
- * @interface ProductRequestDto
+ * @interface OrderItemInOrderDto
  */
-export interface ProductRequestDto {
+export interface OrderItemInOrderDto {
   /**
-   * 상품 이름
+   *
    * @type {string}
-   * @memberof ProductRequestDto
+   * @memberof OrderItemInOrderDto
    */
-  name: string
+  productName: string
   /**
-   * 상품 이미지 Key
-   * @type {string}
-   * @memberof ProductRequestDto
-   */
-  imageKey: string
-  /**
-   * 상품 설명
-   * @type {string}
-   * @memberof ProductRequestDto
-   */
-  description: string
-  /**
-   * 상품 가격
+   *
    * @type {number}
-   * @memberof ProductRequestDto
+   * @memberof OrderItemInOrderDto
+   */
+  quantity: number
+  /**
+   *
+   * @type {number}
+   * @memberof OrderItemInOrderDto
    */
   price: number
 }

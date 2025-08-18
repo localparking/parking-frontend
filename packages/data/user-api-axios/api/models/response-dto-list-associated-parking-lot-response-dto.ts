@@ -14,24 +14,24 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { OperatingSlotDto } from './operating-slot-dto'
+import type { AssociatedParkingLotResponseDto } from './associated-parking-lot-response-dto'
 
 /**
- * 운영 시간 정보 (null 가능)
+ *
  * @export
- * @interface DailyOperatingDto
+ * @interface ResponseDtoListAssociatedParkingLotResponseDto
  */
-export interface DailyOperatingDto {
+export interface ResponseDtoListAssociatedParkingLotResponseDto {
   /**
    *
    * @type {string}
-   * @memberof DailyOperatingDto
+   * @memberof ResponseDtoListAssociatedParkingLotResponseDto
    */
-  label: string
+  message: string
   /**
    *
-   * @type {Array<OperatingSlotDto>}
-   * @memberof DailyOperatingDto
+   * @type {Array<AssociatedParkingLotResponseDto>}
+   * @memberof ResponseDtoListAssociatedParkingLotResponseDto
    */
-  slots: Array<OperatingSlotDto>
+  data?: Array<AssociatedParkingLotResponseDto>
 }

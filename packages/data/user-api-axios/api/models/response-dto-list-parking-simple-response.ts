@@ -12,22 +12,26 @@
  * Do not edit the class manually.
  */
 
+// May contain unused imports in some cases
+// @ts-ignore
+import type { ParkingSimpleResponse } from './parking-simple-response'
+
 /**
  *
  * @export
- * @interface OperatingSlotDto
+ * @interface ResponseDtoListParkingSimpleResponse
  */
-export interface OperatingSlotDto {
+export interface ResponseDtoListParkingSimpleResponse {
   /**
-   * 영업 시작 시간
+   *
    * @type {string}
-   * @memberof OperatingSlotDto
+   * @memberof ResponseDtoListParkingSimpleResponse
    */
-  begin: string
+  message: string
   /**
-   * 영업 종료 시간
-   * @type {string}
-   * @memberof OperatingSlotDto
+   *
+   * @type {Array<ParkingSimpleResponse>}
+   * @memberof ResponseDtoListParkingSimpleResponse
    */
-  end: string
+  data?: Array<ParkingSimpleResponse>
 }

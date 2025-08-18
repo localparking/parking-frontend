@@ -34,7 +34,7 @@ import { BASE_PATH, COLLECTION_FORMATS, type RequestArgs, BaseAPI, RequiredError
 // @ts-ignore
 import type { AdminLoginRequest } from '../models'
 // @ts-ignore
-import type { ResponseDtoListStoreOwnershipReqResponse } from '../models'
+import type { ResponseDtoListStorekeeperRequestResponse } from '../models'
 // @ts-ignore
 import type { ResponseDtoUnit } from '../models'
 // @ts-ignore
@@ -46,18 +46,18 @@ import type { TokenResponse } from '../models'
 export const AdminApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
     /**
-     * 관리자가 특정 소유권 신청을 승인 처리합니다.
-     * @summary 소유권 신청 승인
-     * @param {number} requestId
+     * 관리자가 특정 가입 신청을 승인 처리합니다.
+     * @summary 점주 가입 신청 승인
+     * @param {string} adminId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    approveOwnershipRequest: async (requestId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-      // verify required parameter 'requestId' is not null or undefined
-      assertParamExists('approveOwnershipRequest', 'requestId', requestId)
-      const localVarPath = `/admin/store/ownership-requests/{requestId}/approve`.replace(
-        `{${'requestId'}}`,
-        encodeURIComponent(String(requestId))
+    approveStorekeeperRequest: async (adminId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'adminId' is not null or undefined
+      assertParamExists('approveStorekeeperRequest', 'adminId', adminId)
+      const localVarPath = `/admin/storekeeper-requests/{adminId}/approve`.replace(
+        `{${'adminId'}}`,
+        encodeURIComponent(String(adminId))
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -84,19 +84,19 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     * 관리자가 소유권 신청 목록을 조회합니다.
-     * @summary 소유권 신청 목록 조회
-     * @param {GetOwnershipRequestsStatusEnum} status
+     * 관리자가 상태(PENDING, APPROVED, REJECTED)에 따라 가입 신청 목록을 조회합니다.
+     * @summary 점주 가입 신청 목록 조회
+     * @param {GetStorekeeperRequestsStatusEnum} status
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getOwnershipRequests: async (
-      status: GetOwnershipRequestsStatusEnum,
+    getStorekeeperRequests: async (
+      status: GetStorekeeperRequestsStatusEnum,
       options: RawAxiosRequestConfig = {}
     ): Promise<RequestArgs> => {
       // verify required parameter 'status' is not null or undefined
-      assertParamExists('getOwnershipRequests', 'status', status)
-      const localVarPath = `/admin/store/ownership-requests`
+      assertParamExists('getStorekeeperRequests', 'status', status)
+      const localVarPath = `/admin/storekeeper-requests`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -132,9 +132,9 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    login: async (adminLoginRequest: AdminLoginRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+    login1: async (adminLoginRequest: AdminLoginRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
       // verify required parameter 'adminLoginRequest' is not null or undefined
-      assertParamExists('login', 'adminLoginRequest', adminLoginRequest)
+      assertParamExists('login1', 'adminLoginRequest', adminLoginRequest)
       const localVarPath = `/admin/auth/login`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -164,18 +164,18 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     * 관리자가 특정 소유권 신청을 거절 처리합니다.
-     * @summary 소유권 신청 거절
-     * @param {number} requestId
+     * 관리자가 특정 가입 신청을 거절 처리합니다.
+     * @summary 점주 가입 신청 거절
+     * @param {string} adminId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    rejectOwnershipRequest: async (requestId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-      // verify required parameter 'requestId' is not null or undefined
-      assertParamExists('rejectOwnershipRequest', 'requestId', requestId)
-      const localVarPath = `/admin/store/ownership-requests/{requestId}/reject`.replace(
-        `{${'requestId'}}`,
-        encodeURIComponent(String(requestId))
+    rejectStorekeeperRequest: async (adminId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'adminId' is not null or undefined
+      assertParamExists('rejectStorekeeperRequest', 'adminId', adminId)
+      const localVarPath = `/admin/storekeeper-requests/{adminId}/reject`.replace(
+        `{${'adminId'}}`,
+        encodeURIComponent(String(adminId))
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -212,20 +212,20 @@ export const AdminApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = AdminApiAxiosParamCreator(configuration)
   return {
     /**
-     * 관리자가 특정 소유권 신청을 승인 처리합니다.
-     * @summary 소유권 신청 승인
-     * @param {number} requestId
+     * 관리자가 특정 가입 신청을 승인 처리합니다.
+     * @summary 점주 가입 신청 승인
+     * @param {string} adminId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async approveOwnershipRequest(
-      requestId: number,
+    async approveStorekeeperRequest(
+      adminId: string,
       options?: RawAxiosRequestConfig
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoUnit>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.approveOwnershipRequest(requestId, options)
+      const localVarAxiosArgs = await localVarAxiosParamCreator.approveStorekeeperRequest(adminId, options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
-        operationServerMap['AdminApi.approveOwnershipRequest']?.[localVarOperationServerIndex]?.url
+        operationServerMap['AdminApi.approveStorekeeperRequest']?.[localVarOperationServerIndex]?.url
       return (axios, basePath) =>
         createRequestFunction(
           localVarAxiosArgs,
@@ -235,20 +235,20 @@ export const AdminApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * 관리자가 소유권 신청 목록을 조회합니다.
-     * @summary 소유권 신청 목록 조회
-     * @param {GetOwnershipRequestsStatusEnum} status
+     * 관리자가 상태(PENDING, APPROVED, REJECTED)에 따라 가입 신청 목록을 조회합니다.
+     * @summary 점주 가입 신청 목록 조회
+     * @param {GetStorekeeperRequestsStatusEnum} status
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async getOwnershipRequests(
-      status: GetOwnershipRequestsStatusEnum,
+    async getStorekeeperRequests(
+      status: GetStorekeeperRequestsStatusEnum,
       options?: RawAxiosRequestConfig
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoListStoreOwnershipReqResponse>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.getOwnershipRequests(status, options)
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoListStorekeeperRequestResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getStorekeeperRequests(status, options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
-        operationServerMap['AdminApi.getOwnershipRequests']?.[localVarOperationServerIndex]?.url
+        operationServerMap['AdminApi.getStorekeeperRequests']?.[localVarOperationServerIndex]?.url
       return (axios, basePath) =>
         createRequestFunction(
           localVarAxiosArgs,
@@ -264,13 +264,13 @@ export const AdminApiFp = function (configuration?: Configuration) {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async login(
+    async login1(
       adminLoginRequest: AdminLoginRequest,
       options?: RawAxiosRequestConfig
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TokenResponse>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.login(adminLoginRequest, options)
+      const localVarAxiosArgs = await localVarAxiosParamCreator.login1(adminLoginRequest, options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath = operationServerMap['AdminApi.login']?.[localVarOperationServerIndex]?.url
+      const localVarOperationServerBasePath = operationServerMap['AdminApi.login1']?.[localVarOperationServerIndex]?.url
       return (axios, basePath) =>
         createRequestFunction(
           localVarAxiosArgs,
@@ -280,20 +280,20 @@ export const AdminApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * 관리자가 특정 소유권 신청을 거절 처리합니다.
-     * @summary 소유권 신청 거절
-     * @param {number} requestId
+     * 관리자가 특정 가입 신청을 거절 처리합니다.
+     * @summary 점주 가입 신청 거절
+     * @param {string} adminId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async rejectOwnershipRequest(
-      requestId: number,
+    async rejectStorekeeperRequest(
+      adminId: string,
       options?: RawAxiosRequestConfig
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoUnit>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.rejectOwnershipRequest(requestId, options)
+      const localVarAxiosArgs = await localVarAxiosParamCreator.rejectStorekeeperRequest(adminId, options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
-        operationServerMap['AdminApi.rejectOwnershipRequest']?.[localVarOperationServerIndex]?.url
+        operationServerMap['AdminApi.rejectStorekeeperRequest']?.[localVarOperationServerIndex]?.url
       return (axios, basePath) =>
         createRequestFunction(
           localVarAxiosArgs,
@@ -313,117 +313,117 @@ export const AdminApiFactory = function (configuration?: Configuration, basePath
   const localVarFp = AdminApiFp(configuration)
   return {
     /**
-     * 관리자가 특정 소유권 신청을 승인 처리합니다.
-     * @summary 소유권 신청 승인
-     * @param {AdminApiApproveOwnershipRequestRequest} requestParameters Request parameters.
+     * 관리자가 특정 가입 신청을 승인 처리합니다.
+     * @summary 점주 가입 신청 승인
+     * @param {AdminApiApproveStorekeeperRequestRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    approveOwnershipRequest(
-      requestParameters: AdminApiApproveOwnershipRequestRequest,
+    approveStorekeeperRequest(
+      requestParameters: AdminApiApproveStorekeeperRequestRequest,
       options?: RawAxiosRequestConfig
     ): AxiosPromise<ResponseDtoUnit> {
       return localVarFp
-        .approveOwnershipRequest(requestParameters.requestId, options)
+        .approveStorekeeperRequest(requestParameters.adminId, options)
         .then((request) => request(axios, basePath))
     },
     /**
-     * 관리자가 소유권 신청 목록을 조회합니다.
-     * @summary 소유권 신청 목록 조회
-     * @param {AdminApiGetOwnershipRequestsRequest} requestParameters Request parameters.
+     * 관리자가 상태(PENDING, APPROVED, REJECTED)에 따라 가입 신청 목록을 조회합니다.
+     * @summary 점주 가입 신청 목록 조회
+     * @param {AdminApiGetStorekeeperRequestsRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getOwnershipRequests(
-      requestParameters: AdminApiGetOwnershipRequestsRequest,
+    getStorekeeperRequests(
+      requestParameters: AdminApiGetStorekeeperRequestsRequest,
       options?: RawAxiosRequestConfig
-    ): AxiosPromise<ResponseDtoListStoreOwnershipReqResponse> {
+    ): AxiosPromise<ResponseDtoListStorekeeperRequestResponse> {
       return localVarFp
-        .getOwnershipRequests(requestParameters.status, options)
+        .getStorekeeperRequests(requestParameters.status, options)
         .then((request) => request(axios, basePath))
     },
     /**
      * 관리자가 로그인하는 API입니다.
      * @summary 관리자 로그인
-     * @param {AdminApiLoginRequest} requestParameters Request parameters.
+     * @param {AdminApiLogin1Request} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    login(requestParameters: AdminApiLoginRequest, options?: RawAxiosRequestConfig): AxiosPromise<TokenResponse> {
-      return localVarFp.login(requestParameters.adminLoginRequest, options).then((request) => request(axios, basePath))
+    login1(requestParameters: AdminApiLogin1Request, options?: RawAxiosRequestConfig): AxiosPromise<TokenResponse> {
+      return localVarFp.login1(requestParameters.adminLoginRequest, options).then((request) => request(axios, basePath))
     },
     /**
-     * 관리자가 특정 소유권 신청을 거절 처리합니다.
-     * @summary 소유권 신청 거절
-     * @param {AdminApiRejectOwnershipRequestRequest} requestParameters Request parameters.
+     * 관리자가 특정 가입 신청을 거절 처리합니다.
+     * @summary 점주 가입 신청 거절
+     * @param {AdminApiRejectStorekeeperRequestRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    rejectOwnershipRequest(
-      requestParameters: AdminApiRejectOwnershipRequestRequest,
+    rejectStorekeeperRequest(
+      requestParameters: AdminApiRejectStorekeeperRequestRequest,
       options?: RawAxiosRequestConfig
     ): AxiosPromise<ResponseDtoUnit> {
       return localVarFp
-        .rejectOwnershipRequest(requestParameters.requestId, options)
+        .rejectStorekeeperRequest(requestParameters.adminId, options)
         .then((request) => request(axios, basePath))
     },
   }
 }
 
 /**
- * Request parameters for approveOwnershipRequest operation in AdminApi.
+ * Request parameters for approveStorekeeperRequest operation in AdminApi.
  * @export
- * @interface AdminApiApproveOwnershipRequestRequest
+ * @interface AdminApiApproveStorekeeperRequestRequest
  */
-export interface AdminApiApproveOwnershipRequestRequest {
+export interface AdminApiApproveStorekeeperRequestRequest {
   /**
    *
-   * @type {number}
-   * @memberof AdminApiApproveOwnershipRequest
+   * @type {string}
+   * @memberof AdminApiApproveStorekeeperRequest
    */
-  readonly requestId: number
+  readonly adminId: string
 }
 
 /**
- * Request parameters for getOwnershipRequests operation in AdminApi.
+ * Request parameters for getStorekeeperRequests operation in AdminApi.
  * @export
- * @interface AdminApiGetOwnershipRequestsRequest
+ * @interface AdminApiGetStorekeeperRequestsRequest
  */
-export interface AdminApiGetOwnershipRequestsRequest {
+export interface AdminApiGetStorekeeperRequestsRequest {
   /**
    *
    * @type {'PENDING' | 'APPROVED' | 'REJECTED'}
-   * @memberof AdminApiGetOwnershipRequests
+   * @memberof AdminApiGetStorekeeperRequests
    */
-  readonly status: GetOwnershipRequestsStatusEnum
+  readonly status: GetStorekeeperRequestsStatusEnum
 }
 
 /**
- * Request parameters for login operation in AdminApi.
+ * Request parameters for login1 operation in AdminApi.
  * @export
- * @interface AdminApiLoginRequest
+ * @interface AdminApiLogin1Request
  */
-export interface AdminApiLoginRequest {
+export interface AdminApiLogin1Request {
   /**
    *
    * @type {AdminLoginRequest}
-   * @memberof AdminApiLogin
+   * @memberof AdminApiLogin1
    */
   readonly adminLoginRequest: AdminLoginRequest
 }
 
 /**
- * Request parameters for rejectOwnershipRequest operation in AdminApi.
+ * Request parameters for rejectStorekeeperRequest operation in AdminApi.
  * @export
- * @interface AdminApiRejectOwnershipRequestRequest
+ * @interface AdminApiRejectStorekeeperRequestRequest
  */
-export interface AdminApiRejectOwnershipRequestRequest {
+export interface AdminApiRejectStorekeeperRequestRequest {
   /**
    *
-   * @type {number}
-   * @memberof AdminApiRejectOwnershipRequest
+   * @type {string}
+   * @memberof AdminApiRejectStorekeeperRequest
    */
-  readonly requestId: number
+  readonly adminId: string
 }
 
 /**
@@ -434,64 +434,67 @@ export interface AdminApiRejectOwnershipRequestRequest {
  */
 export class AdminApi extends BaseAPI {
   /**
-   * 관리자가 특정 소유권 신청을 승인 처리합니다.
-   * @summary 소유권 신청 승인
-   * @param {AdminApiApproveOwnershipRequestRequest} requestParameters Request parameters.
+   * 관리자가 특정 가입 신청을 승인 처리합니다.
+   * @summary 점주 가입 신청 승인
+   * @param {AdminApiApproveStorekeeperRequestRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
-  public approveOwnershipRequest(
-    requestParameters: AdminApiApproveOwnershipRequestRequest,
+  public approveStorekeeperRequest(
+    requestParameters: AdminApiApproveStorekeeperRequestRequest,
     options?: RawAxiosRequestConfig
   ) {
     return AdminApiFp(this.configuration)
-      .approveOwnershipRequest(requestParameters.requestId, options)
+      .approveStorekeeperRequest(requestParameters.adminId, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
   /**
-   * 관리자가 소유권 신청 목록을 조회합니다.
-   * @summary 소유권 신청 목록 조회
-   * @param {AdminApiGetOwnershipRequestsRequest} requestParameters Request parameters.
+   * 관리자가 상태(PENDING, APPROVED, REJECTED)에 따라 가입 신청 목록을 조회합니다.
+   * @summary 점주 가입 신청 목록 조회
+   * @param {AdminApiGetStorekeeperRequestsRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
-  public getOwnershipRequests(requestParameters: AdminApiGetOwnershipRequestsRequest, options?: RawAxiosRequestConfig) {
+  public getStorekeeperRequests(
+    requestParameters: AdminApiGetStorekeeperRequestsRequest,
+    options?: RawAxiosRequestConfig
+  ) {
     return AdminApiFp(this.configuration)
-      .getOwnershipRequests(requestParameters.status, options)
+      .getStorekeeperRequests(requestParameters.status, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
   /**
    * 관리자가 로그인하는 API입니다.
    * @summary 관리자 로그인
-   * @param {AdminApiLoginRequest} requestParameters Request parameters.
+   * @param {AdminApiLogin1Request} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
-  public login(requestParameters: AdminApiLoginRequest, options?: RawAxiosRequestConfig) {
+  public login1(requestParameters: AdminApiLogin1Request, options?: RawAxiosRequestConfig) {
     return AdminApiFp(this.configuration)
-      .login(requestParameters.adminLoginRequest, options)
+      .login1(requestParameters.adminLoginRequest, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
   /**
-   * 관리자가 특정 소유권 신청을 거절 처리합니다.
-   * @summary 소유권 신청 거절
-   * @param {AdminApiRejectOwnershipRequestRequest} requestParameters Request parameters.
+   * 관리자가 특정 가입 신청을 거절 처리합니다.
+   * @summary 점주 가입 신청 거절
+   * @param {AdminApiRejectStorekeeperRequestRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
-  public rejectOwnershipRequest(
-    requestParameters: AdminApiRejectOwnershipRequestRequest,
+  public rejectStorekeeperRequest(
+    requestParameters: AdminApiRejectStorekeeperRequestRequest,
     options?: RawAxiosRequestConfig
   ) {
     return AdminApiFp(this.configuration)
-      .rejectOwnershipRequest(requestParameters.requestId, options)
+      .rejectStorekeeperRequest(requestParameters.adminId, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }
@@ -499,10 +502,10 @@ export class AdminApi extends BaseAPI {
 /**
  * @export
  */
-export const GetOwnershipRequestsStatusEnum = {
+export const GetStorekeeperRequestsStatusEnum = {
   Pending: 'PENDING',
   Approved: 'APPROVED',
   Rejected: 'REJECTED',
 } as const
-export type GetOwnershipRequestsStatusEnum =
-  (typeof GetOwnershipRequestsStatusEnum)[keyof typeof GetOwnershipRequestsStatusEnum]
+export type GetStorekeeperRequestsStatusEnum =
+  (typeof GetStorekeeperRequestsStatusEnum)[keyof typeof GetStorekeeperRequestsStatusEnum]

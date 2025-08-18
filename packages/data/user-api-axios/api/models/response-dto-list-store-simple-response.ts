@@ -12,22 +12,26 @@
  * Do not edit the class manually.
  */
 
+// May contain unused imports in some cases
+// @ts-ignore
+import type { StoreSimpleResponse } from './store-simple-response'
+
 /**
  *
  * @export
- * @interface OperatingSlotDto
+ * @interface ResponseDtoListStoreSimpleResponse
  */
-export interface OperatingSlotDto {
+export interface ResponseDtoListStoreSimpleResponse {
   /**
-   * 영업 시작 시간
+   *
    * @type {string}
-   * @memberof OperatingSlotDto
+   * @memberof ResponseDtoListStoreSimpleResponse
    */
-  begin: string
+  message: string
   /**
-   * 영업 종료 시간
-   * @type {string}
-   * @memberof OperatingSlotDto
+   *
+   * @type {Array<StoreSimpleResponse>}
+   * @memberof ResponseDtoListStoreSimpleResponse
    */
-  end: string
+  data?: Array<StoreSimpleResponse>
 }

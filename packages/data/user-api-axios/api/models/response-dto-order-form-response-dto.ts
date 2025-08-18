@@ -12,22 +12,26 @@
  * Do not edit the class manually.
  */
 
+// May contain unused imports in some cases
+// @ts-ignore
+import type { OrderFormResponseDto } from './order-form-response-dto'
+
 /**
  *
  * @export
- * @interface OperatingSlotDto
+ * @interface ResponseDtoOrderFormResponseDto
  */
-export interface OperatingSlotDto {
+export interface ResponseDtoOrderFormResponseDto {
   /**
-   * 영업 시작 시간
+   *
    * @type {string}
-   * @memberof OperatingSlotDto
+   * @memberof ResponseDtoOrderFormResponseDto
    */
-  begin: string
+  message: string
   /**
-   * 영업 종료 시간
-   * @type {string}
-   * @memberof OperatingSlotDto
+   *
+   * @type {OrderFormResponseDto}
+   * @memberof ResponseDtoOrderFormResponseDto
    */
-  end: string
+  data?: OrderFormResponseDto
 }

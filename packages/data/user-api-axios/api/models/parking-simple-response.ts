@@ -13,33 +13,27 @@
  */
 
 /**
- * 가게 상품 추가 요청 DTO
+ *
  * @export
- * @interface ProductRequestDto
+ * @interface ParkingSimpleResponse
  */
-export interface ProductRequestDto {
+export interface ParkingSimpleResponse {
   /**
-   * 상품 이름
+   *
    * @type {string}
-   * @memberof ProductRequestDto
+   * @memberof ParkingSimpleResponse
+   */
+  parkingCode: string
+  /**
+   *
+   * @type {string}
+   * @memberof ParkingSimpleResponse
    */
   name: string
   /**
-   * 상품 이미지 Key
+   *
    * @type {string}
-   * @memberof ProductRequestDto
+   * @memberof ParkingSimpleResponse
    */
-  imageKey: string
-  /**
-   * 상품 설명
-   * @type {string}
-   * @memberof ProductRequestDto
-   */
-  description: string
-  /**
-   * 상품 가격
-   * @type {number}
-   * @memberof ProductRequestDto
-   */
-  price: number
+  address?: string
 }

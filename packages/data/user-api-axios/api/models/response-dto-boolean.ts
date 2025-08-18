@@ -15,19 +15,19 @@
 /**
  *
  * @export
- * @interface OperatingSlotDto
+ * @interface ResponseDtoBoolean
  */
-export interface OperatingSlotDto {
+export interface ResponseDtoBoolean {
   /**
-   * 영업 시작 시간
+   *
    * @type {string}
-   * @memberof OperatingSlotDto
+   * @memberof ResponseDtoBoolean
    */
-  begin: string
+  message: string
   /**
-   * 영업 종료 시간
-   * @type {string}
-   * @memberof OperatingSlotDto
+   *
+   * @type {boolean}
+   * @memberof ResponseDtoBoolean
    */
-  end: string
+  data?: boolean
 }

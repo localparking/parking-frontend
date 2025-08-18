@@ -13,33 +13,45 @@
  */
 
 /**
- * 가게 상품 추가 요청 DTO
+ *
  * @export
- * @interface ProductRequestDto
+ * @interface MyInfoUpdateRequestDto
  */
-export interface ProductRequestDto {
+export interface MyInfoUpdateRequestDto {
   /**
-   * 상품 이름
+   *
    * @type {string}
-   * @memberof ProductRequestDto
+   * @memberof MyInfoUpdateRequestDto
+   */
+  nickname: string
+  /**
+   *
+   * @type {string}
+   * @memberof MyInfoUpdateRequestDto
    */
   name: string
   /**
-   * 상품 이미지 Key
+   *
    * @type {string}
-   * @memberof ProductRequestDto
+   * @memberof MyInfoUpdateRequestDto
    */
-  imageKey: string
+  tel: string
   /**
-   * 상품 설명
+   *
    * @type {string}
-   * @memberof ProductRequestDto
+   * @memberof MyInfoUpdateRequestDto
    */
-  description: string
+  regionName: string
   /**
-   * 상품 가격
-   * @type {number}
-   * @memberof ProductRequestDto
+   *
+   * @type {string}
+   * @memberof MyInfoUpdateRequestDto
    */
-  price: number
+  vehicleNumber: string
+  /**
+   *
+   * @type {boolean}
+   * @memberof MyInfoUpdateRequestDto
+   */
+  isNotification: boolean
 }

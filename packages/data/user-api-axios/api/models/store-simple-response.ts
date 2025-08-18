@@ -15,43 +15,25 @@
 /**
  *
  * @export
- * @interface StoreOwnershipReqResponse
+ * @interface StoreSimpleResponse
  */
-export interface StoreOwnershipReqResponse {
+export interface StoreSimpleResponse {
   /**
    *
    * @type {number}
-   * @memberof StoreOwnershipReqResponse
-   */
-  requestId: number
-  /**
-   *
-   * @type {number}
-   * @memberof StoreOwnershipReqResponse
+   * @memberof StoreSimpleResponse
    */
   storeId: number
   /**
    *
-   * @type {number}
-   * @memberof StoreOwnershipReqResponse
+   * @type {string}
+   * @memberof StoreSimpleResponse
    */
-  userId: number
+  name: string
   /**
    *
    * @type {string}
-   * @memberof StoreOwnershipReqResponse
+   * @memberof StoreSimpleResponse
    */
-  status: string
-  /**
-   *
-   * @type {string}
-   * @memberof StoreOwnershipReqResponse
-   */
-  storeName: string
-  /**
-   *
-   * @type {string}
-   * @memberof StoreOwnershipReqResponse
-   */
-  userName: string
+  address?: string
 }

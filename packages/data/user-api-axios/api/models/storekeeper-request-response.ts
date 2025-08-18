@@ -13,33 +13,39 @@
  */
 
 /**
- * 가게 상품 추가 요청 DTO
+ *
  * @export
- * @interface ProductRequestDto
+ * @interface StorekeeperRequestResponse
  */
-export interface ProductRequestDto {
+export interface StorekeeperRequestResponse {
   /**
-   * 상품 이름
+   *
    * @type {string}
-   * @memberof ProductRequestDto
+   * @memberof StorekeeperRequestResponse
    */
-  name: string
+  adminId?: string
   /**
-   * 상품 이미지 Key
+   *
    * @type {string}
-   * @memberof ProductRequestDto
+   * @memberof StorekeeperRequestResponse
    */
-  imageKey: string
+  email: string
   /**
-   * 상품 설명
+   *
    * @type {string}
-   * @memberof ProductRequestDto
+   * @memberof StorekeeperRequestResponse
    */
-  description: string
+  storeName?: string
   /**
-   * 상품 가격
-   * @type {number}
-   * @memberof ProductRequestDto
+   *
+   * @type {string}
+   * @memberof StorekeeperRequestResponse
    */
-  price: number
+  businessNumber?: string
+  /**
+   *
+   * @type {string}
+   * @memberof StorekeeperRequestResponse
+   */
+  storeAddress?: string
 }

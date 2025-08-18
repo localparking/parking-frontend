@@ -13,33 +13,33 @@
  */
 
 /**
- * 가게 상품 추가 요청 DTO
+ *
  * @export
- * @interface ProductRequestDto
+ * @interface VisitorInfo
  */
-export interface ProductRequestDto {
+export interface VisitorInfo {
   /**
-   * 상품 이름
+   * 방문자 이름
    * @type {string}
-   * @memberof ProductRequestDto
+   * @memberof VisitorInfo
    */
-  name: string
+  name?: string
   /**
-   * 상품 이미지 Key
+   * 방문자 전화번호
    * @type {string}
-   * @memberof ProductRequestDto
+   * @memberof VisitorInfo
    */
-  imageKey: string
+  tel?: string
   /**
-   * 상품 설명
+   * 방문자 지역명
    * @type {string}
-   * @memberof ProductRequestDto
+   * @memberof VisitorInfo
    */
-  description: string
+  regionName?: string
   /**
-   * 상품 가격
-   * @type {number}
-   * @memberof ProductRequestDto
+   * 방문자 차량번호
+   * @type {string}
+   * @memberof VisitorInfo
    */
-  price: number
+  vehicleNumber?: string
 }

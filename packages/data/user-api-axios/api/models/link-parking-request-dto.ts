@@ -14,24 +14,24 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { OperatingSlotDto } from './operating-slot-dto'
+import type { ParkingLotManualRequestDto } from './parking-lot-manual-request-dto'
 
 /**
- * 운영 시간 정보 (null 가능)
+ * 주차장 연계 요청 DTO
  * @export
- * @interface DailyOperatingDto
+ * @interface LinkParkingRequestDto
  */
-export interface DailyOperatingDto {
+export interface LinkParkingRequestDto {
   /**
-   *
+   * 연결할 기존 주차장의 코드 (새로운 주차장 등록시 null)
    * @type {string}
-   * @memberof DailyOperatingDto
+   * @memberof LinkParkingRequestDto
    */
-  label: string
+  parkingCode?: string
   /**
    *
-   * @type {Array<OperatingSlotDto>}
-   * @memberof DailyOperatingDto
+   * @type {ParkingLotManualRequestDto}
+   * @memberof LinkParkingRequestDto
    */
-  slots: Array<OperatingSlotDto>
+  parkingLotInfo?: ParkingLotManualRequestDto
 }

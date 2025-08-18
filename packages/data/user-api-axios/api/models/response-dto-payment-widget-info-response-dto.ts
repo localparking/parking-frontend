@@ -14,24 +14,24 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { OperatingSlotDto } from './operating-slot-dto'
+import type { PaymentWidgetInfoResponseDto } from './payment-widget-info-response-dto'
 
 /**
- * 운영 시간 정보 (null 가능)
+ *
  * @export
- * @interface DailyOperatingDto
+ * @interface ResponseDtoPaymentWidgetInfoResponseDto
  */
-export interface DailyOperatingDto {
+export interface ResponseDtoPaymentWidgetInfoResponseDto {
   /**
    *
    * @type {string}
-   * @memberof DailyOperatingDto
+   * @memberof ResponseDtoPaymentWidgetInfoResponseDto
    */
-  label: string
+  message: string
   /**
    *
-   * @type {Array<OperatingSlotDto>}
-   * @memberof DailyOperatingDto
+   * @type {PaymentWidgetInfoResponseDto}
+   * @memberof ResponseDtoPaymentWidgetInfoResponseDto
    */
-  slots: Array<OperatingSlotDto>
+  data?: PaymentWidgetInfoResponseDto
 }

@@ -13,21 +13,21 @@
  */
 
 /**
- *
+ * 주차 혜택 추가/수정 요청 DTO
  * @export
- * @interface OperatingSlotDto
+ * @interface ParkingBenefitRequestDto
  */
-export interface OperatingSlotDto {
+export interface ParkingBenefitRequestDto {
   /**
-   * 영업 시작 시간
-   * @type {string}
-   * @memberof OperatingSlotDto
+   * 혜택 적용을 위한 최소 구매 금액
+   * @type {number}
+   * @memberof ParkingBenefitRequestDto
    */
-  begin: string
+  purchaseAmount: number
   /**
-   * 영업 종료 시간
-   * @type {string}
-   * @memberof OperatingSlotDto
+   * 제공되는 무료 주차 시간(분)
+   * @type {number}
+   * @memberof ParkingBenefitRequestDto
    */
-  end: string
+  discountMin: number
 }

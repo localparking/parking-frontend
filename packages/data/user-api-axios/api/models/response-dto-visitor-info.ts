@@ -12,22 +12,26 @@
  * Do not edit the class manually.
  */
 
+// May contain unused imports in some cases
+// @ts-ignore
+import type { VisitorInfo } from './visitor-info'
+
 /**
  *
  * @export
- * @interface OperatingSlotDto
+ * @interface ResponseDtoVisitorInfo
  */
-export interface OperatingSlotDto {
+export interface ResponseDtoVisitorInfo {
   /**
-   * 영업 시작 시간
+   *
    * @type {string}
-   * @memberof OperatingSlotDto
+   * @memberof ResponseDtoVisitorInfo
    */
-  begin: string
+  message: string
   /**
-   * 영업 종료 시간
-   * @type {string}
-   * @memberof OperatingSlotDto
+   *
+   * @type {VisitorInfo}
+   * @memberof ResponseDtoVisitorInfo
    */
-  end: string
+  data?: VisitorInfo
 }

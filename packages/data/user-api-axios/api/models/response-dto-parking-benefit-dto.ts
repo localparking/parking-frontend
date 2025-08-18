@@ -19,43 +19,19 @@ import type { ParkingBenefitDto } from './parking-benefit-dto'
 /**
  *
  * @export
- * @interface MyStoreInfo
+ * @interface ResponseDtoParkingBenefitDto
  */
-export interface MyStoreInfo {
-  /**
-   *
-   * @type {number}
-   * @memberof MyStoreInfo
-   */
-  storeId: number
+export interface ResponseDtoParkingBenefitDto {
   /**
    *
    * @type {string}
-   * @memberof MyStoreInfo
+   * @memberof ResponseDtoParkingBenefitDto
    */
-  storeName: string
+  message: string
   /**
    *
-   * @type {string}
-   * @memberof MyStoreInfo
+   * @type {ParkingBenefitDto}
+   * @memberof ResponseDtoParkingBenefitDto
    */
-  storeAddress: string
-  /**
-   *
-   * @type {string}
-   * @memberof MyStoreInfo
-   */
-  storePhone?: string
-  /**
-   *
-   * @type {string}
-   * @memberof MyStoreInfo
-   */
-  ownerName?: string
-  /**
-   *
-   * @type {Array<ParkingBenefitDto>}
-   * @memberof MyStoreInfo
-   */
-  parkingBenefits: Array<ParkingBenefitDto>
+  data?: ParkingBenefitDto
 }

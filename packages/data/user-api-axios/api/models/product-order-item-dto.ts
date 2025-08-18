@@ -15,19 +15,19 @@
 /**
  *
  * @export
- * @interface OperatingSlotDto
+ * @interface ProductOrderItemDto
  */
-export interface OperatingSlotDto {
+export interface ProductOrderItemDto {
   /**
-   * 영업 시작 시간
-   * @type {string}
-   * @memberof OperatingSlotDto
+   * 상품 ID
+   * @type {number}
+   * @memberof ProductOrderItemDto
    */
-  begin: string
+  productId: number
   /**
-   * 영업 종료 시간
-   * @type {string}
-   * @memberof OperatingSlotDto
+   * 상품 수량
+   * @type {number}
+   * @memberof ProductOrderItemDto
    */
-  end: string
+  quantity: number
 }

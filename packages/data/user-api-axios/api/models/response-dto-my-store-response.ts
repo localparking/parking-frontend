@@ -12,22 +12,26 @@
  * Do not edit the class manually.
  */
 
+// May contain unused imports in some cases
+// @ts-ignore
+import type { MyStoreResponse } from './my-store-response'
+
 /**
  *
  * @export
- * @interface OperatingSlotDto
+ * @interface ResponseDtoMyStoreResponse
  */
-export interface OperatingSlotDto {
+export interface ResponseDtoMyStoreResponse {
   /**
-   * 영업 시작 시간
+   *
    * @type {string}
-   * @memberof OperatingSlotDto
+   * @memberof ResponseDtoMyStoreResponse
    */
-  begin: string
+  message: string
   /**
-   * 영업 종료 시간
-   * @type {string}
-   * @memberof OperatingSlotDto
+   *
+   * @type {MyStoreResponse}
+   * @memberof ResponseDtoMyStoreResponse
    */
-  end: string
+  data?: MyStoreResponse
 }

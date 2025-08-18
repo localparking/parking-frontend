@@ -15,19 +15,19 @@
 /**
  *
  * @export
- * @interface BenefitRequestDto
+ * @interface PresignedUrlResponse
  */
-export interface BenefitRequestDto {
+export interface PresignedUrlResponse {
   /**
    *
-   * @type {number}
-   * @memberof BenefitRequestDto
+   * @type {string}
+   * @memberof PresignedUrlResponse
    */
-  purchaseAmount: number
+  presignedUrl: string
   /**
    *
-   * @type {number}
-   * @memberof BenefitRequestDto
+   * @type {string}
+   * @memberof PresignedUrlResponse
    */
-  discountMin: number
+  imageKey: string
 }

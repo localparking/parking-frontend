@@ -13,33 +13,45 @@
  */
 
 /**
- * 가게 상품 추가 요청 DTO
+ * 변경할 주소 정보
  * @export
- * @interface ProductRequestDto
+ * @interface StoreAddressDto
  */
-export interface ProductRequestDto {
+export interface StoreAddressDto {
   /**
-   * 상품 이름
+   * 시도
    * @type {string}
-   * @memberof ProductRequestDto
+   * @memberof StoreAddressDto
    */
-  name: string
+  sido: string
   /**
-   * 상품 이미지 Key
+   * 시군구
    * @type {string}
-   * @memberof ProductRequestDto
+   * @memberof StoreAddressDto
    */
-  imageKey: string
+  sigungu: string
   /**
-   * 상품 설명
+   * 도로명
    * @type {string}
-   * @memberof ProductRequestDto
+   * @memberof StoreAddressDto
    */
-  description: string
+  doroName: string
   /**
-   * 상품 가격
+   * 건물번호
+   * @type {string}
+   * @memberof StoreAddressDto
+   */
+  buildingNo: string
+  /**
+   * 위도
    * @type {number}
-   * @memberof ProductRequestDto
+   * @memberof StoreAddressDto
    */
-  price: number
+  lat: number
+  /**
+   * 경도
+   * @type {number}
+   * @memberof StoreAddressDto
+   */
+  lon: number
 }

@@ -13,33 +13,33 @@
  */
 
 /**
- * 가게 상품 추가 요청 DTO
+ *
  * @export
- * @interface ProductRequestDto
+ * @interface ParkingLotInfoInOrderDto
  */
-export interface ProductRequestDto {
+export interface ParkingLotInfoInOrderDto {
   /**
-   * 상품 이름
+   *
    * @type {string}
-   * @memberof ProductRequestDto
+   * @memberof ParkingLotInfoInOrderDto
    */
-  name: string
+  parkingLotId: string
   /**
-   * 상품 이미지 Key
+   *
    * @type {string}
-   * @memberof ProductRequestDto
+   * @memberof ParkingLotInfoInOrderDto
    */
-  imageKey: string
+  parkingLotName: string
   /**
-   * 상품 설명
+   *
    * @type {string}
-   * @memberof ProductRequestDto
+   * @memberof ParkingLotInfoInOrderDto
    */
-  description: string
+  parkingLotAddress?: string
   /**
-   * 상품 가격
-   * @type {number}
-   * @memberof ProductRequestDto
+   *
+   * @type {string}
+   * @memberof ParkingLotInfoInOrderDto
    */
-  price: number
+  parkingLotTodayClosingTime?: string
 }

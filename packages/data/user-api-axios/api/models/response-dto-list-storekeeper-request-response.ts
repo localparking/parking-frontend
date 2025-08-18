@@ -14,24 +14,24 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { OperatingSlotDto } from './operating-slot-dto'
+import type { StorekeeperRequestResponse } from './storekeeper-request-response'
 
 /**
- * 운영 시간 정보 (null 가능)
+ *
  * @export
- * @interface DailyOperatingDto
+ * @interface ResponseDtoListStorekeeperRequestResponse
  */
-export interface DailyOperatingDto {
+export interface ResponseDtoListStorekeeperRequestResponse {
   /**
    *
    * @type {string}
-   * @memberof DailyOperatingDto
+   * @memberof ResponseDtoListStorekeeperRequestResponse
    */
-  label: string
+  message: string
   /**
    *
-   * @type {Array<OperatingSlotDto>}
-   * @memberof DailyOperatingDto
+   * @type {Array<StorekeeperRequestResponse>}
+   * @memberof ResponseDtoListStorekeeperRequestResponse
    */
-  slots: Array<OperatingSlotDto>
+  data?: Array<StorekeeperRequestResponse>
 }

@@ -13,33 +13,39 @@
  */
 
 /**
- * 가게 상품 추가 요청 DTO
+ *
  * @export
- * @interface ProductRequestDto
+ * @interface PaymentWidgetInfoResponseDto
  */
-export interface ProductRequestDto {
+export interface PaymentWidgetInfoResponseDto {
   /**
-   * 상품 이름
+   *
    * @type {string}
-   * @memberof ProductRequestDto
+   * @memberof PaymentWidgetInfoResponseDto
    */
-  name: string
+  orderId: string
   /**
-   * 상품 이미지 Key
+   *
    * @type {string}
-   * @memberof ProductRequestDto
+   * @memberof PaymentWidgetInfoResponseDto
    */
-  imageKey: string
+  orderName: string
   /**
-   * 상품 설명
-   * @type {string}
-   * @memberof ProductRequestDto
-   */
-  description: string
-  /**
-   * 상품 가격
+   *
    * @type {number}
-   * @memberof ProductRequestDto
+   * @memberof PaymentWidgetInfoResponseDto
    */
-  price: number
+  amount: number
+  /**
+   *
+   * @type {string}
+   * @memberof PaymentWidgetInfoResponseDto
+   */
+  customerName?: string
+  /**
+   *
+   * @type {string}
+   * @memberof PaymentWidgetInfoResponseDto
+   */
+  customerEmail?: string
 }

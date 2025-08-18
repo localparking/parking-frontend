@@ -12,22 +12,26 @@
  * Do not edit the class manually.
  */
 
+// May contain unused imports in some cases
+// @ts-ignore
+import type { ParkingBenefitDto } from './parking-benefit-dto'
+
 /**
  *
  * @export
- * @interface OperatingSlotDto
+ * @interface ResponseDtoListParkingBenefitDto
  */
-export interface OperatingSlotDto {
+export interface ResponseDtoListParkingBenefitDto {
   /**
-   * 영업 시작 시간
+   *
    * @type {string}
-   * @memberof OperatingSlotDto
+   * @memberof ResponseDtoListParkingBenefitDto
    */
-  begin: string
+  message: string
   /**
-   * 영업 종료 시간
-   * @type {string}
-   * @memberof OperatingSlotDto
+   *
+   * @type {Array<ParkingBenefitDto>}
+   * @memberof ResponseDtoListParkingBenefitDto
    */
-  end: string
+  data?: Array<ParkingBenefitDto>
 }
