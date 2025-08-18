@@ -28,7 +28,7 @@ function Map() {
   return (
     <>
       <MapSearchInputBox />
-      {parkingLotId || (storeId && <MapBackButton />)}
+      {(parkingLotId || storeId) && <MapBackButton />}
       <MapTypeToggle />
       <MapControl />
       <MapMarkers />
