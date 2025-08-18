@@ -11,6 +11,12 @@ interface SearchResultsProps {
   query: string
 }
 
+interface handleItemClickParams {
+  lat: number
+  lng: number
+  search?: { parkingLotId?: string; storeId?: string }
+}
+
 export const SearchResults = ({ query }: SearchResultsProps) => {
   const { setSearchKeyword, searchKeyword, storeSearchParams, parkingLotSearchParams, mapDisplayType } = useMapContext()
   const { distanceLevel, currentMapInfo, moveTo } = useMapContext().naverMap
@@ -41,15 +47,7 @@ export const SearchResults = ({ query }: SearchResultsProps) => {
 
   const navigate = useNavigate()
 
-  const handleItemClick = ({
-    lat,
-    lng,
-    search,
-  }: {
-    lat: number
-    lng: number
-    search?: { parkingLotId?: string; storeId?: string }
-  }) => {
+  const handleItemClick = ({ lat, lng, search }: handleItemClickParams) => {
     moveTo({ lat, lng }, 15)
     setSearchKeyword(query)
     navigate({ to: '/map', replace: true, search })
@@ -94,17 +92,17 @@ export const SearchResults = ({ query }: SearchResultsProps) => {
   return (
     <>
       {/* 매장 리스트 */}
-      {hasStores && (
+      {mapDisplayType === MapDisplayType.STORE && hasStores && (
         <div className="mb-6">
           <h2 className="text-body-4">추천 매장</h2>
-
           {stores.map((store) => (
             <SearchStoreItem key={store.storeId} store={store} />
           ))}
         </div>
       )}
 
-      {hasParkingLots && (
+      {/* 주차장 리스트 */}
+      {mapDisplayType === MapDisplayType.PARKING_LOT && hasParkingLots && (
         <div className="mb-6">
           <h2 className="text-body-5 font-bold">추천 주차장</h2>
           {parkings.map((parking) => (

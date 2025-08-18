@@ -24,14 +24,9 @@ const toggleOptions = [
 export const MapTypeToggle = () => {
   const { mapDisplayType, setMapDisplayType, setSearchKeyword, resetStoreFilters, resetParkingLotFilters } =
     useMapContext()
-  const queryClient = useQueryClient()
 
   const handleToggle = (type: MapDisplayType) => {
-    if (type === MapDisplayType.STORE) {
-      queryClient.invalidateQueries({ queryKey: ['storeMapSearch'] })
-    } else {
-      queryClient.invalidateQueries({ queryKey: ['parkingLotSearch'] })
-    }
+    if (type === mapDisplayType) return
     setSearchKeyword('')
     resetStoreFilters()
     resetParkingLotFilters()

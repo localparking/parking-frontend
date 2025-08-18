@@ -33,7 +33,9 @@ function RouteComponent() {
         <form
           onSubmit={handleSearch}
           aria-label="장소 검색"
-          className={cn('relative flex h-12 items-center gap-3 rounded-[30px] border-[1.5px] border-gray-3 px-4 py-3')}
+          className={cn(
+            'relative flex h-12 w-full items-center gap-3 rounded-[30px] border-[1.5px] border-gray-3 px-4 py-3'
+          )}
         >
           <SearchIcon className="h-6 w-6 text-gray-2" />
 

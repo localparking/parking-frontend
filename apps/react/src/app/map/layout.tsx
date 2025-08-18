@@ -32,10 +32,10 @@ function MapLayout() {
 
 export function RootComponent() {
   return (
-    <MapProvider>
-      <BottomSheetProvider>
+    <BottomSheetProvider>
+      <MapProvider>
         <MapLayout />
-      </BottomSheetProvider>
-    </MapProvider>
+      </MapProvider>
+    </BottomSheetProvider>
   )
 }
