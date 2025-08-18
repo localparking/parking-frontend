@@ -89,15 +89,19 @@ export function MapProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!naverMap.isMapReady || !naverMap.mapInstance) return
 
-    const listener = naver.maps.Event.addListener(naverMap.mapInstance, 'drag', () => {
+    const handleInteraction = () => {
       if (activeSnapIndex === 0) {
         setActiveSnapIndex(1)
       }
-    })
+    }
+
+    const clickListener = naver.maps.Event.addListener(naverMap.mapInstance, 'click', handleInteraction)
+    const dragStartListener = naver.maps.Event.addListener(naverMap.mapInstance, 'dragstart', handleInteraction)
 
     // 컴포넌트 언마운트 시 리스너 제거
     return () => {
-      naver.maps.Event.removeListener(listener)
+      naver.maps.Event.removeListener(clickListener)
+      naver.maps.Event.removeListener(dragStartListener)
     }
   }, [naverMap.isMapReady, naverMap.mapInstance, activeSnapIndex, setActiveSnapIndex])
 

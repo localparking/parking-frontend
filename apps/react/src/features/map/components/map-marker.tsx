@@ -73,6 +73,7 @@ export const MapMarkers = () => {
       return { ...data.data, content }
     },
     enabled: isMapReady && mapDisplayType === MapDisplayType.STORE && !!queryCenter && distanceLevel !== null,
+    placeholderData: (previousData) => previousData,
   })
 
   const { data: parkingLotData } = useQuery({
@@ -93,6 +94,7 @@ export const MapMarkers = () => {
       return { ...data.data, content }
     },
     enabled: isMapReady && mapDisplayType === MapDisplayType.PARKING_LOT && !!queryCenter && distanceLevel !== null,
+    placeholderData: (previousData) => previousData,
   })
 
   const markersRef = useRef<naver.maps.Marker[]>([])
