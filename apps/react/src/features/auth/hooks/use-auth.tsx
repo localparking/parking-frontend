@@ -3,12 +3,12 @@ import React, { createContext, ReactNode, useCallback, useEffect, useState } fro
 import AuthClient from '../lib/auth-client'
 import { SocialLoginType } from '@bridge/types'
 import userService from '@/shared/services/user.service'
-import { UserInfoResponseRoleEnum } from '@data/user-api-axios/api'
+import { MyInfoResponseDtoRoleEnum } from '@data/user-api-axios/api'
 
 export interface User {
   email: string
   nickname: string
-  role: UserInfoResponseRoleEnum
+  role: MyInfoResponseDtoRoleEnum
   isOnboarding: boolean
 }
 
