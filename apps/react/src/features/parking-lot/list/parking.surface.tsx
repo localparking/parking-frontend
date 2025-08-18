@@ -28,6 +28,7 @@ export const ParkingLotContent: React.FC = () => {
         return currentPage < totalPages - 1 ? currentPage + 1 : undefined
       },
       enabled: isMapReady && !!queryCenter && distanceLevel !== null,
+      placeholderData: (previousData) => previousData,
     })
 
   return (

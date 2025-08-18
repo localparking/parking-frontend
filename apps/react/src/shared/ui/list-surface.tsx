@@ -105,8 +105,6 @@ ListSurface.Content = ({ renderItem, getKey, emptyMessage, loadingMessage, error
   const { data, error, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage } = queryResult
 
   if (isFilterOpen) return null
-  if (isFetching && !isFetchingNextPage)
-    return <div className="flex-center flex-1 text-caption-2 text-gray-500">{loadingMessage}</div>
   if (error) return <div className="flex-center flex-1 text-caption-2 text-red-500">{errorMessage}</div>
 
   return (
