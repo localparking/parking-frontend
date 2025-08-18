@@ -81,7 +81,7 @@ export default function BottomSheet({ children, activeSnapIndex, setActiveSnapIn
       role="dialog"
       aria-modal="true"
       className={cn(
-        'fixed bottom-0 z-[15] mx-auto w-full max-w-[768px] rounded-t-[50px] bg-white shadow-lg',
+        'fixed bottom-0 z-[15] mx-auto w-full max-w-[768px] rounded-t-[50px] bg-white',
         'flex min-h-0 flex-col', // 자식 스크롤 허용
         className
       )}

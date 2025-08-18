@@ -39,7 +39,7 @@ export const MapTypeToggle = () => {
   }
 
   return (
-    <div className={'absolute top-[calc(var(--spacing-safe-top)+70px)] right-9 z-10'}>
+    <div className={'absolute top-[calc(var(--spacing-safe-top)+70px)] right-6 z-10'}>
       <div className="flex flex-col gap-[12px]">
         {toggleOptions.map((option) => {
           const IconComponent = option.icon

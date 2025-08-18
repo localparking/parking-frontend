@@ -6,6 +6,7 @@ import MapSearchInputBox from '@/features/map/components/map-search'
 import BottomSheet from '@/shared/ui/custom-bottom-sheet'
 import { z } from 'zod'
 import { useBottomSheetContent } from '@/shared/hooks/use-bottom-sheet'
+import MapBackButton from '@/features/map/components/map-back-button'
 
 const searchSchema = z.object({
   parkingLotId: z.string().optional(),
@@ -28,6 +29,7 @@ function Map() {
   return (
     <>
       <MapSearchInputBox />
+      {parkingLotId || (storeId && <MapBackButton />)}
       <MapTypeToggle />
       <MapControl />
       <MapMarkers />
