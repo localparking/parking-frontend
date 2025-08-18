@@ -63,7 +63,7 @@ function RootComponent() {
   const isMapPage = location.pathname.startsWith('/map')
 
   return (
-    <div className="flex min-h-dvh w-full flex-col bg-gray-4">
+    <div className={cn('flex min-h-dvh w-full flex-col bg-gray-4')}>
       {!isMapPage && <div className="fixed z-[50] h-safe-top w-full max-w-[768px] bg-white" />}
       <main
         className={cn('mx-auto flex w-full max-w-[768px] flex-1 flex-col bg-white', {
