@@ -31,9 +31,7 @@ export const StoreDetail: React.FC<StoreDetailProps> = ({ store }) => {
 
       <button
         className="fixed bottom-safe-bottom left-1/2 mb-7 -translate-x-1/2 rounded-[15px] bg-primary-1 px-[67px] py-1"
-        onClick={() => {
-          navigate({ to: '/detail/store', search: { storeId: store.storeId } })
-        }}
+        onClick={() => navigate({ to: '/detail/store', search: { storeId: store.storeId } })}
       >
         <p className="text-caption-1 whitespace-nowrap text-white">주문하러 가기</p>
       </button>

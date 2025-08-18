@@ -1,6 +1,5 @@
 import React from 'react'
 import { MapPin, Phone } from 'lucide-react'
-import { cn } from '@ui/common/lib/utils'
 import type { StoreDetailResponse } from '@data/user-api-axios/api'
 import { StoreCategoryIcon } from '@/shared/ui/custom-icons'
 import StatusBadge from '@/shared/ui/status-badge'
