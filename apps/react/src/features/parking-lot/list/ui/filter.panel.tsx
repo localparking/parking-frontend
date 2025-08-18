@@ -22,7 +22,11 @@ const OPERATING_TIME_OPTIONS = [
   { label: '요일 시간', value: 'datetime' as const },
 ]
 
-export const ParkingLotFilter: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+interface ParkingLotFilterProps {
+  onClose?: () => void
+}
+
+export function ParkingLotFilter({ onClose }: ParkingLotFilterProps) {
   const {
     filterState,
     sliderValue,

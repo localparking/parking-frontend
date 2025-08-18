@@ -5,8 +5,8 @@ import { ParkingLotSearchRequestSortEnum } from '@data/user-api-axios/api'
 import { FilterItem } from '@/shared/ui/filter-item'
 
 interface ParkingLotTopFilterProps {
-  onFilterIconClick: () => void
-  onRefresh: () => void
+  onFilterIconClick?: () => void
+  onRefresh?: () => void
 }
 
 const FEE_OPTIONS = [

@@ -5,6 +5,7 @@ import { InfiniteListView } from '@/shared/ui'
 import StatusBadge from '@/shared/ui/status-badge'
 import { StoreCategoryIcon } from '@/shared/ui/custom-icons'
 
+// --- 타입 및 Item 컴포넌트 정의 ---
 interface StoreListProps {
   pages: PageResponseStoreListResponse[] | undefined
   hasNextPage: boolean
@@ -27,20 +28,17 @@ const StoreItem: React.FC<{ store: StoreListResponse }> = ({ store }) => {
       <div className="flex h-15 w-15 items-center justify-center rounded-full bg-green-50">
         <StoreCategoryIcon category={store.categories?.[0]} className="h-[60px] w-[60px]" />
       </div>
-
       <div className="flex flex-1 flex-col gap-1">
         {store.categories?.[0]?.categoryName && (
           <p className="text-caption-3 text-gray-500">{store.categories[0].categoryName}</p>
         )}
-
         <div className="flex items-center justify-start gap-[5px] pr-[55px]">
           <h3 className="text-body-4 text-gray-1">{store.name}</h3>
           <StatusBadge isOpen={store.isOpen} />
         </div>
-
         <p className="text-caption-2 text-gray-2">
           {store.discountMin && store.purchaseAmount
-            ? `${store.purchaseAmount}원 이상 구매시 ${store.discountMin}분 무료 주차`
+            ? `${store.purchaseAmount.toLocaleString()}원 이상 구매시 ${store.discountMin}분 무료 주차`
             : ''}
         </p>
       </div>
@@ -48,7 +46,8 @@ const StoreItem: React.FC<{ store: StoreListResponse }> = ({ store }) => {
   )
 }
 
-export const StoreList: React.FC<StoreListProps> = (props) => {
+// --- 메인 컴포넌트와 Item static 멤버 결합 ---
+export const StoreList: React.FC<StoreListProps> & { Item: typeof StoreItem } = (props) => {
   return (
     <InfiniteListView<StoreListResponse>
       {...props}
@@ -58,3 +57,5 @@ export const StoreList: React.FC<StoreListProps> = (props) => {
     />
   )
 }
+
+StoreList.Item = StoreItem

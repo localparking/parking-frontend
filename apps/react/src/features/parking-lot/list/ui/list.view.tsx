@@ -45,7 +45,7 @@ const ParkingLotItem: React.FC<{ parkingLot: ParkingLotListResponse }> = ({ park
   )
 }
 
-export const ParkingLotList: React.FC<ParkingLotListProps> = (props) => {
+export const ParkingLotList: React.FC<ParkingLotListProps> & { Item: typeof ParkingLotItem } = (props) => {
   return (
     <InfiniteListView<ParkingLotListResponse>
       {...props}
@@ -55,3 +55,5 @@ export const ParkingLotList: React.FC<ParkingLotListProps> = (props) => {
     />
   )
 }
+
+ParkingLotList.Item = ParkingLotItem

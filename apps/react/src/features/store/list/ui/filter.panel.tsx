@@ -1,8 +1,7 @@
 import React from 'react'
 import { useCategoryContext } from '@/shared/context/category-context'
-import { DayOfWeek } from '@/features/map/context/map-context'
 
-import { findParentCategoryByIds, formatTime } from '@/shared/utils'
+import { findParentCategoryByIds } from '@/shared/utils'
 import { DatePicker, FilterItem, FilterPanelLayout, TimePicker } from '@/shared/ui'
 import { useStoreFilter } from '@/features/store/hook/use-store-filter'
 import { StoreCategoryIcon } from '@/shared/ui/custom-icons'
@@ -22,7 +21,7 @@ const OPERATING_TIME_OPTIONS = [
   { label: '요일 시간', value: 'datetime' as const },
 ]
 
-export const StoreFilter: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+export const StoreFilter: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
   const { categoryTree } = useCategoryContext()
 
   const {

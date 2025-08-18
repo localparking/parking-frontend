@@ -7,8 +7,8 @@ import { StoreCategoryIcon } from '@/shared/ui/custom-icons'
 import { FilterItem } from '@/shared/ui/filter-item'
 
 interface StoreTopFilterProps {
-  onFilterIconClick: () => void
-  onRefresh: () => void
+  onFilterIconClick?: () => void
+  onRefresh?: () => void
 }
 
 export const StoreTopFilter: React.FC<StoreTopFilterProps> = ({ onFilterIconClick, onRefresh }) => {

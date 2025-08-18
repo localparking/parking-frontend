@@ -2,7 +2,7 @@ import React from 'react'
 
 interface FilterPanelLayoutProps {
   title: string
-  onClose: () => void
+  onClose?: () => void
   onReset: () => void
   onApply: () => void
   children: React.ReactNode
@@ -11,7 +11,7 @@ interface FilterPanelLayoutProps {
 export const FilterPanelLayout: React.FC<FilterPanelLayoutProps> = ({ title, onClose, onReset, onApply, children }) => {
   const handleApply = () => {
     onApply()
-    onClose()
+    onClose?.()
   }
 
   return (
