@@ -9,5 +9,12 @@
   "가입 컨트롤러": "register",
   "유저 컨트롤러": "user",
   "가게주인 컨트롤러": "storekeeper",
-  "관리자 가게 컨트롤러": "admin"
+  "관리자 가게 컨트롤러": "admin",
+  "관리자 컨트롤러": "admin",
+  "점주 주차혜택 관리 컨트롤러": "storekeeper",
+  "점주 가게 관리 컨트롤러": "storekeeper",
+  "점주 컨트롤러": "storekeeper",
+  "점주 주차장 관리 컨트롤러": "storekeeper",
+  "이미지 처리 컨트롤러": "image",
+  "주문 컨트롤러": "order"
 }

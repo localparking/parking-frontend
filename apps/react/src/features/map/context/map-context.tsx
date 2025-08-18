@@ -1,6 +1,7 @@
-import { createContext, useContext, useState, ReactNode } from 'react'
+import { createContext, useContext, useState, ReactNode, useEffect } from 'react'
 import { ParkingLotSearchRequestSortEnum, StoreSearchRequestSortEnum } from '@data/user-api-axios/api'
 import { useNaverMap, UseNaverMapResult } from '../hooks/use-naver-map'
+import { useBottomSheet } from '@/shared/context/bottom-sheet-context'
 
 export enum DayOfWeek {
   MONDAY = 'MONDAY',
@@ -71,6 +72,7 @@ interface MapContextType {
 const MapContext = createContext<MapContextType | undefined>(undefined)
 
 export function MapProvider({ children }: { children: ReactNode }) {
+  const { activeSnapIndex, setActiveSnapIndex } = useBottomSheet()
   const naverMap = useNaverMap('map')
 
   const [mapDisplayType, setMapDisplayType] = useState<MapDisplayType>(MapDisplayType.STORE)
@@ -83,6 +85,25 @@ export function MapProvider({ children }: { children: ReactNode }) {
     page: 0,
   })
   const [searchKeyword, setSearchKeyword] = useState<string>('')
+
+  useEffect(() => {
+    if (!naverMap.isMapReady || !naverMap.mapInstance) return
+
+    const handleInteraction = () => {
+      if (activeSnapIndex === 0) {
+        setActiveSnapIndex(1)
+      }
+    }
+
+    const clickListener = naver.maps.Event.addListener(naverMap.mapInstance, 'click', handleInteraction)
+    const dragStartListener = naver.maps.Event.addListener(naverMap.mapInstance, 'dragstart', handleInteraction)
+
+    // 컴포넌트 언마운트 시 리스너 제거
+    return () => {
+      naver.maps.Event.removeListener(clickListener)
+      naver.maps.Event.removeListener(dragStartListener)
+    }
+  }, [naverMap.isMapReady, naverMap.mapInstance, activeSnapIndex, setActiveSnapIndex])
 
   const resetStoreFilters = () => {
     setStoreSearchParams((prev) => ({ sort: prev.sort, page: 0 }))

@@ -1,7 +1,6 @@
 import { NotFound } from '@/shared/ui/not-found'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createRouter as createTanStackRouter, ErrorComponent } from '@tanstack/react-router'
-import React from 'react'
 import { routeTree } from './routeTree.gen'
 import { CategoryProvider } from '@/shared/context/category-context'
 

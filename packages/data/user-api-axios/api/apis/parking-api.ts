@@ -34,6 +34,8 @@ import { BASE_PATH, COLLECTION_FORMATS, type RequestArgs, BaseAPI, RequiredError
 // @ts-ignore
 import type { ParkingLotSearchRequest } from '../models'
 // @ts-ignore
+import type { ResponseDtoListParkingSimpleResponse } from '../models'
+// @ts-ignore
 import type { ResponseDtoPageResponseParkingLotListResponse } from '../models'
 // @ts-ignore
 import type { ResponseDtoPageSearchResponseParkingLotListResponse } from '../models'
@@ -122,6 +124,45 @@ export const ParkingApiAxiosParamCreator = function (configuration?: Configurati
         localVarRequestOptions,
         configuration
       )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * 필터 없이 주차장 이름으로만 전체 주차장을 검색하는 API입니다.
+     * @summary 가게 주차장 등록을 위한 이름 검색
+     * @param {string} query
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    searchForRegistration1: async (query: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'query' is not null or undefined
+      assertParamExists('searchForRegistration1', 'query', query)
+      const localVarPath = `/parking/text-search/name`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication Bearer Token required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      if (query !== undefined) {
+        localVarQueryParameter['query'] = query
+      }
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
 
       return {
         url: toPathString(localVarUrlObj),
@@ -232,6 +273,29 @@ export const ParkingApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
+     * 필터 없이 주차장 이름으로만 전체 주차장을 검색하는 API입니다.
+     * @summary 가게 주차장 등록을 위한 이름 검색
+     * @param {string} query
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async searchForRegistration1(
+      query: string,
+      options?: RawAxiosRequestConfig
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoListParkingSimpleResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.searchForRegistration1(query, options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ParkingApi.searchForRegistration1']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
      * 지도에서 주차장을 검색하는 API입니다.
      * @summary 지도 기반 주차장 검색
      * @param {ParkingLotSearchRequest} parkingLotSearchRequest
@@ -297,6 +361,21 @@ export const ParkingApiFactory = function (configuration?: Configuration, basePa
         .then((request) => request(axios, basePath))
     },
     /**
+     * 필터 없이 주차장 이름으로만 전체 주차장을 검색하는 API입니다.
+     * @summary 가게 주차장 등록을 위한 이름 검색
+     * @param {ParkingApiSearchForRegistration1Request} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    searchForRegistration1(
+      requestParameters: ParkingApiSearchForRegistration1Request,
+      options?: RawAxiosRequestConfig
+    ): AxiosPromise<ResponseDtoListParkingSimpleResponse> {
+      return localVarFp
+        .searchForRegistration1(requestParameters.query, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
      * 지도에서 주차장을 검색하는 API입니다.
      * @summary 지도 기반 주차장 검색
      * @param {ParkingApiSearchParkingLotsRequest} requestParameters Request parameters.
@@ -340,6 +419,20 @@ export interface ParkingApiSearchByText1Request {
    * @memberof ParkingApiSearchByText1
    */
   readonly parkingLotSearchRequest: ParkingLotSearchRequest
+}
+
+/**
+ * Request parameters for searchForRegistration1 operation in ParkingApi.
+ * @export
+ * @interface ParkingApiSearchForRegistration1Request
+ */
+export interface ParkingApiSearchForRegistration1Request {
+  /**
+   *
+   * @type {string}
+   * @memberof ParkingApiSearchForRegistration1
+   */
+  readonly query: string
 }
 
 /**
@@ -388,6 +481,23 @@ export class ParkingApi extends BaseAPI {
   public searchByText1(requestParameters: ParkingApiSearchByText1Request, options?: RawAxiosRequestConfig) {
     return ParkingApiFp(this.configuration)
       .searchByText1(requestParameters.parkingLotSearchRequest, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * 필터 없이 주차장 이름으로만 전체 주차장을 검색하는 API입니다.
+   * @summary 가게 주차장 등록을 위한 이름 검색
+   * @param {ParkingApiSearchForRegistration1Request} requestParameters Request parameters.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ParkingApi
+   */
+  public searchForRegistration1(
+    requestParameters: ParkingApiSearchForRegistration1Request,
+    options?: RawAxiosRequestConfig
+  ) {
+    return ParkingApiFp(this.configuration)
+      .searchForRegistration1(requestParameters.query, options)
       .then((request) => request(this.axios, this.basePath))
   }
 

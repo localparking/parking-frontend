@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
-import CoffeeImage from '@ui/common/assets/3d/coffee.png'
-import CashImage from '@ui/common/assets/3d/cash.png'
+import CoffeeImage from '@/assets/3d/coffee.png'
+import CashImage from '@/assets/3d/cash.png'
 
 const introSlidesData = [
   { step: 'landing-1', image: CashImage, alt: '현금 3D 이미지' },

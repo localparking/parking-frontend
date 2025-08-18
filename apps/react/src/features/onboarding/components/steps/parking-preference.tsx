@@ -1,10 +1,10 @@
 import React from 'react'
-import CashImage from '@ui/common/assets/3d/cash.png'
-import SpaceImage from '@ui/common/assets/3d/space.png'
-import LocationImage from '@ui/common/assets/3d/locate.png'
+import CashImage from '@/assets/3d/cash.png'
+import SpaceImage from '@/assets/3d/space.png'
+import LocationImage from '@/assets/3d/locate.png'
 import { cn } from '@ui/common/lib/utils'
-import { useOnboardingContext } from '../../context/onboarding-context'
-import { Weight } from '../../model'
+import { useOnboardingContext } from '@/features/onboarding/context/onboarding-context'
+import { Weight } from '@/features/onboarding/model'
 
 export const ParkingPreference: React.FC = () => {
   const { weight, setWeight } = useOnboardingContext()
@@ -28,7 +28,7 @@ export const ParkingPreference: React.FC = () => {
         여기는 것은 무엇인가요?
       </h1>
 
-      <div className="mt-[75px] flex w-full justify-center">
+      <div className="mt-12 flex w-full justify-center">
         <div className="grid grid-cols-2 gap-6">
           {preferences.map((preference, index) => {
             const isSelected = weight === preference.key
@@ -38,13 +38,8 @@ export const ParkingPreference: React.FC = () => {
                 onClick={() => setWeight(preference.key)}
                 className={cn(
                   'relative flex h-[140px] w-[130px] flex-col items-center justify-center rounded-[20px] border border-primary-1 p-4',
-                  {
-                    'bg-primary-1-lighter shadow-[0_0_5px_1px_var(--color-primary-2)]': isSelected,
-                    'bg-white': !isSelected,
-                  },
-                  {
-                    'col-span-2 mx-auto': index === 2,
-                  }
+                  isSelected ? 'bg-primary-3 text-primary-1 shadow-[0_0_5px_1px_var(--color-primary-2)]' : 'bg-white',
+                  { 'col-span-2 mx-auto': index === 2 }
                 )}
               >
                 <img

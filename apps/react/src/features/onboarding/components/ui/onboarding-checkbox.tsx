@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react'
-import CheckIcon from '@ui/common/assets/icons/check=2.svg'
 import { Link } from '@tanstack/react-router'
-import { ChevronRight } from 'lucide-react'
+import { LucideCheckCircle2 } from 'lucide-react'
 
 interface OnboardingCheckboxProps {
   id: string
@@ -32,7 +31,7 @@ const OnboardingCheckboxComponent: React.FC<OnboardingCheckboxProps> = ({
           <input type="checkbox" id={id} checked={checked} onChange={handleToggle} className="sr-only" />
           <div className="transition-all duration-200 ease-in-out">
             {checked ? (
-              <CheckIcon className="h-[22px] w-[22px]" />
+              <LucideCheckCircle2 className="h-[22px] w-[22px] text-primary-1" />
             ) : (
               <div className="h-[22px] w-[22px] rounded-full border-[1.3px] border-[#BCBCBC] transition-colors duration-200 hover:border-primary-1 active:border-primary-1" />
             )}

@@ -72,6 +72,11 @@
   --text-body-5--letter-spacing: 0em;
   --text-body-5--font-weight: 500; /* Medium */
 
+  --text-body-6: 0.875rem; /* 14px */
+  --text-body-6--line-height: 1.5625rem; /* 25px */
+  --text-body-6--letter-spacing: 0em;
+  --text-body-6--font-weight: 500; /* Medium */
+
   --text-caption-1: 0.875rem; /* 14px */
   --text-caption-1--line-height: 1.5625rem; /* 25px */
   --text-caption-1--letter-spacing: 0em;

@@ -12,7 +12,7 @@ export type DistanceLevel = 1 | 2 | null
 
 // 네이버 지도 줌 레벨에 따른 경계값 설정 (지도 줌 레벨이 나타내는 미터 기준)
 const ZOOM_LEVEL_FOR_300M = 15 // 이 레벨 이상이면 300m 미만 (5m~300m)
-const ZOOM_LEVEL_FOR_1KM = 13 // 이 레벨 이상이면 1km 미만 (300m~1km)
+const ZOOM_LEVEL_FOR_500M = 14 // 이 레벨 이상이면 1km 미만 (300m~1km)
 
 // 훅의 반환 타입을 정의합니다.
 export interface UseNaverMapResult {
@@ -41,13 +41,10 @@ export const useNaverMap = (mapId = 'map'): UseNaverMapResult => {
     const currentZoom = currentMapInfo.zoom
     if (currentZoom >= ZOOM_LEVEL_FOR_300M) {
       setDistanceLevel(1) // 2km 검색 (5m~300m 줌 레벨)
-      console.log('2km 검색 (5m~300m 줌 레벨)')
-    } else if (currentZoom >= ZOOM_LEVEL_FOR_1KM) {
-      setDistanceLevel(2) // 4km 검색 (300m~1km 줌 레벨)
-      console.log('4km 검색 (300m~1km 줌 레벨)')
+    } else if (currentZoom >= ZOOM_LEVEL_FOR_500M) {
+      setDistanceLevel(2) // 4km 검색 (300m~500m 줌 레벨)
     } else {
       setDistanceLevel(null) // 검색 불가 (1km 이상 줌 레벨)
-      console.log('검색 불가 (1km 이상 줌 레벨)')
     }
   }, [currentMapInfo.zoom])
 

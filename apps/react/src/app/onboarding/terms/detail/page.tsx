@@ -1,7 +1,7 @@
 import { OnboardingNavigationButtons } from '@/features/onboarding/components'
 import registerService from '@/shared/services/register.service'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
-import { ArrowLeft, Link } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import { z } from 'zod'
 
 const searchSchema = z.object({
