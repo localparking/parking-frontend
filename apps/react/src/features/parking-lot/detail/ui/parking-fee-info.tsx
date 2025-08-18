@@ -46,7 +46,13 @@ export const ParkingFeeInfo: React.FC<ParkingFeeInfoProps> = React.memo(({ feePo
 
   return (
     <section className="flex flex-col gap-2">
-      <h3 className="text-body-5 text-gray-1">주차 정보 상세</h3>
+      <h3 className="text-body-5">주차 정보 상세</h3>
+      {visibleFeeItems.length === 0 && (
+        <div className="flex h-12 w-full items-center justify-center">
+          <p className="text-caption-2 text-gray-2">주차 요금 정보가 없습니다.</p>
+        </div>
+      )}
+
       <ul className="space-y-2">
         {visibleFeeItems.map((item) => (
           <li key={item.label} className="flex items-center justify-between">

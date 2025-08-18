@@ -28,8 +28,8 @@ export const OperatingHours: React.FC<OperatingHoursProps> = React.memo(({ opera
         {operatingTable.map((item) => (
           <li key={item.label} className="flex items-center justify-between">
             <span className="text-caption-2 text-gray-2">{mapOperatingLabel(item.label)}</span>
-            <span className="flex gap-1 rounded-[5px] bg-gray-4 px-2 py-1 text-caption-4 text-gray-1">
-              <Clock size={12} className="flex-shrink-0" />
+            <span className="flex items-center gap-1 rounded-[5px] bg-gray-4 px-2 py-1 text-caption-4 text-gray-1">
+              <Clock size={12} />
               {item.slot ? formatTime(item.slot) : '정보 없음'}
             </span>
           </li>

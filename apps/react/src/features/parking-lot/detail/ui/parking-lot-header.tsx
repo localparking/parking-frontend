@@ -2,6 +2,7 @@ import React from 'react'
 import { cn } from '@ui/common/lib/utils'
 import { Clock, MapPin, Phone } from 'lucide-react'
 import type { ParkingLotDetailResponse } from '@data/user-api-axios/api'
+import parkingImage from '@/assets/icons/parking.png'
 
 type ParkingLotHeaderInfo = Omit<ParkingLotDetailResponse, 'feePolicy' | 'operatingTable' | 'associatedStores'>
 
@@ -36,15 +37,15 @@ export const ParkingLotHeader: React.FC<ParkingLotHeaderProps> = React.memo(({ i
 
   return (
     <div>
-      <div className="flex items-start gap-2">
-        <div className="h-[85px] w-[85px] flex-shrink-0">
-          <img src="/icons/parking-icon.png" alt="주차장" className="rounded-full" />
+      <div className="flex gap-2">
+        <div className="h-[87px] w-[83px]">
+          <img src={parkingImage} alt="주차장" className="rounded-full" />
         </div>
 
         <div className="flex flex-col gap-1">
-          <div className="text-caption-3 text-gray-2">{getParkingCapacityText(info)}</div>
+          <div className="text-caption-2 text-gray-2">{getParkingCapacityText(info)}</div>
           <div className="flex items-start gap-1">
-            <h2 className="text-body-4 text-gray-1">{info.name}</h2>
+            <h2 className="text-body-3 text-gray-1">{info.name}</h2>
             {congestion && (
               <span
                 className={cn(
@@ -57,22 +58,22 @@ export const ParkingLotHeader: React.FC<ParkingLotHeaderProps> = React.memo(({ i
             )}
           </div>
           {info.tel && (
-            <div className="flex w-fit gap-2">
-              <Phone size={12} className="flex-shrink-0" />
-              <span className="text-caption-3 text-gray-2">{info.tel}</span>
+            <div className="flex items-center gap-2 text-gray-2">
+              <Phone size={16} />
+              <span className="text-caption-2">{info.tel}</span>
             </div>
           )}
           {info.todayClosingTime && (
-            <div className="flex w-fit gap-2">
-              <Clock size={12} className="flex-shrink-0" />
-              <span className="text-caption-3 text-gray-2">{info.todayClosingTime}까지 영업</span>
+            <div className="flex items-center gap-2 text-gray-2">
+              <Clock size={16} />
+              <span className="text-caption-2">{info.todayClosingTime}까지 영업</span>
             </div>
           )}
 
           {info.address && (
-            <div className="flex w-fit gap-2">
-              <MapPin size={12} className="flex-shrink-0" />
-              <div className="text-caption-3 text-gray-2">{info.address}</div>
+            <div className="flex items-center gap-2 text-gray-2">
+              <MapPin size={16} />
+              <div className="text-caption-2">{info.address}</div>
             </div>
           )}
         </div>

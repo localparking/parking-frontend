@@ -54,7 +54,7 @@ export const StoreList: React.FC<StoreListProps> = (props) => {
       {...props}
       getKey={(store) => store.storeId}
       renderItem={(store) => <StoreItem store={store} />}
-      emptyMessage="주변에 매장가 없습니다."
+      emptyMessage="주변에 매장이 없습니다."
     />
   )
 }

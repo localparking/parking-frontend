@@ -3,6 +3,7 @@ import { MapPin, Phone } from 'lucide-react'
 import { cn } from '@ui/common/lib/utils'
 import type { StoreDetailResponse } from '@data/user-api-axios/api'
 import { StoreCategoryIcon } from '@/shared/ui/custom-icons'
+import StatusBadge from '@/shared/ui/status-badge'
 
 type StoreHeaderInfo = Omit<StoreDetailResponse, 'parkingBenefits' | 'associatedParkingLots'>
 
@@ -15,35 +16,26 @@ export const StoreHeader: React.FC<StoreHeaderProps> = React.memo(({ info }) => 
 
   return (
     <div>
-      <div className="flex items-start gap-3">
-        <div className="flex h-[82px] w-[82px] flex-shrink-0 items-center justify-center">
-          <StoreCategoryIcon category={mainCategory} className="h-full w-full rounded-lg" />
-        </div>
+      <div className="flex gap-3">
+        <StoreCategoryIcon category={mainCategory} className="flex h-[82px] w-[82px]" />
 
-        <div className="flex flex-col gap-1">
-          <div className="mb-1 text-caption-3 text-gray-2">{mainCategory?.categoryName || '카테고리'}</div>
-          <div className="flex items-start">
-            <h2 className="text-body-4 text-gray-1">{info.name}</h2>
-            <span
-              className={cn(
-                'mt-1 rounded-full px-2 py-0.5 text-[10px] font-semibold whitespace-nowrap',
-                info.isOpen ? 'bg-blue-50 text-blue-600' : 'bg-red-50 text-red-600'
-              )}
-            >
-              {info.isOpen ? '영업중' : '영업종료'} {info.todayClosingTime ? `${info.todayClosingTime}까지` : ''}
-            </span>
+        <div className="flex flex-col gap-1 py-[4.5px]">
+          <p className="text-caption-2 text-gray-2">{mainCategory?.categoryName || '카테고리'}</p>
+          <div className="flex items-center gap-1">
+            <h2 className="text-body-3 text-gray-1">{info.name}</h2>
+            <StatusBadge time={info.todayClosingTime} />
           </div>
           {info.tel && (
-            <div className="flex w-fit gap-2">
-              <Phone size={12} className="flex-shrink-0" />
-              <span className="text-caption-3 text-gray-2">{info.tel}</span>
+            <div className="flex items-center gap-2 text-gray-2">
+              <Phone size={16} />
+              <span className="text-caption-2">{info.tel}</span>
             </div>
           )}
 
           {info.address && (
-            <div className="flex w-fit gap-2">
-              <MapPin size={12} className="flex-shrink-0" />
-              <div className="text-caption-3 text-gray-2">{info.address}</div>
+            <div className="flex items-center gap-2 text-gray-2">
+              <MapPin size={16} />
+              <div className="text-caption-2">{info.address}</div>
             </div>
           )}
         </div>

@@ -2,9 +2,10 @@ import { cn } from '@ui/common/lib/utils'
 
 interface StatusBadgeProps {
   isOpen?: boolean
+  time?: string
 }
 
-function StatusBadge({ isOpen }: StatusBadgeProps) {
+function StatusBadge({ isOpen, time }: StatusBadgeProps) {
   if (isOpen === null) return null
 
   return (
@@ -14,7 +15,7 @@ function StatusBadge({ isOpen }: StatusBadgeProps) {
         isOpen ? 'bg-blue-50 text-blue-600' : 'bg-red-50 text-red-600'
       )}
     >
-      {isOpen ? '영업중' : '영업마감'}
+      {isOpen ? `영업중 ${time ?? ''}` : '영업마감'}
     </span>
   )
 }
