@@ -8,7 +8,7 @@ function MapSearchInputBox() {
   return (
     <div className="absolute top-[calc(var(--spacing-safe-top)+10px)] flex w-full gap-[10px] px-6">
       <Link
-        className="flex flex-1 items-center gap-[10px] rounded-[30px] border border-white bg-white px-[17px] py-[7px]"
+        className="flex h-12 flex-1 items-center gap-3 rounded-[30px] border-[1.5px] border-white bg-white px-4 py-3"
         to="/map/search"
       >
         <SearchIcon className="h-6 w-6 text-gray-2" />

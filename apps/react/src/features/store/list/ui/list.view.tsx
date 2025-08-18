@@ -13,7 +13,7 @@ interface StoreListProps {
   onFetchNextPage: () => void
 }
 
-const StoreItem: React.FC<{ store: StoreListResponse }> = ({ store }) => {
+export const StoreItem: React.FC<{ store: StoreListResponse }> = ({ store }) => {
   const { navigateToStoreDetail } = useNavigation()
   const { moveTo } = useMapContext().naverMap
 
