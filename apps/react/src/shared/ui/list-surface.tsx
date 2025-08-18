@@ -1,6 +1,7 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react'
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react'
 import { UseInfiniteQueryResult } from '@tanstack/react-query'
 import { InfiniteListView } from './infinite-list-view'
+import { useBottomSheet } from '../context/bottom-sheet-context'
 
 // 1. Context 생성
 interface ListSurfaceContextValue {
@@ -48,12 +49,22 @@ interface ListSurfaceProps {
 export const ListSurface: React.FC<ListSurfaceProps> & ListSurfaceComposition = ({ useDataQuery, children }) => {
   const [isFilterOpen, setFilterOpen] = useState(false)
   const queryResult = useDataQuery()
+  const { setActiveSnapIndex, activeSnapIndex } = useBottomSheet()
+
+  useEffect(() => {
+    if (isFilterOpen && activeSnapIndex !== 0) {
+      setFilterOpen(false)
+    }
+  }, [isFilterOpen, activeSnapIndex])
 
   return (
     <ListSurfaceContext.Provider
       value={{
         isFilterOpen,
-        openFilter: () => setFilterOpen(true),
+        openFilter: () => {
+          setFilterOpen(true)
+          setActiveSnapIndex(0)
+        },
         closeFilter: () => setFilterOpen(false),
         queryResult,
       }}

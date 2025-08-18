@@ -21,7 +21,6 @@ export const Route = createFileRoute('/map/')({
 function Map() {
   const { naverMap } = useMapContext()
   const { parkingLotId, storeId } = Route.useSearch()
-  const { content, activeSnapIndex, setActiveSnapIndex } = useBottomSheet()
 
   // URL 파라미터와 지도 타입에 따라 BottomSheet 내용을 업데이트하는 훅 호출
   useBottomSheetContent(storeId, parkingLotId)
@@ -43,9 +42,7 @@ function Map() {
         </div>
       )}
 
-      <BottomSheet activeSnapIndex={activeSnapIndex} setActiveSnapIndex={setActiveSnapIndex}>
-        {content}
-      </BottomSheet>
+      <BottomSheet />
     </>
   )
 }

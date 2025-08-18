@@ -1,13 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { motion, useMotionValue, useDragControls, animate, PanInfo } from 'framer-motion'
 import { cn } from '@ui/common/lib/utils'
-
-type BottomSheetProps = {
-  children: React.ReactNode
-  activeSnapIndex: number // 0: 최대, 1: 중간, 2: 최소
-  setActiveSnapIndex: (i: number) => void
-  className?: string
-}
+import { useBottomSheet } from '../context/bottom-sheet-context'
 
 const TOP_GAP = 300
 const BOTTOM_PEEK = 100
@@ -15,7 +9,9 @@ const HANDLE_H = 56 // 핸들 영역 고정 높이(px) (디자인에 맞게 조�
 const SPRING = { type: 'spring' as const, stiffness: 500, damping: 40 }
 const clamp = (v: number, min: number, max: number) => Math.min(Math.max(v, min), max)
 
-export default function BottomSheet({ children, activeSnapIndex, setActiveSnapIndex, className }: BottomSheetProps) {
+export default function BottomSheet() {
+  const { content, activeSnapIndex, setActiveSnapIndex } = useBottomSheet()
+
   const [vh, setVh] = useState<number>(typeof window !== 'undefined' ? window.innerHeight : 0)
   const y = useMotionValue(0)
   const dragControls = useDragControls()
@@ -82,8 +78,7 @@ export default function BottomSheet({ children, activeSnapIndex, setActiveSnapIn
       aria-modal="true"
       className={cn(
         'fixed bottom-0 z-[15] mx-auto w-full max-w-[768px] rounded-t-[50px] bg-white',
-        'flex min-h-0 flex-col', // 자식 스크롤 허용
-        className
+        'flex min-h-0 flex-col' // 자식 스크롤 허용
       )}
       style={{ height: maxHeight, y }} // 높이는 고정, 이동은 translateY만
       drag="y"
@@ -114,7 +109,7 @@ export default function BottomSheet({ children, activeSnapIndex, setActiveSnapIn
           paddingBottom: 'env(safe-area-inset-bottom)',
         }}
       >
-        {children}
+        {content}
       </div>
     </motion.div>
   )
