@@ -7,7 +7,7 @@ import { useAuth } from '@/features/auth'
 
 import MainLogoImage from '@/assets/images/logo.png'
 import KakaoLogoIcon from '@/assets/icons/kakao-logo.svg'
-import AppleLogoIcon from '@/assets/icons/app-logo.svg'
+import AppleLogoIcon from '@/assets/icons/apple-logo.svg'
 import Button from '@/shared/ui/button'
 
 export const Route = createFileRoute('/login/')({

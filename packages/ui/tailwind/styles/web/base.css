@@ -2,5 +2,7 @@
   body {
     font-family: var(--font-pretendard, 'Pretendard');
     color: var(--color-gray-1);
+    /* 스크롤 바운스 효과 제거 */
+    overscroll-behavior: none;
   }
 }

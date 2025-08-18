@@ -12,11 +12,11 @@ function MapLayout() {
   const isMapVisible = location.pathname === '/map'
 
   return (
-    <div className="relative h-screen w-full">
+    <div className="relative w-full flex-1">
       <div
         id="map"
-        className="absolute top-0 left-0 h-full w-full"
-        style={{ display: isMapVisible ? 'block' : 'none' }}
+        className="fixed top-0 left-0 h-dvh w-full max-w-[768px]"
+        style={{ visibility: isMapVisible ? 'visible' : 'hidden' }}
       />
 
       {!naverMap.isMapReady && isMapVisible && (

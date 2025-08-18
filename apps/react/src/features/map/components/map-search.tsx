@@ -6,7 +6,7 @@ function MapSearchInputBox() {
   const { searchKeyword } = useMapContext()
 
   return (
-    <div className="absolute top-[calc(var(--spacing-safe-top)+10px)] flex w-full gap-[10px] px-6">
+    <div className="absolute top-[calc(var(--spacing-safe-top)+10px)] z-10 flex w-full gap-[10px] px-6">
       <Link
         className="flex h-12 flex-1 items-center gap-3 rounded-[30px] border-[1.5px] border-white bg-white px-4 py-3"
         to="/map/search"

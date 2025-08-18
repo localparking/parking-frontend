@@ -63,16 +63,16 @@ export const SearchResults = ({ query }: SearchResultsProps) => {
 
   if (naverLoading) {
     return (
-      <div className="flex h-full items-center justify-center">
-        <p className="text-gray-2">검색 중입니다...</p>
+      <div className="flex h-full justify-center">
+        <p className="pt-12 text-gray-2">검색 중입니다...</p>
       </div>
     )
   }
 
   if (naverError) {
     return (
-      <div className="flex h-full items-center justify-center text-center">
-        <p className="text-red-500">
+      <div className="flex h-full justify-center">
+        <p className="pt-12 text-red-500">
           오류가 발생했습니다.
           <br />
           {naverError.message}
@@ -83,8 +83,8 @@ export const SearchResults = ({ query }: SearchResultsProps) => {
 
   if (!hasStores && !hasNaverResults) {
     return (
-      <div className="flex h-full items-center justify-center">
-        <p className="text-gray-2">검색 결과가 없습니다.</p>
+      <div className="flex h-full justify-center">
+        <p className="pt-12 text-gray-2">검색 결과가 없습니다.</p>
       </div>
     )
   }

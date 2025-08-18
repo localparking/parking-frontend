@@ -28,12 +28,12 @@ function RouteComponent() {
   const hasValue = query.trim().length > 0
 
   return (
-    <div className="flex h-full w-full flex-col px-6 pt-[10px]">
-      <div className="flex items-center gap-3">
+    <div className="absolute inset-0 z-20 flex flex-col bg-white px-6 pt-safe-top pb-safe-bottom">
+      <div className="flex items-center gap-3 pt-[10px]">
         <form
           onSubmit={handleSearch}
           aria-label="장소 검색"
-          className={cn('flex h-12 flex-1 items-center gap-3 rounded-[30px] border-[1.5px] border-gray-3 px-4 py-3')}
+          className={cn('relative flex h-12 items-center gap-3 rounded-[30px] border-[1.5px] border-gray-3 px-4 py-3')}
         >
           <SearchIcon className="h-6 w-6 text-gray-2" />
 
@@ -44,17 +44,16 @@ function RouteComponent() {
             onChange={(e) => setQuery(e.target.value)}
             placeholder="검색어를 입력하세요"
             autoFocus
-            className="flex-1 text-body-5 placeholder:text-body-5 focus:outline-none"
+            className="w-full flex-1 pr-8 text-body-5 placeholder:text-body-5 focus:outline-none"
           />
 
-          {/* 지우기 버튼: 값 있을 때만 노출 */}
           {hasValue && (
             <button
               type="button"
               onClick={clearQuery}
               title="지우기"
               aria-label="입력 내용 지우기"
-              className="flex h-9 w-9 items-center justify-center"
+              className="absolute top-1/2 right-4 flex h-9 w-9 -translate-y-1/2 items-center justify-center"
             >
               <X className="h-5 w-5 text-gray-3" />
               <span className="sr-only">지우기</span>
@@ -62,14 +61,12 @@ function RouteComponent() {
           )}
         </form>
 
-        {/* 취소 */}
-        <Link to=".." onClick={clearQuery} className="text-caption-2 text-gray-3 hover:text-gray-2">
-          취소
+        <Link to=".." onClick={clearQuery}>
+          <p className="text-caption-1 whitespace-nowrap text-gray-3 hover:text-gray-2">취소</p>
         </Link>
       </div>
 
-      {/* 검색 결과 */}
-      <div className="mt-4 flex-1 overflow-y-scroll scrollbar-hide">
+      <div className="mt-4 flex-1 overflow-y-auto scrollbar-hide">
         <SearchResults query={searchKeyword} />
       </div>
     </div>

@@ -34,10 +34,14 @@ function Map() {
 
       {naverMap.distanceLevel === null && (
         <div
-          className="absolute top-20 left-1/2 z-10 -translate-x-1/2 rounded-lg bg-black/60 p-3 text-sm text-white shadow-lg"
+          className="absolute top-34 left-1/2 z-10 -translate-x-1/2 rounded-lg bg-black/60 p-3 shadow-lg"
           aria-live="polite"
         >
-          지도를 확대하여 주변 정보를 확인하세요.
+          <p className="text-center text-caption-2 text-white">
+            지도를 확대하여
+            <br />
+            주변 정보를 확인하세요
+          </p>
         </div>
       )}
 
