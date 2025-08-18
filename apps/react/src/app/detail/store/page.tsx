@@ -1,15 +1,17 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { ParkingBenefits } from '@/features/store/detail'
 import storeService from '@/shared/services/store.service'
 import { DetailHeaderBar } from '@/shared/ui/detail-header-bar'
 import { formatPrice } from '@/shared/utils'
 import { createFileRoute, redirect } from '@tanstack/react-router'
-import { Minus, Plus, Trash2 } from 'lucide-react'
 import z from 'zod'
 import Button from '@/shared/ui/button'
+import { ParkingBenefitDto } from '@data/user-api-axios/api'
 import { useCart } from '@/features/store/context/cart-context'
 import { useOrderModal } from '@/features/store/hook/use-order-hook'
+import { ProductItem } from '@/features/store/order/ui/components/product-item'
 
+// --- 라우트 및 데이터 로딩 (변경 없음) ---
 const searchSchema = z.object({
   storeId: z.number().optional(),
 })
@@ -30,36 +32,61 @@ export const Route = createFileRoute('/detail/store/')({
 function RouteComponent() {
   const data = Route.useLoaderData()
   const navigate = Route.useNavigate()
+  const { cart } = useCart()
   const { backAlertModal } = useOrderModal()
 
-  const {
-    cart,
-    handleUpdateCart,
-    findItemInCart,
-    totalQuantity,
-    totalPrice,
-    parkingBenefitInfo,
-    setStoreContext,
-    clearCart,
-  } = useCart()
-
-  useEffect(() => {
-    if (data) setStoreContext(data.products, data.benefits)
-  }, [data, setStoreContext, clearCart])
-
   if (!data) return null
-  const isEmptyCart = cart.length === 0
+
+  // --- 이 페이지에서만 사용하는 파생 데이터 계산 로직 ---
+  const { totalQuantity, totalPrice, parkingBenefitInfo } = useMemo(() => {
+    const productsById = new Map(data.products.map((p) => [p.productId, p]))
+    const totalQty = cart.reduce((sum, item) => sum + item.quantity, 0)
+    const totalPr = cart.reduce((sum, item) => {
+      const product = productsById.get(item.productId)
+      return sum + (product ? product.price * item.quantity : 0)
+    }, 0)
+
+    const sortedBenefits = [...data.benefits].sort((a, b) => a.purchaseAmount - b.purchaseAmount)
+    let currentBenefit: ParkingBenefitDto | null = null
+    let nextBenefit: ParkingBenefitDto | null = null
+    let remainingForNext = 0
+
+    for (const benefit of sortedBenefits) {
+      if (totalPr >= benefit.purchaseAmount) {
+        currentBenefit = benefit
+      } else {
+        nextBenefit = benefit
+        break
+      }
+    }
+
+    if (nextBenefit) {
+      remainingForNext = nextBenefit.purchaseAmount - totalPr
+    }
+
+    return {
+      totalQuantity: totalQty,
+      totalPrice: totalPr,
+      parkingBenefitInfo: {
+        currentBenefit,
+        nextBenefit,
+        remainingForNext,
+      },
+    }
+  }, [cart, data.products, data.benefits])
+
+  const isEmpty = cart.length === 0
 
   return (
-    <div className={!isEmptyCart ? 'pb-[130px]' : ''}>
+    <div className="pb-[130px]">
       <DetailHeaderBar
         title={data.storeName}
         onBackClick={() => {
-          if (isEmptyCart) {
-            navigate({ to: '/map', replace: true })
-            return
+          if (isEmpty) {
+            navigate({ to: '/map' })
+          } else {
+            backAlertModal()
           }
-          backAlertModal()
         }}
       />
 
@@ -68,54 +95,9 @@ function RouteComponent() {
           <ParkingBenefits benefits={data.benefits} title={`${data.storeName}의 주차 혜택`} className="text-body-4" />
         </div>
 
-        {data.products.map((product) => {
-          const cartItem = findItemInCart(product.productId)
-          const quantity = cartItem?.quantity ?? 0
-
-          return (
-            <div className="flex items-center gap-2.5 py-1" key={product.productId}>
-              <div className="flex-1 space-y-2.5 py-3">
-                <h2 className="text-body-4">{product.name}</h2>
-                <p className="text-caption-2 break-keep text-gray-2">{product.description}</p>
-                <p className="text-caption-1">{formatPrice(product.price)}</p>
-              </div>
-
-              <div className="w-24 flex-shrink-0 space-y-2">
-                <div className="relative flex h-20 w-24 items-center justify-center rounded-[5px]">
-                  <img src={product.imageUrl} alt={product.name} className="h-full w-full rounded-[5px] object-cover" />
-                  {!cartItem && (
-                    <button
-                      onClick={() => handleUpdateCart(product.productId, 1)}
-                      className="absolute right-0 -bottom-4 flex h-[25px] w-[25px] items-center justify-center rounded-full bg-white shadow-[0_0_4px_rgba(0,0,0,0.25)]"
-                      aria-label={`${product.name} 장바구니에 추가`}
-                    >
-                      <Plus className="h-4.5 w-4.5 text-gray-2" />
-                    </button>
-                  )}
-                  {cartItem && (
-                    <div className="absolute -bottom-6 flex w-full items-center justify-between rounded-[5px] bg-white px-1.5 py-1 shadow-[0_0_4px_rgba(0,0,0,0.25)]">
-                      <button
-                        onClick={() => handleUpdateCart(product.productId, quantity - 1)}
-                        className="flex items-center justify-center text-gray-2"
-                        aria-label={`${product.name} 수량 감소 또는 제거`}
-                      >
-                        {quantity > 1 ? <Minus className="h-4 w-4" /> : <Trash2 className="h-4 w-4" />}
-                      </button>
-                      <p className="text-body-5 select-none">{quantity}</p>
-                      <button
-                        onClick={() => handleUpdateCart(product.productId, quantity + 1)}
-                        className="flex items-center justify-center text-gray-2"
-                        aria-label={`${product.name} 수량 증가`}
-                      >
-                        <Plus className="h-4 w-4" />
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          )
-        })}
+        {data.products.map((product) => (
+          <ProductItem product={product} />
+        ))}
       </section>
 
       {cart.length > 0 && (
@@ -143,7 +125,10 @@ function RouteComponent() {
               <p className="text-caption-2">{`총 ${totalQuantity}개가 담겼어요!`}</p>
             </div>
 
-            <Button className="w-fit">
+            <Button
+              className="w-fit"
+              onClick={() => navigate({ to: '/detail/store/order', search: { storeId: data.storeId } })}
+            >
               <p className="text-caption-2">{`${formatPrice(totalPrice)} 결제하기`}</p>
             </Button>
           </div>

@@ -24,6 +24,7 @@ import { Route as MapSearchPageImport } from './app/map/search/page'
 import { Route as LoginSuccessPageImport } from './app/login/success/page'
 import { Route as DetailStorePageImport } from './app/detail/store/page'
 import { Route as OnboardingTermsDetailPageImport } from './app/onboarding/terms/detail/page'
+import { Route as DetailStoreOrderPageImport } from './app/detail/store/order/page'
 
 // Create/Update Routes
 
@@ -104,6 +105,12 @@ const OnboardingTermsDetailPageRoute = OnboardingTermsDetailPageImport.update({
   id: '/terms/detail/',
   path: '/terms/detail/',
   getParentRoute: () => OnboardingLayoutRoute,
+} as any)
+
+const DetailStoreOrderPageRoute = DetailStoreOrderPageImport.update({
+  id: '/store/order/',
+  path: '/store/order/',
+  getParentRoute: () => DetailLayoutRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -194,6 +201,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingTermsPageImport
       parentRoute: typeof OnboardingLayoutImport
     }
+    '/detail/store/order/': {
+      id: '/detail/store/order/'
+      path: '/store/order'
+      fullPath: '/detail/store/order'
+      preLoaderRoute: typeof DetailStoreOrderPageImport
+      parentRoute: typeof DetailLayoutImport
+    }
     '/onboarding/terms/detail/': {
       id: '/onboarding/terms/detail/'
       path: '/terms/detail'
@@ -208,10 +222,12 @@ declare module '@tanstack/react-router' {
 
 interface DetailLayoutRouteChildren {
   DetailStorePageRoute: typeof DetailStorePageRoute
+  DetailStoreOrderPageRoute: typeof DetailStoreOrderPageRoute
 }
 
 const DetailLayoutRouteChildren: DetailLayoutRouteChildren = {
   DetailStorePageRoute: DetailStorePageRoute,
+  DetailStoreOrderPageRoute: DetailStoreOrderPageRoute,
 }
 
 const DetailLayoutRouteWithChildren = DetailLayoutRoute._addFileChildren(
@@ -262,6 +278,7 @@ export interface FileRoutesByFullPath {
   '/onboarding/final-onboarding': typeof OnboardingFinalOnboardingPageRoute
   '/onboarding/landing': typeof OnboardingLandingPageRoute
   '/onboarding/terms': typeof OnboardingTermsPageRoute
+  '/detail/store/order': typeof DetailStoreOrderPageRoute
   '/onboarding/terms/detail': typeof OnboardingTermsDetailPageRoute
 }
 
@@ -277,6 +294,7 @@ export interface FileRoutesByTo {
   '/onboarding/final-onboarding': typeof OnboardingFinalOnboardingPageRoute
   '/onboarding/landing': typeof OnboardingLandingPageRoute
   '/onboarding/terms': typeof OnboardingTermsPageRoute
+  '/detail/store/order': typeof DetailStoreOrderPageRoute
   '/onboarding/terms/detail': typeof OnboardingTermsDetailPageRoute
 }
 
@@ -294,6 +312,7 @@ export interface FileRoutesById {
   '/onboarding/final-onboarding/': typeof OnboardingFinalOnboardingPageRoute
   '/onboarding/landing/': typeof OnboardingLandingPageRoute
   '/onboarding/terms/': typeof OnboardingTermsPageRoute
+  '/detail/store/order/': typeof DetailStoreOrderPageRoute
   '/onboarding/terms/detail/': typeof OnboardingTermsDetailPageRoute
 }
 
@@ -312,6 +331,7 @@ export interface FileRouteTypes {
     | '/onboarding/final-onboarding'
     | '/onboarding/landing'
     | '/onboarding/terms'
+    | '/detail/store/order'
     | '/onboarding/terms/detail'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -326,6 +346,7 @@ export interface FileRouteTypes {
     | '/onboarding/final-onboarding'
     | '/onboarding/landing'
     | '/onboarding/terms'
+    | '/detail/store/order'
     | '/onboarding/terms/detail'
   id:
     | '__root__'
@@ -341,6 +362,7 @@ export interface FileRouteTypes {
     | '/onboarding/final-onboarding/'
     | '/onboarding/landing/'
     | '/onboarding/terms/'
+    | '/detail/store/order/'
     | '/onboarding/terms/detail/'
   fileRoutesById: FileRoutesById
 }
@@ -387,7 +409,8 @@ export const routeTree = rootRoute
     "/detail": {
       "filePath": "detail/layout.tsx",
       "children": [
-        "/detail/store/"
+        "/detail/store/",
+        "/detail/store/order/"
       ]
     },
     "/map": {
@@ -435,6 +458,10 @@ export const routeTree = rootRoute
     "/onboarding/terms/": {
       "filePath": "onboarding/terms/page.tsx",
       "parent": "/onboarding"
+    },
+    "/detail/store/order/": {
+      "filePath": "detail/store/order/page.tsx",
+      "parent": "/detail"
     },
     "/onboarding/terms/detail/": {
       "filePath": "onboarding/terms/detail/page.tsx",
