@@ -32,7 +32,12 @@ export function DetailHeaderBar({
   }
 
   return (
-    <header className={cn('relative flex h-[50px] w-full items-center justify-between bg-white px-6 py-3', className)}>
+    <header
+      className={cn(
+        'fixed top-safe-top z-[50] flex h-[50px] w-full max-w-[768px] items-center justify-between bg-white px-6 py-3',
+        className
+      )}
+    >
       <div className="z-10 flex h-[30px] w-[30px] items-center justify-center">
         {showBackButton && !left && (
           <button type="button" onClick={handleBackClick} className="p-2">

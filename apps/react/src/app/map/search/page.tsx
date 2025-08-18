@@ -29,6 +29,7 @@ function RouteComponent() {
 
   return (
     <div className="absolute inset-0 z-20 flex flex-col bg-white px-6 pt-safe-top pb-safe-bottom">
+      <div className="fixed top-0 h-safe-top w-full bg-white" />
       <div className="flex items-center gap-3 pt-[10px]">
         <form
           onSubmit={handleSearch}
