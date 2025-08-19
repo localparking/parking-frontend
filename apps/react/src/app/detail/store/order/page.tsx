@@ -6,13 +6,16 @@ import { createFileRoute, redirect } from '@tanstack/react-router'
 import z from 'zod'
 import Button from '@/shared/ui/button'
 import { useCart } from '@/features/store/context/cart-context'
-import { ProductItem } from '@/features/store/order/ui/components/product-item'
+
 import { CheckCircle2, ChevronDown, ChevronUp, MapPin, ShoppingCart } from 'lucide-react'
 import { StoreCategoryIcon } from '@/shared/ui'
 import StatusBadge from '@/shared/ui/status-badge'
 import { ParkingBenefitDto } from '@data/user-api-axios/api'
 import { cn } from '@ui/common/lib/utils'
-import { VistorInfoSheet } from '@/features/store/detail/ui/vistior-info'
+import { ProductItem } from '@/features/store/order/ui/product-item'
+import { VehicleInfoSheet } from '@/features/store/order/ui/vehicle-info-sheet'
+import { VisitTimeSheet } from '@/features/store/order/ui/visit-time-sheet'
+import { VisitorInfoSheet } from '@/features/store/order/ui/vistior-info-sheet'
 
 // --- 라우트 및 데이터 로딩 (변경 없음) ---
 const searchSchema = z.object({
@@ -39,6 +42,16 @@ function RouteComponent() {
   const navigate = Route.useNavigate()
   const { cart } = useCart()
   const [isBenefitDetailsVisible, setIsBenefitDetailsVisible] = useState(true)
+
+  // --- Sheet 상태 관리 ---
+  const [isVisitorSheetOpen, setIsVisitorSheetOpen] = useState(false)
+  const [isVehicleSheetOpen, setIsVehicleSheetOpen] = useState(false)
+  const [isTimeSheetOpen, setIsTimeSheetOpen] = useState(false)
+
+  // --- 데이터 상태 관리 ---
+  const [visitorInfo, setVisitorInfo] = useState({ name: '', tel: '', regionName: '' })
+  const [vehicleNumber, setVehicleNumber] = useState('')
+  const [visitTime, setVisitTime] = useState('')
 
   if (!storeResponse) return null
 
@@ -94,11 +107,31 @@ function RouteComponent() {
     })
   }, [cart, storeResponse])
 
+  const handleSubmitOrder = () => {
+    const orderData = {
+      visitorInfo: {
+        ...visitorInfo,
+        vehicleNumber,
+      },
+      orderItems: cart.map((item) => ({
+        productId: item.productId,
+        quantity: item.quantity,
+      })),
+      visitTime: visitTime,
+      clientTotalPrice: totalPrice,
+    }
+
+    console.log('Final Order Data:', JSON.stringify(orderData, null, 2))
+    alert('주문 정보가 콘솔에 출력되었습니다.')
+  }
+
+  const isSubmitDisabled = !visitorInfo.name || !visitorInfo.tel || !vehicleNumber || !visitTime || cart.length === 0
+
   if (!cartProducts || cartProducts.length === 0) {
     return (
-      <div className="flex h-screen flex-col items-center justify-center">
+      <div className="flex h-full flex-col items-center justify-center gap-[25px] text-gray-2">
         <ShoppingCart className="h-18 w-18 text-gray-3" />
-        <p>선택한 가게 상품이 없습니다</p>
+        <p className="text-body-4">선택한 가게 상품이 없습니다</p>
         <div className="fixed bottom-safe-bottom w-full p-6">
           <Button onClick={() => navigate({ to: '/detail/store', search: { storeId: storeResponse.storeId } })}>
             돌아가기
@@ -136,17 +169,41 @@ function RouteComponent() {
         <div className="space-y-3">
           <h3 className="text-body-4">방문 정보</h3>
           <div className="space-y-2.5">
-            <div className="flex items-center justify-between" onClick={() => {}}>
+            <div className="flex items-center justify-between">
               <p className="text-caption-1 text-gray-2">방문자 정보</p>
-              <button className="rounded-[10px] bg-gray-4 px-3 py-2 text-caption-2">방문자 정보를 입력하세요</button>
+              <button
+                onClick={() => setIsVisitorSheetOpen(true)}
+                className="rounded-[10px] bg-gray-4 px-3 py-2 text-caption-2"
+              >
+                {visitorInfo.name ? `${visitorInfo.name} / ${visitorInfo.tel}` : '방문자 정보를 입력하세요'}
+              </button>
             </div>
             <div className="flex items-center justify-between">
               <p className="text-caption-1 text-gray-2">방문 예정 시간</p>
-              <button className="rounded-[10px] bg-gray-4 px-3 py-2 text-caption-2">방문 예정 시간을 입력하세요</button>
+              <button
+                onClick={() => setIsTimeSheetOpen(true)}
+                className="rounded-[10px] bg-gray-4 px-3 py-2 text-caption-2"
+              >
+                {visitTime
+                  ? new Date(visitTime).toLocaleString('ko-KR', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                      hour: 'numeric',
+                      minute: 'numeric',
+                      hour12: true,
+                    })
+                  : '방문 예정 시간을 입력하세요'}
+              </button>
             </div>
             <div className="flex items-center justify-between">
               <p className="text-caption-1 text-gray-2">차량 번호</p>
-              <button className="rounded-[10px] bg-gray-4 px-3 py-2 text-caption-2">차량 번호를 입력하세요</button>
+              <button
+                onClick={() => setIsVehicleSheetOpen(true)}
+                className="rounded-[10px] bg-gray-4 px-3 py-2 text-caption-2"
+              >
+                {vehicleNumber || '차량 번호를 입력하세요'}
+              </button>
             </div>
           </div>
         </div>
@@ -171,9 +228,9 @@ function RouteComponent() {
                   : '혜택 없음'}
               </p>
               {isBenefitDetailsVisible ? (
-                <ChevronDown className="h-6 w-6 text-gray-2" />
-              ) : (
                 <ChevronUp className="h-6 w-6 text-gray-2" />
+              ) : (
+                <ChevronDown className="h-6 w-6 text-gray-2" />
               )}
             </div>
           </div>
@@ -236,10 +293,29 @@ function RouteComponent() {
       </section>
 
       <div className="w-full p-6">
-        <Button onClick={() => navigate({ to: '/map' })}>결제하기</Button>
+        <Button onClick={handleSubmitOrder} disabled={isSubmitDisabled}>
+          결제하기
+        </Button>
       </div>
 
-      <VistorInfoSheet isOpen={true} onOpenChange={() => {}} />
+      <VisitorInfoSheet
+        isOpen={isVisitorSheetOpen}
+        onOpenChange={setIsVisitorSheetOpen}
+        onSave={setVisitorInfo}
+        initialData={visitorInfo}
+      />
+      <VehicleInfoSheet
+        isOpen={isVehicleSheetOpen}
+        onOpenChange={setIsVehicleSheetOpen}
+        onSave={setVehicleNumber}
+        initialData={vehicleNumber}
+      />
+      <VisitTimeSheet
+        isOpen={isTimeSheetOpen}
+        onOpenChange={setIsTimeSheetOpen}
+        onSave={setVisitTime}
+        initialData={visitTime}
+      />
     </div>
   )
 }

@@ -1,27 +1,45 @@
 import { X } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import { Sheet, SheetContent, SheetTitle } from '@/shared/ui/sheet'
 import { Input } from '@/shared/ui/input'
 import Button from '@/shared/ui/button'
 import { useKeyboardSheetMotion } from '@/shared/hooks/use-keyboard-motion'
 
-interface VistorInfoSheetProps {
-  isOpen: boolean
-  onOpenChange: (open: boolean) => void
-  onSuccess?: () => void
+interface VisitorInfo {
+  name: string
+  tel: string
+  regionName: string
 }
 
-export function VistorInfoSheet({ isOpen, onOpenChange, onSuccess }: VistorInfoSheetProps) {
-  const [name, setName] = useState('')
-  const [phone, setPhone] = useState('')
+interface VisitorInfoSheetProps {
+  isOpen: boolean
+  onOpenChange: (open: boolean) => void
+  onSave: (info: VisitorInfo) => void
+  initialData?: VisitorInfo
+}
+
+export function VisitorInfoSheet({ isOpen, onOpenChange, onSave, initialData }: VisitorInfoSheetProps) {
+  const [name, setName] = useState(initialData?.name || '')
+  const [tel, setTel] = useState(initialData?.tel || '')
+  const [regionName, setRegionName] = useState(initialData?.regionName || '')
 
   const { motionKeyboardBottom } = useKeyboardSheetMotion()
 
-  const handleSubmit = () => {}
+  useEffect(() => {
+    if (initialData) {
+      setName(initialData.name)
+      setTel(initialData.tel)
+      setRegionName(initialData.regionName)
+    }
+  }, [initialData])
+
+  const handleSubmit = () => {
+    onSave({ name, tel, regionName })
+    handleClose()
+  }
 
   const handleClose = () => {
-    setName('')
     onOpenChange(false)
   }
 
@@ -54,17 +72,20 @@ export function VistorInfoSheet({ isOpen, onOpenChange, onSuccess }: VistorInfoS
 
           <div className="space-y-1">
             <p className="pb-1 text-body-5">전화번호</p>
+            <Input type="tel" value={tel} onChange={(e) => setTel(e.target.value)} placeholder="010-1234-5678" />
+          </div>
+          <div className="space-y-1">
+            <p className="pb-1 text-body-5">지역명</p>
             <Input
               type="text"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="방문자 전화번호를 입력해주세요"
-              maxLength={10}
+              value={regionName}
+              onChange={(e) => setRegionName(e.target.value)}
+              placeholder="서울시 강남구"
             />
           </div>
 
           <div className="my-5">
-            <Button onClick={handleSubmit} disabled={!name.trim() || !phone.trim()}>
+            <Button onClick={handleSubmit} disabled={!name.trim() || !tel.trim() || !regionName.trim()}>
               저장하기
             </Button>
           </div>
