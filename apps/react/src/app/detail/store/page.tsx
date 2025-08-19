@@ -34,7 +34,7 @@ function RouteComponent() {
   const data = Route.useLoaderData()
   const navigate = Route.useNavigate()
   const { cart } = useCart()
-  const { backAlertModal } = useOrderModal(data)
+  const { backAlertModal } = useOrderModal()
 
   if (!data) return null
 
@@ -86,7 +86,7 @@ function RouteComponent() {
           if (isEmpty) {
             navigate({ to: '/map' })
           } else {
-            backAlertModal()
+            backAlertModal({ storeId: data.storeId.toString() })
           }
         }}
       />

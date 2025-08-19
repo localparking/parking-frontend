@@ -24,7 +24,7 @@ export const ParkingBenefits: React.FC<ParkingBenefitsProps> = React.memo(
 
         <ul className="space-y-2">
           {benefits.map((benefit) => (
-            <li className="flex items-center justify-between">
+            <li className="flex items-center justify-between" key={benefit.benefitId}>
               <span className="text-caption-2 text-gray-2"> {formatPrice(benefit.purchaseAmount)} 구매시</span>
               <span className="flex w-25 items-center gap-1 rounded-[5px] bg-primary-3 px-2 py-1 text-caption-4 text-primary-1">
                 <CircleParking size={12} />

@@ -153,7 +153,7 @@ function RouteComponent() {
         <div className="space-y-3">
           <h3 className="text-body-4">장바구니</h3>
           {cartProducts.map((product) => (
-            <ProductItem key={product.productId} product={product} />
+            <ProductItem key={product.productId} product={product} safeRemove />
           ))}
         </div>
 

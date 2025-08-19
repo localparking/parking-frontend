@@ -2,13 +2,16 @@ import { Minus, Plus, Trash2 } from 'lucide-react'
 import { formatPrice } from '@/shared/utils'
 import { ProductResponseDto } from '@data/user-api-axios/api'
 import { useCart } from '@/features/store/context/cart-context'
+import { useOrderModal } from '@/features/store/hook/use-order-hook'
 
 interface ProductItemProps {
   product: ProductResponseDto
+  safeRemove?: boolean
 }
 
-export const ProductItem = ({ product }: ProductItemProps) => {
+export const ProductItem = ({ product, safeRemove }: ProductItemProps) => {
   const { handleUpdateCart, findItemInCart } = useCart()
+  const { deleteItemModal } = useOrderModal()
   const cartItem = findItemInCart(product.productId)
   const quantity = cartItem?.quantity ?? 0
 
@@ -37,7 +40,15 @@ export const ProductItem = ({ product }: ProductItemProps) => {
           {cartItem && (
             <div className="absolute -bottom-6 flex w-full items-center justify-between rounded-[5px] bg-white px-1.5 py-1 shadow-[0_0_4px_rgba(0,0,0,0.25)]">
               <button
-                onClick={() => handleUpdateCart(product.productId, quantity - 1)}
+                onClick={() => {
+                  if (safeRemove && quantity <= 1) {
+                    deleteItemModal({
+                      onConfirm: () => handleUpdateCart(product.productId, quantity - 1),
+                    })
+                  } else {
+                    handleUpdateCart(product.productId, quantity - 1)
+                  }
+                }}
                 className="flex items-center justify-center text-gray-2"
                 aria-label={`${product.name} 수량 감소 또는 제거`}
               >
