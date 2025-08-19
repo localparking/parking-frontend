@@ -37,12 +37,49 @@ import type { OrderRequestDto } from '../models'
 import type { ResponseDtoOrderResponseDto } from '../models'
 // @ts-ignore
 import type { ResponseDtoPaymentWidgetInfoResponseDto } from '../models'
+// @ts-ignore
+import type { ResponseDtoUnit } from '../models'
 /**
  * OrderApi - axios parameter creator
  * @export
  */
 export const OrderApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
+    /**
+     * 결제가 완료된 특정 주문 건의 상세 내역을 조회합니다.
+     * @summary 결제 완료 건 상세 조회
+     * @param {string} orderId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPaidOrderDetail: async (orderId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'orderId' is not null or undefined
+      assertParamExists('getPaidOrderDetail', 'orderId', orderId)
+      const localVarPath = `/order/{orderId}`.replace(`{${'orderId'}}`, encodeURIComponent(String(orderId)))
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication Bearer Token required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
     /**
      * 프론트에서 결제 성공 후 호출되어 최종 결제 승인을 진행합니다.
      * @summary 결제 성공 후처리
@@ -157,6 +194,29 @@ export const OrderApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = OrderApiAxiosParamCreator(configuration)
   return {
     /**
+     * 결제가 완료된 특정 주문 건의 상세 내역을 조회합니다.
+     * @summary 결제 완료 건 상세 조회
+     * @param {string} orderId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getPaidOrderDetail(
+      orderId: string,
+      options?: RawAxiosRequestConfig
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoOrderResponseDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getPaidOrderDetail(orderId, options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['OrderApi.getPaidOrderDetail']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
      * 프론트에서 결제 성공 후 호출되어 최종 결제 승인을 진행합니다.
      * @summary 결제 성공 후처리
      * @param {string} paymentKey
@@ -170,7 +230,7 @@ export const OrderApiFp = function (configuration?: Configuration) {
       orderId: string,
       amount: number,
       options?: RawAxiosRequestConfig
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoOrderResponseDto>> {
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoUnit>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.handlePaymentSuccess(
         paymentKey,
         orderId,
@@ -224,6 +284,21 @@ export const OrderApiFactory = function (configuration?: Configuration, basePath
   const localVarFp = OrderApiFp(configuration)
   return {
     /**
+     * 결제가 완료된 특정 주문 건의 상세 내역을 조회합니다.
+     * @summary 결제 완료 건 상세 조회
+     * @param {OrderApiGetPaidOrderDetailRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPaidOrderDetail(
+      requestParameters: OrderApiGetPaidOrderDetailRequest,
+      options?: RawAxiosRequestConfig
+    ): AxiosPromise<ResponseDtoOrderResponseDto> {
+      return localVarFp
+        .getPaidOrderDetail(requestParameters.orderId, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
      * 프론트에서 결제 성공 후 호출되어 최종 결제 승인을 진행합니다.
      * @summary 결제 성공 후처리
      * @param {OrderApiHandlePaymentSuccessRequest} requestParameters Request parameters.
@@ -233,7 +308,7 @@ export const OrderApiFactory = function (configuration?: Configuration, basePath
     handlePaymentSuccess(
       requestParameters: OrderApiHandlePaymentSuccessRequest,
       options?: RawAxiosRequestConfig
-    ): AxiosPromise<ResponseDtoOrderResponseDto> {
+    ): AxiosPromise<ResponseDtoUnit> {
       return localVarFp
         .handlePaymentSuccess(
           requestParameters.paymentKey,
@@ -259,6 +334,20 @@ export const OrderApiFactory = function (configuration?: Configuration, basePath
         .then((request) => request(axios, basePath))
     },
   }
+}
+
+/**
+ * Request parameters for getPaidOrderDetail operation in OrderApi.
+ * @export
+ * @interface OrderApiGetPaidOrderDetailRequest
+ */
+export interface OrderApiGetPaidOrderDetailRequest {
+  /**
+   *
+   * @type {string}
+   * @memberof OrderApiGetPaidOrderDetail
+   */
+  readonly orderId: string
 }
 
 /**
@@ -317,6 +406,20 @@ export interface OrderApiOrderProductsRequest {
  * @extends {BaseAPI}
  */
 export class OrderApi extends BaseAPI {
+  /**
+   * 결제가 완료된 특정 주문 건의 상세 내역을 조회합니다.
+   * @summary 결제 완료 건 상세 조회
+   * @param {OrderApiGetPaidOrderDetailRequest} requestParameters Request parameters.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof OrderApi
+   */
+  public getPaidOrderDetail(requestParameters: OrderApiGetPaidOrderDetailRequest, options?: RawAxiosRequestConfig) {
+    return OrderApiFp(this.configuration)
+      .getPaidOrderDetail(requestParameters.orderId, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
   /**
    * 프론트에서 결제 성공 후 호출되어 최종 결제 승인을 진행합니다.
    * @summary 결제 성공 후처리

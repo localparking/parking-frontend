@@ -56,6 +56,7 @@ models/parking-lot-list-response.ts
 models/parking-lot-manual-request-dto.ts
 models/parking-lot-search-request.ts
 models/parking-simple-response.ts
+models/parking-status-response-dto.ts
 models/payment-widget-info-response-dto.ts
 models/presigned-url-response.ts
 models/product-order-item-dto.ts
@@ -81,6 +82,7 @@ models/response-dto-page-search-response-parking-lot-list-response.ts
 models/response-dto-page-search-response-store-list-response.ts
 models/response-dto-parking-benefit-dto.ts
 models/response-dto-parking-lot-detail-response.ts
+models/response-dto-parking-status-response-dto.ts
 models/response-dto-payment-widget-info-response-dto.ts
 models/response-dto-presigned-url-response.ts
 models/response-dto-product-response-dto.ts

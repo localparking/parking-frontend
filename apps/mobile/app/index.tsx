@@ -1,7 +1,9 @@
-import React, { useRef, useCallback } from 'react'
-import { View, StyleSheet, StatusBar, Platform } from 'react-native'
-import { createWebView, type BridgeWebView } from '@webview-bridge/react-native'
+import React, { useRef, useCallback, useEffect } from 'react'
+import { View, StyleSheet, StatusBar, Platform, Keyboard, LayoutAnimation } from 'react-native'
+import { createWebView, useBridge, type BridgeWebView } from '@webview-bridge/react-native'
 import { appBridge, appSchema } from './bridge'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { WebViewError } from './component/webview-error'
 
 export const { WebView, postMessage } = createWebView({
   bridge: appBridge,
@@ -14,16 +16,39 @@ export const { WebView, postMessage } = createWebView({
 
 export default function App() {
   const webviewRef = useRef<BridgeWebView>(null)
+  const { setKeyboardHeight } = useBridge(appBridge)
 
-  const webviewUrl =
-    Platform.OS === 'android' ? process.env.EXPO_PUBLIC_ANDROID_WEB_VIEW_URL : process.env.EXPO_PUBLIC_IOS_WEB_VIEW_URL
+  const insets = useSafeAreaInsets()
+
+  const webviewUrl = process.env.EXPO_PUBLIC_WEB_VIEW_URL
+  // const webviewUrl =
+  //   Platform.OS === 'android' ? process.env.EXPO_PUBLIC_ANDROID_WEB_VIEW_URL : process.env.EXPO_PUBLIC_IOS_WEB_VIEW_URL
 
   if (!webviewUrl) {
     throw new Error('Webview URL is not set')
   }
 
-  const handleLoadEnd = useCallback(() => {
-    console.log('WebView loading finished')
+  useEffect(() => {
+    if (Platform.OS !== 'ios') return
+    const showEvent = 'keyboardWillShow'
+    const hideEvent = 'keyboardWillHide'
+    const showSub = Keyboard.addListener(showEvent, (e) => {
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.linear)
+      setKeyboardHeight(e.endCoordinates.height - insets.bottom)
+    })
+    const hideSub = Keyboard.addListener(hideEvent, () => {
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.linear)
+      setKeyboardHeight(0)
+    })
+    return () => {
+      showSub.remove()
+      hideSub.remove()
+    }
+  }, [insets.bottom, setKeyboardHeight])
+
+  const handleLoadEnd = useCallback(() => {}, [])
+  const handleRetry = useCallback(() => {
+    webviewRef.current?.reload()
   }, [])
 
   return (
@@ -32,36 +57,23 @@ export default function App() {
 
       {/* WebView 영역 */}
       <WebView
-        bounces={false}
         ref={webviewRef}
         source={{ uri: webviewUrl }}
         style={styles.webview}
-        onShouldStartLoadWithRequest={(event) => {
-          console.log('WebView should start load with request:', event)
-          return true
-        }}
-        geolocationEnabled={true}
-        javaScriptEnabled={true}
-        allowsFullscreenVideo={true}
-        allowsInlineMediaPlayback={true}
+        bounces={false}
+        geolocationEnabled
+        scrollEnabled={false}
+        domStorageEnabled
+        javaScriptEnabled
+        thirdPartyCookiesEnabled
         mediaPlaybackRequiresUserAction={false}
         originWhitelist={['*']}
         mixedContentMode="compatibility"
+        allowsBackForwardNavigationGestures={false}
+        onShouldStartLoadWithRequest={() => true}
+        renderError={() => <WebViewError onRetry={handleRetry} />}
+        startInLoadingState={false}
         onLoadEnd={handleLoadEnd}
-        thirdPartyCookiesEnabled={true}
-        domStorageEnabled={true}
-        allowsLinkPreview={false}
-        onError={(syntheticEvent) => {
-          const { nativeEvent } = syntheticEvent
-          console.error('WebView error: ', nativeEvent)
-        }}
-        onHttpError={(syntheticEvent) => {
-          const { nativeEvent } = syntheticEvent
-          console.error('WebView HTTP error: ', nativeEvent)
-        }}
-        onLoadStart={() => {
-          console.log('WebView loading started')
-        }}
       />
     </View>
   )

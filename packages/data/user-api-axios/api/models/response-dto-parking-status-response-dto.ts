@@ -12,34 +12,26 @@
  * Do not edit the class manually.
  */
 
+// May contain unused imports in some cases
+// @ts-ignore
+import type { ParkingStatusResponseDto } from './parking-status-response-dto'
+
 /**
  *
  * @export
- * @interface VisitorInfo
+ * @interface ResponseDtoParkingStatusResponseDto
  */
-export interface VisitorInfo {
+export interface ResponseDtoParkingStatusResponseDto {
   /**
-   * 방문자 이름
+   *
    * @type {string}
-   * @memberof VisitorInfo
+   * @memberof ResponseDtoParkingStatusResponseDto
    */
-  name?: string
+  message: string
   /**
-   * 방문자 전화번호
-   * @type {string}
-   * @memberof VisitorInfo
+   *
+   * @type {ParkingStatusResponseDto}
+   * @memberof ResponseDtoParkingStatusResponseDto
    */
-  tel?: string
-  /**
-   * 차량 지역명
-   * @type {string}
-   * @memberof VisitorInfo
-   */
-  regionName?: string
-  /**
-   * 방문자 차량번호
-   * @type {string}
-   * @memberof VisitorInfo
-   */
-  vehicleNumber?: string
+  data?: ParkingStatusResponseDto
 }

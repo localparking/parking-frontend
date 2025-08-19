@@ -41,6 +41,10 @@ import type { ResponseDtoPageResponseParkingLotListResponse } from '../models'
 import type { ResponseDtoPageSearchResponseParkingLotListResponse } from '../models'
 // @ts-ignore
 import type { ResponseDtoParkingLotDetailResponse } from '../models'
+// @ts-ignore
+import type { ResponseDtoParkingStatusResponseDto } from '../models'
+// @ts-ignore
+import type { ResponseDtoUnit } from '../models'
 /**
  * ParkingApi - axios parameter creator
  * @export
@@ -69,6 +73,73 @@ export const ParkingApiAxiosParamCreator = function (configuration?: Configurati
       }
 
       const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication Bearer Token required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * 오늘 주차한 내역 중 출차되지 않은 가장 최근 건을 조회합니다.
+     * @summary 현재 주차 현황 조회
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getParkingStatus: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+      const localVarPath = `/parking/status`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication Bearer Token required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * 주문 내역을 출차 처리합니다.
+     * @summary 출차 처리하기
+     * @param {string} orderId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    processDeparture: async (orderId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'orderId' is not null or undefined
+      assertParamExists('processDeparture', 'orderId', orderId)
+      const localVarPath = `/parking/{orderId}/departure`.replace(`{${'orderId'}}`, encodeURIComponent(String(orderId)))
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
 
@@ -214,6 +285,41 @@ export const ParkingApiAxiosParamCreator = function (configuration?: Configurati
         options: localVarRequestOptions,
       }
     },
+    /**
+     * 주문 내역의 방문 시간을 현재 시간으로 업데이트합니다.
+     * @summary 입차 시간 업데이트
+     * @param {string} orderId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateVisitTimeToNow: async (orderId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'orderId' is not null or undefined
+      assertParamExists('updateVisitTimeToNow', 'orderId', orderId)
+      const localVarPath = `/parking/{orderId}/arrival`.replace(`{${'orderId'}}`, encodeURIComponent(String(orderId)))
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication Bearer Token required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
   }
 }
 
@@ -239,6 +345,50 @@ export const ParkingApiFp = function (configuration?: Configuration) {
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
         operationServerMap['ParkingApi.getParkingLotDetail']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * 오늘 주차한 내역 중 출차되지 않은 가장 최근 건을 조회합니다.
+     * @summary 현재 주차 현황 조회
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getParkingStatus(
+      options?: RawAxiosRequestConfig
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoParkingStatusResponseDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getParkingStatus(options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ParkingApi.getParkingStatus']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * 주문 내역을 출차 처리합니다.
+     * @summary 출차 처리하기
+     * @param {string} orderId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async processDeparture(
+      orderId: string,
+      options?: RawAxiosRequestConfig
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoUnit>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.processDeparture(orderId, options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ParkingApi.processDeparture']?.[localVarOperationServerIndex]?.url
       return (axios, basePath) =>
         createRequestFunction(
           localVarAxiosArgs,
@@ -320,6 +470,29 @@ export const ParkingApiFp = function (configuration?: Configuration) {
           configuration
         )(axios, localVarOperationServerBasePath || basePath)
     },
+    /**
+     * 주문 내역의 방문 시간을 현재 시간으로 업데이트합니다.
+     * @summary 입차 시간 업데이트
+     * @param {string} orderId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async updateVisitTimeToNow(
+      orderId: string,
+      options?: RawAxiosRequestConfig
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoParkingStatusResponseDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.updateVisitTimeToNow(orderId, options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ParkingApi.updateVisitTimeToNow']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
   }
 }
 
@@ -344,6 +517,28 @@ export const ParkingApiFactory = function (configuration?: Configuration, basePa
       return localVarFp
         .getParkingLotDetail(requestParameters.parkingCode, options)
         .then((request) => request(axios, basePath))
+    },
+    /**
+     * 오늘 주차한 내역 중 출차되지 않은 가장 최근 건을 조회합니다.
+     * @summary 현재 주차 현황 조회
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getParkingStatus(options?: RawAxiosRequestConfig): AxiosPromise<ResponseDtoParkingStatusResponseDto> {
+      return localVarFp.getParkingStatus(options).then((request) => request(axios, basePath))
+    },
+    /**
+     * 주문 내역을 출차 처리합니다.
+     * @summary 출차 처리하기
+     * @param {ParkingApiProcessDepartureRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    processDeparture(
+      requestParameters: ParkingApiProcessDepartureRequest,
+      options?: RawAxiosRequestConfig
+    ): AxiosPromise<ResponseDtoUnit> {
+      return localVarFp.processDeparture(requestParameters.orderId, options).then((request) => request(axios, basePath))
     },
     /**
      * 검색어로 주차장을 검색하는 API입니다.
@@ -390,6 +585,21 @@ export const ParkingApiFactory = function (configuration?: Configuration, basePa
         .searchParkingLots(requestParameters.parkingLotSearchRequest, options)
         .then((request) => request(axios, basePath))
     },
+    /**
+     * 주문 내역의 방문 시간을 현재 시간으로 업데이트합니다.
+     * @summary 입차 시간 업데이트
+     * @param {ParkingApiUpdateVisitTimeToNowRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateVisitTimeToNow(
+      requestParameters: ParkingApiUpdateVisitTimeToNowRequest,
+      options?: RawAxiosRequestConfig
+    ): AxiosPromise<ResponseDtoParkingStatusResponseDto> {
+      return localVarFp
+        .updateVisitTimeToNow(requestParameters.orderId, options)
+        .then((request) => request(axios, basePath))
+    },
   }
 }
 
@@ -405,6 +615,20 @@ export interface ParkingApiGetParkingLotDetailRequest {
    * @memberof ParkingApiGetParkingLotDetail
    */
   readonly parkingCode: string
+}
+
+/**
+ * Request parameters for processDeparture operation in ParkingApi.
+ * @export
+ * @interface ParkingApiProcessDepartureRequest
+ */
+export interface ParkingApiProcessDepartureRequest {
+  /**
+   *
+   * @type {string}
+   * @memberof ParkingApiProcessDeparture
+   */
+  readonly orderId: string
 }
 
 /**
@@ -450,6 +674,20 @@ export interface ParkingApiSearchParkingLotsRequest {
 }
 
 /**
+ * Request parameters for updateVisitTimeToNow operation in ParkingApi.
+ * @export
+ * @interface ParkingApiUpdateVisitTimeToNowRequest
+ */
+export interface ParkingApiUpdateVisitTimeToNowRequest {
+  /**
+   *
+   * @type {string}
+   * @memberof ParkingApiUpdateVisitTimeToNow
+   */
+  readonly orderId: string
+}
+
+/**
  * ParkingApi - object-oriented interface
  * @export
  * @class ParkingApi
@@ -467,6 +705,33 @@ export class ParkingApi extends BaseAPI {
   public getParkingLotDetail(requestParameters: ParkingApiGetParkingLotDetailRequest, options?: RawAxiosRequestConfig) {
     return ParkingApiFp(this.configuration)
       .getParkingLotDetail(requestParameters.parkingCode, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * 오늘 주차한 내역 중 출차되지 않은 가장 최근 건을 조회합니다.
+   * @summary 현재 주차 현황 조회
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ParkingApi
+   */
+  public getParkingStatus(options?: RawAxiosRequestConfig) {
+    return ParkingApiFp(this.configuration)
+      .getParkingStatus(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * 주문 내역을 출차 처리합니다.
+   * @summary 출차 처리하기
+   * @param {ParkingApiProcessDepartureRequest} requestParameters Request parameters.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ParkingApi
+   */
+  public processDeparture(requestParameters: ParkingApiProcessDepartureRequest, options?: RawAxiosRequestConfig) {
+    return ParkingApiFp(this.configuration)
+      .processDeparture(requestParameters.orderId, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -512,6 +777,23 @@ export class ParkingApi extends BaseAPI {
   public searchParkingLots(requestParameters: ParkingApiSearchParkingLotsRequest, options?: RawAxiosRequestConfig) {
     return ParkingApiFp(this.configuration)
       .searchParkingLots(requestParameters.parkingLotSearchRequest, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * 주문 내역의 방문 시간을 현재 시간으로 업데이트합니다.
+   * @summary 입차 시간 업데이트
+   * @param {ParkingApiUpdateVisitTimeToNowRequest} requestParameters Request parameters.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ParkingApi
+   */
+  public updateVisitTimeToNow(
+    requestParameters: ParkingApiUpdateVisitTimeToNowRequest,
+    options?: RawAxiosRequestConfig
+  ) {
+    return ParkingApiFp(this.configuration)
+      .updateVisitTimeToNow(requestParameters.orderId, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

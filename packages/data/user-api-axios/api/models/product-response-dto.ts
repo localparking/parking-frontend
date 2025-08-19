@@ -41,7 +41,7 @@ export interface ProductResponseDto {
    * @type {string}
    * @memberof ProductResponseDto
    */
-  description: string
+  description?: string
   /**
    * 상품 가격
    * @type {number}

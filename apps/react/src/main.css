@@ -2,3 +2,22 @@
 @source '../node_modules/@ui/common';
 
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
+
+body,
+a,
+button {
+  /* iOS 길게 누르기 메뉴 비활성화 */
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+
+  /* 텍스트 선택 방지 (선택적) */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+img {
+  /* 드래그 시 고스트 이미지 표시 방지 (매우 중요) */
+  -webkit-user-drag: none;
+}

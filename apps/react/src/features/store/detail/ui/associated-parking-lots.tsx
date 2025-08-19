@@ -1,5 +1,4 @@
 import React from 'react'
-import { cn } from '@ui/common/lib/utils'
 import type { AssociatedParkingLotDto } from '@data/user-api-axios/api'
 import { formatPrice } from '@/shared/utils/format'
 import StatusBadge from '@/shared/ui/status-badge'

@@ -9,7 +9,8 @@ import Button from '@/shared/ui/button'
 import { ParkingBenefitDto } from '@data/user-api-axios/api'
 import { useCart } from '@/features/store/context/cart-context'
 import { useOrderModal } from '@/features/store/hook/use-order-hook'
-import { ProductItem } from '@/features/store/order/ui/components/product-item'
+import { ProductItem } from '@/features/store/order/ui/product-item'
+import { cn } from '@ui/common/lib/utils'
 
 // --- 라우트 및 데이터 로딩 (변경 없음) ---
 const searchSchema = z.object({
@@ -78,25 +79,25 @@ function RouteComponent() {
   const isEmpty = cart.length === 0
 
   return (
-    <div className="pb-[130px]">
+    <div className={cn({ 'pb-[130px]': cart.length > 0 })}>
       <DetailHeaderBar
         title={data.storeName}
         onBackClick={() => {
           if (isEmpty) {
             navigate({ to: '/map' })
           } else {
-            backAlertModal()
+            backAlertModal({ storeId: data.storeId.toString() })
           }
         }}
       />
 
-      <section className="mt-[50px] space-y-3 p-6">
+      <section className="mt-[50px] space-y-3 overflow-y-scroll p-6 scrollbar-hide">
         <div className="rounded-[15px] bg-gray-4 px-6 py-3">
           <ParkingBenefits benefits={data.benefits} title={`${data.storeName}의 주차 혜택`} className="text-body-4" />
         </div>
 
         {data.products.map((product) => (
-          <ProductItem product={product} />
+          <ProductItem key={product.productId} product={product} />
         ))}
       </section>
 
