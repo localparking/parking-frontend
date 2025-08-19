@@ -9,12 +9,13 @@ import { useCart } from '@/features/store/context/cart-context'
 import { CheckCircle2, ChevronDown, ChevronUp, MapPin, ShoppingCart } from 'lucide-react'
 import { StoreCategoryIcon } from '@/shared/ui'
 import StatusBadge from '@/shared/ui/status-badge'
-import { ParkingBenefitDto } from '@data/user-api-axios/api'
+import { OrderApi, ParkingBenefitDto } from '@data/user-api-axios/api'
 import { cn } from '@ui/common/lib/utils'
 import { ProductItem } from '@/features/store/order/ui/product-item'
 import { VehicleInfoSheet } from '@/features/store/order/ui/vehicle-info-sheet'
 import { VisitTimeSheet } from '@/features/store/order/ui/visit-time-sheet'
 import { VisitorInfoSheet } from '@/features/store/order/ui/vistior-info-sheet'
+import orderService from '@/shared/services/order.service'
 
 const searchSchema = z.object({
   storeId: z.number().optional(),
@@ -103,7 +104,7 @@ function RouteComponent() {
     })
   }, [cart, storeResponse])
 
-  const handleSubmitOrder = () => {
+  const handleSubmitOrder = async () => {
     const orderData = {
       visitorInfo: {
         name: visitorInfo.name,
@@ -120,6 +121,14 @@ function RouteComponent() {
     }
 
     console.log('Final Order Data:', JSON.stringify(orderData, null, 2))
+    try {
+      const order = await orderService.orderProducts({
+        storeId: storeResponse.storeId,
+        orderRequestDto: orderData,
+      })
+      console.log('Order Response:', order)
+    } catch {}
+
     alert('주문 정보가 콘솔에 출력되었습니다.')
   }
 
@@ -299,7 +308,7 @@ function RouteComponent() {
         </div>
       </section>
 
-      <div className="w-full p-6">
+      <div className="p-6">
         <Button onClick={handleSubmitOrder} disabled={isSubmitDisabled}>
           결제하기
         </Button>

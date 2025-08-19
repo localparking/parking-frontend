@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { useImperativeHandle, forwardRef } from 'react'
 import { useTimePicker } from '../../hook/use-wheel-picker'
 
-interface TimePickerProps {
-  initialTime?: string
-  onChange: (time: ReturnType<typeof useTimePicker>['state']) => void
+export interface TimePickerActions {
+  getSelectedTimeAsISO: () => string
+  isValid: boolean
 }
 
 const WheelColumn: React.FC<{
@@ -25,7 +25,9 @@ const WheelColumn: React.FC<{
           <div
             key={item}
             onClick={() => onClick(item)}
-            className={`flex h-[50px] w-full cursor-pointer snap-center items-center justify-center text-lg ${item === selectedValue ? 'scale-110 font-bold text-black' : 'font-normal text-gray-400'}`}
+            className={`flex h-[50px] w-full cursor-pointer snap-center items-center justify-center text-lg transition-all ${
+              item === selectedValue ? 'font-bold text-black' : 'font-normal text-gray-400'
+            }`}
           >
             {formatLabel(item)}
           </div>
@@ -35,22 +37,30 @@ const WheelColumn: React.FC<{
   )
 }
 
-export const TimePicker: React.FC<{
-  initialValue: string | undefined
-  onSave: (isoString: string) => void
-}> = ({ initialValue, onSave }) => {
-  const { refs, data, state, actions } = useTimePicker(initialValue)
+export const TimePicker = forwardRef<
+  TimePickerActions,
+  {
+    initialValue?: string
+    closingTime?: string
+  }
+>(({ initialValue, closingTime }, ref) => {
+  const { refs, data, state, actions, isValid } = useTimePicker({ initialTime: initialValue, closingTime })
+
+  useImperativeHandle(ref, () => ({
+    getSelectedTimeAsISO: actions.getSelectedTimeAsISO,
+    isValid: isValid,
+  }))
 
   return (
-    <div className="relative h-[200px] w-full overflow-hidden overflow-x-hidden">
+    <div className="relative h-[200px] w-full overflow-hidden">
       <div className="pointer-events-none absolute top-0 z-10 h-[75px] w-full bg-gradient-to-b from-white to-transparent" />
       <div className="pointer-events-none absolute bottom-0 z-10 h-[75px] w-full bg-gradient-to-t from-white to-transparent" />
       <div className="pointer-events-none absolute top-[75px] z-10 h-[50px] w-full rounded-lg border border-blue-500" />
-      {/* 휠 피커 */}
+
       <div className="absolute inset-0 flex">
         <WheelColumn
           scrollRef={refs.ampmRef}
-          data={data.ampms}
+          data={data.availableAmpms}
           selectedValue={state.ampm}
           onScroll={actions.handleAmPmScroll}
           onClick={(value) => actions.setSelectedTime({ ...state, ampm: value })}
@@ -58,7 +68,7 @@ export const TimePicker: React.FC<{
         />
         <WheelColumn
           scrollRef={refs.hourRef}
-          data={data.hours}
+          data={data.availableHours}
           selectedValue={state.hour}
           onScroll={actions.handleHourScroll}
           onClick={(value) => actions.setSelectedTime({ ...state, hour: value })}
@@ -66,7 +76,7 @@ export const TimePicker: React.FC<{
         />
         <WheelColumn
           scrollRef={refs.minuteRef}
-          data={data.minutes}
+          data={data.availableMinutes}
           selectedValue={state.minute}
           onScroll={actions.handleMinuteScroll}
           onClick={(value) => actions.setSelectedTime({ ...state, minute: value })}
@@ -75,4 +85,5 @@ export const TimePicker: React.FC<{
       </div>
     </div>
   )
-}
+})
+TimePicker.displayName = 'TimePicker'
