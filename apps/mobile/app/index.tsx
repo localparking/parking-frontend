@@ -17,6 +17,7 @@ export const { WebView, postMessage } = createWebView({
 export default function App() {
   const webviewRef = useRef<BridgeWebView>(null)
   const { setKeyboardHeight } = useBridge(appBridge)
+
   const insets = useSafeAreaInsets()
 
   const webviewUrl =

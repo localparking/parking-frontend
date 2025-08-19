@@ -91,7 +91,7 @@ function RouteComponent() {
         }}
       />
 
-      <section className="mt-[50px] space-y-3 overflow-y-scroll p-6">
+      <section className="mt-[50px] space-y-3 overflow-y-scroll p-6 scrollbar-hide">
         <div className="rounded-[15px] bg-gray-4 px-6 py-3">
           <ParkingBenefits benefits={data.benefits} title={`${data.storeName}의 주차 혜택`} className="text-body-4" />
         </div>

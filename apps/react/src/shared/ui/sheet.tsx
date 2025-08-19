@@ -43,14 +43,7 @@ function SheetContent({
 }: React.ComponentProps<typeof SheetPrimitive.Content> & {
   side?: 'top' | 'right' | 'bottom' | 'left'
 }) {
-  const safePadForBottom =
-    side === 'bottom'
-      ? {
-          paddingBottom: 'var(--safe-bottom)',
-          paddingLeft: 'var(--safe-left)',
-          paddingRight: 'var(--safe-right)',
-        }
-      : undefined
+  const safePadForBottom = side === 'bottom' ? { paddingBottom: 'var(--safe-bottom)' } : undefined
 
   return (
     <SheetPortal>
@@ -58,7 +51,7 @@ function SheetContent({
       <SheetPrimitive.Content
         data-slot="sheet-content"
         className={cn(
-          'fixed z-50 flex flex-col gap-4 bg-white shadow-lg',
+          'fixed z-50 mx-auto flex max-w-[768px] flex-col gap-4 bg-white shadow-lg',
           side === 'bottom' && 'inset-x-0 bottom-0 h-auto border-t',
           className
         )}
@@ -91,13 +84,7 @@ function SheetFooter({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
       data-slot="sheet-footer"
-      className={cn(
-        'mt-auto flex flex-col gap-2',
-        'px-4 pt-4',
-        'pr-[calc(1rem_+_var(--safe-right))] pl-[calc(1rem_+_var(--safe-left))]',
-        'pb-[calc(var(--safe-bottom)_+_1rem)]',
-        className
-      )}
+      className={cn('mt-auto flex flex-col gap-2', 'px-4 pt-4', 'pb-[calc(var(--safe-bottom)_+_1rem)]', className)}
       {...props}
     />
   )

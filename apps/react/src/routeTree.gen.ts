@@ -15,8 +15,11 @@ import { Route as OnboardingLayoutImport } from './app/onboarding/layout'
 import { Route as MapLayoutImport } from './app/map/layout'
 import { Route as DetailLayoutImport } from './app/detail/layout'
 import { Route as PageImport } from './app/page'
+import { Route as PaymentPageImport } from './app/payment/page'
 import { Route as MapPageImport } from './app/map/page'
 import { Route as LoginPageImport } from './app/login/page'
+import { Route as PaymentSuccessPageImport } from './app/payment/success/page'
+import { Route as PaymentFailPageImport } from './app/payment/fail/page'
 import { Route as OnboardingTermsPageImport } from './app/onboarding/terms/page'
 import { Route as OnboardingLandingPageImport } from './app/onboarding/landing/page'
 import { Route as OnboardingFinalOnboardingPageImport } from './app/onboarding/final-onboarding/page'
@@ -52,6 +55,12 @@ const PageRoute = PageImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const PaymentPageRoute = PaymentPageImport.update({
+  id: '/payment/',
+  path: '/payment/',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const MapPageRoute = MapPageImport.update({
   id: '/',
   path: '/',
@@ -61,6 +70,18 @@ const MapPageRoute = MapPageImport.update({
 const LoginPageRoute = LoginPageImport.update({
   id: '/login/',
   path: '/login/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const PaymentSuccessPageRoute = PaymentSuccessPageImport.update({
+  id: '/payment/success/',
+  path: '/payment/success/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const PaymentFailPageRoute = PaymentFailPageImport.update({
+  id: '/payment/fail/',
+  path: '/payment/fail/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -159,6 +180,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MapPageImport
       parentRoute: typeof MapLayoutImport
     }
+    '/payment/': {
+      id: '/payment/'
+      path: '/payment'
+      fullPath: '/payment'
+      preLoaderRoute: typeof PaymentPageImport
+      parentRoute: typeof rootRoute
+    }
     '/detail/store/': {
       id: '/detail/store/'
       path: '/store'
@@ -200,6 +228,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/onboarding/terms'
       preLoaderRoute: typeof OnboardingTermsPageImport
       parentRoute: typeof OnboardingLayoutImport
+    }
+    '/payment/fail/': {
+      id: '/payment/fail/'
+      path: '/payment/fail'
+      fullPath: '/payment/fail'
+      preLoaderRoute: typeof PaymentFailPageImport
+      parentRoute: typeof rootRoute
+    }
+    '/payment/success/': {
+      id: '/payment/success/'
+      path: '/payment/success'
+      fullPath: '/payment/success'
+      preLoaderRoute: typeof PaymentSuccessPageImport
+      parentRoute: typeof rootRoute
     }
     '/detail/store/order/': {
       id: '/detail/store/order/'
@@ -272,12 +314,15 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof OnboardingLayoutRouteWithChildren
   '/login': typeof LoginPageRoute
   '/map/': typeof MapPageRoute
+  '/payment': typeof PaymentPageRoute
   '/detail/store': typeof DetailStorePageRoute
   '/login/success': typeof LoginSuccessPageRoute
   '/map/search': typeof MapSearchPageRoute
   '/onboarding/final-onboarding': typeof OnboardingFinalOnboardingPageRoute
   '/onboarding/landing': typeof OnboardingLandingPageRoute
   '/onboarding/terms': typeof OnboardingTermsPageRoute
+  '/payment/fail': typeof PaymentFailPageRoute
+  '/payment/success': typeof PaymentSuccessPageRoute
   '/detail/store/order': typeof DetailStoreOrderPageRoute
   '/onboarding/terms/detail': typeof OnboardingTermsDetailPageRoute
 }
@@ -288,12 +333,15 @@ export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingLayoutRouteWithChildren
   '/login': typeof LoginPageRoute
   '/map': typeof MapPageRoute
+  '/payment': typeof PaymentPageRoute
   '/detail/store': typeof DetailStorePageRoute
   '/login/success': typeof LoginSuccessPageRoute
   '/map/search': typeof MapSearchPageRoute
   '/onboarding/final-onboarding': typeof OnboardingFinalOnboardingPageRoute
   '/onboarding/landing': typeof OnboardingLandingPageRoute
   '/onboarding/terms': typeof OnboardingTermsPageRoute
+  '/payment/fail': typeof PaymentFailPageRoute
+  '/payment/success': typeof PaymentSuccessPageRoute
   '/detail/store/order': typeof DetailStoreOrderPageRoute
   '/onboarding/terms/detail': typeof OnboardingTermsDetailPageRoute
 }
@@ -306,12 +354,15 @@ export interface FileRoutesById {
   '/onboarding': typeof OnboardingLayoutRouteWithChildren
   '/login/': typeof LoginPageRoute
   '/map/': typeof MapPageRoute
+  '/payment/': typeof PaymentPageRoute
   '/detail/store/': typeof DetailStorePageRoute
   '/login/success/': typeof LoginSuccessPageRoute
   '/map/search/': typeof MapSearchPageRoute
   '/onboarding/final-onboarding/': typeof OnboardingFinalOnboardingPageRoute
   '/onboarding/landing/': typeof OnboardingLandingPageRoute
   '/onboarding/terms/': typeof OnboardingTermsPageRoute
+  '/payment/fail/': typeof PaymentFailPageRoute
+  '/payment/success/': typeof PaymentSuccessPageRoute
   '/detail/store/order/': typeof DetailStoreOrderPageRoute
   '/onboarding/terms/detail/': typeof OnboardingTermsDetailPageRoute
 }
@@ -325,12 +376,15 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/login'
     | '/map/'
+    | '/payment'
     | '/detail/store'
     | '/login/success'
     | '/map/search'
     | '/onboarding/final-onboarding'
     | '/onboarding/landing'
     | '/onboarding/terms'
+    | '/payment/fail'
+    | '/payment/success'
     | '/detail/store/order'
     | '/onboarding/terms/detail'
   fileRoutesByTo: FileRoutesByTo
@@ -340,12 +394,15 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/login'
     | '/map'
+    | '/payment'
     | '/detail/store'
     | '/login/success'
     | '/map/search'
     | '/onboarding/final-onboarding'
     | '/onboarding/landing'
     | '/onboarding/terms'
+    | '/payment/fail'
+    | '/payment/success'
     | '/detail/store/order'
     | '/onboarding/terms/detail'
   id:
@@ -356,12 +413,15 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/login/'
     | '/map/'
+    | '/payment/'
     | '/detail/store/'
     | '/login/success/'
     | '/map/search/'
     | '/onboarding/final-onboarding/'
     | '/onboarding/landing/'
     | '/onboarding/terms/'
+    | '/payment/fail/'
+    | '/payment/success/'
     | '/detail/store/order/'
     | '/onboarding/terms/detail/'
   fileRoutesById: FileRoutesById
@@ -373,7 +433,10 @@ export interface RootRouteChildren {
   MapLayoutRoute: typeof MapLayoutRouteWithChildren
   OnboardingLayoutRoute: typeof OnboardingLayoutRouteWithChildren
   LoginPageRoute: typeof LoginPageRoute
+  PaymentPageRoute: typeof PaymentPageRoute
   LoginSuccessPageRoute: typeof LoginSuccessPageRoute
+  PaymentFailPageRoute: typeof PaymentFailPageRoute
+  PaymentSuccessPageRoute: typeof PaymentSuccessPageRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -382,7 +445,10 @@ const rootRouteChildren: RootRouteChildren = {
   MapLayoutRoute: MapLayoutRouteWithChildren,
   OnboardingLayoutRoute: OnboardingLayoutRouteWithChildren,
   LoginPageRoute: LoginPageRoute,
+  PaymentPageRoute: PaymentPageRoute,
   LoginSuccessPageRoute: LoginSuccessPageRoute,
+  PaymentFailPageRoute: PaymentFailPageRoute,
+  PaymentSuccessPageRoute: PaymentSuccessPageRoute,
 }
 
 export const routeTree = rootRoute
@@ -400,7 +466,10 @@ export const routeTree = rootRoute
         "/map",
         "/onboarding",
         "/login/",
-        "/login/success/"
+        "/payment/",
+        "/login/success/",
+        "/payment/fail/",
+        "/payment/success/"
       ]
     },
     "/": {
@@ -436,6 +505,9 @@ export const routeTree = rootRoute
       "filePath": "map/page.tsx",
       "parent": "/map"
     },
+    "/payment/": {
+      "filePath": "payment/page.tsx"
+    },
     "/detail/store/": {
       "filePath": "detail/store/page.tsx",
       "parent": "/detail"
@@ -458,6 +530,12 @@ export const routeTree = rootRoute
     "/onboarding/terms/": {
       "filePath": "onboarding/terms/page.tsx",
       "parent": "/onboarding"
+    },
+    "/payment/fail/": {
+      "filePath": "payment/fail/page.tsx"
+    },
+    "/payment/success/": {
+      "filePath": "payment/success/page.tsx"
     },
     "/detail/store/order/": {
       "filePath": "detail/store/order/page.tsx",

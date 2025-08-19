@@ -122,24 +122,26 @@ function RouteComponent() {
 
     console.log('Final Order Data:', JSON.stringify(orderData, null, 2))
     try {
-      const order = await orderService.orderProducts({
+      const { data } = await orderService.orderProducts({
         storeId: storeResponse.storeId,
         orderRequestDto: orderData,
       })
-      console.log('Order Response:', order)
-    } catch {}
+      if (!data.data) return null
+      const { orderId, orderName, amount, customerEmail, customerName } = data.data
 
-    alert('주문 정보가 콘솔에 출력되었습니다.')
+      navigate({
+        to: '/payment',
+        search: { orderId, orderName, amount, customerEmail, customerName },
+      })
+    } catch (error) {
+      console.error('Order creation failed:', error)
+      alert('주문 생성에 실패했습니다. 다시 시도해주세요.')
+    }
   }
 
   // 제출 버튼 활성화 조건 수정
   const isSubmitDisabled =
-    !visitorInfo.name ||
-    !visitorInfo.tel ||
-    !vehicleInfo.vehicleNumber ||
-    !vehicleInfo.regionName ||
-    !visitTime ||
-    cart.length === 0
+    !visitorInfo.name || !visitorInfo.tel || !vehicleInfo.vehicleNumber || !visitTime || cart.length === 0
 
   if (!cartProducts || cartProducts.length === 0) {
     return (

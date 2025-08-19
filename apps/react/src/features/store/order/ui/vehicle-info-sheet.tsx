@@ -77,7 +77,7 @@ export function VehicleInfoSheet({ isOpen, onOpenChange, onSave, initialData }: 
 
           <div className="my-5">
             {/* 저장 버튼 유효성 검사 수정 */}
-            <Button onClick={handleSubmit} disabled={!vehicleNumber.trim() || !regionName.trim()}>
+            <Button onClick={handleSubmit} disabled={!vehicleNumber.trim()}>
               저장하기
             </Button>
           </div>

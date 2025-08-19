@@ -53,7 +53,7 @@ export default function LoginPage() {
           }
         }
       } else {
-        window.location.href = `${VITE_API_URL}/oauth2/authorization/kakao`
+        window.location.href = `${VITE_API_URL}/oauth2/authorization/kakao?redirect_uri=${window.location.origin}/login/success`
       }
     } catch (error: any) {
       open({
