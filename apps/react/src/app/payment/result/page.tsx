@@ -68,7 +68,7 @@ function RouteComponent() {
 
         <p className="text-body-3">매장 정보</p>
         <div className="flex items-center gap-3 rounded-[15px] bg-gray-4 py-3 pr-5 pl-6">
-          <StoreCategoryIcon className="h-20 w-20" category={storeInfo.category} />
+          {/* <StoreCategoryIcon className="h-20 w-20" category={storeInfo.} /> */}
           <div className="space-y-1">
             <p className="text-caption-2 text-gray-2">{storeInfo.storeName}</p>
             <div className="flex items-center gap-1">
@@ -96,12 +96,12 @@ function RouteComponent() {
               <div className="space-y-3 pt-2">
                 <div className="space-y-1 rounded-[15px] bg-gray-4 py-3 pr-5 pl-6">
                   <div className="flex items-center gap-1">
-                    <h2 className="text-body-4">{parkingLotInfo.parkingLotName}</h2>
+                    <h2 className="text-body-4">{parkingLotInfo?.parkingLotName}</h2>
                     <StatusBadge isOpen={true} />
                   </div>
                   <div className="flex items-center gap-2 text-gray-2">
                     <MapPin className="h-4 w-4" />
-                    <p className="text-caption-2">{parkingLotInfo.parkingLotAddress}</p>
+                    <p className="text-caption-2">{parkingLotInfo?.parkingLotAddress}</p>
                   </div>
                 </div>
                 {parkingFeeDiscount > 0 && (
