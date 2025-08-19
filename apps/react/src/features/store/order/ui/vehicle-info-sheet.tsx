@@ -5,26 +5,31 @@ import { Input } from '@/shared/ui/input'
 import Button from '@/shared/ui/button'
 import { useKeyboardSheetMotion } from '@/shared/hooks/use-keyboard-motion'
 
+export interface VehicleInfo {
+  vehicleNumber: string
+  regionName: string
+}
+
 interface VehicleInfoSheetProps {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
-  onSave: (vehicleNumber: string) => void
-  initialData?: string
+  onSave: (info: VehicleInfo) => void
+  initialData?: VehicleInfo
 }
 
 export function VehicleInfoSheet({ isOpen, onOpenChange, onSave, initialData }: VehicleInfoSheetProps) {
-  const [vehicleNumber, setVehicleNumber] = useState(initialData || '')
+  const [vehicleNumber, setVehicleNumber] = useState(initialData?.vehicleNumber || '')
+  const [regionName, setRegionName] = useState(initialData?.regionName || '')
   const { motionKeyboardBottom } = useKeyboardSheetMotion()
 
   useEffect(() => {
-    if (initialData) {
-      setVehicleNumber(initialData)
-    }
+    setVehicleNumber(initialData?.vehicleNumber || '')
+    setRegionName(initialData?.regionName || '')
   }, [initialData])
 
   const handleSubmit = () => {
-    onSave(vehicleNumber)
-    handleClose()
+    onSave({ vehicleNumber, regionName })
+    onOpenChange(false)
   }
 
   const handleClose = () => {
@@ -45,7 +50,19 @@ export function VehicleInfoSheet({ isOpen, onOpenChange, onSave, initialData }: 
         </button>
 
         <div className="flex h-full flex-col gap-3 px-6 pt-6">
-          <h2 className="text-body-3">차량 번호</h2>
+          <h2 className="text-body-3">차량 정보</h2>
+
+          {/* 지역명 입력 필드 추가 */}
+          <div className="space-y-1">
+            <p className="pb-1 text-body-5">지역명</p>
+            <Input
+              type="text"
+              value={regionName}
+              onChange={(e) => setRegionName(e.target.value)}
+              placeholder="서울"
+              maxLength={2}
+            />
+          </div>
 
           <div className="space-y-1">
             <p className="pb-1 text-body-5">차량 번호</p>
@@ -53,12 +70,14 @@ export function VehicleInfoSheet({ isOpen, onOpenChange, onSave, initialData }: 
               type="text"
               value={vehicleNumber}
               onChange={(e) => setVehicleNumber(e.target.value)}
-              placeholder="12가 3456"
+              placeholder="12가3456"
+              maxLength={8}
             />
           </div>
 
           <div className="my-5">
-            <Button onClick={handleSubmit} disabled={!vehicleNumber.trim()}>
+            {/* 저장 버튼 유효성 검사 수정 */}
+            <Button onClick={handleSubmit} disabled={!vehicleNumber.trim() || !regionName.trim()}>
               저장하기
             </Button>
           </div>

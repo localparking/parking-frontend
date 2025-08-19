@@ -1,6 +1,5 @@
 import { X } from 'lucide-react'
 import { useState, useEffect } from 'react'
-
 import { Sheet, SheetContent, SheetTitle } from '@/shared/ui/sheet'
 import { Input } from '@/shared/ui/input'
 import Button from '@/shared/ui/button'
@@ -9,7 +8,6 @@ import { useKeyboardSheetMotion } from '@/shared/hooks/use-keyboard-motion'
 interface VisitorInfo {
   name: string
   tel: string
-  regionName: string
 }
 
 interface VisitorInfoSheetProps {
@@ -22,7 +20,6 @@ interface VisitorInfoSheetProps {
 export function VisitorInfoSheet({ isOpen, onOpenChange, onSave, initialData }: VisitorInfoSheetProps) {
   const [name, setName] = useState(initialData?.name || '')
   const [tel, setTel] = useState(initialData?.tel || '')
-  const [regionName, setRegionName] = useState(initialData?.regionName || '')
 
   const { motionKeyboardBottom } = useKeyboardSheetMotion()
 
@@ -30,13 +27,13 @@ export function VisitorInfoSheet({ isOpen, onOpenChange, onSave, initialData }: 
     if (initialData) {
       setName(initialData.name)
       setTel(initialData.tel)
-      setRegionName(initialData.regionName)
     }
   }, [initialData])
 
   const handleSubmit = () => {
-    onSave({ name, tel, regionName })
-    handleClose()
+    // name과 tel만 저장
+    onSave({ name, tel })
+    onOpenChange(false)
   }
 
   const handleClose = () => {
@@ -66,26 +63,23 @@ export function VisitorInfoSheet({ isOpen, onOpenChange, onSave, initialData }: 
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="방문자 이름을 입력해주세요"
-              maxLength={10}
+              maxLength={6}
             />
           </div>
 
           <div className="space-y-1">
             <p className="pb-1 text-body-5">전화번호</p>
-            <Input type="tel" value={tel} onChange={(e) => setTel(e.target.value)} placeholder="010-1234-5678" />
-          </div>
-          <div className="space-y-1">
-            <p className="pb-1 text-body-5">지역명</p>
             <Input
-              type="text"
-              value={regionName}
-              onChange={(e) => setRegionName(e.target.value)}
-              placeholder="서울시 강남구"
+              type="tel"
+              value={tel}
+              onChange={(e) => setTel(e.target.value)}
+              placeholder="01012345678"
+              maxLength={10}
             />
           </div>
 
           <div className="my-5">
-            <Button onClick={handleSubmit} disabled={!name.trim() || !tel.trim() || !regionName.trim()}>
+            <Button onClick={handleSubmit} disabled={!name.trim() || !tel.trim()}>
               저장하기
             </Button>
           </div>

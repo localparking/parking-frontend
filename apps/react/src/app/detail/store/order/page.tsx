@@ -6,7 +6,6 @@ import { createFileRoute, redirect } from '@tanstack/react-router'
 import z from 'zod'
 import Button from '@/shared/ui/button'
 import { useCart } from '@/features/store/context/cart-context'
-
 import { CheckCircle2, ChevronDown, ChevronUp, MapPin, ShoppingCart } from 'lucide-react'
 import { StoreCategoryIcon } from '@/shared/ui'
 import StatusBadge from '@/shared/ui/status-badge'
@@ -17,7 +16,6 @@ import { VehicleInfoSheet } from '@/features/store/order/ui/vehicle-info-sheet'
 import { VisitTimeSheet } from '@/features/store/order/ui/visit-time-sheet'
 import { VisitorInfoSheet } from '@/features/store/order/ui/vistior-info-sheet'
 
-// --- 라우트 및 데이터 로딩 (변경 없음) ---
 const searchSchema = z.object({
   storeId: z.number().optional(),
 })
@@ -36,21 +34,19 @@ export const Route = createFileRoute('/detail/store/order/')({
   },
 })
 
-// --- 메인 컴포넌트 ---
 function RouteComponent() {
   const { storeResponse, storeDetail, parkingLot } = Route.useLoaderData()
   const navigate = Route.useNavigate()
   const { cart } = useCart()
   const [isBenefitDetailsVisible, setIsBenefitDetailsVisible] = useState(true)
 
-  // --- Sheet 상태 관리 ---
   const [isVisitorSheetOpen, setIsVisitorSheetOpen] = useState(false)
   const [isVehicleSheetOpen, setIsVehicleSheetOpen] = useState(false)
   const [isTimeSheetOpen, setIsTimeSheetOpen] = useState(false)
 
-  // --- 데이터 상태 관리 ---
-  const [visitorInfo, setVisitorInfo] = useState({ name: '', tel: '', regionName: '' })
-  const [vehicleNumber, setVehicleNumber] = useState('')
+  // --- 데이터 상태 관리 수정 ---
+  const [visitorInfo, setVisitorInfo] = useState({ name: '', tel: '' }) // regionName 제거
+  const [vehicleInfo, setVehicleInfo] = useState({ vehicleNumber: '', regionName: '' }) // 차량 정보와 지역 정보를 함께 관리
   const [visitTime, setVisitTime] = useState('')
 
   if (!storeResponse) return null
@@ -110,8 +106,10 @@ function RouteComponent() {
   const handleSubmitOrder = () => {
     const orderData = {
       visitorInfo: {
-        ...visitorInfo,
-        vehicleNumber,
+        name: visitorInfo.name,
+        tel: visitorInfo.tel,
+        regionName: vehicleInfo.regionName,
+        vehicleNumber: vehicleInfo.vehicleNumber,
       },
       orderItems: cart.map((item) => ({
         productId: item.productId,
@@ -125,7 +123,14 @@ function RouteComponent() {
     alert('주문 정보가 콘솔에 출력되었습니다.')
   }
 
-  const isSubmitDisabled = !visitorInfo.name || !visitorInfo.tel || !vehicleNumber || !visitTime || cart.length === 0
+  // 제출 버튼 활성화 조건 수정
+  const isSubmitDisabled =
+    !visitorInfo.name ||
+    !visitorInfo.tel ||
+    !vehicleInfo.vehicleNumber ||
+    !vehicleInfo.regionName ||
+    !visitTime ||
+    cart.length === 0
 
   if (!cartProducts || cartProducts.length === 0) {
     return (
@@ -197,12 +202,14 @@ function RouteComponent() {
               </button>
             </div>
             <div className="flex items-center justify-between">
-              <p className="text-caption-1 text-gray-2">차량 번호</p>
+              <p className="text-caption-1 text-gray-2">차량 정보</p>
               <button
                 onClick={() => setIsVehicleSheetOpen(true)}
                 className="rounded-[10px] bg-gray-4 px-3 py-2 text-caption-2"
               >
-                {vehicleNumber || '차량 번호를 입력하세요'}
+                {vehicleInfo.vehicleNumber
+                  ? `${vehicleInfo.regionName} ${vehicleInfo.vehicleNumber}`
+                  : '차량 정보를 입력하세요'}
               </button>
             </div>
           </div>
@@ -307,8 +314,8 @@ function RouteComponent() {
       <VehicleInfoSheet
         isOpen={isVehicleSheetOpen}
         onOpenChange={setIsVehicleSheetOpen}
-        onSave={setVehicleNumber}
-        initialData={vehicleNumber}
+        onSave={setVehicleInfo}
+        initialData={vehicleInfo}
       />
       <VisitTimeSheet
         isOpen={isTimeSheetOpen}
