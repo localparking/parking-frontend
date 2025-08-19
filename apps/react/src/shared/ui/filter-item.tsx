@@ -18,8 +18,8 @@ export const FilterItem = React.memo(({ isSelected, icon, label, className, ...p
       )}
       {...props}
     >
-      {icon && <div className="flex h-5 w-5 items-center justify-center rounded-full bg-white">{icon}</div>}
-      <span className={cn('text-body-6 whitespace-nowrap', className)}>{label}</span>
+      {icon && <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white">{icon}</div>}
+      <span className={cn('shrink-0 text-body-6 whitespace-nowrap', className)}>{label}</span>
     </button>
   )
 })
