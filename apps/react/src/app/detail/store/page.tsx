@@ -33,7 +33,7 @@ function RouteComponent() {
   const data = Route.useLoaderData()
   const navigate = Route.useNavigate()
   const { cart } = useCart()
-  const { backAlertModal } = useOrderModal()
+  const { backAlertModal } = useOrderModal(data)
 
   if (!data) return null
 
@@ -96,7 +96,7 @@ function RouteComponent() {
         </div>
 
         {data.products.map((product) => (
-          <ProductItem product={product} />
+          <ProductItem key={product.productId} product={product} />
         ))}
       </section>
 

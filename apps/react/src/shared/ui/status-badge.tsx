@@ -1,7 +1,7 @@
 import { cn } from '@ui/common/lib/utils'
 
 interface StatusBadgeProps {
-  isOpen?: boolean
+  isOpen: boolean | undefined
   time?: string
 }
 

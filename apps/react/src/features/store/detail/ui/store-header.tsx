@@ -22,7 +22,7 @@ export const StoreHeader: React.FC<StoreHeaderProps> = React.memo(({ info }) => 
           <p className="text-caption-2 text-gray-2">{mainCategory?.categoryName || '카테고리'}</p>
           <div className="flex items-center gap-1">
             <h2 className="text-body-3 text-gray-1">{info.name}</h2>
-            <StatusBadge time={info.todayClosingTime} />
+            <StatusBadge isOpen={info.isOpen} time={info.todayClosingTime} />
           </div>
           {info.tel && (
             <div className="flex items-center gap-2 text-gray-2">

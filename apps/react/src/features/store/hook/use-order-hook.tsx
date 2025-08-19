@@ -1,7 +1,7 @@
 import { useAlertDialog } from '@/shared/hooks/use-alert-dialog'
 import { useRouter } from '@tanstack/react-router'
 
-export function useOrderModal() {
+export function useOrderModal(storeResponse) {
   const alertDialog = useAlertDialog()
   const router = useRouter()
 
@@ -18,7 +18,7 @@ export function useOrderModal() {
       confirmText: '네 유지할래요',
       onCancel: () => {
         alertDialog.close()
-        router.history.back()
+        router.navigate({ to: '/map', search: { storeId: storeResponse.storeId } })
       },
       onConfirm: () => {
         alertDialog.close()

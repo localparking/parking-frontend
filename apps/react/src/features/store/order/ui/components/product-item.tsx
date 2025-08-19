@@ -13,7 +13,7 @@ export const ProductItem = ({ product }: ProductItemProps) => {
   const quantity = cartItem?.quantity ?? 0
 
   return (
-    <div className="flex items-center gap-2.5 py-1" key={product.productId}>
+    <div className="flex items-center gap-2.5 py-1">
       <div className="min-w-0 flex-1 space-y-2.5 py-3">
         <h2 className="truncate text-body-4">{product.name}</h2>
         <p className="text-caption-2 text-gray-2">{product.description}</p>
