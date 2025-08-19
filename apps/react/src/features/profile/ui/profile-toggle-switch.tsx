@@ -1,3 +1,4 @@
+import { cn } from '@ui/common/lib/utils'
 import { useId } from 'react'
 
 interface ProfileToggleSwitchProps {
@@ -23,11 +24,12 @@ export function ProfileToggleSwitch({ label, checked, onChange }: ProfileToggleS
           onChange={(e) => onChange(e.target.checked)}
           className="sr-only"
         />
-        <div className={`h-5 w-10 rounded-full transition-colors ${checked ? 'bg-primary-1' : 'bg-gray-3'}`}>
+        <div className={cn(`h-5 w-10 rounded-full transition-colors`, checked ? 'bg-primary-1' : 'bg-gray-3')}>
           <div
-            className={`h-5 w-5 rounded-full bg-white shadow-md transition-transform ${
+            className={cn(
+              `h-5 w-5 rounded-full bg-white shadow-md transition-transform`,
               checked ? 'translate-x-5' : 'translate-x-0'
-            }`}
+            )}
           />
         </div>
       </label>

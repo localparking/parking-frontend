@@ -9,7 +9,7 @@ interface MyPageMenuItemProps {
 
 export function MyPageMenuItem({ title, onClick, className }: MyPageMenuItemProps) {
   return (
-    <div className={cn('flex w-full items-center justify-between', className)} onClick={onClick}>
+    <div className={cn('flex w-full cursor-pointer items-center justify-between', className)} onClick={onClick}>
       <span className="text-body-6 text-gray-1">{title}</span>
       <ChevronRight className="h-5 w-5" />
     </div>

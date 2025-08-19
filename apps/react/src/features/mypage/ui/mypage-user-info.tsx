@@ -19,10 +19,7 @@ export function MyPageUserInfo({ isLoggedIn, user, onLoginClick, onLogoutClick, 
   return (
     <div>
       <div className="flex w-full items-center justify-between">
-        <div
-          className={`flex items-center gap-2 ${isLoggedIn ? 'cursor-pointer' : ''}`}
-          onClick={isLoggedIn ? onProfileClick : onLoginClick}
-        >
+        <div className={`flex cursor-pointer items-center gap-2`} onClick={isLoggedIn ? onProfileClick : onLoginClick}>
           {isLoggedIn ? (
             user?.provider === 'kakao' ? (
               <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#FFE600]">
