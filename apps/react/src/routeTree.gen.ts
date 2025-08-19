@@ -19,6 +19,7 @@ import { Route as PaymentPageImport } from './app/payment/page'
 import { Route as MapPageImport } from './app/map/page'
 import { Route as LoginPageImport } from './app/login/page'
 import { Route as PaymentSuccessPageImport } from './app/payment/success/page'
+import { Route as PaymentResultPageImport } from './app/payment/result/page'
 import { Route as PaymentFailPageImport } from './app/payment/fail/page'
 import { Route as OnboardingTermsPageImport } from './app/onboarding/terms/page'
 import { Route as OnboardingLandingPageImport } from './app/onboarding/landing/page'
@@ -76,6 +77,12 @@ const LoginPageRoute = LoginPageImport.update({
 const PaymentSuccessPageRoute = PaymentSuccessPageImport.update({
   id: '/payment/success/',
   path: '/payment/success/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const PaymentResultPageRoute = PaymentResultPageImport.update({
+  id: '/payment/result/',
+  path: '/payment/result/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -236,6 +243,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PaymentFailPageImport
       parentRoute: typeof rootRoute
     }
+    '/payment/result/': {
+      id: '/payment/result/'
+      path: '/payment/result'
+      fullPath: '/payment/result'
+      preLoaderRoute: typeof PaymentResultPageImport
+      parentRoute: typeof rootRoute
+    }
     '/payment/success/': {
       id: '/payment/success/'
       path: '/payment/success'
@@ -322,6 +336,7 @@ export interface FileRoutesByFullPath {
   '/onboarding/landing': typeof OnboardingLandingPageRoute
   '/onboarding/terms': typeof OnboardingTermsPageRoute
   '/payment/fail': typeof PaymentFailPageRoute
+  '/payment/result': typeof PaymentResultPageRoute
   '/payment/success': typeof PaymentSuccessPageRoute
   '/detail/store/order': typeof DetailStoreOrderPageRoute
   '/onboarding/terms/detail': typeof OnboardingTermsDetailPageRoute
@@ -341,6 +356,7 @@ export interface FileRoutesByTo {
   '/onboarding/landing': typeof OnboardingLandingPageRoute
   '/onboarding/terms': typeof OnboardingTermsPageRoute
   '/payment/fail': typeof PaymentFailPageRoute
+  '/payment/result': typeof PaymentResultPageRoute
   '/payment/success': typeof PaymentSuccessPageRoute
   '/detail/store/order': typeof DetailStoreOrderPageRoute
   '/onboarding/terms/detail': typeof OnboardingTermsDetailPageRoute
@@ -362,6 +378,7 @@ export interface FileRoutesById {
   '/onboarding/landing/': typeof OnboardingLandingPageRoute
   '/onboarding/terms/': typeof OnboardingTermsPageRoute
   '/payment/fail/': typeof PaymentFailPageRoute
+  '/payment/result/': typeof PaymentResultPageRoute
   '/payment/success/': typeof PaymentSuccessPageRoute
   '/detail/store/order/': typeof DetailStoreOrderPageRoute
   '/onboarding/terms/detail/': typeof OnboardingTermsDetailPageRoute
@@ -384,6 +401,7 @@ export interface FileRouteTypes {
     | '/onboarding/landing'
     | '/onboarding/terms'
     | '/payment/fail'
+    | '/payment/result'
     | '/payment/success'
     | '/detail/store/order'
     | '/onboarding/terms/detail'
@@ -402,6 +420,7 @@ export interface FileRouteTypes {
     | '/onboarding/landing'
     | '/onboarding/terms'
     | '/payment/fail'
+    | '/payment/result'
     | '/payment/success'
     | '/detail/store/order'
     | '/onboarding/terms/detail'
@@ -421,6 +440,7 @@ export interface FileRouteTypes {
     | '/onboarding/landing/'
     | '/onboarding/terms/'
     | '/payment/fail/'
+    | '/payment/result/'
     | '/payment/success/'
     | '/detail/store/order/'
     | '/onboarding/terms/detail/'
@@ -436,6 +456,7 @@ export interface RootRouteChildren {
   PaymentPageRoute: typeof PaymentPageRoute
   LoginSuccessPageRoute: typeof LoginSuccessPageRoute
   PaymentFailPageRoute: typeof PaymentFailPageRoute
+  PaymentResultPageRoute: typeof PaymentResultPageRoute
   PaymentSuccessPageRoute: typeof PaymentSuccessPageRoute
 }
 
@@ -448,6 +469,7 @@ const rootRouteChildren: RootRouteChildren = {
   PaymentPageRoute: PaymentPageRoute,
   LoginSuccessPageRoute: LoginSuccessPageRoute,
   PaymentFailPageRoute: PaymentFailPageRoute,
+  PaymentResultPageRoute: PaymentResultPageRoute,
   PaymentSuccessPageRoute: PaymentSuccessPageRoute,
 }
 
@@ -469,6 +491,7 @@ export const routeTree = rootRoute
         "/payment/",
         "/login/success/",
         "/payment/fail/",
+        "/payment/result/",
         "/payment/success/"
       ]
     },
@@ -533,6 +556,9 @@ export const routeTree = rootRoute
     },
     "/payment/fail/": {
       "filePath": "payment/fail/page.tsx"
+    },
+    "/payment/result/": {
+      "filePath": "payment/result/page.tsx"
     },
     "/payment/success/": {
       "filePath": "payment/success/page.tsx"

@@ -3,11 +3,11 @@ module.exports = () => {
 
   return {
     name: '동네파킹',
-    slug: '주차를 소비의 혜택으로 전환하고 있습니다.',
+    slug: 'townparking',
     version: '1.0.0',
     orientation: 'portrait',
     icon: './assets/images/icon.png',
-    scheme: 'town-parking',
+    scheme: 'townparking',
     userInterfaceStyle: 'automatic',
     splash: {
       image: './assets/images/splash-icon.png',
@@ -22,7 +22,7 @@ module.exports = () => {
       infoPlist: {
         CFBundleURLTypes: [
           {
-            CFBundleURLSchemes: ['town-parking', 'com.townparking.app'],
+            CFBundleURLSchemes: ['townparking', 'com.townparking.app'],
           },
           {
             CFBundleURLSchemes: [`kakao${KAKAO_NATIVE_APP_KEY}`],

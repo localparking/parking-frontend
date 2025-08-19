@@ -120,7 +120,6 @@ function RouteComponent() {
       clientTotalPrice: totalPrice,
     }
 
-    console.log('Final Order Data:', JSON.stringify(orderData, null, 2))
     try {
       const { data } = await orderService.orderProducts({
         storeId: storeResponse.storeId,
@@ -289,18 +288,14 @@ function RouteComponent() {
               <p>{formatPrice(totalPrice)}</p>
             </div>
 
-            {parkingDiscountAmount > 0 && (
-              <>
-                <div className="flex justify-between">
-                  <p>주차 금액</p>
-                  <p className="line-through">{formatPrice(parkingDiscountAmount)}</p>
-                </div>
-                <div className="flex justify-between">
-                  <p>무료 주차 할인</p>
-                  <p className="text-primary-1">-{formatPrice(parkingDiscountAmount)}</p>
-                </div>
-              </>
-            )}
+            <div className="flex justify-between">
+              <p>주차 금액</p>
+              <p className="line-through">{formatPrice(parkingDiscountAmount)}</p>
+            </div>
+            <div className="flex justify-between">
+              <p>무료 주차 할인</p>
+              <p className="text-primary-1">{formatPrice(-parkingDiscountAmount)}</p>
+            </div>
 
             <div className="flex justify-between text-body-4 text-primary-1">
               <p>총 결제 금액</p>

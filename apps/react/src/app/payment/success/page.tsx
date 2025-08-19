@@ -27,7 +27,7 @@ function SuccessPage() {
           amount: search.amount,
         })
         if (result) {
-          navigate({ to: '/map' })
+          navigate({ to: '/payment/result', replace: true, search: { orderId: search.orderId } })
         }
       } catch {
         alert('결제 처리에 실패했습니다.')
