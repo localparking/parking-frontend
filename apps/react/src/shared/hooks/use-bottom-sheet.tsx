@@ -8,6 +8,8 @@ import { ParkingLotDetail } from '@/features/parking-lot/detail/parking-lot-deta
 import { ParkingLotContent } from '@/features/parking-lot/list/parking.surface'
 import { StoreDetail } from '@/features/store/detail/store-detail'
 import { StoreContent } from '@/features/store/list/store.surface'
+import parkingLotService from '../services/parking-lot.service'
+import storeService from '../services/store.service'
 
 interface StatusIndicatorProps {
   message: string
@@ -38,18 +40,16 @@ const DetailView = <T,>({ isLoading, data, render, errorMsg }: DetailViewProps<T
 export const useBottomSheetContent = (storeId?: string, parkingLotId?: string) => {
   const { mapDisplayType } = useMapContext()
   const { setContent, setActiveSnapIndex } = useBottomSheet()
-  const parkingApi = new ParkingApi(undefined, '', apiInstance)
-  const storeApi = new StoreApi(undefined, '', apiInstance)
 
   const { data: parkingLotResponse, isLoading: isParkingLotLoading } = useQuery({
     queryKey: ['parkingLot', parkingLotId],
-    queryFn: () => parkingApi.getParkingLotDetail({ parkingCode: parkingLotId! }).then((res) => res.data),
+    queryFn: () => parkingLotService.getParkingLotDetail({ parkingCode: parkingLotId! }).then((res) => res.data),
     enabled: !!parkingLotId,
   })
 
   const { data: storeResponse, isLoading: isStoreLoading } = useQuery({
     queryKey: ['store', storeId],
-    queryFn: () => storeApi.getStoreDetail({ storeId: parseInt(storeId!) }).then((res) => res.data),
+    queryFn: () => storeService.getStoreDetail({ storeId: parseInt(storeId!) }).then((res) => res.data),
     enabled: !!storeId,
   })
 

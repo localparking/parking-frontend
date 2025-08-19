@@ -4,9 +4,17 @@ import { StoreListResponse, SearchItemResponse } from '@data/user-api-axios/api'
 import searchService from '@/shared/services/search.service'
 import storeService from '@/shared/services/store.service'
 import parkingLotService from '@/shared/services/parking-lot.service'
+import StatusBadge from '@/shared/ui/status-badge'
+import { SearchParkingItem, SearchStoreItem } from './ui/search-item'
 
 interface SearchResultsProps {
   query: string
+}
+
+interface handleItemClickParams {
+  lat: number
+  lng: number
+  search?: { parkingLotId?: string; storeId?: string }
 }
 
 export const SearchResults = ({ query }: SearchResultsProps) => {
@@ -39,15 +47,7 @@ export const SearchResults = ({ query }: SearchResultsProps) => {
 
   const navigate = useNavigate()
 
-  const handleItemClick = ({
-    lat,
-    lng,
-    search,
-  }: {
-    lat: number
-    lng: number
-    search?: { parkingLotId?: string; storeId?: string }
-  }) => {
+  const handleItemClick = ({ lat, lng, search }: handleItemClickParams) => {
     moveTo({ lat, lng }, 15)
     setSearchKeyword(query)
     navigate({ to: '/map', replace: true, search })
@@ -61,16 +61,16 @@ export const SearchResults = ({ query }: SearchResultsProps) => {
 
   if (naverLoading) {
     return (
-      <div className="flex h-full items-center justify-center">
-        <p className="text-gray-2">검색 중입니다...</p>
+      <div className="flex h-full justify-center">
+        <p className="pt-12 text-gray-2">검색 중입니다...</p>
       </div>
     )
   }
 
   if (naverError) {
     return (
-      <div className="flex h-full items-center justify-center text-center">
-        <p className="text-red-500">
+      <div className="flex h-full justify-center">
+        <p className="pt-12 text-red-500">
           오류가 발생했습니다.
           <br />
           {naverError.message}
@@ -81,8 +81,8 @@ export const SearchResults = ({ query }: SearchResultsProps) => {
 
   if (!hasStores && !hasNaverResults) {
     return (
-      <div className="flex h-full items-center justify-center">
-        <p className="text-gray-2">검색 결과가 없습니다.</p>
+      <div className="flex h-full justify-center">
+        <p className="pt-12 text-gray-2">검색 결과가 없습니다.</p>
       </div>
     )
   }
@@ -92,77 +92,41 @@ export const SearchResults = ({ query }: SearchResultsProps) => {
   return (
     <>
       {/* 매장 리스트 */}
-      {hasStores && (
+      {mapDisplayType === MapDisplayType.STORE && hasStores && (
         <div className="mb-6">
-          <h2 className="text-body-5 font-bold">추천 매장</h2>
-          <ul className="divide-gray-08 mt-2 divide-y">
-            {stores.map((store) => (
-              <li
-                key={store.storeId}
-                className="cursor-pointer py-4"
-                onClick={() =>
-                  handleItemClick({ lat: store.lat, lng: store.lon, search: { storeId: store.storeId.toString() } })
-                }
-              >
-                <h3 className="text-body-5 font-semibold">{store.name}</h3>
-                <p className="mt-1 text-caption-2 text-gray-3">{store.address}</p>
-                <div className="mt-2 flex gap-1">
-                  {store.categories && store.categories[0]?.categoryName && (
-                    <span className="bg-gray-08 rounded px-2 py-1 text-caption-2 text-gray-2">
-                      {store.categories[0].categoryName}
-                    </span>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ul>
+          <h2 className="text-body-4">추천 매장</h2>
+          {stores.map((store) => (
+            <SearchStoreItem key={store.storeId} store={store} />
+          ))}
         </div>
       )}
-      {hasParkingLots && (
+
+      {/* 주차장 리스트 */}
+      {mapDisplayType === MapDisplayType.PARKING_LOT && hasParkingLots && (
         <div className="mb-6">
           <h2 className="text-body-5 font-bold">추천 주차장</h2>
-          <ul className="divide-gray-08 mt-2 divide-y">
-            {parkings.map((parking) => (
-              <li
-                key={parking.parkingCode}
-                className="cursor-pointer py-4"
-                onClick={() =>
-                  handleItemClick({ lat: parking.lat, lng: parking.lon, search: { parkingLotId: parking.parkingCode } })
-                }
-              >
-                <h3 className="text-body-5 font-semibold">{parking.name}</h3>
-                <p className="mt-1 text-caption-2 text-gray-3">{parking.address}</p>
-                <div className="mt-2 flex gap-1">
-                  {parking && parking.hourlyFee && (
-                    <span className="bg-gray-08 rounded px-2 py-1 text-caption-2 text-gray-2">
-                      1시간당 {parking.hourlyFee}원
-                    </span>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ul>
+          {parkings.map((parking) => (
+            <SearchParkingItem key={parking.parkingCode} parking={parking} />
+          ))}
         </div>
       )}
 
       {/* 네이버 검색 결과 */}
       {hasNaverResults && (
         <div>
-          <hr className="my-4" />
-          <ul className="divide-gray-08 mt-2 divide-y">
-            {naverSearch.map((item, index) => (
-              <div
-                key={index}
-                onClick={() => handleItemClick({ lat: item.lat / 10000000, lng: item.lon / 10000000 })}
-                className="cursor-pointer"
-              >
-                <li className="py-4">
-                  <h3 className="text-body-5 font-semibold">{stripHtml(item.title)}</h3>
-                  <p className="mt-2 text-caption-2 text-gray-3">{item.roadAddress}</p>
-                </li>
+          <h2 className="text-body-4">검색 결과</h2>
+          {naverSearch.map((item, index) => (
+            <div
+              key={index}
+              onClick={() => handleItemClick({ lat: item.lat / 10000000, lng: item.lon / 10000000 })}
+              className="cursor-pointer"
+            >
+              <div className="py-4">
+                <h3 className="text-body-5 font-semibold">{stripHtml(item.title)}</h3>
+                <p className="mt-2 text-caption-2 text-gray-3">{item.roadAddress}</p>
               </div>
-            ))}
-          </ul>
+            </div>
+          ))}
         </div>
       )}
     </>

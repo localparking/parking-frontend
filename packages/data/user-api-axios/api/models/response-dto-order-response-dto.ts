@@ -14,24 +14,24 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { MyStoreInfo } from './my-store-info'
+import type { OrderResponseDto } from './order-response-dto'
 
 /**
  *
  * @export
- * @interface ResponseDtoListMyStoreInfo
+ * @interface ResponseDtoOrderResponseDto
  */
-export interface ResponseDtoListMyStoreInfo {
+export interface ResponseDtoOrderResponseDto {
   /**
    *
    * @type {string}
-   * @memberof ResponseDtoListMyStoreInfo
+   * @memberof ResponseDtoOrderResponseDto
    */
   message: string
   /**
    *
-   * @type {Array<MyStoreInfo>}
-   * @memberof ResponseDtoListMyStoreInfo
+   * @type {OrderResponseDto}
+   * @memberof ResponseDtoOrderResponseDto
    */
-  data?: Array<MyStoreInfo>
+  data?: OrderResponseDto
 }

@@ -2,13 +2,13 @@ const { VITE_API_URL } = import.meta.env
 
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { isWebView } from '@/shared/utils/webview'
-import { useAlertDialog } from '@ui/common/hooks/alert-dialog.hook'
 import { useAuth } from '@/features/auth'
 
 import MainLogoImage from '@/assets/images/logo.png'
 import KakaoLogoIcon from '@/assets/icons/kakao-logo.svg'
-import AppleLogoIcon from '@/assets/icons/app-logo.svg'
+import AppleLogoIcon from '@/assets/icons/apple-logo.svg'
 import Button from '@/shared/ui/button'
+import { useAlertDialog } from '@/shared/hooks/use-alert-dialog'
 
 export const Route = createFileRoute('/login/')({
   component: LoginPage,

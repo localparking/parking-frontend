@@ -12,7 +12,7 @@ interface ParkingLotListProps {
   onFetchNextPage: () => void
 }
 
-const ParkingLotItem: React.FC<{ parkingLot: ParkingLotListResponse }> = ({ parkingLot }) => {
+export const ParkingLotItem: React.FC<{ parkingLot: ParkingLotListResponse }> = ({ parkingLot }) => {
   const { navigateToParkingLotDetail } = useNavigation()
   const { moveTo } = useMapContext().naverMap
 

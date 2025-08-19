@@ -3,7 +3,7 @@ import z from 'zod'
 import { useEffect } from 'react'
 import { saveTokens } from '@/shared/libs/token'
 import { useAuth } from '@/features/auth'
-import { UserInfoResponseRoleEnum } from '@data/user-api-axios/api'
+import { MyInfoResponseDtoRoleEnum } from '@data/user-api-axios/api'
 
 const searchSchema = z.object({
   role: z.string().optional(),
@@ -33,7 +33,7 @@ function RouteComponent() {
 
         const user = await auth.refetchUser()
 
-        if (user?.role === UserInfoResponseRoleEnum.Guest) {
+        if (user?.role === MyInfoResponseDtoRoleEnum.Guest) {
           navigate({ to: '/onboarding/terms', replace: true })
         } else {
           navigate({ to: '/map', replace: true })

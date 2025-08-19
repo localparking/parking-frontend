@@ -11,7 +11,7 @@ class SearchService extends SearchApi {
     return useQuery({
       queryKey: ['localSearch', query],
       queryFn: () => this.searchNaver(query),
-      select: (data) => data.data,
+      select: (data) => data.data?.filter((item) => item.roadAddress),
       enabled: !!query,
       staleTime: 5 * 60 * 1000,
     })

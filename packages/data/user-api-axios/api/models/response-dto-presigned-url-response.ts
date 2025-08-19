@@ -14,24 +14,24 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { StoreOwnershipReqResponse } from './store-ownership-req-response'
+import type { PresignedUrlResponse } from './presigned-url-response'
 
 /**
  *
  * @export
- * @interface ResponseDtoListStoreOwnershipReqResponse
+ * @interface ResponseDtoPresignedUrlResponse
  */
-export interface ResponseDtoListStoreOwnershipReqResponse {
+export interface ResponseDtoPresignedUrlResponse {
   /**
    *
    * @type {string}
-   * @memberof ResponseDtoListStoreOwnershipReqResponse
+   * @memberof ResponseDtoPresignedUrlResponse
    */
   message: string
   /**
    *
-   * @type {Array<StoreOwnershipReqResponse>}
-   * @memberof ResponseDtoListStoreOwnershipReqResponse
+   * @type {PresignedUrlResponse}
+   * @memberof ResponseDtoPresignedUrlResponse
    */
-  data?: Array<StoreOwnershipReqResponse>
+  data?: PresignedUrlResponse
 }

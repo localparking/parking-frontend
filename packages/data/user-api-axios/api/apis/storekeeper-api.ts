@@ -32,13 +32,37 @@ import {
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, type RequestArgs, BaseAPI, RequiredError, operationServerMap } from '../base'
 // @ts-ignore
-import type { BenefitRequestDto } from '../models'
+import type { AdminLoginRequest } from '../models'
+// @ts-ignore
+import type { LinkParkingRequestDto } from '../models'
+// @ts-ignore
+import type { MyStoreUpdateRequest } from '../models'
+// @ts-ignore
+import type { ParkingBenefitRequestDto } from '../models'
+// @ts-ignore
+import type { ParkingLotManualRequestDto } from '../models'
 // @ts-ignore
 import type { ProductRequestDto } from '../models'
 // @ts-ignore
-import type { ResponseDtoListMyStoreInfo } from '../models'
+import type { ResponseDtoBoolean } from '../models'
+// @ts-ignore
+import type { ResponseDtoListAssociatedParkingLotResponseDto } from '../models'
+// @ts-ignore
+import type { ResponseDtoListParkingBenefitDto } from '../models'
+// @ts-ignore
+import type { ResponseDtoListProductResponseDto } from '../models'
+// @ts-ignore
+import type { ResponseDtoMyStoreResponse } from '../models'
+// @ts-ignore
+import type { ResponseDtoParkingBenefitDto } from '../models'
+// @ts-ignore
+import type { ResponseDtoProductResponseDto } from '../models'
+// @ts-ignore
+import type { ResponseDtoTokenResponse } from '../models'
 // @ts-ignore
 import type { ResponseDtoUnit } from '../models'
+// @ts-ignore
+import type { StorekeeperRegisterRequest } from '../models'
 /**
  * StorekeeperApi - axios parameter creator
  * @export
@@ -46,26 +70,19 @@ import type { ResponseDtoUnit } from '../models'
 export const StorekeeperApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
     /**
-     * 특정 가게에 구매 금액별 주차 할인 혜택을 추가합니다.
-     * @summary 가게 주차 할인 혜택 추가
-     * @param {number} storeId
-     * @param {BenefitRequestDto} benefitRequestDto
+     * 내 가게에 새로운 주차 혜택(구매 금액별 할인)을 추가합니다.
+     * @summary 주차 혜택 추가
+     * @param {ParkingBenefitRequestDto} parkingBenefitRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     addParkingBenefit: async (
-      storeId: number,
-      benefitRequestDto: BenefitRequestDto,
+      parkingBenefitRequestDto: ParkingBenefitRequestDto,
       options: RawAxiosRequestConfig = {}
     ): Promise<RequestArgs> => {
-      // verify required parameter 'storeId' is not null or undefined
-      assertParamExists('addParkingBenefit', 'storeId', storeId)
-      // verify required parameter 'benefitRequestDto' is not null or undefined
-      assertParamExists('addParkingBenefit', 'benefitRequestDto', benefitRequestDto)
-      const localVarPath = `/storekeeper/{storeId}/benefits`.replace(
-        `{${'storeId'}}`,
-        encodeURIComponent(String(storeId))
-      )
+      // verify required parameter 'parkingBenefitRequestDto' is not null or undefined
+      assertParamExists('addParkingBenefit', 'parkingBenefitRequestDto', parkingBenefitRequestDto)
+      const localVarPath = `/storekeeper/benefits`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -86,7 +103,11 @@ export const StorekeeperApiAxiosParamCreator = function (configuration?: Configu
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
-      localVarRequestOptions.data = serializeDataIfNeeded(benefitRequestDto, localVarRequestOptions, configuration)
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        parkingBenefitRequestDto,
+        localVarRequestOptions,
+        configuration
+      )
 
       return {
         url: toPathString(localVarUrlObj),
@@ -94,26 +115,19 @@ export const StorekeeperApiAxiosParamCreator = function (configuration?: Configu
       }
     },
     /**
-     * 특정 가게에 새로운 상품을 추가합니다.
+     * 내 가게에 새로운 상품을 등록합니다.
      * @summary 가게 상품 추가
-     * @param {number} storeId
      * @param {ProductRequestDto} productRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     addProduct: async (
-      storeId: number,
       productRequestDto: ProductRequestDto,
       options: RawAxiosRequestConfig = {}
     ): Promise<RequestArgs> => {
-      // verify required parameter 'storeId' is not null or undefined
-      assertParamExists('addProduct', 'storeId', storeId)
       // verify required parameter 'productRequestDto' is not null or undefined
       assertParamExists('addProduct', 'productRequestDto', productRequestDto)
-      const localVarPath = `/storekeeper/{storeId}/products`.replace(
-        `{${'storeId'}}`,
-        encodeURIComponent(String(storeId))
-      )
+      const localVarPath = `/storekeeper/products`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -142,8 +156,47 @@ export const StorekeeperApiAxiosParamCreator = function (configuration?: Configu
       }
     },
     /**
-     * 가게의 주차 할인 혜택을 삭제합니다.
-     * @summary 가게 주차 할인 혜택 삭제
+     * 입력한 아이디가 사용 가능한지 확인합니다.
+     * @summary 점주 아이디 중복 확인
+     * @param {string} adminId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    checkAdminId: async (adminId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'adminId' is not null or undefined
+      assertParamExists('checkAdminId', 'adminId', adminId)
+      const localVarPath = `/storekeeper/check-id`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication Bearer Token required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      if (adminId !== undefined) {
+        localVarQueryParameter['adminId'] = adminId
+      }
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * 가게의 특정 주차 혜택을 삭제합니다.
+     * @summary 주차 혜택 삭제
      * @param {number} benefitId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -180,7 +233,7 @@ export const StorekeeperApiAxiosParamCreator = function (configuration?: Configu
       }
     },
     /**
-     * 특정 상품을 삭제합니다.
+     * 내 가게의 특정 상품을 삭제합니다.
      * @summary 가게 상품 삭제
      * @param {number} productId
      * @param {*} [options] Override http request option.
@@ -218,13 +271,13 @@ export const StorekeeperApiAxiosParamCreator = function (configuration?: Configu
       }
     },
     /**
-     * 로그인한 가게 주인이 소유한 가게들의 목록을 조회합니다.
-     * @summary 내 가게 목록 조회
+     * 내 가게에 연계된 모든 주차장 목록을 조회합니다.
+     * @summary 연계된 주차장 목록 조회
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getMyStores: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-      const localVarPath = `/storekeeper/my-stores`
+    getAssociatedParkingLots: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+      const localVarPath = `/storekeeper/parking`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -250,19 +303,13 @@ export const StorekeeperApiAxiosParamCreator = function (configuration?: Configu
       }
     },
     /**
-     * 로그인한 사용자가 특정 가게의 소유권을 신청합니다.
-     * @summary 가게 소유권 신청
-     * @param {number} storeId
+     * 점주의 가게 정보를 조회합니다.
+     * @summary 내 가게 정보 조회
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    requestOwnership: async (storeId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-      // verify required parameter 'storeId' is not null or undefined
-      assertParamExists('requestOwnership', 'storeId', storeId)
-      const localVarPath = `/storekeeper/request-ownership/{storeId}`.replace(
-        `{${'storeId'}}`,
-        encodeURIComponent(String(storeId))
-      )
+    getMyStoreInfo: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+      const localVarPath = `/storekeeper/my-store`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -270,7 +317,7 @@ export const StorekeeperApiAxiosParamCreator = function (configuration?: Configu
         baseOptions = configuration.baseOptions
       }
 
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
 
@@ -288,22 +335,341 @@ export const StorekeeperApiAxiosParamCreator = function (configuration?: Configu
       }
     },
     /**
-     * 가게의 주차 할인 혜택을 수정합니다.
-     * @summary 가게 주차 할인 혜택 수정
+     * 내 가게에 설정된 모든 주차 혜택(구매 금액별 할인)을 조회합니다.
+     * @summary 주차 혜택 목록 조회
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getParkingbenefits: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+      const localVarPath = `/storekeeper/benefits`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication Bearer Token required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * 내 가게에 등록된 모든 상품 목록을 조회합니다.
+     * @summary 가게 상품 목록 조회
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getProducts: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+      const localVarPath = `/storekeeper/products`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication Bearer Token required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * 주차장 코드를 사용하여 기존 주차장을 내 가게에 연결합니다.
+     * @summary 주차장과 내 가게 연결
+     * @param {LinkParkingRequestDto} linkParkingRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    linkParkingLot: async (
+      linkParkingRequestDto: LinkParkingRequestDto,
+      options: RawAxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'linkParkingRequestDto' is not null or undefined
+      assertParamExists('linkParkingLot', 'linkParkingRequestDto', linkParkingRequestDto)
+      const localVarPath = `/storekeeper/parking/link`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication Bearer Token required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
+      localVarRequestOptions.data = serializeDataIfNeeded(linkParkingRequestDto, localVarRequestOptions, configuration)
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * 점주가 아이디와 비밀번호로 로그인하며, 심사 상태에 따라 결과가 달라집니다.
+     * @summary 점주 로그인
+     * @param {AdminLoginRequest} adminLoginRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    login: async (adminLoginRequest: AdminLoginRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'adminLoginRequest' is not null or undefined
+      assertParamExists('login', 'adminLoginRequest', adminLoginRequest)
+      const localVarPath = `/storekeeper/login`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication Bearer Token required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
+      localVarRequestOptions.data = serializeDataIfNeeded(adminLoginRequest, localVarRequestOptions, configuration)
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * 가게 정보를 함께 받아 회원가입을 신청합니다.
+     * @summary 점주 회원가입
+     * @param {StorekeeperRegisterRequest} storekeeperRegisterRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    registerStorekeeper: async (
+      storekeeperRegisterRequest: StorekeeperRegisterRequest,
+      options: RawAxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'storekeeperRegisterRequest' is not null or undefined
+      assertParamExists('registerStorekeeper', 'storekeeperRegisterRequest', storekeeperRegisterRequest)
+      const localVarPath = `/storekeeper/register`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication Bearer Token required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        storekeeperRegisterRequest,
+        localVarRequestOptions,
+        configuration
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * 내 가게에 연계된 주차장과의 연결을 끊습니다. (가게에 최소 1개의 주차장은 연결되어 있어야 합니다.)
+     * @summary 가게와 주차장 연결 해제
+     * @param {string} parkingCode
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    unlinkParkingLot: async (parkingCode: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'parkingCode' is not null or undefined
+      assertParamExists('unlinkParkingLot', 'parkingCode', parkingCode)
+      const localVarPath = `/storekeeper/parking/{parkingCode}/unlink`.replace(
+        `{${'parkingCode'}}`,
+        encodeURIComponent(String(parkingCode))
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication Bearer Token required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * 내 가게에 연계된 주차장의 정보를 수정합니다.
+     * @summary 연계된 주차장 정보 수정
+     * @param {string} parkingCode
+     * @param {ParkingLotManualRequestDto} parkingLotManualRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateAssociatedParkingLot: async (
+      parkingCode: string,
+      parkingLotManualRequestDto: ParkingLotManualRequestDto,
+      options: RawAxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'parkingCode' is not null or undefined
+      assertParamExists('updateAssociatedParkingLot', 'parkingCode', parkingCode)
+      // verify required parameter 'parkingLotManualRequestDto' is not null or undefined
+      assertParamExists('updateAssociatedParkingLot', 'parkingLotManualRequestDto', parkingLotManualRequestDto)
+      const localVarPath = `/storekeeper/parking/{parkingCode}`.replace(
+        `{${'parkingCode'}}`,
+        encodeURIComponent(String(parkingCode))
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication Bearer Token required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        parkingLotManualRequestDto,
+        localVarRequestOptions,
+        configuration
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * 점주의 가게 정보를 수정합니다.
+     * @summary 내 가게 정보 수정
+     * @param {MyStoreUpdateRequest} myStoreUpdateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateMyStoreInfo: async (
+      myStoreUpdateRequest: MyStoreUpdateRequest,
+      options: RawAxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'myStoreUpdateRequest' is not null or undefined
+      assertParamExists('updateMyStoreInfo', 'myStoreUpdateRequest', myStoreUpdateRequest)
+      const localVarPath = `/storekeeper/my-store`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication Bearer Token required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
+      localVarRequestOptions.data = serializeDataIfNeeded(myStoreUpdateRequest, localVarRequestOptions, configuration)
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * 기존 주차 혜택의 내용을 수정합니다.
+     * @summary 주차 혜택 수정
      * @param {number} benefitId
-     * @param {BenefitRequestDto} benefitRequestDto
+     * @param {ParkingBenefitRequestDto} parkingBenefitRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     updateParkingBenefit: async (
       benefitId: number,
-      benefitRequestDto: BenefitRequestDto,
+      parkingBenefitRequestDto: ParkingBenefitRequestDto,
       options: RawAxiosRequestConfig = {}
     ): Promise<RequestArgs> => {
       // verify required parameter 'benefitId' is not null or undefined
       assertParamExists('updateParkingBenefit', 'benefitId', benefitId)
-      // verify required parameter 'benefitRequestDto' is not null or undefined
-      assertParamExists('updateParkingBenefit', 'benefitRequestDto', benefitRequestDto)
+      // verify required parameter 'parkingBenefitRequestDto' is not null or undefined
+      assertParamExists('updateParkingBenefit', 'parkingBenefitRequestDto', parkingBenefitRequestDto)
       const localVarPath = `/storekeeper/benefits/{benefitId}`.replace(
         `{${'benefitId'}}`,
         encodeURIComponent(String(benefitId))
@@ -328,7 +694,11 @@ export const StorekeeperApiAxiosParamCreator = function (configuration?: Configu
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
-      localVarRequestOptions.data = serializeDataIfNeeded(benefitRequestDto, localVarRequestOptions, configuration)
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        parkingBenefitRequestDto,
+        localVarRequestOptions,
+        configuration
+      )
 
       return {
         url: toPathString(localVarUrlObj),
@@ -336,7 +706,7 @@ export const StorekeeperApiAxiosParamCreator = function (configuration?: Configu
       }
     },
     /**
-     * 특정 상품의 정보를 수정합니다.
+     * 내 가게의 특정 상품 정보를 수정합니다.
      * @summary 가게 상품 수정
      * @param {number} productId
      * @param {ProductRequestDto} productRequestDto
@@ -394,19 +764,17 @@ export const StorekeeperApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = StorekeeperApiAxiosParamCreator(configuration)
   return {
     /**
-     * 특정 가게에 구매 금액별 주차 할인 혜택을 추가합니다.
-     * @summary 가게 주차 할인 혜택 추가
-     * @param {number} storeId
-     * @param {BenefitRequestDto} benefitRequestDto
+     * 내 가게에 새로운 주차 혜택(구매 금액별 할인)을 추가합니다.
+     * @summary 주차 혜택 추가
+     * @param {ParkingBenefitRequestDto} parkingBenefitRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async addParkingBenefit(
-      storeId: number,
-      benefitRequestDto: BenefitRequestDto,
+      parkingBenefitRequestDto: ParkingBenefitRequestDto,
       options?: RawAxiosRequestConfig
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoUnit>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.addParkingBenefit(storeId, benefitRequestDto, options)
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoParkingBenefitDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.addParkingBenefit(parkingBenefitRequestDto, options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
         operationServerMap['StorekeeperApi.addParkingBenefit']?.[localVarOperationServerIndex]?.url
@@ -419,19 +787,17 @@ export const StorekeeperApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * 특정 가게에 새로운 상품을 추가합니다.
+     * 내 가게에 새로운 상품을 등록합니다.
      * @summary 가게 상품 추가
-     * @param {number} storeId
      * @param {ProductRequestDto} productRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async addProduct(
-      storeId: number,
       productRequestDto: ProductRequestDto,
       options?: RawAxiosRequestConfig
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoUnit>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.addProduct(storeId, productRequestDto, options)
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoProductResponseDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.addProduct(productRequestDto, options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
         operationServerMap['StorekeeperApi.addProduct']?.[localVarOperationServerIndex]?.url
@@ -444,8 +810,31 @@ export const StorekeeperApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * 가게의 주차 할인 혜택을 삭제합니다.
-     * @summary 가게 주차 할인 혜택 삭제
+     * 입력한 아이디가 사용 가능한지 확인합니다.
+     * @summary 점주 아이디 중복 확인
+     * @param {string} adminId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async checkAdminId(
+      adminId: string,
+      options?: RawAxiosRequestConfig
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoBoolean>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.checkAdminId(adminId, options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['StorekeeperApi.checkAdminId']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * 가게의 특정 주차 혜택을 삭제합니다.
+     * @summary 주차 혜택 삭제
      * @param {number} benefitId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -467,7 +856,7 @@ export const StorekeeperApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * 특정 상품을 삭제합니다.
+     * 내 가게의 특정 상품을 삭제합니다.
      * @summary 가게 상품 삭제
      * @param {number} productId
      * @param {*} [options] Override http request option.
@@ -490,18 +879,20 @@ export const StorekeeperApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * 로그인한 가게 주인이 소유한 가게들의 목록을 조회합니다.
-     * @summary 내 가게 목록 조회
+     * 내 가게에 연계된 모든 주차장 목록을 조회합니다.
+     * @summary 연계된 주차장 목록 조회
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async getMyStores(
+    async getAssociatedParkingLots(
       options?: RawAxiosRequestConfig
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoListMyStoreInfo>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.getMyStores(options)
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoListAssociatedParkingLotResponseDto>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getAssociatedParkingLots(options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
-        operationServerMap['StorekeeperApi.getMyStores']?.[localVarOperationServerIndex]?.url
+        operationServerMap['StorekeeperApi.getAssociatedParkingLots']?.[localVarOperationServerIndex]?.url
       return (axios, basePath) =>
         createRequestFunction(
           localVarAxiosArgs,
@@ -511,20 +902,83 @@ export const StorekeeperApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * 로그인한 사용자가 특정 가게의 소유권을 신청합니다.
-     * @summary 가게 소유권 신청
-     * @param {number} storeId
+     * 점주의 가게 정보를 조회합니다.
+     * @summary 내 가게 정보 조회
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async requestOwnership(
-      storeId: number,
+    async getMyStoreInfo(
+      options?: RawAxiosRequestConfig
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoMyStoreResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getMyStoreInfo(options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['StorekeeperApi.getMyStoreInfo']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * 내 가게에 설정된 모든 주차 혜택(구매 금액별 할인)을 조회합니다.
+     * @summary 주차 혜택 목록 조회
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getParkingbenefits(
+      options?: RawAxiosRequestConfig
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoListParkingBenefitDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getParkingbenefits(options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['StorekeeperApi.getParkingbenefits']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * 내 가게에 등록된 모든 상품 목록을 조회합니다.
+     * @summary 가게 상품 목록 조회
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getProducts(
+      options?: RawAxiosRequestConfig
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoListProductResponseDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getProducts(options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['StorekeeperApi.getProducts']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * 주차장 코드를 사용하여 기존 주차장을 내 가게에 연결합니다.
+     * @summary 주차장과 내 가게 연결
+     * @param {LinkParkingRequestDto} linkParkingRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async linkParkingLot(
+      linkParkingRequestDto: LinkParkingRequestDto,
       options?: RawAxiosRequestConfig
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoUnit>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.requestOwnership(storeId, options)
+      const localVarAxiosArgs = await localVarAxiosParamCreator.linkParkingLot(linkParkingRequestDto, options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
-        operationServerMap['StorekeeperApi.requestOwnership']?.[localVarOperationServerIndex]?.url
+        operationServerMap['StorekeeperApi.linkParkingLot']?.[localVarOperationServerIndex]?.url
       return (axios, basePath) =>
         createRequestFunction(
           localVarAxiosArgs,
@@ -534,21 +988,142 @@ export const StorekeeperApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * 가게의 주차 할인 혜택을 수정합니다.
-     * @summary 가게 주차 할인 혜택 수정
+     * 점주가 아이디와 비밀번호로 로그인하며, 심사 상태에 따라 결과가 달라집니다.
+     * @summary 점주 로그인
+     * @param {AdminLoginRequest} adminLoginRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async login(
+      adminLoginRequest: AdminLoginRequest,
+      options?: RawAxiosRequestConfig
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoTokenResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.login(adminLoginRequest, options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['StorekeeperApi.login']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * 가게 정보를 함께 받아 회원가입을 신청합니다.
+     * @summary 점주 회원가입
+     * @param {StorekeeperRegisterRequest} storekeeperRegisterRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async registerStorekeeper(
+      storekeeperRegisterRequest: StorekeeperRegisterRequest,
+      options?: RawAxiosRequestConfig
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoUnit>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.registerStorekeeper(storekeeperRegisterRequest, options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['StorekeeperApi.registerStorekeeper']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * 내 가게에 연계된 주차장과의 연결을 끊습니다. (가게에 최소 1개의 주차장은 연결되어 있어야 합니다.)
+     * @summary 가게와 주차장 연결 해제
+     * @param {string} parkingCode
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async unlinkParkingLot(
+      parkingCode: string,
+      options?: RawAxiosRequestConfig
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoUnit>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.unlinkParkingLot(parkingCode, options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['StorekeeperApi.unlinkParkingLot']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * 내 가게에 연계된 주차장의 정보를 수정합니다.
+     * @summary 연계된 주차장 정보 수정
+     * @param {string} parkingCode
+     * @param {ParkingLotManualRequestDto} parkingLotManualRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async updateAssociatedParkingLot(
+      parkingCode: string,
+      parkingLotManualRequestDto: ParkingLotManualRequestDto,
+      options?: RawAxiosRequestConfig
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoUnit>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.updateAssociatedParkingLot(
+        parkingCode,
+        parkingLotManualRequestDto,
+        options
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['StorekeeperApi.updateAssociatedParkingLot']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * 점주의 가게 정보를 수정합니다.
+     * @summary 내 가게 정보 수정
+     * @param {MyStoreUpdateRequest} myStoreUpdateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async updateMyStoreInfo(
+      myStoreUpdateRequest: MyStoreUpdateRequest,
+      options?: RawAxiosRequestConfig
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoMyStoreResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.updateMyStoreInfo(myStoreUpdateRequest, options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['StorekeeperApi.updateMyStoreInfo']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * 기존 주차 혜택의 내용을 수정합니다.
+     * @summary 주차 혜택 수정
      * @param {number} benefitId
-     * @param {BenefitRequestDto} benefitRequestDto
+     * @param {ParkingBenefitRequestDto} parkingBenefitRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async updateParkingBenefit(
       benefitId: number,
-      benefitRequestDto: BenefitRequestDto,
+      parkingBenefitRequestDto: ParkingBenefitRequestDto,
       options?: RawAxiosRequestConfig
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoUnit>> {
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoParkingBenefitDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.updateParkingBenefit(
         benefitId,
-        benefitRequestDto,
+        parkingBenefitRequestDto,
         options
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -563,7 +1138,7 @@ export const StorekeeperApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * 특정 상품의 정보를 수정합니다.
+     * 내 가게의 특정 상품 정보를 수정합니다.
      * @summary 가게 상품 수정
      * @param {number} productId
      * @param {ProductRequestDto} productRequestDto
@@ -574,7 +1149,7 @@ export const StorekeeperApiFp = function (configuration?: Configuration) {
       productId: number,
       productRequestDto: ProductRequestDto,
       options?: RawAxiosRequestConfig
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoUnit>> {
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoProductResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.updateProduct(productId, productRequestDto, options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
@@ -602,8 +1177,8 @@ export const StorekeeperApiFactory = function (
   const localVarFp = StorekeeperApiFp(configuration)
   return {
     /**
-     * 특정 가게에 구매 금액별 주차 할인 혜택을 추가합니다.
-     * @summary 가게 주차 할인 혜택 추가
+     * 내 가게에 새로운 주차 혜택(구매 금액별 할인)을 추가합니다.
+     * @summary 주차 혜택 추가
      * @param {StorekeeperApiAddParkingBenefitRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -611,13 +1186,13 @@ export const StorekeeperApiFactory = function (
     addParkingBenefit(
       requestParameters: StorekeeperApiAddParkingBenefitRequest,
       options?: RawAxiosRequestConfig
-    ): AxiosPromise<ResponseDtoUnit> {
+    ): AxiosPromise<ResponseDtoParkingBenefitDto> {
       return localVarFp
-        .addParkingBenefit(requestParameters.storeId, requestParameters.benefitRequestDto, options)
+        .addParkingBenefit(requestParameters.parkingBenefitRequestDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
-     * 특정 가게에 새로운 상품을 추가합니다.
+     * 내 가게에 새로운 상품을 등록합니다.
      * @summary 가게 상품 추가
      * @param {StorekeeperApiAddProductRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
@@ -626,14 +1201,27 @@ export const StorekeeperApiFactory = function (
     addProduct(
       requestParameters: StorekeeperApiAddProductRequest,
       options?: RawAxiosRequestConfig
-    ): AxiosPromise<ResponseDtoUnit> {
+    ): AxiosPromise<ResponseDtoProductResponseDto> {
       return localVarFp
-        .addProduct(requestParameters.storeId, requestParameters.productRequestDto, options)
+        .addProduct(requestParameters.productRequestDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
-     * 가게의 주차 할인 혜택을 삭제합니다.
-     * @summary 가게 주차 할인 혜택 삭제
+     * 입력한 아이디가 사용 가능한지 확인합니다.
+     * @summary 점주 아이디 중복 확인
+     * @param {StorekeeperApiCheckAdminIdRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    checkAdminId(
+      requestParameters: StorekeeperApiCheckAdminIdRequest,
+      options?: RawAxiosRequestConfig
+    ): AxiosPromise<ResponseDtoBoolean> {
+      return localVarFp.checkAdminId(requestParameters.adminId, options).then((request) => request(axios, basePath))
+    },
+    /**
+     * 가게의 특정 주차 혜택을 삭제합니다.
+     * @summary 주차 혜택 삭제
      * @param {StorekeeperApiDeleteParkingBenefitRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -647,7 +1235,7 @@ export const StorekeeperApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * 특정 상품을 삭제합니다.
+     * 내 가게의 특정 상품을 삭제합니다.
      * @summary 가게 상품 삭제
      * @param {StorekeeperApiDeleteProductRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
@@ -660,30 +1248,138 @@ export const StorekeeperApiFactory = function (
       return localVarFp.deleteProduct(requestParameters.productId, options).then((request) => request(axios, basePath))
     },
     /**
-     * 로그인한 가게 주인이 소유한 가게들의 목록을 조회합니다.
-     * @summary 내 가게 목록 조회
+     * 내 가게에 연계된 모든 주차장 목록을 조회합니다.
+     * @summary 연계된 주차장 목록 조회
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getMyStores(options?: RawAxiosRequestConfig): AxiosPromise<ResponseDtoListMyStoreInfo> {
-      return localVarFp.getMyStores(options).then((request) => request(axios, basePath))
+    getAssociatedParkingLots(
+      options?: RawAxiosRequestConfig
+    ): AxiosPromise<ResponseDtoListAssociatedParkingLotResponseDto> {
+      return localVarFp.getAssociatedParkingLots(options).then((request) => request(axios, basePath))
     },
     /**
-     * 로그인한 사용자가 특정 가게의 소유권을 신청합니다.
-     * @summary 가게 소유권 신청
-     * @param {StorekeeperApiRequestOwnershipRequest} requestParameters Request parameters.
+     * 점주의 가게 정보를 조회합니다.
+     * @summary 내 가게 정보 조회
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    requestOwnership(
-      requestParameters: StorekeeperApiRequestOwnershipRequest,
+    getMyStoreInfo(options?: RawAxiosRequestConfig): AxiosPromise<ResponseDtoMyStoreResponse> {
+      return localVarFp.getMyStoreInfo(options).then((request) => request(axios, basePath))
+    },
+    /**
+     * 내 가게에 설정된 모든 주차 혜택(구매 금액별 할인)을 조회합니다.
+     * @summary 주차 혜택 목록 조회
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getParkingbenefits(options?: RawAxiosRequestConfig): AxiosPromise<ResponseDtoListParkingBenefitDto> {
+      return localVarFp.getParkingbenefits(options).then((request) => request(axios, basePath))
+    },
+    /**
+     * 내 가게에 등록된 모든 상품 목록을 조회합니다.
+     * @summary 가게 상품 목록 조회
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getProducts(options?: RawAxiosRequestConfig): AxiosPromise<ResponseDtoListProductResponseDto> {
+      return localVarFp.getProducts(options).then((request) => request(axios, basePath))
+    },
+    /**
+     * 주차장 코드를 사용하여 기존 주차장을 내 가게에 연결합니다.
+     * @summary 주차장과 내 가게 연결
+     * @param {StorekeeperApiLinkParkingLotRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    linkParkingLot(
+      requestParameters: StorekeeperApiLinkParkingLotRequest,
       options?: RawAxiosRequestConfig
     ): AxiosPromise<ResponseDtoUnit> {
-      return localVarFp.requestOwnership(requestParameters.storeId, options).then((request) => request(axios, basePath))
+      return localVarFp
+        .linkParkingLot(requestParameters.linkParkingRequestDto, options)
+        .then((request) => request(axios, basePath))
     },
     /**
-     * 가게의 주차 할인 혜택을 수정합니다.
-     * @summary 가게 주차 할인 혜택 수정
+     * 점주가 아이디와 비밀번호로 로그인하며, 심사 상태에 따라 결과가 달라집니다.
+     * @summary 점주 로그인
+     * @param {StorekeeperApiLoginRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    login(
+      requestParameters: StorekeeperApiLoginRequest,
+      options?: RawAxiosRequestConfig
+    ): AxiosPromise<ResponseDtoTokenResponse> {
+      return localVarFp.login(requestParameters.adminLoginRequest, options).then((request) => request(axios, basePath))
+    },
+    /**
+     * 가게 정보를 함께 받아 회원가입을 신청합니다.
+     * @summary 점주 회원가입
+     * @param {StorekeeperApiRegisterStorekeeperRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    registerStorekeeper(
+      requestParameters: StorekeeperApiRegisterStorekeeperRequest,
+      options?: RawAxiosRequestConfig
+    ): AxiosPromise<ResponseDtoUnit> {
+      return localVarFp
+        .registerStorekeeper(requestParameters.storekeeperRegisterRequest, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * 내 가게에 연계된 주차장과의 연결을 끊습니다. (가게에 최소 1개의 주차장은 연결되어 있어야 합니다.)
+     * @summary 가게와 주차장 연결 해제
+     * @param {StorekeeperApiUnlinkParkingLotRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    unlinkParkingLot(
+      requestParameters: StorekeeperApiUnlinkParkingLotRequest,
+      options?: RawAxiosRequestConfig
+    ): AxiosPromise<ResponseDtoUnit> {
+      return localVarFp
+        .unlinkParkingLot(requestParameters.parkingCode, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * 내 가게에 연계된 주차장의 정보를 수정합니다.
+     * @summary 연계된 주차장 정보 수정
+     * @param {StorekeeperApiUpdateAssociatedParkingLotRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateAssociatedParkingLot(
+      requestParameters: StorekeeperApiUpdateAssociatedParkingLotRequest,
+      options?: RawAxiosRequestConfig
+    ): AxiosPromise<ResponseDtoUnit> {
+      return localVarFp
+        .updateAssociatedParkingLot(
+          requestParameters.parkingCode,
+          requestParameters.parkingLotManualRequestDto,
+          options
+        )
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * 점주의 가게 정보를 수정합니다.
+     * @summary 내 가게 정보 수정
+     * @param {StorekeeperApiUpdateMyStoreInfoRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateMyStoreInfo(
+      requestParameters: StorekeeperApiUpdateMyStoreInfoRequest,
+      options?: RawAxiosRequestConfig
+    ): AxiosPromise<ResponseDtoMyStoreResponse> {
+      return localVarFp
+        .updateMyStoreInfo(requestParameters.myStoreUpdateRequest, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * 기존 주차 혜택의 내용을 수정합니다.
+     * @summary 주차 혜택 수정
      * @param {StorekeeperApiUpdateParkingBenefitRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -691,13 +1387,13 @@ export const StorekeeperApiFactory = function (
     updateParkingBenefit(
       requestParameters: StorekeeperApiUpdateParkingBenefitRequest,
       options?: RawAxiosRequestConfig
-    ): AxiosPromise<ResponseDtoUnit> {
+    ): AxiosPromise<ResponseDtoParkingBenefitDto> {
       return localVarFp
-        .updateParkingBenefit(requestParameters.benefitId, requestParameters.benefitRequestDto, options)
+        .updateParkingBenefit(requestParameters.benefitId, requestParameters.parkingBenefitRequestDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
-     * 특정 상품의 정보를 수정합니다.
+     * 내 가게의 특정 상품 정보를 수정합니다.
      * @summary 가게 상품 수정
      * @param {StorekeeperApiUpdateProductRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
@@ -706,7 +1402,7 @@ export const StorekeeperApiFactory = function (
     updateProduct(
       requestParameters: StorekeeperApiUpdateProductRequest,
       options?: RawAxiosRequestConfig
-    ): AxiosPromise<ResponseDtoUnit> {
+    ): AxiosPromise<ResponseDtoProductResponseDto> {
       return localVarFp
         .updateProduct(requestParameters.productId, requestParameters.productRequestDto, options)
         .then((request) => request(axios, basePath))
@@ -722,17 +1418,10 @@ export const StorekeeperApiFactory = function (
 export interface StorekeeperApiAddParkingBenefitRequest {
   /**
    *
-   * @type {number}
+   * @type {ParkingBenefitRequestDto}
    * @memberof StorekeeperApiAddParkingBenefit
    */
-  readonly storeId: number
-
-  /**
-   *
-   * @type {BenefitRequestDto}
-   * @memberof StorekeeperApiAddParkingBenefit
-   */
-  readonly benefitRequestDto: BenefitRequestDto
+  readonly parkingBenefitRequestDto: ParkingBenefitRequestDto
 }
 
 /**
@@ -743,17 +1432,24 @@ export interface StorekeeperApiAddParkingBenefitRequest {
 export interface StorekeeperApiAddProductRequest {
   /**
    *
-   * @type {number}
-   * @memberof StorekeeperApiAddProduct
-   */
-  readonly storeId: number
-
-  /**
-   *
    * @type {ProductRequestDto}
    * @memberof StorekeeperApiAddProduct
    */
   readonly productRequestDto: ProductRequestDto
+}
+
+/**
+ * Request parameters for checkAdminId operation in StorekeeperApi.
+ * @export
+ * @interface StorekeeperApiCheckAdminIdRequest
+ */
+export interface StorekeeperApiCheckAdminIdRequest {
+  /**
+   *
+   * @type {string}
+   * @memberof StorekeeperApiCheckAdminId
+   */
+  readonly adminId: string
 }
 
 /**
@@ -785,17 +1481,94 @@ export interface StorekeeperApiDeleteProductRequest {
 }
 
 /**
- * Request parameters for requestOwnership operation in StorekeeperApi.
+ * Request parameters for linkParkingLot operation in StorekeeperApi.
  * @export
- * @interface StorekeeperApiRequestOwnershipRequest
+ * @interface StorekeeperApiLinkParkingLotRequest
  */
-export interface StorekeeperApiRequestOwnershipRequest {
+export interface StorekeeperApiLinkParkingLotRequest {
   /**
    *
-   * @type {number}
-   * @memberof StorekeeperApiRequestOwnership
+   * @type {LinkParkingRequestDto}
+   * @memberof StorekeeperApiLinkParkingLot
    */
-  readonly storeId: number
+  readonly linkParkingRequestDto: LinkParkingRequestDto
+}
+
+/**
+ * Request parameters for login operation in StorekeeperApi.
+ * @export
+ * @interface StorekeeperApiLoginRequest
+ */
+export interface StorekeeperApiLoginRequest {
+  /**
+   *
+   * @type {AdminLoginRequest}
+   * @memberof StorekeeperApiLogin
+   */
+  readonly adminLoginRequest: AdminLoginRequest
+}
+
+/**
+ * Request parameters for registerStorekeeper operation in StorekeeperApi.
+ * @export
+ * @interface StorekeeperApiRegisterStorekeeperRequest
+ */
+export interface StorekeeperApiRegisterStorekeeperRequest {
+  /**
+   *
+   * @type {StorekeeperRegisterRequest}
+   * @memberof StorekeeperApiRegisterStorekeeper
+   */
+  readonly storekeeperRegisterRequest: StorekeeperRegisterRequest
+}
+
+/**
+ * Request parameters for unlinkParkingLot operation in StorekeeperApi.
+ * @export
+ * @interface StorekeeperApiUnlinkParkingLotRequest
+ */
+export interface StorekeeperApiUnlinkParkingLotRequest {
+  /**
+   *
+   * @type {string}
+   * @memberof StorekeeperApiUnlinkParkingLot
+   */
+  readonly parkingCode: string
+}
+
+/**
+ * Request parameters for updateAssociatedParkingLot operation in StorekeeperApi.
+ * @export
+ * @interface StorekeeperApiUpdateAssociatedParkingLotRequest
+ */
+export interface StorekeeperApiUpdateAssociatedParkingLotRequest {
+  /**
+   *
+   * @type {string}
+   * @memberof StorekeeperApiUpdateAssociatedParkingLot
+   */
+  readonly parkingCode: string
+
+  /**
+   *
+   * @type {ParkingLotManualRequestDto}
+   * @memberof StorekeeperApiUpdateAssociatedParkingLot
+   */
+  readonly parkingLotManualRequestDto: ParkingLotManualRequestDto
+}
+
+/**
+ * Request parameters for updateMyStoreInfo operation in StorekeeperApi.
+ * @export
+ * @interface StorekeeperApiUpdateMyStoreInfoRequest
+ */
+export interface StorekeeperApiUpdateMyStoreInfoRequest {
+  /**
+   *
+   * @type {MyStoreUpdateRequest}
+   * @memberof StorekeeperApiUpdateMyStoreInfo
+   */
+  readonly myStoreUpdateRequest: MyStoreUpdateRequest
 }
 
 /**
@@ -813,10 +1586,10 @@ export interface StorekeeperApiUpdateParkingBenefitRequest {
 
   /**
    *
-   * @type {BenefitRequestDto}
+   * @type {ParkingBenefitRequestDto}
    * @memberof StorekeeperApiUpdateParkingBenefit
    */
-  readonly benefitRequestDto: BenefitRequestDto
+  readonly parkingBenefitRequestDto: ParkingBenefitRequestDto
 }
 
 /**
@@ -848,8 +1621,8 @@ export interface StorekeeperApiUpdateProductRequest {
  */
 export class StorekeeperApi extends BaseAPI {
   /**
-   * 특정 가게에 구매 금액별 주차 할인 혜택을 추가합니다.
-   * @summary 가게 주차 할인 혜택 추가
+   * 내 가게에 새로운 주차 혜택(구매 금액별 할인)을 추가합니다.
+   * @summary 주차 혜택 추가
    * @param {StorekeeperApiAddParkingBenefitRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -857,12 +1630,12 @@ export class StorekeeperApi extends BaseAPI {
    */
   public addParkingBenefit(requestParameters: StorekeeperApiAddParkingBenefitRequest, options?: RawAxiosRequestConfig) {
     return StorekeeperApiFp(this.configuration)
-      .addParkingBenefit(requestParameters.storeId, requestParameters.benefitRequestDto, options)
+      .addParkingBenefit(requestParameters.parkingBenefitRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
   /**
-   * 특정 가게에 새로운 상품을 추가합니다.
+   * 내 가게에 새로운 상품을 등록합니다.
    * @summary 가게 상품 추가
    * @param {StorekeeperApiAddProductRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
@@ -871,13 +1644,27 @@ export class StorekeeperApi extends BaseAPI {
    */
   public addProduct(requestParameters: StorekeeperApiAddProductRequest, options?: RawAxiosRequestConfig) {
     return StorekeeperApiFp(this.configuration)
-      .addProduct(requestParameters.storeId, requestParameters.productRequestDto, options)
+      .addProduct(requestParameters.productRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
   /**
-   * 가게의 주차 할인 혜택을 삭제합니다.
-   * @summary 가게 주차 할인 혜택 삭제
+   * 입력한 아이디가 사용 가능한지 확인합니다.
+   * @summary 점주 아이디 중복 확인
+   * @param {StorekeeperApiCheckAdminIdRequest} requestParameters Request parameters.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof StorekeeperApi
+   */
+  public checkAdminId(requestParameters: StorekeeperApiCheckAdminIdRequest, options?: RawAxiosRequestConfig) {
+    return StorekeeperApiFp(this.configuration)
+      .checkAdminId(requestParameters.adminId, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * 가게의 특정 주차 혜택을 삭제합니다.
+   * @summary 주차 혜택 삭제
    * @param {StorekeeperApiDeleteParkingBenefitRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -893,7 +1680,7 @@ export class StorekeeperApi extends BaseAPI {
   }
 
   /**
-   * 특정 상품을 삭제합니다.
+   * 내 가게의 특정 상품을 삭제합니다.
    * @summary 가게 상품 삭제
    * @param {StorekeeperApiDeleteProductRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
@@ -907,35 +1694,150 @@ export class StorekeeperApi extends BaseAPI {
   }
 
   /**
-   * 로그인한 가게 주인이 소유한 가게들의 목록을 조회합니다.
-   * @summary 내 가게 목록 조회
+   * 내 가게에 연계된 모든 주차장 목록을 조회합니다.
+   * @summary 연계된 주차장 목록 조회
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof StorekeeperApi
    */
-  public getMyStores(options?: RawAxiosRequestConfig) {
+  public getAssociatedParkingLots(options?: RawAxiosRequestConfig) {
     return StorekeeperApiFp(this.configuration)
-      .getMyStores(options)
+      .getAssociatedParkingLots(options)
       .then((request) => request(this.axios, this.basePath))
   }
 
   /**
-   * 로그인한 사용자가 특정 가게의 소유권을 신청합니다.
-   * @summary 가게 소유권 신청
-   * @param {StorekeeperApiRequestOwnershipRequest} requestParameters Request parameters.
+   * 점주의 가게 정보를 조회합니다.
+   * @summary 내 가게 정보 조회
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof StorekeeperApi
    */
-  public requestOwnership(requestParameters: StorekeeperApiRequestOwnershipRequest, options?: RawAxiosRequestConfig) {
+  public getMyStoreInfo(options?: RawAxiosRequestConfig) {
     return StorekeeperApiFp(this.configuration)
-      .requestOwnership(requestParameters.storeId, options)
+      .getMyStoreInfo(options)
       .then((request) => request(this.axios, this.basePath))
   }
 
   /**
-   * 가게의 주차 할인 혜택을 수정합니다.
-   * @summary 가게 주차 할인 혜택 수정
+   * 내 가게에 설정된 모든 주차 혜택(구매 금액별 할인)을 조회합니다.
+   * @summary 주차 혜택 목록 조회
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof StorekeeperApi
+   */
+  public getParkingbenefits(options?: RawAxiosRequestConfig) {
+    return StorekeeperApiFp(this.configuration)
+      .getParkingbenefits(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * 내 가게에 등록된 모든 상품 목록을 조회합니다.
+   * @summary 가게 상품 목록 조회
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof StorekeeperApi
+   */
+  public getProducts(options?: RawAxiosRequestConfig) {
+    return StorekeeperApiFp(this.configuration)
+      .getProducts(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * 주차장 코드를 사용하여 기존 주차장을 내 가게에 연결합니다.
+   * @summary 주차장과 내 가게 연결
+   * @param {StorekeeperApiLinkParkingLotRequest} requestParameters Request parameters.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof StorekeeperApi
+   */
+  public linkParkingLot(requestParameters: StorekeeperApiLinkParkingLotRequest, options?: RawAxiosRequestConfig) {
+    return StorekeeperApiFp(this.configuration)
+      .linkParkingLot(requestParameters.linkParkingRequestDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * 점주가 아이디와 비밀번호로 로그인하며, 심사 상태에 따라 결과가 달라집니다.
+   * @summary 점주 로그인
+   * @param {StorekeeperApiLoginRequest} requestParameters Request parameters.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof StorekeeperApi
+   */
+  public login(requestParameters: StorekeeperApiLoginRequest, options?: RawAxiosRequestConfig) {
+    return StorekeeperApiFp(this.configuration)
+      .login(requestParameters.adminLoginRequest, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * 가게 정보를 함께 받아 회원가입을 신청합니다.
+   * @summary 점주 회원가입
+   * @param {StorekeeperApiRegisterStorekeeperRequest} requestParameters Request parameters.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof StorekeeperApi
+   */
+  public registerStorekeeper(
+    requestParameters: StorekeeperApiRegisterStorekeeperRequest,
+    options?: RawAxiosRequestConfig
+  ) {
+    return StorekeeperApiFp(this.configuration)
+      .registerStorekeeper(requestParameters.storekeeperRegisterRequest, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * 내 가게에 연계된 주차장과의 연결을 끊습니다. (가게에 최소 1개의 주차장은 연결되어 있어야 합니다.)
+   * @summary 가게와 주차장 연결 해제
+   * @param {StorekeeperApiUnlinkParkingLotRequest} requestParameters Request parameters.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof StorekeeperApi
+   */
+  public unlinkParkingLot(requestParameters: StorekeeperApiUnlinkParkingLotRequest, options?: RawAxiosRequestConfig) {
+    return StorekeeperApiFp(this.configuration)
+      .unlinkParkingLot(requestParameters.parkingCode, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * 내 가게에 연계된 주차장의 정보를 수정합니다.
+   * @summary 연계된 주차장 정보 수정
+   * @param {StorekeeperApiUpdateAssociatedParkingLotRequest} requestParameters Request parameters.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof StorekeeperApi
+   */
+  public updateAssociatedParkingLot(
+    requestParameters: StorekeeperApiUpdateAssociatedParkingLotRequest,
+    options?: RawAxiosRequestConfig
+  ) {
+    return StorekeeperApiFp(this.configuration)
+      .updateAssociatedParkingLot(requestParameters.parkingCode, requestParameters.parkingLotManualRequestDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * 점주의 가게 정보를 수정합니다.
+   * @summary 내 가게 정보 수정
+   * @param {StorekeeperApiUpdateMyStoreInfoRequest} requestParameters Request parameters.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof StorekeeperApi
+   */
+  public updateMyStoreInfo(requestParameters: StorekeeperApiUpdateMyStoreInfoRequest, options?: RawAxiosRequestConfig) {
+    return StorekeeperApiFp(this.configuration)
+      .updateMyStoreInfo(requestParameters.myStoreUpdateRequest, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * 기존 주차 혜택의 내용을 수정합니다.
+   * @summary 주차 혜택 수정
    * @param {StorekeeperApiUpdateParkingBenefitRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -946,12 +1848,12 @@ export class StorekeeperApi extends BaseAPI {
     options?: RawAxiosRequestConfig
   ) {
     return StorekeeperApiFp(this.configuration)
-      .updateParkingBenefit(requestParameters.benefitId, requestParameters.benefitRequestDto, options)
+      .updateParkingBenefit(requestParameters.benefitId, requestParameters.parkingBenefitRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
   /**
-   * 특정 상품의 정보를 수정합니다.
+   * 내 가게의 특정 상품 정보를 수정합니다.
    * @summary 가게 상품 수정
    * @param {StorekeeperApiUpdateProductRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.

@@ -1,14 +1,15 @@
 import { Skeleton } from '@ui/common/components/skeleton'
 import React, { createContext, ReactNode, useCallback, useEffect, useState } from 'react'
 import AuthClient from '../lib/auth-client'
+import type { MyInfoUpdateRequestDto } from '@data/user-api-axios/api'
 import { SocialLoginType } from '@bridge/types'
 import userService from '@/shared/services/user.service'
-import { UserInfoResponseRoleEnum } from '@data/user-api-axios/api'
+import { MyInfoResponseDtoRoleEnum } from '@data/user-api-axios/api'
 
 export interface User {
   email: string
   nickname: string
-  role: UserInfoResponseRoleEnum
+  role: MyInfoResponseDtoRoleEnum
   isOnboarding: boolean
 }
 
@@ -21,6 +22,7 @@ export interface AuthContext {
   socialLogin: (type: SocialLoginType) => Promise<{ success: boolean; message?: string }>
   logout: () => Promise<{ success: boolean; message?: string }>
   refetchUser: () => Promise<User | null>
+  updateMyInfo: (payload: MyInfoUpdateRequestDto) => Promise<{ success: boolean; message?: string }>
 }
 
 const AuthContext = createContext<AuthContext | null>(null)
@@ -83,6 +85,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { success: true }
   }, [])
 
+  const updateMyInfo = useCallback(
+    async (payload: MyInfoUpdateRequestDto) => {
+      try {
+        await userService.updateMyProfile(payload)
+        await refetchUser()
+        return { success: true }
+      } catch (e: any) {
+        return { success: false, message: e?.message || '프로필 업데이트에 실패했습니다.' }
+      }
+    },
+    [refetchUser]
+  )
+
   useEffect(() => {
     const checkAuthStatus = async () => {
       const result = await AuthClient.getAuth()
@@ -105,6 +120,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         socialLogin,
         logout,
         refetchUser,
+        updateMyInfo,
         setAuthenticated,
         setUser,
       }}

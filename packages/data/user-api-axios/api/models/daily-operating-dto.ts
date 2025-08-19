@@ -17,7 +17,7 @@
 import type { OperatingSlotDto } from './operating-slot-dto'
 
 /**
- *
+ * 운영 시간 정보 (null 가능)
  * @export
  * @interface DailyOperatingDto
  */

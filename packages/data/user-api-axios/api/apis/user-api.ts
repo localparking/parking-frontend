@@ -32,9 +32,15 @@ import {
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, type RequestArgs, BaseAPI, RequiredError, operationServerMap } from '../base'
 // @ts-ignore
+import type { MyInfoUpdateRequestDto } from '../models'
+// @ts-ignore
+import type { ResponseDtoMyInfoResponseDto } from '../models'
+// @ts-ignore
 import type { ResponseDtoUnit } from '../models'
 // @ts-ignore
-import type { ResponseDtoUserInfoResponse } from '../models'
+import type { ResponseDtoVisitorInfo } from '../models'
+// @ts-ignore
+import type { VisitorInfo } from '../models'
 /**
  * UserApi - axios parameter creator
  * @export
@@ -67,6 +73,117 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * 로그인된 사용자의 방문자 정보를 조회합니다.
+     * @summary 내 방문자 정보 조회
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getMyVisitorInfo: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+      const localVarPath = `/user/visitor-info`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication Bearer Token required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * 로그인된 사용자의 방문자 정보 중 원하는 값만 수정합니다.
+     * @summary 방문자 정보 부분 수정
+     * @param {VisitorInfo} visitorInfo
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    patchMyProfile: async (visitorInfo: VisitorInfo, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'visitorInfo' is not null or undefined
+      assertParamExists('patchMyProfile', 'visitorInfo', visitorInfo)
+      const localVarPath = `/user`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication Bearer Token required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
+      localVarRequestOptions.data = serializeDataIfNeeded(visitorInfo, localVarRequestOptions, configuration)
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * 로그인된 사용자 본인의 정보를 수정합니다.
+     * @summary 내 정보 수정
+     * @param {MyInfoUpdateRequestDto} myInfoUpdateRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateMyInfo: async (
+      myInfoUpdateRequestDto: MyInfoUpdateRequestDto,
+      options: RawAxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'myInfoUpdateRequestDto' is not null or undefined
+      assertParamExists('updateMyInfo', 'myInfoUpdateRequestDto', myInfoUpdateRequestDto)
+      const localVarPath = `/user/my-info`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication Bearer Token required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
+      localVarRequestOptions.data = serializeDataIfNeeded(myInfoUpdateRequestDto, localVarRequestOptions, configuration)
 
       return {
         url: toPathString(localVarUrlObj),
@@ -123,11 +240,78 @@ export const UserApiFp = function (configuration?: Configuration) {
      */
     async getMyInfo(
       options?: RawAxiosRequestConfig
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoUserInfoResponse>> {
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoMyInfoResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getMyInfo(options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
         operationServerMap['UserApi.getMyInfo']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * 로그인된 사용자의 방문자 정보를 조회합니다.
+     * @summary 내 방문자 정보 조회
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getMyVisitorInfo(
+      options?: RawAxiosRequestConfig
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoVisitorInfo>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getMyVisitorInfo(options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['UserApi.getMyVisitorInfo']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * 로그인된 사용자의 방문자 정보 중 원하는 값만 수정합니다.
+     * @summary 방문자 정보 부분 수정
+     * @param {VisitorInfo} visitorInfo
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async patchMyProfile(
+      visitorInfo: VisitorInfo,
+      options?: RawAxiosRequestConfig
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoVisitorInfo>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.patchMyProfile(visitorInfo, options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['UserApi.patchMyProfile']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * 로그인된 사용자 본인의 정보를 수정합니다.
+     * @summary 내 정보 수정
+     * @param {MyInfoUpdateRequestDto} myInfoUpdateRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async updateMyInfo(
+      myInfoUpdateRequestDto: MyInfoUpdateRequestDto,
+      options?: RawAxiosRequestConfig
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoMyInfoResponseDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.updateMyInfo(myInfoUpdateRequestDto, options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['UserApi.updateMyInfo']?.[localVarOperationServerIndex]?.url
       return (axios, basePath) =>
         createRequestFunction(
           localVarAxiosArgs,
@@ -173,8 +357,47 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getMyInfo(options?: RawAxiosRequestConfig): AxiosPromise<ResponseDtoUserInfoResponse> {
+    getMyInfo(options?: RawAxiosRequestConfig): AxiosPromise<ResponseDtoMyInfoResponseDto> {
       return localVarFp.getMyInfo(options).then((request) => request(axios, basePath))
+    },
+    /**
+     * 로그인된 사용자의 방문자 정보를 조회합니다.
+     * @summary 내 방문자 정보 조회
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getMyVisitorInfo(options?: RawAxiosRequestConfig): AxiosPromise<ResponseDtoVisitorInfo> {
+      return localVarFp.getMyVisitorInfo(options).then((request) => request(axios, basePath))
+    },
+    /**
+     * 로그인된 사용자의 방문자 정보 중 원하는 값만 수정합니다.
+     * @summary 방문자 정보 부분 수정
+     * @param {UserApiPatchMyProfileRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    patchMyProfile(
+      requestParameters: UserApiPatchMyProfileRequest,
+      options?: RawAxiosRequestConfig
+    ): AxiosPromise<ResponseDtoVisitorInfo> {
+      return localVarFp
+        .patchMyProfile(requestParameters.visitorInfo, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * 로그인된 사용자 본인의 정보를 수정합니다.
+     * @summary 내 정보 수정
+     * @param {UserApiUpdateMyInfoRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateMyInfo(
+      requestParameters: UserApiUpdateMyInfoRequest,
+      options?: RawAxiosRequestConfig
+    ): AxiosPromise<ResponseDtoMyInfoResponseDto> {
+      return localVarFp
+        .updateMyInfo(requestParameters.myInfoUpdateRequestDto, options)
+        .then((request) => request(axios, basePath))
     },
     /**
      * 로그인된 사용자의 계정을 탈퇴 처리합니다.
@@ -186,6 +409,34 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
       return localVarFp.withdrawUser(options).then((request) => request(axios, basePath))
     },
   }
+}
+
+/**
+ * Request parameters for patchMyProfile operation in UserApi.
+ * @export
+ * @interface UserApiPatchMyProfileRequest
+ */
+export interface UserApiPatchMyProfileRequest {
+  /**
+   *
+   * @type {VisitorInfo}
+   * @memberof UserApiPatchMyProfile
+   */
+  readonly visitorInfo: VisitorInfo
+}
+
+/**
+ * Request parameters for updateMyInfo operation in UserApi.
+ * @export
+ * @interface UserApiUpdateMyInfoRequest
+ */
+export interface UserApiUpdateMyInfoRequest {
+  /**
+   *
+   * @type {MyInfoUpdateRequestDto}
+   * @memberof UserApiUpdateMyInfo
+   */
+  readonly myInfoUpdateRequestDto: MyInfoUpdateRequestDto
 }
 
 /**
@@ -205,6 +456,47 @@ export class UserApi extends BaseAPI {
   public getMyInfo(options?: RawAxiosRequestConfig) {
     return UserApiFp(this.configuration)
       .getMyInfo(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * 로그인된 사용자의 방문자 정보를 조회합니다.
+   * @summary 내 방문자 정보 조회
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof UserApi
+   */
+  public getMyVisitorInfo(options?: RawAxiosRequestConfig) {
+    return UserApiFp(this.configuration)
+      .getMyVisitorInfo(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * 로그인된 사용자의 방문자 정보 중 원하는 값만 수정합니다.
+   * @summary 방문자 정보 부분 수정
+   * @param {UserApiPatchMyProfileRequest} requestParameters Request parameters.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof UserApi
+   */
+  public patchMyProfile(requestParameters: UserApiPatchMyProfileRequest, options?: RawAxiosRequestConfig) {
+    return UserApiFp(this.configuration)
+      .patchMyProfile(requestParameters.visitorInfo, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * 로그인된 사용자 본인의 정보를 수정합니다.
+   * @summary 내 정보 수정
+   * @param {UserApiUpdateMyInfoRequest} requestParameters Request parameters.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof UserApi
+   */
+  public updateMyInfo(requestParameters: UserApiUpdateMyInfoRequest, options?: RawAxiosRequestConfig) {
+    return UserApiFp(this.configuration)
+      .updateMyInfo(requestParameters.myInfoUpdateRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 

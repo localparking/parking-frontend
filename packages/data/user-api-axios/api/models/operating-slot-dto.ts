@@ -19,13 +19,13 @@
  */
 export interface OperatingSlotDto {
   /**
-   *
+   * 영업 시작 시간
    * @type {string}
    * @memberof OperatingSlotDto
    */
   begin: string
   /**
-   *
+   * 영업 종료 시간
    * @type {string}
    * @memberof OperatingSlotDto
    */

@@ -4,7 +4,6 @@ import { createRootRouteWithContext, Outlet, redirect, useRouterState } from '@t
 import { match } from 'path-to-regexp'
 import { isWebView } from '@/shared/utils/webview'
 import bridge from '@/shared/bridge'
-import { useBridge } from '@webview-bridge/react'
 import { cn } from '@ui/common/lib/utils'
 
 interface RouterContext {
@@ -61,12 +60,13 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 
 function RootComponent() {
   const { location } = useRouterState()
-  const isMapPage = location.pathname === '/map'
+  const isMapPage = location.pathname.startsWith('/map')
 
   return (
-    <div className="flex min-h-dvh w-full flex-col bg-gray-4">
+    <div className={cn('flex min-h-dvh w-full flex-col bg-gray-4')}>
+      {!isMapPage && <div className="fixed z-[50] h-safe-top w-full max-w-[768px] bg-white" />}
       <main
-        className={cn('mx-auto flex w-full max-w-[768px] flex-1 bg-white', {
+        className={cn('mx-auto flex w-full max-w-[768px] flex-1 flex-col bg-white', {
           'pt-safe-top pb-safe-bottom': !isMapPage,
         })}
       >

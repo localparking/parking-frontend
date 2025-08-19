@@ -25,11 +25,11 @@ export interface ProductRequestDto {
    */
   name: string
   /**
-   * 상품 이미지 URL
+   * 상품 이미지 Key
    * @type {string}
    * @memberof ProductRequestDto
    */
-  imageUrl: string
+  imageKey: string
   /**
    * 상품 설명
    * @type {string}

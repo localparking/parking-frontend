@@ -32,7 +32,9 @@ import {
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, type RequestArgs, BaseAPI, RequiredError, operationServerMap } from '../base'
 // @ts-ignore
-import type { ResponseDtoListProductResponseDto } from '../models'
+import type { ResponseDtoListStoreSimpleResponse } from '../models'
+// @ts-ignore
+import type { ResponseDtoOrderFormResponseDto } from '../models'
 // @ts-ignore
 import type { ResponseDtoPageResponseStoreListResponse } from '../models'
 // @ts-ignore
@@ -83,8 +85,8 @@ export const StoreApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     * 특정 가게에 등록된 상품 목록을 조회합니다.
-     * @summary 가게 상품 목록 조회
+     * 특정 가게에 대한 상품 주문 폼을 조회하는 API입니다.
+     * @summary 가게 상품 주문 폼 조회
      * @param {number} storeId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -199,6 +201,45 @@ export const StoreApiAxiosParamCreator = function (configuration?: Configuration
         options: localVarRequestOptions,
       }
     },
+    /**
+     * 필터 없이 가게 이름으로만 전체 가게를 검색하는 API입니다.
+     * @summary 점주 가입을 위한 가게 이름 검색
+     * @param {string} query
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    searchForRegistration: async (query: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'query' is not null or undefined
+      assertParamExists('searchForRegistration', 'query', query)
+      const localVarPath = `/store/text-search/name`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication Bearer Token required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      if (query !== undefined) {
+        localVarQueryParameter['query'] = query
+      }
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
   }
 }
 
@@ -233,8 +274,8 @@ export const StoreApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * 특정 가게에 등록된 상품 목록을 조회합니다.
-     * @summary 가게 상품 목록 조회
+     * 특정 가게에 대한 상품 주문 폼을 조회하는 API입니다.
+     * @summary 가게 상품 주문 폼 조회
      * @param {number} storeId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -242,7 +283,7 @@ export const StoreApiFp = function (configuration?: Configuration) {
     async getStoreProducts(
       storeId: number,
       options?: RawAxiosRequestConfig
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoListProductResponseDto>> {
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoOrderFormResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getStoreProducts(storeId, options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
@@ -302,6 +343,29 @@ export const StoreApiFp = function (configuration?: Configuration) {
           configuration
         )(axios, localVarOperationServerBasePath || basePath)
     },
+    /**
+     * 필터 없이 가게 이름으로만 전체 가게를 검색하는 API입니다.
+     * @summary 점주 가입을 위한 가게 이름 검색
+     * @param {string} query
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async searchForRegistration(
+      query: string,
+      options?: RawAxiosRequestConfig
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseDtoListStoreSimpleResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.searchForRegistration(query, options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['StoreApi.searchForRegistration']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
   }
 }
 
@@ -326,8 +390,8 @@ export const StoreApiFactory = function (configuration?: Configuration, basePath
       return localVarFp.getStoreDetail(requestParameters.storeId, options).then((request) => request(axios, basePath))
     },
     /**
-     * 특정 가게에 등록된 상품 목록을 조회합니다.
-     * @summary 가게 상품 목록 조회
+     * 특정 가게에 대한 상품 주문 폼을 조회하는 API입니다.
+     * @summary 가게 상품 주문 폼 조회
      * @param {StoreApiGetStoreProductsRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -335,7 +399,7 @@ export const StoreApiFactory = function (configuration?: Configuration, basePath
     getStoreProducts(
       requestParameters: StoreApiGetStoreProductsRequest,
       options?: RawAxiosRequestConfig
-    ): AxiosPromise<ResponseDtoListProductResponseDto> {
+    ): AxiosPromise<ResponseDtoOrderFormResponseDto> {
       return localVarFp.getStoreProducts(requestParameters.storeId, options).then((request) => request(axios, basePath))
     },
     /**
@@ -366,6 +430,21 @@ export const StoreApiFactory = function (configuration?: Configuration, basePath
     ): AxiosPromise<ResponseDtoPageSearchResponseStoreListResponse> {
       return localVarFp
         .searchByText(requestParameters.storeSearchRequest, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * 필터 없이 가게 이름으로만 전체 가게를 검색하는 API입니다.
+     * @summary 점주 가입을 위한 가게 이름 검색
+     * @param {StoreApiSearchForRegistrationRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    searchForRegistration(
+      requestParameters: StoreApiSearchForRegistrationRequest,
+      options?: RawAxiosRequestConfig
+    ): AxiosPromise<ResponseDtoListStoreSimpleResponse> {
+      return localVarFp
+        .searchForRegistration(requestParameters.query, options)
         .then((request) => request(axios, basePath))
     },
   }
@@ -428,6 +507,20 @@ export interface StoreApiSearchByTextRequest {
 }
 
 /**
+ * Request parameters for searchForRegistration operation in StoreApi.
+ * @export
+ * @interface StoreApiSearchForRegistrationRequest
+ */
+export interface StoreApiSearchForRegistrationRequest {
+  /**
+   *
+   * @type {string}
+   * @memberof StoreApiSearchForRegistration
+   */
+  readonly query: string
+}
+
+/**
  * StoreApi - object-oriented interface
  * @export
  * @class StoreApi
@@ -449,8 +542,8 @@ export class StoreApi extends BaseAPI {
   }
 
   /**
-   * 특정 가게에 등록된 상품 목록을 조회합니다.
-   * @summary 가게 상품 목록 조회
+   * 특정 가게에 대한 상품 주문 폼을 조회하는 API입니다.
+   * @summary 가게 상품 주문 폼 조회
    * @param {StoreApiGetStoreProductsRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -487,6 +580,23 @@ export class StoreApi extends BaseAPI {
   public searchByText(requestParameters: StoreApiSearchByTextRequest, options?: RawAxiosRequestConfig) {
     return StoreApiFp(this.configuration)
       .searchByText(requestParameters.storeSearchRequest, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * 필터 없이 가게 이름으로만 전체 가게를 검색하는 API입니다.
+   * @summary 점주 가입을 위한 가게 이름 검색
+   * @param {StoreApiSearchForRegistrationRequest} requestParameters Request parameters.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof StoreApi
+   */
+  public searchForRegistration(
+    requestParameters: StoreApiSearchForRegistrationRequest,
+    options?: RawAxiosRequestConfig
+  ) {
+    return StoreApiFp(this.configuration)
+      .searchForRegistration(requestParameters.query, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

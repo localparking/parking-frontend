@@ -24,14 +24,9 @@ const toggleOptions = [
 export const MapTypeToggle = () => {
   const { mapDisplayType, setMapDisplayType, setSearchKeyword, resetStoreFilters, resetParkingLotFilters } =
     useMapContext()
-  const queryClient = useQueryClient()
 
   const handleToggle = (type: MapDisplayType) => {
-    if (type === MapDisplayType.STORE) {
-      queryClient.invalidateQueries({ queryKey: ['storeMapSearch'] })
-    } else {
-      queryClient.invalidateQueries({ queryKey: ['parkingLotSearch'] })
-    }
+    if (type === mapDisplayType) return
     setSearchKeyword('')
     resetStoreFilters()
     resetParkingLotFilters()
@@ -39,7 +34,7 @@ export const MapTypeToggle = () => {
   }
 
   return (
-    <div className={'absolute top-[calc(var(--spacing-safe-top)+70px)] right-6 z-10'}>
+    <div className="absolute top-[calc(var(--spacing-safe-top)+70px)] right-6 z-10">
       <div className="flex flex-col gap-[12px]">
         {toggleOptions.map((option) => {
           const IconComponent = option.icon
