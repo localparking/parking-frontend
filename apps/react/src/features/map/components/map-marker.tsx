@@ -97,53 +97,68 @@ export const MapMarkers = () => {
     placeholderData: (previousData) => previousData,
   })
 
-  const markersRef = useRef<naver.maps.Marker[]>([])
-  const listenersRef = useRef<naver.maps.MapEventListener[]>([])
+  const markersRef = useRef<Map<string | number, { marker: naver.maps.Marker; listener: naver.maps.MapEventListener }>>(
+    new Map()
+  )
 
   useEffect(() => {
     if (!mapInstance) return
-
-    listenersRef.current.forEach((listener) => naver.maps.Event.removeListener(listener))
-    listenersRef.current = []
-    markersRef.current.forEach((marker) => marker.setMap(null))
-    markersRef.current = []
 
     const currentData =
       mapDisplayType === MapDisplayType.STORE
         ? storeData?.content
         : mapDisplayType === MapDisplayType.PARKING_LOT
           ? parkingLotData?.content
-          : null
+          : []
 
-    if (!currentData) return
+    const newMarkerIds = new Set(
+      currentData?.map((item) => (mapDisplayType === MapDisplayType.STORE ? item.storeId : item.parkingCode))
+    )
 
-    const newMarkers = currentData.map((item) => {
-      let marker: naver.maps.Marker
-
-      if (mapDisplayType === MapDisplayType.STORE) {
-        const store = item as StoreWithMarker
-        const options = createStoreMarkerOptions(store, mapInstance)
-        marker = new naver.maps.Marker(options)
-
-        const listener = naver.maps.Event.addListener(marker, 'click', () => {
-          navigateToStoreDetail(store.storeId.toString())
-        })
-        listenersRef.current.push(listener)
-      } else {
-        const parkingLot = item as ParkingLotWithMarker
-        const options = createParkingLotMarkerOptions(parkingLot, mapInstance)
-        marker = new naver.maps.Marker(options)
-
-        const listener = naver.maps.Event.addListener(marker, 'click', () => {
-          navigateToParkingLotDetail(parkingLot.parkingCode)
-        })
-        listenersRef.current.push(listener)
+    // 1. 기존 마커 중 새로운 데이터에 없는 마커 제거
+    markersRef.current.forEach((value, id) => {
+      if (!newMarkerIds.has(id)) {
+        naver.maps.Event.removeListener(value.listener)
+        value.marker.setMap(null)
+        markersRef.current.delete(id)
       }
-      return marker
     })
 
-    markersRef.current = newMarkers
+    // 2. 새로운 데이터 중 기존에 없는 마커 추가
+    currentData?.forEach((item) => {
+      const id = mapDisplayType === MapDisplayType.STORE ? item.storeId : item.parkingCode
+      if (!markersRef.current.has(id)) {
+        let marker: naver.maps.Marker
+        let listener: naver.maps.MapEventListener
+
+        if (mapDisplayType === MapDisplayType.STORE) {
+          const store = item as StoreWithMarker
+          marker = new naver.maps.Marker(createStoreMarkerOptions(store, mapInstance))
+          listener = naver.maps.Event.addListener(marker, 'click', () => {
+            navigateToStoreDetail(store.storeId.toString())
+          })
+        } else {
+          const parkingLot = item as ParkingLotWithMarker
+          marker = new naver.maps.Marker(createParkingLotMarkerOptions(parkingLot, mapInstance))
+          listener = naver.maps.Event.addListener(marker, 'click', () => {
+            navigateToParkingLotDetail(parkingLot.parkingCode)
+          })
+        }
+        markersRef.current.set(id, { marker, listener })
+      }
+    })
   }, [mapInstance, mapDisplayType, storeData, parkingLotData, navigateToStoreDetail, navigateToParkingLotDetail])
+
+  // 컴포넌트 언마운트 시 모든 마커와 리스너 정리
+  useEffect(() => {
+    return () => {
+      markersRef.current.forEach((value) => {
+        naver.maps.Event.removeListener(value.listener)
+        value.marker.setMap(null)
+      })
+      markersRef.current.clear()
+    }
+  }, [])
 
   return null
 }
