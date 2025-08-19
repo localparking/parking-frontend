@@ -1,18 +1,17 @@
-import { useMemo } from 'react'
-import { ParkingBenefits } from '@/features/store/detail'
+import { useMemo, useState } from 'react'
 import storeService from '@/shared/services/store.service'
 import { DetailHeaderBar } from '@/shared/ui/detail-header-bar'
 import { formatPrice } from '@/shared/utils'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import z from 'zod'
 import Button from '@/shared/ui/button'
-import { ParkingBenefitDto } from '@data/user-api-axios/api'
 import { useCart } from '@/features/store/context/cart-context'
-import { useOrderModal } from '@/features/store/hook/use-order-hook'
 import { ProductItem } from '@/features/store/order/ui/components/product-item'
-import { CheckCircle2, ChevronDown, MapPin, ShoppingCart } from 'lucide-react'
+import { CheckCircle2, ChevronDown, ChevronUp, MapPin, ShoppingCart } from 'lucide-react'
 import { StoreCategoryIcon } from '@/shared/ui'
 import StatusBadge from '@/shared/ui/status-badge'
+import { ParkingBenefitDto } from '@data/user-api-axios/api'
+import { cn } from '@ui/common/lib/utils'
 
 // --- 라우트 및 데이터 로딩 (변경 없음) ---
 const searchSchema = z.object({
@@ -38,6 +37,51 @@ function RouteComponent() {
   const { storeResponse, storeDetail, parkingLot } = Route.useLoaderData()
   const navigate = Route.useNavigate()
   const { cart } = useCart()
+  const [isBenefitDetailsVisible, setIsBenefitDetailsVisible] = useState(true)
+
+  if (!storeResponse) return null
+
+  const { totalPrice, parkingBenefitInfo } = useMemo(() => {
+    const productsById = new Map(storeResponse.products.map((p) => [p.productId, p]))
+    const totalPr = cart.reduce((sum, item) => {
+      const product = productsById.get(item.productId)
+      return sum + (product ? product.price * item.quantity : 0)
+    }, 0)
+
+    const sortedBenefits = [...storeResponse.benefits].sort((a, b) => a.purchaseAmount - b.purchaseAmount)
+    let currentBenefit: ParkingBenefitDto | null = null
+    let nextBenefit: ParkingBenefitDto | null = null
+    let remainingForNext = 0
+
+    for (const benefit of sortedBenefits) {
+      if (totalPr >= benefit.purchaseAmount) {
+        currentBenefit = benefit
+      } else {
+        nextBenefit = benefit
+        break
+      }
+    }
+
+    if (nextBenefit) {
+      remainingForNext = nextBenefit.purchaseAmount - totalPr
+    }
+
+    return {
+      totalPrice: totalPr,
+      parkingBenefitInfo: {
+        currentBenefit,
+        nextBenefit,
+        remainingForNext,
+      },
+    }
+  }, [cart, storeResponse.products, storeResponse.benefits])
+
+  const parkingDiscountAmount = useMemo(() => {
+    if (!parkingBenefitInfo.currentBenefit || !parkingLot?.hourlyFee) {
+      return 0
+    }
+    return (parkingBenefitInfo.currentBenefit.discountMin / 60) * parkingLot.hourlyFee
+  }, [parkingBenefitInfo.currentBenefit, parkingLot?.hourlyFee])
 
   if (!storeResponse || !storeDetail) return null
 
@@ -114,29 +158,50 @@ function RouteComponent() {
         </div>
 
         <div className="space-y-3">
-          <div className="flex justify-between">
+          <div
+            className="flex cursor-pointer justify-between"
+            onClick={() => setIsBenefitDetailsVisible((prev) => !prev)}
+          >
             <h3 className="text-body-4">받은 혜택보기</h3>
-
-            <div className="flex gap-1">
-              <p className="text-caption-1 text-primary-1">{2}시간 무료주차</p>
-              <ChevronDown className="h-6 w-6 text-gray-2" />
-            </div>
-          </div>
-
-          <div className="space-y-1 rounded-[15px] bg-gray-4 py-3 pr-5 pl-6">
             <div className="flex items-center gap-1">
-              <h2 className="text-body-4">{parkingLot?.name}</h2>
-              <StatusBadge isOpen={parkingLot?.isOpen} />
-            </div>
-            <div className="flex items-center gap-2 text-gray-2">
-              <MapPin className="h-4 w-4" />
-              <p className="text-caption-2">{storeDetail?.address}</p>
+              <p className="text-caption-1 text-primary-1">
+                {parkingBenefitInfo.currentBenefit
+                  ? `${parkingBenefitInfo.currentBenefit.discountMin / 60}시간 무료주차`
+                  : '혜택 없음'}
+              </p>
+              {isBenefitDetailsVisible ? (
+                <ChevronDown className="h-6 w-6 text-gray-2" />
+              ) : (
+                <ChevronUp className="h-6 w-6 text-gray-2" />
+              )}
             </div>
           </div>
-
-          <div className="flex w-full items-center gap-[10px] rounded-[10px] bg-primary-2 px-3 py-2 text-primary-1">
-            <CheckCircle2 className="h-4 w-4" />
-            <p className="text-caption-2">주차비 {formatPrice(20000)}을 아꼈어요!</p>
+          <div
+            className={cn(
+              'grid transition-all duration-500 ease-in-out',
+              isBenefitDetailsVisible ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+            )}
+          >
+            <div className="overflow-hidden">
+              <div className="space-y-3 pt-2">
+                <div className="space-y-1 rounded-[15px] bg-gray-4 py-3 pr-5 pl-6">
+                  <div className="flex items-center gap-1">
+                    <h2 className="text-body-4">{parkingLot?.name}</h2>
+                    <StatusBadge isOpen={parkingLot?.isOpen} />
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-2">
+                    <MapPin className="h-4 w-4" />
+                    <p className="text-caption-2">{storeDetail?.address}</p>
+                  </div>
+                </div>
+                {parkingDiscountAmount > 0 && (
+                  <div className="flex w-full items-center gap-[10px] rounded-[10px] bg-primary-2 px-3 py-2 text-primary-1">
+                    <CheckCircle2 className="h-4 w-4" />
+                    <p className="text-caption-2">주차비 {formatPrice(parkingDiscountAmount)}을 아꼈어요!</p>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -145,22 +210,25 @@ function RouteComponent() {
           <div className="space-y-2 text-caption-1 text-gray-2">
             <div className="flex justify-between">
               <p>주문 금액</p>
-              <p>{formatPrice(cartProducts.reduce((acc, product) => acc + product.price * product.quantity, 0))}</p>
+              <p>{formatPrice(totalPrice)}</p>
             </div>
 
-            <div className="flex justify-between">
-              <p>무료 주차 할인 금액</p>
-              <p>{formatPrice(0)}</p>
-            </div>
-
-            <div className="flex justify-between">
-              <p>할인 금액</p>
-              <p>{formatPrice(0)}</p>
-            </div>
+            {parkingDiscountAmount > 0 && (
+              <>
+                <div className="flex justify-between">
+                  <p>주차 금액</p>
+                  <p className="line-through">{formatPrice(parkingDiscountAmount)}</p>
+                </div>
+                <div className="flex justify-between">
+                  <p>무료 주차 할인</p>
+                  <p className="text-primary-1">-{formatPrice(parkingDiscountAmount)}</p>
+                </div>
+              </>
+            )}
 
             <div className="flex justify-between text-body-4 text-primary-1">
               <p>총 결제 금액</p>
-              <p>{formatPrice(cartProducts.reduce((acc, product) => acc + product.price * product.quantity, 0))}</p>
+              <p>{formatPrice(totalPrice)}</p>
             </div>
           </div>
         </div>

@@ -16,7 +16,7 @@ export const ProductItem = ({ product }: ProductItemProps) => {
     <div className="flex items-center gap-2.5 py-1">
       <div className="min-w-0 flex-1 space-y-2.5 py-3">
         <h2 className="truncate text-body-4">{product.name}</h2>
-        <p className="text-caption-2 text-gray-2">{product.description}</p>
+        <p className="text-caption-2 leading-4 break-keep text-gray-2">{product.description}</p>
         <p className="text-caption-1">{formatPrice(product.price)}</p>
       </div>
 

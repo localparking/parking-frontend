@@ -10,6 +10,7 @@ import { ParkingBenefitDto } from '@data/user-api-axios/api'
 import { useCart } from '@/features/store/context/cart-context'
 import { useOrderModal } from '@/features/store/hook/use-order-hook'
 import { ProductItem } from '@/features/store/order/ui/components/product-item'
+import { cn } from '@ui/common/lib/utils'
 
 // --- 라우트 및 데이터 로딩 (변경 없음) ---
 const searchSchema = z.object({
@@ -78,7 +79,7 @@ function RouteComponent() {
   const isEmpty = cart.length === 0
 
   return (
-    <div className="pb-[130px]">
+    <div className={cn({ 'pb-[130px]': cart.length > 0 })}>
       <DetailHeaderBar
         title={data.storeName}
         onBackClick={() => {
