@@ -1,0 +1,1 @@
+export { MyPageMain } from './mypage'
