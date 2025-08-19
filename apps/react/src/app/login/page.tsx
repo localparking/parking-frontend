@@ -5,9 +5,9 @@ import { isWebView } from '@/shared/utils/webview'
 import { useAlertDialog } from '@ui/common/hooks/alert-dialog.hook'
 import { useAuth } from '@/features/auth'
 
-import MainLogoImage from '@ui/common/assets/3d/mainlogo.png'
-import KakaoLogoIcon from '@ui/common/assets/icons/kakao-logo.svg'
-import AppleLogoIcon from '@ui/common/assets/icons/apple-logo.svg'
+import MainLogoImage from '@/assets/images/logo.png'
+import KakaoLogoIcon from '@/assets/icons/kakao-logo.svg'
+import AppleLogoIcon from '@/assets/icons/app-logo.svg'
 import Button from '@/shared/ui/button'
 
 export const Route = createFileRoute('/login/')({

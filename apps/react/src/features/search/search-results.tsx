@@ -91,10 +91,10 @@ export const SearchResults = ({ query }: SearchResultsProps) => {
 
   return (
     <>
-      {/* 가게 리스트 */}
+      {/* 매장 리스트 */}
       {hasStores && (
         <div className="mb-6">
-          <h2 className="text-body-5 font-bold">추천 가게</h2>
+          <h2 className="text-body-5 font-bold">추천 매장</h2>
           <ul className="divide-gray-08 mt-2 divide-y">
             {stores.map((store) => (
               <li

@@ -1,7 +1,7 @@
 import React from 'react'
 import { cn } from '@ui/common/lib/utils'
-import { useOnboardingContext } from '../../context/onboarding-context'
-import { AgeRange } from '../../model'
+import { useOnboardingContext } from '@/features/onboarding/context/onboarding-context'
+import { AgeRange } from '@/features/onboarding/model'
 
 interface AgeSelectionProps {
   onBack?: () => void
@@ -25,20 +25,18 @@ export const AgeSelection: React.FC<AgeSelectionProps> = () => {
 
   return (
     <div>
-      <h1 className="text-body-3">연령대를 선택하세요</h1>
+      <h1 className="pt-[10px] text-body-3">연령대를 선택하세요</h1>
 
-      <div className="mt-[75px] w-full space-y-[21px]">
+      <div className="mt-16 w-full space-y-6">
         {ageRanges.map((age) => (
           <button
             key={age.value}
             onClick={() => handleAgeSelect(age.value)}
             className={cn(
-              'flex h-[38px] w-full items-center justify-center rounded-[10px] border py-[12px] text-caption-1',
-              {
-                'border-primary-1 bg-primary-1 text-primary-1 shadow-[0_0_5px_1px_var(--color-primary-2)]':
-                  ageGroup === age.value,
-                'border-primary-1 bg-white': ageGroup !== age.value,
-              }
+              'flex h-[43px] w-full items-center justify-center rounded-[10px] border px-8 py-3 text-caption-2',
+              ageGroup === age.value
+                ? 'border-primary-1 bg-primary-3 text-primary-1 shadow-[0_0_5px_1px_var(--color-primary-2)]'
+                : 'border-primary-1 bg-white'
             )}
           >
             {age.label}

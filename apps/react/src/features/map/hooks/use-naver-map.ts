@@ -41,13 +41,10 @@ export const useNaverMap = (mapId = 'map'): UseNaverMapResult => {
     const currentZoom = currentMapInfo.zoom
     if (currentZoom >= ZOOM_LEVEL_FOR_300M) {
       setDistanceLevel(1) // 2km 검색 (5m~300m 줌 레벨)
-      console.log('2km 검색 (5m~300m 줌 레벨)')
     } else if (currentZoom >= ZOOM_LEVEL_FOR_1KM) {
       setDistanceLevel(2) // 4km 검색 (300m~1km 줌 레벨)
-      console.log('4km 검색 (300m~1km 줌 레벨)')
     } else {
       setDistanceLevel(null) // 검색 불가 (1km 이상 줌 레벨)
-      console.log('검색 불가 (1km 이상 줌 레벨)')
     }
   }, [currentMapInfo.zoom])
 
