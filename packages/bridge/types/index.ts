@@ -22,6 +22,7 @@ export interface LocationResult {
 export interface BridgeStore {
   isLoggedIn: boolean
   currentLocation: LocationData | null
+  keyboardHeight: number
 }
 
 // 브릿지 액션 타입 (함수)
@@ -32,6 +33,7 @@ export interface BridgeActions {
   logout(): Promise<{ success: boolean; message?: string }>
   getCurrentLocation(): Promise<LocationResult>
   notifyTokenExpired(): Promise<{ accessToken: string | null }>
+  setKeyboardHeight(height: number): Promise<void>
   setLandingStatus(): Promise<void>
   getLandingStatus(): Promise<boolean>
 }

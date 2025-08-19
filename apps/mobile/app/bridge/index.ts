@@ -102,6 +102,10 @@ export const appBridge = bridge<AppBridgeState>(({ get, set }) => {
       }
     },
 
+    async setKeyboardHeight(height: number): Promise<void> {
+      set({ keyboardHeight: height })
+    },
+
     async notifyTokenExpired(): Promise<{ accessToken: string | null }> {
       const { accessToken } = await refreshToken()
       return { accessToken }
@@ -118,6 +122,7 @@ export const appBridge = bridge<AppBridgeState>(({ get, set }) => {
   return {
     isLoggedIn: false,
     currentLocation: null,
+    keyboardHeight: 0,
     ...actions,
   }
 })

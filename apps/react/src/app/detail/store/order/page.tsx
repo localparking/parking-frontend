@@ -12,6 +12,7 @@ import { StoreCategoryIcon } from '@/shared/ui'
 import StatusBadge from '@/shared/ui/status-badge'
 import { ParkingBenefitDto } from '@data/user-api-axios/api'
 import { cn } from '@ui/common/lib/utils'
+import { VistorInfoSheet } from '@/features/store/detail/ui/vistior-info'
 
 // --- 라우트 및 데이터 로딩 (변경 없음) ---
 const searchSchema = z.object({
@@ -135,7 +136,7 @@ function RouteComponent() {
         <div className="space-y-3">
           <h3 className="text-body-4">방문 정보</h3>
           <div className="space-y-2.5">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between" onClick={() => {}}>
               <p className="text-caption-1 text-gray-2">방문자 정보</p>
               <button className="rounded-[10px] bg-gray-4 px-3 py-2 text-caption-2">방문자 정보를 입력하세요</button>
             </div>
@@ -237,6 +238,8 @@ function RouteComponent() {
       <div className="w-full p-6">
         <Button onClick={() => navigate({ to: '/map' })}>결제하기</Button>
       </div>
+
+      <VistorInfoSheet isOpen={true} onOpenChange={() => {}} />
     </div>
   )
 }
