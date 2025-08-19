@@ -16,6 +16,7 @@ import { Route as MapLayoutImport } from './app/map/layout'
 import { Route as DetailLayoutImport } from './app/detail/layout'
 import { Route as PageImport } from './app/page'
 import { Route as PaymentPageImport } from './app/payment/page'
+import { Route as MypagePageImport } from './app/mypage/page'
 import { Route as MapPageImport } from './app/map/page'
 import { Route as LoginPageImport } from './app/login/page'
 import { Route as PaymentSuccessPageImport } from './app/payment/success/page'
@@ -24,6 +25,7 @@ import { Route as PaymentFailPageImport } from './app/payment/fail/page'
 import { Route as OnboardingTermsPageImport } from './app/onboarding/terms/page'
 import { Route as OnboardingLandingPageImport } from './app/onboarding/landing/page'
 import { Route as OnboardingFinalOnboardingPageImport } from './app/onboarding/final-onboarding/page'
+import { Route as MypageProfilePageImport } from './app/mypage/profile/page'
 import { Route as MapSearchPageImport } from './app/map/search/page'
 import { Route as LoginSuccessPageImport } from './app/login/success/page'
 import { Route as DetailStorePageImport } from './app/detail/store/page'
@@ -59,6 +61,11 @@ const PageRoute = PageImport.update({
 const PaymentPageRoute = PaymentPageImport.update({
   id: '/payment/',
   path: '/payment/',
+} as any)
+
+const MypagePageRoute = MypagePageImport.update({
+  id: '/mypage/',
+  path: '/mypage/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -110,6 +117,12 @@ const OnboardingFinalOnboardingPageRoute =
     path: '/final-onboarding/',
     getParentRoute: () => OnboardingLayoutRoute,
   } as any)
+
+const MypageProfilePageRoute = MypageProfilePageImport.update({
+  id: '/mypage/profile/',
+  path: '/mypage/profile/',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const MapSearchPageRoute = MapSearchPageImport.update({
   id: '/search/',
@@ -192,6 +205,12 @@ declare module '@tanstack/react-router' {
       path: '/payment'
       fullPath: '/payment'
       preLoaderRoute: typeof PaymentPageImport
+    }
+    '/mypage/': {
+      id: '/mypage/'
+      path: '/mypage'
+      fullPath: '/mypage'
+      preLoaderRoute: typeof MypagePageImport
       parentRoute: typeof rootRoute
     }
     '/detail/store/': {
@@ -214,6 +233,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/map/search'
       preLoaderRoute: typeof MapSearchPageImport
       parentRoute: typeof MapLayoutImport
+    }
+    '/mypage/profile/': {
+      id: '/mypage/profile/'
+      path: '/mypage/profile'
+      fullPath: '/mypage/profile'
+      preLoaderRoute: typeof MypageProfilePageImport
+      parentRoute: typeof rootRoute
     }
     '/onboarding/final-onboarding/': {
       id: '/onboarding/final-onboarding/'
@@ -329,9 +355,11 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginPageRoute
   '/map/': typeof MapPageRoute
   '/payment': typeof PaymentPageRoute
+  '/mypage': typeof MypagePageRoute
   '/detail/store': typeof DetailStorePageRoute
   '/login/success': typeof LoginSuccessPageRoute
   '/map/search': typeof MapSearchPageRoute
+  '/mypage/profile': typeof MypageProfilePageRoute
   '/onboarding/final-onboarding': typeof OnboardingFinalOnboardingPageRoute
   '/onboarding/landing': typeof OnboardingLandingPageRoute
   '/onboarding/terms': typeof OnboardingTermsPageRoute
@@ -349,9 +377,11 @@ export interface FileRoutesByTo {
   '/login': typeof LoginPageRoute
   '/map': typeof MapPageRoute
   '/payment': typeof PaymentPageRoute
+  '/mypage': typeof MypagePageRoute
   '/detail/store': typeof DetailStorePageRoute
   '/login/success': typeof LoginSuccessPageRoute
   '/map/search': typeof MapSearchPageRoute
+  '/mypage/profile': typeof MypageProfilePageRoute
   '/onboarding/final-onboarding': typeof OnboardingFinalOnboardingPageRoute
   '/onboarding/landing': typeof OnboardingLandingPageRoute
   '/onboarding/terms': typeof OnboardingTermsPageRoute
@@ -371,9 +401,11 @@ export interface FileRoutesById {
   '/login/': typeof LoginPageRoute
   '/map/': typeof MapPageRoute
   '/payment/': typeof PaymentPageRoute
+  '/mypage/': typeof MypagePageRoute
   '/detail/store/': typeof DetailStorePageRoute
   '/login/success/': typeof LoginSuccessPageRoute
   '/map/search/': typeof MapSearchPageRoute
+  '/mypage/profile/': typeof MypageProfilePageRoute
   '/onboarding/final-onboarding/': typeof OnboardingFinalOnboardingPageRoute
   '/onboarding/landing/': typeof OnboardingLandingPageRoute
   '/onboarding/terms/': typeof OnboardingTermsPageRoute
@@ -394,9 +426,11 @@ export interface FileRouteTypes {
     | '/login'
     | '/map/'
     | '/payment'
+    | '/mypage'
     | '/detail/store'
     | '/login/success'
     | '/map/search'
+    | '/mypage/profile'
     | '/onboarding/final-onboarding'
     | '/onboarding/landing'
     | '/onboarding/terms'
@@ -413,9 +447,11 @@ export interface FileRouteTypes {
     | '/login'
     | '/map'
     | '/payment'
+    | '/mypage'
     | '/detail/store'
     | '/login/success'
     | '/map/search'
+    | '/mypage/profile'
     | '/onboarding/final-onboarding'
     | '/onboarding/landing'
     | '/onboarding/terms'
@@ -433,9 +469,11 @@ export interface FileRouteTypes {
     | '/login/'
     | '/map/'
     | '/payment/'
+    | '/mypage/'
     | '/detail/store/'
     | '/login/success/'
     | '/map/search/'
+    | '/mypage/profile/'
     | '/onboarding/final-onboarding/'
     | '/onboarding/landing/'
     | '/onboarding/terms/'
@@ -458,6 +496,9 @@ export interface RootRouteChildren {
   PaymentFailPageRoute: typeof PaymentFailPageRoute
   PaymentResultPageRoute: typeof PaymentResultPageRoute
   PaymentSuccessPageRoute: typeof PaymentSuccessPageRoute
+  MypagePageRoute: typeof MypagePageRoute
+  LoginSuccessPageRoute: typeof LoginSuccessPageRoute
+  MypageProfilePageRoute: typeof MypageProfilePageRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -471,6 +512,9 @@ const rootRouteChildren: RootRouteChildren = {
   PaymentFailPageRoute: PaymentFailPageRoute,
   PaymentResultPageRoute: PaymentResultPageRoute,
   PaymentSuccessPageRoute: PaymentSuccessPageRoute,
+  MypagePageRoute: MypagePageRoute,
+  LoginSuccessPageRoute: LoginSuccessPageRoute,
+  MypageProfilePageRoute: MypageProfilePageRoute,
 }
 
 export const routeTree = rootRoute
@@ -493,6 +537,9 @@ export const routeTree = rootRoute
         "/payment/fail/",
         "/payment/result/",
         "/payment/success/"
+        "/mypage/",
+        "/login/success/",
+        "/mypage/profile/"
       ]
     },
     "/": {
@@ -530,6 +577,8 @@ export const routeTree = rootRoute
     },
     "/payment/": {
       "filePath": "payment/page.tsx"
+    "/mypage/": {
+      "filePath": "mypage/page.tsx"
     },
     "/detail/store/": {
       "filePath": "detail/store/page.tsx",
@@ -541,6 +590,9 @@ export const routeTree = rootRoute
     "/map/search/": {
       "filePath": "map/search/page.tsx",
       "parent": "/map"
+    },
+    "/mypage/profile/": {
+      "filePath": "mypage/profile/page.tsx"
     },
     "/onboarding/final-onboarding/": {
       "filePath": "onboarding/final-onboarding/page.tsx",

@@ -98,6 +98,7 @@ function RouteComponent() {
 
   const cartProducts = useMemo<((typeof storeResponse.products)[number] & { quantity: number })[]>(() => {
     const productsById = new Map(storeResponse.products.map((p) => [p.productId, p]))
+
     return cart.flatMap((item) => {
       const product = productsById.get(item.productId)
       return product ? [{ ...product, quantity: item.quantity }] : []
