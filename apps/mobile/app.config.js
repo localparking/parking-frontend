@@ -2,8 +2,8 @@ module.exports = () => {
   const KAKAO_NATIVE_APP_KEY = process.env.EXPO_PUBLIC_KAKAO_NATIVE_APP_KEY || ''
 
   return {
-    name: 'mobile',
-    slug: 'mobile',
+    name: '동네파킹',
+    slug: '주차를 소비의 혜택으로 전환하고 있습니다.',
     version: '1.0.0',
     orientation: 'portrait',
     icon: './assets/images/icon.png',
@@ -12,7 +12,7 @@ module.exports = () => {
     splash: {
       image: './assets/images/splash-icon.png',
       resizeMode: 'contain',
-      backgroundColor: '#ffffff',
+      backgroundColor: '#00C800',
     },
     assetBundlePatterns: ['**/*'],
     ios: {
@@ -47,7 +47,7 @@ module.exports = () => {
     android: {
       adaptiveIcon: {
         foregroundImage: './assets/images/adaptive-icon.png',
-        backgroundColor: '#ffffff',
+        backgroundColor: '#00C800',
       },
       package: 'com.townparking.app',
       intentFilters: [
@@ -97,7 +97,7 @@ module.exports = () => {
           image: './assets/images/splash-icon.png',
           imageWidth: 200,
           resizeMode: 'contain',
-          backgroundColor: '#ffffff',
+          backgroundColor: '#00C800',
         },
       ],
       'expo-web-browser',
