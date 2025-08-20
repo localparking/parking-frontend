@@ -27,6 +27,7 @@
     "axios": "catalog:",
     "class-variance-authority": "catalog:react",
     "clsx": "catalog:react",
+    "date-fns": "^3.6.0",
     "framer-motion": "^12.23.6",
     "js-cookie": "^3.0.5",
     "lucide-react": "catalog:react",
