@@ -5,6 +5,7 @@ import { match } from 'path-to-regexp'
 import { isWebView } from '@/shared/utils/webview'
 import bridge from '@/shared/bridge'
 import { cn } from '@ui/common/lib/utils'
+import { useEffect } from 'react'
 
 interface RouterContext {
   queryClient: QueryClient
@@ -62,11 +63,19 @@ function RootComponent() {
   const { location } = useRouterState()
   const isMapPage = location.pathname.startsWith('/map')
 
+  useEffect(() => {
+    const main = document.querySelector('main')
+    if (main) {
+      main.scrollTo(0, 0)
+    }
+  }, [location.pathname])
+
   return (
     <div className={cn('no-bounce-scroll flex h-dvh w-full flex-col bg-gray-4')}>
       {!isMapPage && <div className="fixed z-[50] h-safe-top w-full max-w-[768px] bg-white" />}
       <main
         className={cn('mx-auto flex w-full max-w-[768px] flex-1 flex-col bg-white', {
+          'overflow-y-auto scrollbar-hide': !isMapPage,
           'pt-safe-top pb-safe-bottom': !isMapPage,
         })}
       >
