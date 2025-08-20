@@ -8,10 +8,16 @@ import { StoreWithMarker, ParkingLotWithMarker } from '../utils/marker-icon'
 import ReactDOMServer from 'react-dom/server'
 import { StoreCategoryIcon } from '@/shared/ui/custom-icons'
 import ParkingIcon from '@/assets/icons/parking.png'
+import { cn } from '@ui/common/lib/utils'
 
 const createStoreMarkerOptions = (store: StoreWithMarker, mapInstance: naver.maps.Map): naver.maps.MarkerOptions => {
   const htmlContent = ReactDOMServer.renderToString(
-    <div className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-2 bg-white">
+    <div
+      className={cn(
+        'absolute flex h-10 w-10 items-center justify-center rounded-full border border-gray-2 bg-white',
+        store.storeType === 'PRODUCT_DETAIL' && 'z-10 border-primary-1 bg-primary-2'
+      )}
+    >
       <StoreCategoryIcon category={store.categories?.[0]} className="h-8 w-8" />
     </div>
   )
@@ -33,7 +39,12 @@ const createParkingLotMarkerOptions = (
   mapInstance: naver.maps.Map
 ): naver.maps.MarkerOptions => {
   const htmlContent = ReactDOMServer.renderToString(
-    <div className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-2 bg-white">
+    <div
+      className={cn(
+        'absolute flex h-10 w-10 items-center justify-center rounded-full border border-gray-2 bg-white',
+        parkingLot.isRealtime && 'z-10 border-primary-1 bg-primary-2'
+      )}
+    >
       <img src={ParkingIcon} className="h-8 w-8" />
     </div>
   )
