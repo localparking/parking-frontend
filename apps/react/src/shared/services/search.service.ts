@@ -1,7 +1,12 @@
+import apiInstance from '../libs/api'
 import { useQuery } from '@tanstack/react-query'
 import { ResponseDtoListSearchItemResponse, SearchApi } from '@data/user-api-axios/api'
 
 class SearchService extends SearchApi {
+  constructor() {
+    super(undefined, '', apiInstance)
+  }
+
   async searchNaver(query: string): Promise<ResponseDtoListSearchItemResponse> {
     const { data } = await this.search1({ query })
     return data
