@@ -14,6 +14,7 @@ class AuthClient {
 
         if (isLoggedIn) {
           const { accessToken } = await bridge.getAuthToken()
+          console.log(accessToken)
           return { authenticated: !!accessToken, accessToken }
         }
       } else {

@@ -74,7 +74,7 @@ export function VisitorInfoSheet({ isOpen, onOpenChange, onSave, initialData }: 
               value={tel}
               onChange={(e) => setTel(e.target.value)}
               placeholder="01012345678"
-              maxLength={10}
+              maxLength={11}
             />
           </div>
 

@@ -3,7 +3,7 @@ import { createFileRoute, useNavigate, Navigate, useLoaderData } from '@tanstack
 import { DetailHeaderBar } from '@/shared/ui/detail-header-bar'
 import { formatPrice } from '@/shared/utils'
 import Button from '@/shared/ui/button'
-import { CheckCircle2, ChevronDown, ChevronUp, MapPin } from 'lucide-react'
+import { CheckCircle2, ChevronDown, ChevronUp, Copy, MapPin } from 'lucide-react'
 import { StoreCategoryIcon } from '@/shared/ui'
 import StatusBadge from '@/shared/ui/status-badge'
 import { cn } from '@ui/common/lib/utils'
@@ -27,6 +27,7 @@ export const Route = createFileRoute('/payment/result/')({
 
 function RouteComponent() {
   const { orderData } = Route.useLoaderData()
+  console.log(orderData)
   const navigate = useNavigate()
 
   if (!orderData) {
@@ -41,34 +42,33 @@ function RouteComponent() {
 
       <section className="mt-[50px] space-y-6 p-6">
         <p className="text-body-3">결제 완료</p>
-        <div className="flex items-center gap-3 rounded-[15px] bg-gray-4 py-3 pr-5 pl-6">
-          <div className="w-full space-y-1">
-            <p className="text-caption-2">결제가 완료되었어요</p>
-            <p className="text-body-5">
-              결제일시 :{' '}
-              {(() => {
-                const d = new Date(orderData.createdAt)
-                const y = d.getFullYear()
-                const m = String(d.getMonth() + 1).padStart(2, '0')
-                const day = String(d.getDate()).padStart(2, '0')
-                let h = d.getHours()
-                const period = h >= 12 ? '오후' : '오전'
-                if (h === 0) h = 12
-                else if (h > 12) h -= 12
-                const hh = String(h).padStart(2, '0')
-                const mm = String(d.getMinutes()).padStart(2, '0')
-                return `${y}년 ${m}월 ${day}일 ${period} ${hh}:${mm}`
-              })()}
-            </p>
-            <div className="w-full rounded-[10px] bg-gray-2 px-3 py-1.5 text-white">
-              <p className="text-caption-2">결제번호: {orderData.orderId}</p>
-            </div>
+        <div className="flex flex-col gap-2.5 rounded-[15px] bg-gray-4 py-4 pr-5 pl-6">
+          <p className="text-caption-2 text-gray-2">결제가 완료되었어요</p>
+          <p className="text-body-5">
+            일시 :{' '}
+            {(() => {
+              const d = new Date(orderData.createdAt)
+              const y = d.getFullYear()
+              const m = String(d.getMonth() + 1).padStart(2, '0')
+              const day = String(d.getDate()).padStart(2, '0')
+              let h = d.getHours()
+              const period = h >= 12 ? '오후' : '오전'
+              if (h === 0) h = 12
+              else if (h > 12) h -= 12
+              const hh = String(h).padStart(2, '0')
+              const mm = String(d.getMinutes()).padStart(2, '0')
+              return `${y}년 ${m}월 ${day}일 ${period} ${hh}:${mm}`
+            })()}
+          </p>
+          <div className="flex w-full items-center justify-between rounded-[10px] bg-gray-2 px-3.5 py-2 text-white">
+            <p className="text-caption-2">결제번호: {orderData.orderId}</p>
+            <Copy className="h-4 w-4" />
           </div>
         </div>
 
         <p className="text-body-3">매장 정보</p>
-        <div className="flex items-center gap-3 rounded-[15px] bg-gray-4 py-3 pr-5 pl-6">
-          {/* <StoreCategoryIcon className="h-20 w-20" category={storeInfo.} /> */}
+        <div className="flex items-center gap-3 rounded-[15px] bg-gray-4 py-4 pr-5 pl-6">
+          <StoreCategoryIcon className="h-20 w-20" category={storeInfo.categoryDto} />
           <div className="space-y-1">
             <p className="text-caption-2 text-gray-2">{storeInfo.storeName}</p>
             <div className="flex items-center gap-1">
@@ -131,6 +131,8 @@ function RouteComponent() {
               <p>무료 주차 할인</p>
               <p className="text-primary-1">{formatPrice(-parkingFeeDiscount)}</p>
             </div>
+
+            <hr className="my-3 border-gray-3" />
 
             <div className="flex justify-between text-body-4 text-primary-1">
               <p>총 결제 금액</p>

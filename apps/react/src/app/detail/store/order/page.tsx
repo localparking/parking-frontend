@@ -46,8 +46,8 @@ function RouteComponent() {
   const [isTimeSheetOpen, setIsTimeSheetOpen] = useState(false)
 
   // --- 데이터 상태 관리 수정 ---
-  const [visitorInfo, setVisitorInfo] = useState({ name: '', tel: '' }) // regionName 제거
-  const [vehicleInfo, setVehicleInfo] = useState({ vehicleNumber: '', regionName: '' }) // 차량 정보와 지역 정보를 함께 관리
+  const [visitorInfo, setVisitorInfo] = useState({ name: '신홍기', tel: '01012345678' }) // regionName 제거
+  const [vehicleInfo, setVehicleInfo] = useState({ vehicleNumber: '12가 2345', regionName: '' }) // 차량 정보와 지역 정보를 함께 관리
   const [visitTime, setVisitTime] = useState('')
 
   if (!storeResponse) return null
@@ -167,7 +167,7 @@ function RouteComponent() {
       />
 
       <section className="mt-[50px] space-y-6 p-6">
-        <div className="flex items-center gap-3 rounded-[15px] bg-gray-4 py-3 pr-5 pl-6">
+        <div className="flex items-center gap-3 rounded-[15px] bg-gray-4 py-4 pr-5 pl-6">
           <StoreCategoryIcon className="h-20 w-20" category={storeDetail.categories?.[0]} />
           <div className="space-y-1">
             <p className="text-caption-2 text-gray-2">{storeDetail.categories?.[0]?.categoryName}</p>
@@ -191,7 +191,11 @@ function RouteComponent() {
                 onClick={() => setIsVisitorSheetOpen(true)}
                 className="rounded-[10px] bg-gray-4 px-3 py-2 text-caption-2"
               >
-                {visitorInfo.name ? `${visitorInfo.name} / ${visitorInfo.tel}` : '방문자 정보를 입력하세요'}
+                {visitorInfo.name
+                  ? `${visitorInfo.name} / ${visitorInfo.tel
+                      .replace(/[^0-9]/g, '')
+                      .replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3')}`
+                  : '방문자 정보를 입력하세요'}
               </button>
             </div>
             <div className="flex items-center justify-between">
@@ -260,7 +264,7 @@ function RouteComponent() {
           >
             <div className="overflow-hidden">
               <div className="space-y-3 pt-2">
-                <div className="space-y-1 rounded-[15px] bg-gray-4 py-3 pr-5 pl-6">
+                <div className="space-y-1 rounded-[15px] bg-gray-4 py-4 pr-5 pl-6">
                   <div className="flex items-center gap-1">
                     <h2 className="text-body-4">{parkingLot?.name}</h2>
                     <StatusBadge isOpen={parkingLot?.isOpen} />
@@ -297,6 +301,8 @@ function RouteComponent() {
               <p>무료 주차 할인</p>
               <p className="text-primary-1">{formatPrice(-parkingDiscountAmount)}</p>
             </div>
+
+            <hr className="my-3 border-gray-3" />
 
             <div className="flex justify-between text-body-4 text-primary-1">
               <p>총 결제 금액</p>

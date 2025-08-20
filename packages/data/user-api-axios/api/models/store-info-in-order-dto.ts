@@ -12,6 +12,10 @@
  * Do not edit the class manually.
  */
 
+// May contain unused imports in some cases
+// @ts-ignore
+import type { CategoryDto } from './category-dto'
+
 /**
  *
  * @export
@@ -24,6 +28,12 @@ export interface StoreInfoInOrderDto {
    * @memberof StoreInfoInOrderDto
    */
   storeId: number
+  /**
+   *
+   * @type {CategoryDto}
+   * @memberof StoreInfoInOrderDto
+   */
+  categoryDto: CategoryDto
   /**
    *
    * @type {string}

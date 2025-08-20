@@ -102,35 +102,35 @@ function RouteComponent() {
       </section>
 
       {cart.length > 0 && (
-        <div className="fixed bottom-0 flex w-full max-w-[768px] flex-col rounded-t-[25px] bg-primary-2">
-          <div className="px-6 pt-2.5">
+        <div className="fixed bottom-0 flex w-full max-w-[768px] flex-col rounded-t-[25px] bg-primary-2 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+          <div className="px-6 pt-3 pb-2">
             {parkingBenefitInfo.nextBenefit && parkingBenefitInfo.remainingForNext > 0 && (
-              <div className="mb-0.5 w-fit rounded-[15px] bg-white px-2 py-1">
-                <p className="text-caption-3 text-gray-2">
+              <div className="mb-1 inline-block rounded-full bg-white px-3 py-1">
+                <p className="text-caption-3 font-medium text-gray-2">
                   {`다음 혜택까지 ${formatPrice(parkingBenefitInfo.remainingForNext)} 남았습니다.`}
                 </p>
               </div>
             )}
             {parkingBenefitInfo.currentBenefit && (
-              <p className="text-caption-1 text-primary-1">
+              <p className="text-caption-1 font-semibold text-primary-1">
                 {`총 ${parkingBenefitInfo.currentBenefit.discountMin / 60}시간 무료주차 혜택 적용`}
               </p>
             )}
           </div>
 
-          <div className="flex items-center justify-between rounded-t-[25px] bg-white px-6 py-4">
-            <div className="flex items-center gap-2">
-              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-black">
-                <p className="text-caption-2 text-white">{totalQuantity}</p>
+          <div className="flex items-center justify-between rounded-t-[25px] border-t border-gray-200 bg-white px-6 py-3">
+            <div className="flex items-center gap-3">
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-black">
+                <p className="text-caption-1 font-bold text-white">{totalQuantity}</p>
               </div>
-              <p className="text-caption-2">{`총 ${totalQuantity}개가 담겼어요!`}</p>
+              <p className="text-body-5 font-medium">{`총 ${totalQuantity}개가 담겼어요!`}</p>
             </div>
 
             <Button
-              className="w-fit"
+              className="w-fit px-5"
               onClick={() => navigate({ to: '/detail/store/order', search: { storeId: data.storeId } })}
             >
-              <p className="text-caption-2">{`${formatPrice(totalPrice)} 결제하기`}</p>
+              <p className="text-body-5 font-bold">{`${formatPrice(totalPrice)} 결제하기`}</p>
             </Button>
           </div>
           <div className="h-safe-bottom w-full bg-white" />
