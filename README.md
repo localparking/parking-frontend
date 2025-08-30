@@ -1,64 +1,57 @@
-### 개발 표준 정의서
+# 동네파킹 (Town Parking) - Frontend
 
-- prettier, eslint로 정의해 commit 시 자동 검증하도록 함.
-- .prettierrc
-- .eslintrc.js
+**소비가 곧 무료주차가 되는 서비스, 동네파킹 🚗💨**
 
+'동네파킹'은 운전자의 주차비 부담을 덜고, 소상공인의 매출 증대를 도우며, 나아가 지역 상권 활성화에 기여하는 것을 목표로 하는 주차-소비 연계 플랫폼입니다.
 
-# ✅ Boolean Naming Convention Guide
+<br />
 
-## 📌 기본 원칙
+## 🧐 프로젝트 소개 (Project Introduction)
 
-1. **상태를 나타내는 boolean 변수는 과거분사(past participle)를 사용한다.**
-    - 예: `liked`, `selected`, `subscribed`, `verified`, `muted`, `blocked`
+### **Problem**
 
-2. **동작 가능 여부나 조건 여부를 표현할 때는 `can`, `has`, `should` 등 동사형 prefix를 붙인다.**
-    - 예: `canEdit`, `hasAccess`, `shouldUpdate`
+서울시의 주차장 확보율은 147%를 넘지만, 불법 주정차 문제는 매년 심화되고 있습니다. 그 원인은 주차 공간의 부족이 아닌, 운전자들이 주차비를 '가치 없는 지출'로 인식하는 **심리적 저항감**에 있습니다. 실제로 운전자의 52.5%는 주차비를 가장 아깝다고 느끼며, 이로 인해 주차장 이용을 꺼리게 됩니다.
 
-3. **의미가 애매하거나 명확하지 않을 경우에만 `is` prefix를 허용한다.**
-    - 예외적 사용 예: `isAvailable`, `isEmpty`, `isOpen`
+### **Solution**
 
----
+'동네파킹'은 이러한 문제의 본질에 집중하여 주차 경험의 패러다임을 전환합니다. 주차비를 직접 지불하는 대신, 제휴 매장에서 필요한 물품을 구매하고 **주차를 무료 '혜택'으로 제공**받는 새로운 모델을 제시합니다. 이를 통해 사용자의 주차비 거부감을 해소하고, 자연스러운 소비 활동이 지역 소상공인의 매출로 이어지는 선순환 구조를 만듭니다.
 
-## ✅ 올바른 예시
+<br />
 
-| 의미          | 네이밍 추천              |
-|-------------|---------------------|
-| 좋아요 눌렀는가    | `liked`             |
-| 선택되었는가      | `selected`          |
-| 구독되었는가      | `subscribed`        |
-| 인증되었는가      | `verified`          |
-| 편집 가능 여부    | `canEdit`           |
-| 접근 권한 여부    | `hasAccess`         |
-| 업데이트 필요 여부  | `shouldUpdate`      |
-| 리스트가 비어 있는가 | `isEmpty` *(예외 허용)* |
+## ✨ 주요 기능 (Key Features)
 
----
+  - **지도 기반 매장 및 주차장 검색**: 네이버 지도 API를 활용하여 제휴 매장과 이용 가능한 주차장 위치를 한눈에 확인할 수 있습니다. 
+  - **상품 주문 및 결제**: 앱 내에서 제휴 매장의 상품을 미리 주문하고 결제하여 주차 혜택을 적용받을 수 있습니다.
+  - **매장별 주차 혜택 정보 확인**: 매장별 구매 금액에 따른 무료 주차 시간 등 상세한 혜택 정보를 제공합니다. 
+  - **실시간 주차 혜택 적용**: 총 구매 금액에 따라 적용되는 무료 주차 혜택을 실시간으로 확인할 수 있습니다. 
+  - **(사장님용) 관리 대시보드**: 점주는 자신의 매장 정보, 상품, 제공할 주차 혜택을 직접 관리하고 매출 통계를 확인할 수 있는 대시보드 기능을 제공합니다. 
 
-## 🚫 피해야 할 예시
+<br />
 
-| 잘못된 예         | 이유                                      |
-|------------------|-------------------------------------------|
-| `isLiked`        | 과거분사 `liked`만으로 충분함             |
-| `isSelected`     | `selected`로 상태를 충분히 표현 가능       |
-| `isSubscribed`   | redundant 표현                             |
-| `isVerified`     | 상태 표현에 굳이 `is` 불필요               |
+## 🛠️ 기술 스택 (Tech Stack)
+| 구분 |	기술 |
+| :--------- | :----- |
+| Core | React, React-Native, TypeScript, Vite | 
+| State Management | TanStack Query (v5), Context API |
+| Routing |	TanStack Router |
+| Styling |	Tailwind CSS, framer-motion |
+| Map |	Naver Maps API | 
+| Build & Tooling |	Turborepo, Vitest, MSW | 
+| Formatting |	ESLint, Prettier | 
 
----
+<br />
 
-## 💡 일관된 네이밍 예시
+## 🧑‍💻 팀원 (Team)
 
-```ts
-// 사용자 상태
-const blocked = true;
-const muted = false;
-const verified = true;
+| 역할       | 이름   |
+| :--------- | :----- |
+| **디자인** | 나희영 | |
+| **백엔드** | 이윤영 | |
+| **프론트엔드** | 신홍기 | |
+| **프론트엔드** | 주진우 | |
 
-// 권한 여부
-const canComment = true;
-const hasPermission = false;
-const shouldReload = true;
+<br />
 
-// UI 상태
-const selected = false;
-const expanded = true;
+## 📜 라이선스 (License)
+
+This project is licensed under the MIT License.
