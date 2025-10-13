@@ -10,6 +10,7 @@ import { useState } from 'react'
 import { OrderStatusBottomSheet } from '@/features/map/components/order-status-bottom-sheet'
 import Button from '@/shared/ui/button'
 import parkingLotService from '@/shared/services/parking-lot.service'
+import { AiRecommendationSheet } from '@/features/map/components/ai-recommendation-sheet'
 
 const searchSchema = z.object({
   parkingLotId: z.string().optional(),
@@ -35,6 +36,7 @@ function Map() {
   const { naverMap } = useMapContext()
   const { parkingLotId, storeId } = Route.useSearch()
   const [isStatusSheetOpen, setStatusSheetOpen] = useState(false)
+  const [isAiSheetOpen, setAiSheetOpen] = useState(false)
 
   useBottomSheetContent(storeId, parkingLotId)
 
@@ -67,7 +69,14 @@ function Map() {
         </div>
       )}
 
+      {!data && (
+        <div className="fixed bottom-[120px] left-1/2 z-10 w-full max-w-sm -translate-x-1/2 px-6">
+          <Button onClick={() => setAiSheetOpen(true)}>AI 추천 보기</Button>
+        </div>
+      )}
+
       {data && isStatusSheetOpen && <OrderStatusBottomSheet data={data} onClose={() => setStatusSheetOpen(false)} />}
+      <AiRecommendationSheet open={isAiSheetOpen} onClose={() => setAiSheetOpen(false)} />
     </>
   )
 }
