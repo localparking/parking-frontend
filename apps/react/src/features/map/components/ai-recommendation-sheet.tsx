@@ -1,11 +1,74 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent, type SetStateAction } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Mic, Send, X } from 'lucide-react'
+import type { StoreListResponse } from '@data/user-api-axios/api'
+import { StoreItem } from '@/features/store/list/ui/list.view'
+import Button from '@/shared/ui/button'
 
 interface AiRecommendationSheetProps {
   open: boolean
   onClose: () => void
 }
+
+interface RecommendationResult {
+  id: string
+  title: string
+  store: StoreListResponse
+}
+
+const mockStores = [
+  {
+    storeId: 1,
+    name: '맛있는 집',
+    address: '서울특별시 강남구 테헤란로 1',
+    lat: 37.4979,
+    lon: 127.0276,
+    isOpen: true,
+    purchaseAmount: 10000,
+    discountMin: 60,
+    categories: [{ categoryId: 1, categoryName: '카페' }],
+  },
+  {
+    storeId: 2,
+    name: '가까운 집',
+    address: '서울특별시 강남구 강남대로 2',
+    lat: 37.4997,
+    lon: 127.0265,
+    isOpen: true,
+    purchaseAmount: 10000,
+    discountMin: 60,
+    categories: [{ categoryId: 1, categoryName: '카페' }],
+  },
+  {
+    storeId: 3,
+    name: '저렴한 집',
+    address: '서울특별시 강남구 봉은사로 3',
+    lat: 37.5008,
+    lon: 127.0251,
+    isOpen: true,
+    purchaseAmount: 10000,
+    discountMin: 60,
+    categories: [{ categoryId: 1, categoryName: '카페' }],
+  },
+] satisfies StoreListResponse[]
+
+const MOCK_RESULTS_TEMPLATE: RecommendationResult[] = [
+  { id: 'value', title: '최적 가성비 카페예요', store: mockStores[0] },
+  { id: 'distance', title: '가장 가까운 검색결과예요', store: mockStores[1] },
+  { id: 'price', title: '가장 저렴한 카페예요', store: mockStores[2] },
+]
+
+const cloneStore = (store: StoreListResponse): StoreListResponse => ({
+  ...store,
+  categories: store.categories?.map((category) => ({ ...category })),
+})
+
+const createMockResults = (): RecommendationResult[] =>
+  MOCK_RESULTS_TEMPLATE.map((item, idx) => ({
+    id: `${item.id}-${idx}`,
+    title: item.title,
+    store: cloneStore(item.store),
+  }))
 
 export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetProps) => {
   const [transcript, setTranscript] = useState('')
@@ -13,6 +76,8 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
   const [isListening, setIsListening] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [statusMessage, setStatusMessage] = useState<string | null>(null)
+  const [results, setResults] = useState<RecommendationResult[] | null>(null)
+  const [resultQuery, setResultQuery] = useState('')
 
   const recognitionRef = useRef<any>(null)
   const silenceTimerRef = useRef<number | null>(null)
@@ -41,9 +106,21 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
     }
   }, [])
 
-  const handleSearch = useCallback((_query: string) => {
-    // TODO: implement AI recommendation search with the provided query
-  }, [])
+  const handleSearch = useCallback(
+    (query: string) => {
+      const trimmedQuery = query.trim()
+      if (!trimmedQuery) return
+
+      updateTranscript(trimmedQuery)
+      setStatusMessage(null)
+      setError(null)
+      setResultQuery(trimmedQuery)
+      autoRequestRef.current = false
+      restartOnEndRef.current = false
+      setResults(createMockResults())
+    },
+    [updateTranscript]
+  )
 
   const stopListening = useCallback(
     (options?: { restart?: boolean }) => {
@@ -158,13 +235,13 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
       const value = manualInput.trim()
       if (!value) return
       updateTranscript((prev) => (prev ? `${prev}\n${value}` : value))
-      setManualInput('')
       setError(null)
       if (value.length <= 8) {
         setStatusMessage(shortQueryGuide)
         stopListening({ restart: false })
         return
       }
+      setManualInput('')
       setStatusMessage(null)
       stopListening({ restart: false })
       handleSearch(value)
@@ -172,12 +249,34 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
     [handleSearch, manualInput, shortQueryGuide, stopListening, updateTranscript]
   )
 
-  const handleClose = useCallback(() => {
-    stopListening()
+  const handleManualInputChange = useCallback((value: string) => {
+    setManualInput(value)
+    setStatusMessage(null)
+  }, [])
+
+  const handleRetry = useCallback(() => {
+    stopListening({ restart: false })
+    setResults(null)
+    setResultQuery('')
     updateTranscript('')
     setManualInput('')
     setStatusMessage(null)
     setError(null)
+    autoRequestRef.current = false
+    restartOnEndRef.current = false
+    startListening()
+  }, [startListening, stopListening, updateTranscript])
+
+  const handleClose = useCallback(() => {
+    stopListening({ restart: false })
+    setResults(null)
+    setResultQuery('')
+    updateTranscript('')
+    setManualInput('')
+    setStatusMessage(null)
+    setError(null)
+    autoRequestRef.current = false
+    restartOnEndRef.current = false
     onClose()
   }, [onClose, stopListening, updateTranscript])
 
@@ -188,18 +287,21 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
       return
     }
 
+    if (results) return
+
     if (!autoRequestRef.current) {
       autoRequestRef.current = true
       startListening()
     }
-  }, [open, startListening, stopListening])
+  }, [open, results, startListening, stopListening])
 
   useEffect(() => {
+    if (results) return
     if (open && !isListening && restartOnEndRef.current) {
       restartOnEndRef.current = false
       startListening()
     }
-  }, [isListening, open, startListening])
+  }, [isListening, open, results, startListening])
 
   useEffect(() => {
     return () => {
@@ -209,6 +311,7 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
   }, [stopListening])
 
   const placeholderTranscript = '말씀해주세요...'
+  const hasResults = Array.isArray(results) && results.length > 0
 
   return (
     <AnimatePresence>
@@ -253,70 +356,130 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
               <X className="h-5 w-5" />
             </button>
 
-            <div className="flex h-full flex-col items-center gap-6 py-6">
-              <div className="text-center">
-                <h2 className="text-body-3 text-gray-1">목적지를 말씀해주세요</h2>
-                <p className="mt-1 text-caption-1 text-gray-3">
-                  {isListening ? 'AI가 음성을 듣고 있어요.' : '마이크 아이콘을 눌러 다시 말씀하실 수 있어요.'}
-                </p>
-              </div>
-
-              <button
-                type="button"
-                onClick={handleToggleListening}
-                className="relative flex h-[160px] w-[160px] items-center justify-center focus:outline-none"
-              >
-                <span
-                  className={`absolute inset-0 rounded-full transition ${
-                    isListening ? 'animate-ping bg-primary-2/60' : 'bg-primary-2/20'
-                  }`}
-                />
-                <span className="relative flex h-[140px] w-[140px] items-center justify-center rounded-full bg-primary-2">
-                  <span className="flex h-[104px] w-[104px] items-center justify-center rounded-full bg-white shadow-lg">
-                    <Mic className={`h-16 w-16 ${isListening ? 'text-primary-1' : 'text-gray-3'}`} />
-                  </span>
-                </span>
-              </button>
-
-              <div className="w-full flex-1 overflow-hidden">
-                <div className="flex h-full flex-col items-center justify-center gap-2 rounded-2xl bg-gray-5 px-6 py-6 text-center">
-                  <p className="whitespace-pre-line text-body-3 text-gray-1">
-                    {transcript || (error ? '' : placeholderTranscript)}
-                  </p>
-                  {statusMessage && (
-                    <p className="whitespace-pre-line text-caption-1 text-gray-3">{statusMessage}</p>
-                  )}
-                  {error && <p className="text-caption-2 text-red-500">{error}</p>}
-                </div>
-              </div>
-
-              <form
-                onSubmit={handleManualSubmit}
-                className="bg-gray-5 mt-auto flex w-full items-center gap-3 rounded-full border border-gray-4 px-5 py-3"
-              >
-                <input
-                  type="text"
-                  value={manualInput}
-                  onChange={(event) => {
-                    setManualInput(event.target.value)
-                    setStatusMessage(null)
-                  }}
-                  placeholder="어떤 장소를 찾으시나요?"
-                  className="flex-1 bg-transparent text-body-4 text-gray-1 placeholder:text-gray-3 focus:outline-none"
-                />
-                <button
-                  type="submit"
-                  className="text-primary-1 transition disabled:text-gray-3"
-                  disabled={!manualInput.trim()}
-                  aria-label="텍스트로 전달"
-                >
-                  <Send className="h-5 w-5" />
-                </button>
-              </form>
-            </div>
+            {hasResults ? (
+              <RecommendationResultsView query={resultQuery} results={results!} onRetry={handleRetry} />
+            ) : (
+              <VoiceCaptureView
+                transcript={transcript}
+                placeholderTranscript={placeholderTranscript}
+                statusMessage={statusMessage}
+                error={error}
+                isListening={isListening}
+                manualInput={manualInput}
+                onToggleListening={handleToggleListening}
+                onManualInputChange={handleManualInputChange}
+                onManualSubmit={handleManualSubmit}
+              />
+            )}
           </motion.div>
         </>
       )}
     </AnimatePresence>
+  )
+}
+
+interface VoiceCaptureViewProps {
+  transcript: string
+  placeholderTranscript: string
+  statusMessage: string | null
+  error: string | null
+  isListening: boolean
+  manualInput: string
+  onToggleListening: () => void
+  onManualInputChange: (value: string) => void
+  onManualSubmit: (event: FormEvent<HTMLFormElement>) => void
+}
+
+const VoiceCaptureView = ({
+  transcript,
+  placeholderTranscript,
+  statusMessage,
+  error,
+  isListening,
+  manualInput,
+  onToggleListening,
+  onManualInputChange,
+  onManualSubmit,
+}: VoiceCaptureViewProps) => {
+  const displayText = transcript || (!error ? placeholderTranscript : '')
+
+  return (
+    <div className="flex h-full flex-col items-center gap-6 py-6">
+      <div className="text-center">
+        <h2 className="text-body-3 text-gray-1">목적지를 말씀해주세요</h2>
+        <p className="mt-1 text-caption-1 text-gray-3">
+          {isListening ? 'AI가 음성을 듣고 있어요.' : '마이크 아이콘을 눌러 다시 말씀하실 수 있어요.'}
+        </p>
+      </div>
+
+      <button
+        type="button"
+        onClick={onToggleListening}
+        className="relative flex h-[160px] w-[160px] items-center justify-center focus:outline-none"
+      >
+        <span className={`absolute inset-0 rounded-full transition ${isListening ? 'animate-ping bg-primary-2/60' : 'bg-primary-2/20'}`} />
+        <span className="relative flex h-[140px] w-[140px] items-center justify-center rounded-full bg-primary-2">
+          <span className="flex h-[104px] w-[104px] items-center justify-center rounded-full bg-white shadow-lg">
+            <Mic className={`h-16 w-16 ${isListening ? 'text-primary-1' : 'text-gray-3'}`} />
+          </span>
+        </span>
+      </button>
+
+      <div className="w-full flex-1 overflow-hidden">
+        <div className="flex h-full flex-col items-center justify-center gap-2 rounded-2xl bg-gray-5 px-6 py-6 text-center">
+          <p className="whitespace-pre-line text-body-3 text-gray-1">{displayText}</p>
+          {statusMessage && <p className="whitespace-pre-line text-caption-1 text-gray-3">{statusMessage}</p>}
+          {error && <p className="text-caption-2 text-red-500">{error}</p>}
+        </div>
+      </div>
+
+      <form onSubmit={onManualSubmit} className="bg-gray-5 mt-auto flex w-full items-center gap-3 rounded-full border border-gray-4 px-5 py-3">
+        <input
+          type="text"
+          value={manualInput}
+          onChange={(event) => onManualInputChange(event.target.value)}
+          placeholder="어떤 장소를 찾으시나요?"
+          className="flex-1 bg-transparent text-body-4 text-gray-1 placeholder:text-gray-3 focus:outline-none"
+        />
+        <button
+          type="submit"
+          className="text-primary-1 transition disabled:text-gray-3"
+          disabled={!manualInput.trim()}
+          aria-label="텍스트로 전달"
+        >
+          <Send className="h-5 w-5" />
+        </button>
+      </form>
+    </div>
+  )
+}
+
+interface RecommendationResultsViewProps {
+  query: string
+  results: RecommendationResult[]
+  onRetry: () => void
+}
+
+const RecommendationResultsView = ({ query, results, onRetry }: RecommendationResultsViewProps) => {
+  return (
+    <div className="flex h-full flex-col gap-6 py-6">
+      <div className="text-center">
+        <p className="text-body-3 font-semibold text-gray-1">[{query}] 추천 결과</p>
+        <p className="mt-1 text-caption-1 text-gray-3">AI가 선별한 맞춤 매장을 확인해 보세요.</p>
+      </div>
+
+      <div className="flex-1 space-y-5 overflow-y-auto pr-1">
+        {results.map((item) => (
+          <div key={item.id} className="rounded-3xl bg-gray-5 px-5 py-4">
+            <p className="mb-3 text-body-4 text-gray-1">{item.title}</p>
+            <StoreItem store={item.store} />
+          </div>
+        ))}
+      </div>
+
+      <Button className="mt-auto w-full" onClick={onRetry}>
+        다시 검색하기
+      </Button>
+    </div>
   )
 }
