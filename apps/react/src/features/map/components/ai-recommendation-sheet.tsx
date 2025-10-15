@@ -53,9 +53,9 @@ const mockStores = [
 ] satisfies StoreListResponse[]
 
 const MOCK_RESULTS_TEMPLATE: RecommendationResult[] = [
-  { id: 'value', title: '최적 가성비 카페예요', store: mockStores[0] },
-  { id: 'distance', title: '가장 가까운 검색결과예요', store: mockStores[1] },
-  { id: 'price', title: '가장 저렴한 카페예요', store: mockStores[2] },
+  { id: 'value', title: '최적 가성비 카페예요', store: mockStores[0]! },
+  { id: 'distance', title: '가장 가까운 검색결과예요', store: mockStores[1]! },
+  { id: 'price', title: '가장 저렴한 카페예요', store: mockStores[2]! },
 ]
 
 const cloneStore = (store: StoreListResponse): StoreListResponse => ({
@@ -72,6 +72,7 @@ const createMockResults = (): RecommendationResult[] =>
 
 export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetProps) => {
   const [transcript, setTranscript] = useState('')
+  const [liveTranscript, setLiveTranscript] = useState('')
   const [manualInput, setManualInput] = useState('')
   const [isListening, setIsListening] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -84,10 +85,15 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
   const autoRequestRef = useRef(false)
   const restartOnEndRef = useRef(false)
   const transcriptRef = useRef(transcript)
+  const liveTranscriptRef = useRef(liveTranscript)
 
   useEffect(() => {
     transcriptRef.current = transcript
   }, [transcript])
+
+  useEffect(() => {
+    liveTranscriptRef.current = liveTranscript
+  }, [liveTranscript])
 
   const shortQueryGuide = '검색 결과가 없어요\n위치, 시간, 가게 종류를 알려주세요'
 
@@ -97,6 +103,8 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
       transcriptRef.current = next
       return next
     })
+    setLiveTranscript('')
+    liveTranscriptRef.current = ''
   }, [])
 
   const clearSilenceTimer = useCallback(() => {
@@ -133,12 +141,15 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
   )
 
   const handleSilenceTimeout = useCallback(() => {
-    const trimmed = transcriptRef.current.trim()
-    if (trimmed.length > 8) {
+    const finalText = transcriptRef.current.trim()
+    const interimText = liveTranscriptRef.current.trim()
+    const candidate = [finalText, interimText].filter(Boolean).join(' ').trim()
+
+    if (candidate.length > 8) {
       setStatusMessage(null)
       setError(null)
       stopListening({ restart: false })
-      handleSearch(trimmed)
+      handleSearch(candidate)
       return
     }
 
@@ -161,7 +172,7 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
       const recognition = new SpeechRecognitionCtor()
       recognition.lang = 'ko-KR'
       recognition.continuous = true
-      recognition.interimResults = false
+      recognition.interimResults = true
 
       recognition.onstart = () => {
         setStatusMessage(null)
@@ -170,13 +181,32 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
       }
 
       recognition.onresult = (event: any) => {
-        const results: string[] = Array.from(event.results)
-          .slice(event.resultIndex)
-          .map((res: any) => res[0]?.transcript?.trim() ?? '')
-          .filter(Boolean)
+        const interimPieces: string[] = []
+        const finalPieces: string[] = []
 
-        if (results.length > 0) {
-          const combined = results.join(' ')
+        for (let i = event.resultIndex; i < event.results.length; i += 1) {
+          const result = event.results[i] as any
+          const text = result[0]?.transcript?.trim() ?? ''
+          if (!text) continue
+
+          if (result.isFinal) {
+            finalPieces.push(text)
+          } else {
+            interimPieces.push(text)
+          }
+        }
+
+        if (interimPieces.length > 0) {
+          const interimText = interimPieces.join(' ')
+          setLiveTranscript(interimText)
+          liveTranscriptRef.current = interimText
+          setError(null)
+          setStatusMessage(null)
+          startSilenceTimer()
+        }
+
+        if (finalPieces.length > 0) {
+          const combined = finalPieces.join(' ')
           updateTranscript((prev) => (prev ? `${prev}\n${combined}` : combined))
           setError(null)
           setStatusMessage(null)
@@ -252,6 +282,8 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
   const handleManualInputChange = useCallback((value: string) => {
     setManualInput(value)
     setStatusMessage(null)
+    setLiveTranscript('')
+    liveTranscriptRef.current = ''
   }, [])
 
   const handleRetry = useCallback(() => {
@@ -262,6 +294,8 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
     setManualInput('')
     setStatusMessage(null)
     setError(null)
+    setLiveTranscript('')
+    liveTranscriptRef.current = ''
     autoRequestRef.current = false
     restartOnEndRef.current = false
     startListening()
@@ -275,6 +309,8 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
     setManualInput('')
     setStatusMessage(null)
     setError(null)
+    setLiveTranscript('')
+    liveTranscriptRef.current = ''
     autoRequestRef.current = false
     restartOnEndRef.current = false
     onClose()
@@ -361,6 +397,7 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
             ) : (
               <VoiceCaptureView
                 transcript={transcript}
+                liveTranscript={liveTranscript}
                 placeholderTranscript={placeholderTranscript}
                 statusMessage={statusMessage}
                 error={error}
@@ -380,6 +417,7 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
 
 interface VoiceCaptureViewProps {
   transcript: string
+  liveTranscript: string
   placeholderTranscript: string
   statusMessage: string | null
   error: string | null
@@ -392,6 +430,7 @@ interface VoiceCaptureViewProps {
 
 const VoiceCaptureView = ({
   transcript,
+  liveTranscript,
   placeholderTranscript,
   statusMessage,
   error,
@@ -401,7 +440,9 @@ const VoiceCaptureView = ({
   onManualInputChange,
   onManualSubmit,
 }: VoiceCaptureViewProps) => {
-  const displayText = transcript || (!error ? placeholderTranscript : '')
+  const combined = [transcript, liveTranscript].filter(Boolean)
+  const displayText =
+    combined.length > 0 ? combined.join(transcript && liveTranscript ? '\n' : '') : !error ? placeholderTranscript : ''
 
   return (
     <div className="flex h-full flex-col items-center gap-6 py-6">
@@ -417,7 +458,9 @@ const VoiceCaptureView = ({
         onClick={onToggleListening}
         className="relative flex h-[160px] w-[160px] items-center justify-center focus:outline-none"
       >
-        <span className={`absolute inset-0 rounded-full transition ${isListening ? 'animate-ping bg-primary-2/60' : 'bg-primary-2/20'}`} />
+        <span
+          className={`absolute inset-0 rounded-full transition ${isListening ? 'animate-ping bg-primary-2/60' : 'bg-primary-2/20'}`}
+        />
         <span className="relative flex h-[140px] w-[140px] items-center justify-center rounded-full bg-primary-2">
           <span className="flex h-[104px] w-[104px] items-center justify-center rounded-full bg-white shadow-lg">
             <Mic className={`h-16 w-16 ${isListening ? 'text-primary-1' : 'text-gray-3'}`} />
@@ -426,14 +469,17 @@ const VoiceCaptureView = ({
       </button>
 
       <div className="w-full flex-1 overflow-hidden">
-        <div className="flex h-full flex-col items-center justify-center gap-2 rounded-2xl bg-gray-5 px-6 py-6 text-center">
-          <p className="whitespace-pre-line text-body-3 text-gray-1">{displayText}</p>
-          {statusMessage && <p className="whitespace-pre-line text-caption-1 text-gray-3">{statusMessage}</p>}
+        <div className="bg-gray-5 flex h-full flex-col items-center justify-center gap-2 rounded-2xl px-6 py-6 text-center">
+          <p className="text-body-3 whitespace-pre-line text-gray-1">{displayText}</p>
+          {statusMessage && <p className="text-caption-1 whitespace-pre-line text-gray-3">{statusMessage}</p>}
           {error && <p className="text-caption-2 text-red-500">{error}</p>}
         </div>
       </div>
 
-      <form onSubmit={onManualSubmit} className="bg-gray-5 mt-auto flex w-full items-center gap-3 rounded-full border border-gray-4 px-5 py-3">
+      <form
+        onSubmit={onManualSubmit}
+        className="bg-gray-5 mt-auto flex w-full items-center gap-3 rounded-full border border-gray-4 px-5 py-3"
+      >
         <input
           type="text"
           value={manualInput}
@@ -470,7 +516,7 @@ const RecommendationResultsView = ({ query, results, onRetry }: RecommendationRe
 
       <div className="flex-1 space-y-5 overflow-y-auto pr-1">
         {results.map((item) => (
-          <div key={item.id} className="rounded-3xl bg-gray-5 px-5 py-4">
+          <div key={item.id} className="bg-gray-5 rounded-3xl px-5 py-4">
             <p className="mb-3 text-body-4 text-gray-1">{item.title}</p>
             <StoreItem store={item.store} />
           </div>
