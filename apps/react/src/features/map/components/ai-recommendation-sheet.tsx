@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent, type SetStateAction } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Mic, Send, X } from 'lucide-react'
+import { MapPin, Mic, Send, X } from 'lucide-react'
 import type { StoreListResponse } from '@data/user-api-axios/api'
-import { StoreItem } from '@/features/store/list/ui/list.view'
 import Button from '@/shared/ui/button'
+import { useNavigation, useMapContext } from '@/features/map'
+import StatusBadge from '@/shared/ui/status-badge'
+import { StoreCategoryIcon } from '@/shared/ui/custom-icons'
 
 interface AiRecommendationSheetProps {
   open: boolean
@@ -69,6 +71,86 @@ const createMockResults = (): RecommendationResult[] =>
     title: item.title,
     store: cloneStore(item.store),
   }))
+
+interface NavigationUrls {
+  app: string
+  web: string
+}
+
+const APP_NAME_FOR_NAVIGATION = 'parking-frontend'
+
+const isMobileEnvironment = () => {
+  if (typeof window === 'undefined') return false
+  const userAgent = window.navigator?.userAgent ?? ''
+  return /iphone|ipad|ipod|android/i.test(userAgent)
+}
+
+const openNavigationWithFallback = ({ app, web }: NavigationUrls) => {
+  if (typeof window === 'undefined') return
+
+  if (!isMobileEnvironment()) {
+    window.open(web, '_blank', 'noopener,noreferrer')
+    return
+  }
+
+  if (typeof document === 'undefined') {
+    window.location.href = web
+    return
+  }
+
+  let iframe: HTMLIFrameElement | null = document.createElement('iframe')
+  iframe.style.display = 'none'
+  iframe.src = app
+
+  let fallbackTimeout = 0
+
+  const cleanup = () => {
+    window.clearTimeout(fallbackTimeout)
+    window.removeEventListener('pagehide', cleanup)
+    window.removeEventListener('blur', cleanup)
+    if (iframe && iframe.parentNode) {
+      iframe.parentNode.removeChild(iframe)
+    }
+    iframe = null
+  }
+
+  fallbackTimeout = window.setTimeout(() => {
+    window.location.href = web
+    cleanup()
+  }, 1200)
+
+  try {
+    document.body.appendChild(iframe)
+  } catch {
+    window.location.href = web
+    cleanup()
+    return
+  }
+
+  window.addEventListener('pagehide', cleanup, { once: true })
+  window.addEventListener('blur', cleanup, { once: true })
+}
+
+const toNaverNavigationUrls = (store: StoreListResponse): NavigationUrls => {
+  const encodedName = encodeURIComponent(store.name)
+  const combinedQuery = [store.name, store.address].filter(Boolean).join(' ')
+  const encodedAppName = encodeURIComponent(APP_NAME_FOR_NAVIGATION)
+  const fallbackQuery = encodeURIComponent(combinedQuery)
+
+  return {
+    app: `nmap://route/car?dlat=${store.lat}&dlng=${store.lon}&dname=${encodedName}&appname=${encodedAppName}`,
+    web: `https://map.naver.com/v5/search/${fallbackQuery}`,
+  }
+}
+
+const toKakaoNavigationUrls = (store: StoreListResponse): NavigationUrls => {
+  const encodedName = encodeURIComponent(store.name)
+
+  return {
+    app: `kakaomap://route?ep=${store.lat},${store.lon}&by=CAR`,
+    web: `https://map.kakao.com/link/to/${encodedName},${store.lat},${store.lon}`,
+  }
+}
 
 export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetProps) => {
   const [transcript, setTranscript] = useState('')
@@ -518,7 +600,7 @@ const RecommendationResultsView = ({ query, results, onRetry }: RecommendationRe
         {results.map((item) => (
           <div key={item.id} className="bg-gray-5 rounded-3xl px-5 py-4">
             <p className="mb-3 text-body-4 text-gray-1">{item.title}</p>
-            <StoreItem store={item.store} />
+            <RecommendationStoreItem store={item.store} />
           </div>
         ))}
       </div>
@@ -526,6 +608,117 @@ const RecommendationResultsView = ({ query, results, onRetry }: RecommendationRe
       <Button className="mt-auto w-full" onClick={onRetry}>
         다시 검색하기
       </Button>
+    </div>
+  )
+}
+
+interface RecommendationStoreItemProps {
+  store: StoreListResponse
+}
+
+const RecommendationStoreItem = ({ store }: RecommendationStoreItemProps) => {
+  const { navigateToStoreDetail } = useNavigation()
+  const { moveTo } = useMapContext().naverMap
+  const [showNavigationOptions, setShowNavigationOptions] = useState(false)
+  const navigationMenuRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    if (!showNavigationOptions) return
+
+    const handleOutsideInteraction = (event: MouseEvent | TouchEvent) => {
+      if (!navigationMenuRef.current) return
+      const target = event.target as Node | null
+      if (!target || navigationMenuRef.current.contains(target)) return
+      setShowNavigationOptions(false)
+    }
+
+    document.addEventListener('mousedown', handleOutsideInteraction)
+    document.addEventListener('touchstart', handleOutsideInteraction)
+
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideInteraction)
+      document.removeEventListener('touchstart', handleOutsideInteraction)
+    }
+  }, [showNavigationOptions])
+
+  const handleSelectStore = useCallback(() => {
+    setShowNavigationOptions(false)
+    moveTo({ lat: store.lat, lng: store.lon })
+    navigateToStoreDetail(store.storeId.toString())
+  }, [moveTo, navigateToStoreDetail, store.lat, store.lon, store.storeId])
+
+  const handleGuideStart = useCallback(() => {
+    setShowNavigationOptions((prev) => {
+      if (!prev) {
+        moveTo({ lat: store.lat, lng: store.lon })
+      }
+      return !prev
+    })
+  }, [moveTo, store.lat, store.lon])
+
+  const handleNavigationLaunch = (provider: 'naver' | 'kakao') => {
+    const urls = provider === 'naver' ? toNaverNavigationUrls(store) : toKakaoNavigationUrls(store)
+    setShowNavigationOptions(false)
+    openNavigationWithFallback(urls)
+  }
+
+  const primaryCategory = store.categories?.[0]
+  const promotionText =
+    store.discountMin && store.purchaseAmount
+      ? `${store.purchaseAmount.toLocaleString()}원 이상 구매시 ${store.discountMin}분 무료 주차`
+      : store.address
+
+  return (
+    <div className="flex items-center gap-4 rounded-2xl bg-white px-4 py-3 shadow-sm">
+      <button type="button" onClick={handleSelectStore} className="flex flex-1 items-center gap-3 text-left">
+        <div className="flex h-15 w-15 items-center justify-center rounded-full bg-primary-2/20">
+          <StoreCategoryIcon category={primaryCategory} className="h-[60px] w-[60px]" />
+        </div>
+        <div className="flex flex-1 flex-col gap-1">
+          {primaryCategory?.categoryName && (
+            <p className="text-caption-3 text-gray-3">{primaryCategory.categoryName}</p>
+          )}
+          <div className="flex items-center gap-2 pr-2">
+            <h3 className="text-body-4 text-gray-1">{store.name}</h3>
+            <StatusBadge isOpen={Boolean(store.isOpen)} />
+          </div>
+          <p className="text-caption-2 text-gray-2">{promotionText}</p>
+        </div>
+      </button>
+
+      <div ref={navigationMenuRef} className="relative flex flex-col items-center gap-1 text-primary-1">
+        <button
+          type="button"
+          onClick={handleGuideStart}
+          className="flex flex-col items-center gap-1 text-primary-1"
+          aria-label="안내 시작"
+        >
+          <span className="grid h-14 w-14 place-items-center rounded-full bg-primary-2">
+            <MapPin className="h-6 w-6" />
+          </span>
+          <span className="text-caption-2 font-medium">안내시작</span>
+        </button>
+
+        {showNavigationOptions && (
+          <div className="absolute right-0 top-full z-50 mt-2 w-44 rounded-2xl border border-gray-5 bg-white p-3 shadow-lg">
+            <p className="mb-2 text-caption-3 text-gray-3">길안내 앱을 선택하세요</p>
+            <button
+              type="button"
+              onClick={() => handleNavigationLaunch('naver')}
+              className="w-full rounded-xl px-3 py-2 text-left text-caption-1 text-gray-1 transition hover:bg-gray-5"
+            >
+              네이버 지도 앱
+            </button>
+            <button
+              type="button"
+              onClick={() => handleNavigationLaunch('kakao')}
+              className="mt-1 w-full rounded-xl px-3 py-2 text-left text-caption-1 text-gray-1 transition hover:bg-gray-5"
+            >
+              카카오 지도 앱
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
