@@ -1,7 +1,7 @@
 import React from 'react'
 import { ArrowLeft } from 'lucide-react'
 import { ProgressBar } from './progress-bar'
-import { cn } from '@ui/common/lib/utils'
+import { cn } from '@/shared/utils'
 
 export interface OnboardingHeaderProps {
   showBackButton?: boolean

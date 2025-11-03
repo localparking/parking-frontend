@@ -1,4 +1,4 @@
-import { Skeleton } from '@ui/common/components/skeleton'
+import { Skeleton } from '@/shared/ui'
 import React, { createContext, ReactNode, useCallback, useEffect, useState } from 'react'
 import AuthClient from '../lib/auth-client'
 import type { MyInfoUpdateRequestDto } from '@data/user-api-axios/api'

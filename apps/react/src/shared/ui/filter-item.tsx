@@ -1,5 +1,5 @@
 import React from 'react'
-import { cn } from '@ui/common/lib/utils'
+import { cn } from '@/shared/utils'
 
 interface FilterChipProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   isSelected: boolean

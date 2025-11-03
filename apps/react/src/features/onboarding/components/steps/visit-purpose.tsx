@@ -1,4 +1,4 @@
-import { cn } from '@ui/common/lib/utils'
+import { cn } from '@/shared/utils'
 import { useOnboardingContext } from '@/features/onboarding/context/onboarding-context'
 import { CategoryResponse } from '@data/user-api-axios/api'
 

@@ -1,5 +1,5 @@
 import { CategoryDto } from '@data/user-api-axios/api'
-import { cn } from '@ui/common/lib/utils'
+import { cn } from '@/shared/utils'
 
 import CafeIcon from '@/assets/icons/cafe.png'
 import FoodIcon from '@/assets/icons/food.png'

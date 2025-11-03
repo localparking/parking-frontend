@@ -10,7 +10,7 @@ import { CheckCircle2, ChevronDown, ChevronUp, MapPin, ShoppingCart } from 'luci
 import { StoreCategoryIcon } from '@/shared/ui'
 import StatusBadge from '@/shared/ui/status-badge'
 import { OrderApi, ParkingBenefitDto } from '@data/user-api-axios/api'
-import { cn } from '@ui/common/lib/utils'
+import { cn } from '@/shared/utils'
 import { ProductItem } from '@/features/store/order/ui/product-item'
 import { VehicleInfoSheet } from '@/features/store/order/ui/vehicle-info-sheet'
 import { VisitTimeSheet } from '@/features/store/order/ui/visit-time-sheet'

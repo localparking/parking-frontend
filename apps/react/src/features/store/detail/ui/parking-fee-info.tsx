@@ -2,7 +2,7 @@ import React from 'react'
 import type { ParkingBenefitDto } from '@data/user-api-axios/api'
 import { formatPrice } from '@/shared/utils/format'
 import { CircleParking } from 'lucide-react'
-import { cn } from '@ui/common/lib/utils'
+import { cn } from '@/shared/utils'
 
 interface ParkingBenefitsProps {
   benefits: ParkingBenefitDto[]

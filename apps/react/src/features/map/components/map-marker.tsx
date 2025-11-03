@@ -8,7 +8,7 @@ import { StoreWithMarker, ParkingLotWithMarker } from '../utils/marker-icon'
 import ReactDOMServer from 'react-dom/server'
 import { StoreCategoryIcon } from '@/shared/ui/custom-icons'
 import ParkingIcon from '@/assets/icons/parking.png'
-import { cn } from '@ui/common/lib/utils'
+import { cn } from '@/shared/utils'
 
 const createStoreMarkerOptions = (store: StoreWithMarker, mapInstance: naver.maps.Map): naver.maps.MarkerOptions => {
   const htmlContent = ReactDOMServer.renderToString(

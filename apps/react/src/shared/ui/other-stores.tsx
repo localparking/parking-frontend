@@ -1,6 +1,6 @@
 import React from 'react'
 import type { AssociatedStoreDto } from '@data/user-api-axios/api'
-import { cn } from '@ui/common/lib/utils'
+import { cn } from '@/shared/utils'
 import StatusBadge from '@/shared/ui/status-badge'
 
 interface OtherStoresProps {

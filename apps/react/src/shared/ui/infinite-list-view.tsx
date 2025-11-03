@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useMemo } from 'react'
-import { cn } from '@ui/common/lib/utils'
+import { cn } from '@/shared/utils'
 
 interface InfiniteListViewProps<T extends { [key: string]: any }> {
   pages: any[] | undefined

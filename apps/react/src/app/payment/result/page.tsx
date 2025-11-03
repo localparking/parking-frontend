@@ -6,7 +6,7 @@ import Button from '@/shared/ui/button'
 import { CheckCircle2, ChevronDown, ChevronUp, Copy, MapPin } from 'lucide-react'
 import { StoreCategoryIcon } from '@/shared/ui'
 import StatusBadge from '@/shared/ui/status-badge'
-import { cn } from '@ui/common/lib/utils'
+import { cn } from '@/shared/utils'
 import z from 'zod'
 import orderService from '@/shared/services/order.service'
 

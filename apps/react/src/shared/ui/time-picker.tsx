@@ -1,6 +1,6 @@
 // components/TimePicker.tsx
 import React from 'react'
-import { cn } from '@ui/common/lib/utils'
+import { cn } from '@/shared/utils'
 
 type TimePickerProps = {
   value: string | null // 'HHmm' (정각만: 0000~2300) | null=전체

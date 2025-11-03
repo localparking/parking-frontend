@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { cn } from '@ui/common/lib/utils' // cn 유틸리티 import 추가
+import { cn } from '@/shared/utils' // cn 유틸리티 import 추가
 
 interface PriceRangeSliderProps {
   label: string

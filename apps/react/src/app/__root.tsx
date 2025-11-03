@@ -4,7 +4,7 @@ import { createRootRouteWithContext, Outlet, redirect, useRouterState } from '@t
 import { match } from 'path-to-regexp'
 import { isWebView } from '@/shared/utils/webview'
 import bridge from '@/shared/bridge'
-import { cn } from '@ui/common/lib/utils'
+import { cn } from '@/shared/utils'
 import { useEffect } from 'react'
 
 interface RouterContext {

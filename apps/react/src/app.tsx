@@ -1,7 +1,7 @@
 import { RouterProvider } from '@tanstack/react-router'
 import { createRouter } from './router'
 import { AuthProvider, useAuth } from '@/features/auth'
-import { ThemeProvider } from '@ui/common/contexts/theme.context'
+import { ThemeProvider } from '@/shared/context/theme-context'
 import { AlertDialogProvider } from './shared/libs/global-alert-dialog'
 
 declare module '@tanstack/react-router' {

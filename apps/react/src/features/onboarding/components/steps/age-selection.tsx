@@ -1,5 +1,5 @@
 import React from 'react'
-import { cn } from '@ui/common/lib/utils'
+import { cn } from '@/shared/utils'
 import { useOnboardingContext } from '@/features/onboarding/context/onboarding-context'
 import { AgeRange } from '@/features/onboarding/model'
 

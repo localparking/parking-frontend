@@ -1,7 +1,7 @@
 'use client'
 
 import * as AlertDialogPrimitive from '@radix-ui/react-alert-dialog'
-import { cn } from '@ui/common/lib/utils'
+import { cn } from '@/shared/utils'
 import * as React from 'react'
 import { isWebView } from '../utils'
 

@@ -6,7 +6,7 @@ import { ko } from 'date-fns/locale'
 import { formatPrice } from '@/shared/utils'
 import Button from '@/shared/ui/button'
 import { ParkingStatusResponseDto } from '@data/user-api-axios/api'
-import { cn } from '@ui/common/lib/utils'
+import { cn } from '@/shared/utils'
 import StatusBadge from '@/shared/ui/status-badge'
 
 interface OrderStatusBottomSheetProps {

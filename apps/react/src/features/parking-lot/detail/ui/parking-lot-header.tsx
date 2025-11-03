@@ -1,5 +1,5 @@
 import React from 'react'
-import { cn } from '@ui/common/lib/utils'
+import { cn } from '@/shared/utils'
 import { Clock, MapPin, Phone } from 'lucide-react'
 import type { ParkingLotDetailResponse } from '@data/user-api-axios/api'
 import parkingImage from '@/assets/icons/parking.png'

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { motion, useMotionValue, useDragControls, animate, PanInfo } from 'framer-motion'
-import { cn } from '@ui/common/lib/utils'
+import { cn } from '@/shared/utils'
 import { useBottomSheet } from '../context/bottom-sheet-context'
 
 const TOP_GAP = 300

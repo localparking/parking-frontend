@@ -2,7 +2,7 @@ import React from 'react'
 import CashImage from '@/assets/3d/cash.png'
 import SpaceImage from '@/assets/3d/space.png'
 import LocationImage from '@/assets/3d/locate.png'
-import { cn } from '@ui/common/lib/utils'
+import { cn } from '@/shared/utils'
 import { useOnboardingContext } from '@/features/onboarding/context/onboarding-context'
 import { Weight } from '@/features/onboarding/model'
 

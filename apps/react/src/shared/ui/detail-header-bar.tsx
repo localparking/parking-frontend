@@ -1,5 +1,5 @@
 import { useRouter } from '@tanstack/react-router'
-import { cn } from '@ui/common/lib/utils'
+import { cn } from '@/shared/utils'
 import { LucideChevronLeft } from 'lucide-react'
 
 import type { ReactNode } from 'react'

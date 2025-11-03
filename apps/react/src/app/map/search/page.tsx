@@ -3,7 +3,7 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { SearchIcon, X } from 'lucide-react'
 import { useMapContext } from '@/features/map/context/map-context'
 import { SearchResults } from '@/features/search/search-results'
-import { cn } from '@ui/common/lib/utils'
+import { cn } from '@/shared/utils'
 
 export const Route = createFileRoute('/map/search/')({
   component: RouteComponent,
