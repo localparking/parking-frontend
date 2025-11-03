@@ -7,17 +7,32 @@ export interface AiRecommendationCategory {
 export interface AiRecommendationResult {
   region: string
   category: AiRecommendationCategory
+  query: string
+  coordinates?: {
+    lat: number
+    lon: number
+  }
 }
 
-export type AiRecommendationErrorCode = 'MISSING_TRANSCRIPT' | 'REQUEST_FAILED' | 'INVALID_RESPONSE' | 'MISSING_DATA'
+export type AiModelErrorCode = 'LOCATION_OUT' | 'NO_CATEGORY' | 'NO_RESPONSE' | 'NO_RESULT' | 'ERROR'
+
+export type AiRecommendationErrorCode = 'MISSING_TRANSCRIPT' | 'REQUEST_FAILED' | 'INVALID_RESPONSE' | 'MODEL_RETRY'
 
 export class AiRecommendationError extends Error {
   code: AiRecommendationErrorCode
+  reason?: string
+  modelCode?: AiModelErrorCode
 
-  constructor(message: string, code: AiRecommendationErrorCode, options?: { cause?: unknown }) {
+  constructor(
+    message: string,
+    code: AiRecommendationErrorCode,
+    options?: { cause?: unknown; reason?: string; modelCode?: AiModelErrorCode }
+  ) {
     super(message)
     this.name = 'AiRecommendationError'
     this.code = code
+    this.reason = options?.reason
+    this.modelCode = options?.modelCode
     if (options?.cause) {
       // Preserve original cause information for debugging when available
       ;(this as any).cause = options.cause
@@ -60,21 +75,23 @@ CATEGORY_DEFINITIONS.forEach((category) => {
 })
 
 const SYSTEM_PROMPT = [
-  '당신은 사용자의 자연어 요청에서 방문하고자 하는 지역명과 매장 카테고리를 식별하는 전문가입니다.',
-  '제공된 카테고리 목록에 포함된 항목만 선택할 수 있습니다.',
-  '출력은 반드시 JSON 형식의 문자열 한 줄이어야 하며, 다음 스키마를 따라야 합니다.',
-  '{"region": "지역명", "category": {"id": 카테고리ID, "name": "카테고리명"}}',
-  '지역명은 사용자가 찾고자 하는 특정 행정 구역 또는 장소명을 짧게 요약하세요.',
-  '정보가 부족하거나 모호하여 지역 또는 카테고리를 특정할 수 없다면 {"status":"RETRY","reason":"사유"} 형식으로 응답합니다.',
+  '당신은 사용자의 음성(STT)으로부터 방문하려는 장소 정보를 정제하는 전문가입니다.',
+  '이 서비스는 "대한민국 서울특별시" 내 지역만 지원합니다. 조건을 만족하지 못하면 지정된 오류 코드를 사용해야 합니다.',
+  '출력은 반드시 JSON 한 줄이어야 하며 아래 스키마 중 하나를 따라야 합니다.',
+  '성공: {"status":"SUCCESS","region":"지역명","category":{"id":카테고리ID,"name":"카테고리명"},"query":"검색용 문장","coordinates":{"lat":위도,"lon":경도}}',
+  '실패: {"status":"ERROR","code":"LOCATION_OUT|NO_CATEGORY|NO_RESPONSE|ERROR","message":"사용자 안내 문구"}',
+  '오류 코드 정의:\n- LOCATION_OUT: 서울특별시 외 지역 요청\n- NO_CATEGORY: 지역 또는 카테고리를 특정할 수 없음\n- NO_RESPONSE: 충분한 발화가 없음\n- ERROR: 그 외 오류',
+  '성공 시 query는 지역명과 업종이 자연스럽게 포함된 문장이어야 하며, coordinates는 해당 지역(서울 내)의 대표 좌표를 제공합니다.',
 ].join('\n')
 
 const buildUserPrompt = (transcript: string) => {
   const categoryList = CATEGORY_DEFINITIONS.map(
-    ({ categoryId, categoryName, parentId }) => `- id: ${categoryId}, name: ${categoryName}, parentId: ${parentId ?? 'null'}`
+    ({ categoryId, categoryName, parentId }) =>
+      `- id: ${categoryId}, name: ${categoryName}, parentId: ${parentId ?? 'null'}`
   ).join('\n')
 
   return [
-    '아래는 사용자의 실제 음성 인식 결과입니다. 주요 요청을 분석해 주세요.',
+    '아래는 사용자의 실제 음성 인식 결과입니다. 서울특별시 내에서의 지역과 카테고리를 분석하고 좌표를 제공하거나, 조건을 만족하지 못하면 위 오류 코드를 사용하세요.',
     `사용자 발화:\n"""${transcript}"""`,
     '선택 가능한 카테고리 목록:',
     categoryList,
@@ -105,10 +122,26 @@ interface AiGatewayResponse {
   error?: AiGatewayError | null
 }
 
+const extractChoiceContent = (payload: AiGatewayResponse | null | undefined): string | null => {
+  if (!payload || !Array.isArray(payload.choices)) return null
+
+  for (const choice of payload.choices) {
+    const content = choice?.message?.content
+    if (typeof content === 'string' && content.trim()) {
+      return content
+    }
+  }
+
+  return null
+}
+
 const removeCodeFences = (text: string) => {
   const trimmed = text.trim()
   if (trimmed.startsWith('```')) {
-    return trimmed.replace(/^```[a-zA-Z]*\n?/, '').replace(/```$/, '').trim()
+    return trimmed
+      .replace(/^```[a-zA-Z]*\n?/, '')
+      .replace(/```$/, '')
+      .trim()
   }
   return trimmed
 }
@@ -185,40 +218,87 @@ const unwrapAiContent = (payload: AiGatewayResponse): unknown => {
 }
 
 const parseAiResult = (raw: unknown): AiRecommendationResult => {
-  if (typeof raw === 'string') {
-    const sanitized = removeCodeFences(raw)
-    try {
-      return parseAiResult(JSON.parse(sanitized))
-    } catch (error) {
-      throw new AiRecommendationError('AI 응답을 JSON 으로 해석할 수 없습니다.', 'INVALID_RESPONSE', { cause: error })
-    }
-  }
-
   if (!raw || typeof raw !== 'object') {
     throw new AiRecommendationError('AI 응답 포맷이 올바르지 않습니다.', 'INVALID_RESPONSE')
   }
 
   const payload = raw as Record<string, unknown>
 
-  if (typeof payload.status === 'string' && payload.status.toUpperCase() === 'RETRY') {
-    throw new AiRecommendationError('AI가 충분한 정보를 찾지 못했습니다.', 'MISSING_DATA')
+  const statusRaw = typeof payload.status === 'string' ? payload.status.trim() : undefined
+  const status = statusRaw?.toUpperCase()
+
+  if (status === 'ERROR') {
+    const codeRaw = typeof payload.code === 'string' ? payload.code.trim().toUpperCase() : undefined
+    const modelCode = (['LOCATION_OUT', 'NO_CATEGORY', 'NO_RESPONSE', 'NO_RESULT', 'ERROR'] as AiModelErrorCode[]).find(
+      (value) => value === codeRaw
+    )
+    const message =
+      typeof payload.message === 'string' && payload.message.trim() ? payload.message.trim() : 'AI 요청이 실패했습니다.'
+
+    throw new AiRecommendationError(message, 'MODEL_RETRY', {
+      reason: message,
+      modelCode,
+    })
   }
 
-  const region = payload.region ?? payload.location ?? payload.area
-  const categoryPayload = payload.category ?? payload.categoryInfo ?? payload.categoryId ?? payload.categoryName
+  const statusAsErrorCode = (
+    ['LOCATION_OUT', 'NO_CATEGORY', 'NO_RESPONSE', 'NO_RESULT', 'ERROR'] as AiModelErrorCode[]
+  ).find((value) => value === status)
+
+  if (statusAsErrorCode) {
+    const message =
+      typeof payload.message === 'string' && payload.message.trim() ? payload.message.trim() : 'AI 요청이 실패했습니다.'
+    throw new AiRecommendationError(message, 'MODEL_RETRY', {
+      reason: message,
+      modelCode: statusAsErrorCode,
+    })
+  }
+
+  if (status && status !== 'SUCCESS' && status !== 'OK') {
+    throw new AiRecommendationError('AI 응답 상태를 이해할 수 없습니다.', 'INVALID_RESPONSE')
+  }
+
+  const region = payload.region
+  const categoryPayload = payload.category
+  const queryValue = payload.query
+  const coordinatesPayload =
+    payload.coordinates ??
+    payload.locationCoordinates ??
+    payload.coords ??
+    (typeof payload.lat === 'number' || typeof payload.lon === 'number' ? { lat: payload.lat, lon: payload.lon } : null)
 
   if (typeof region !== 'string' || region.trim() === '') {
-    throw new AiRecommendationError('지역 정보를 찾을 수 없습니다.', 'MISSING_DATA')
+    throw new AiRecommendationError('지역 정보를 찾을 수 없습니다.', 'INVALID_RESPONSE')
   }
 
   const category = resolveCategory(categoryPayload)
   if (!category) {
-    throw new AiRecommendationError('카테고리 정보를 찾을 수 없습니다.', 'MISSING_DATA')
+    throw new AiRecommendationError('카테고리 정보를 찾을 수 없습니다.', 'INVALID_RESPONSE')
+  }
+
+  if (typeof queryValue !== 'string' || queryValue.trim() === '') {
+    throw new AiRecommendationError('검색어를 구성할 수 없습니다.', 'INVALID_RESPONSE')
+  }
+
+  let coordinates: AiRecommendationResult['coordinates']
+  if (coordinatesPayload && typeof coordinatesPayload === 'object') {
+    const raw = coordinatesPayload as Record<string, unknown>
+    const latValue = raw.lat ?? raw.latitude
+    const lonValue = raw.lon ?? raw.lng ?? raw.longitude
+
+    const lat = typeof latValue === 'string' ? Number(latValue) : (latValue as number | undefined)
+    const lon = typeof lonValue === 'string' ? Number(lonValue) : (lonValue as number | undefined)
+
+    if (typeof lat === 'number' && !Number.isNaN(lat) && typeof lon === 'number' && !Number.isNaN(lon)) {
+      coordinates = { lat, lon }
+    }
   }
 
   return {
     region: region.trim(),
     category,
+    query: queryValue.trim(),
+    coordinates,
   }
 }
 
@@ -274,8 +354,21 @@ export const requestAiRecommendation = async (
       throw new AiRecommendationError(message, 'REQUEST_FAILED')
     }
 
-    const rawContent = unwrapAiContent((data ?? {}) as AiGatewayResponse)
-    return parseAiResult(rawContent)
+    const choiceContent = extractChoiceContent(data)
+    const rawContent = choiceContent ?? unwrapAiContent((data ?? {}) as AiGatewayResponse)
+    if (rawContent == null) {
+      throw new AiRecommendationError('AI 응답에서 결과를 찾지 못했습니다.', 'INVALID_RESPONSE')
+    }
+    let parsedContent: unknown = rawContent
+    if (typeof rawContent === 'string') {
+      const sanitized = removeCodeFences(rawContent)
+      try {
+        parsedContent = JSON.parse(sanitized)
+      } catch (error) {
+        throw new AiRecommendationError('AI 응답을 JSON 으로 해석할 수 없습니다.', 'INVALID_RESPONSE', { cause: error })
+      }
+    }
+    return parseAiResult(parsedContent)
   } catch (error: any) {
     if (error instanceof AiRecommendationError) {
       throw error
@@ -289,6 +382,7 @@ export const requestAiRecommendation = async (
   }
 }
 
-export const formatRecommendationLabel = (result: AiRecommendationResult) => `${result.region} - ${result.category.categoryName}`
+export const formatRecommendationLabel = (result: AiRecommendationResult) =>
+  result.query || `${result.region} - ${result.category.categoryName}`
 
 export const getAvailableCategories = () => [...CATEGORY_DEFINITIONS]

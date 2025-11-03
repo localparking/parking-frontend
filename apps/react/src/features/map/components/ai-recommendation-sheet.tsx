@@ -1,16 +1,17 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent, type SetStateAction } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { MapPin, Mic, Send, X } from 'lucide-react'
-import type { StoreListResponse } from '@data/user-api-axios/api'
+import type { StoreListResponse, StoreSearchRequest } from '@data/user-api-axios/api'
 import {
   requestAiRecommendation,
   AiRecommendationError,
-  formatRecommendationLabel,
+  type AiModelErrorCode,
 } from '../services/ai-recommendation.service'
 import Button from '@/shared/ui/button'
-import { useNavigation, useMapContext } from '@/features/map'
+import { useNavigation, useMapContext, MapDisplayType } from '@/features/map'
 import StatusBadge from '@/shared/ui/status-badge'
 import { StoreCategoryIcon } from '@/shared/ui/custom-icons'
+import storeService from '@/shared/services/store.service'
 
 interface AiRecommendationSheetProps {
   open: boolean
@@ -23,59 +24,15 @@ interface RecommendationResult {
   store: StoreListResponse
 }
 
-const mockStores = [
-  {
-    storeId: 1,
-    name: '맛있는 집',
-    address: '서울특별시 강남구 테헤란로 1',
-    lat: 37.4979,
-    lon: 127.0276,
-    isOpen: true,
-    purchaseAmount: 10000,
-    discountMin: 60,
-    categories: [{ categoryId: 1, categoryName: '카페' }],
-  },
-  {
-    storeId: 2,
-    name: '가까운 집',
-    address: '서울특별시 강남구 강남대로 2',
-    lat: 37.4997,
-    lon: 127.0265,
-    isOpen: true,
-    purchaseAmount: 10000,
-    discountMin: 60,
-    categories: [{ categoryId: 1, categoryName: '카페' }],
-  },
-  {
-    storeId: 3,
-    name: '저렴한 집',
-    address: '서울특별시 강남구 봉은사로 3',
-    lat: 37.5008,
-    lon: 127.0251,
-    isOpen: true,
-    purchaseAmount: 10000,
-    discountMin: 60,
-    categories: [{ categoryId: 1, categoryName: '카페' }],
-  },
-] satisfies StoreListResponse[]
+const ERROR_MESSAGE_BY_CODE: Record<AiModelErrorCode, string> = {
+  LOCATION_OUT: '서울 지역만 검색을 지원하고 있어요.',
+  NO_CATEGORY: '보다 정확한 지역과 원하는 가게 카테고리를 알려주세요.',
+  NO_RESPONSE: '잘못된 응답 요청입니다. 다시 시도해 주세요.',
+  NO_RESULT: '추천 결과가 없어요. 다른 조건으로 다시 말씀해 주세요.',
+  ERROR: '서버 오류입니다.',
+}
 
-const MOCK_RESULTS_TEMPLATE: RecommendationResult[] = [
-  { id: 'value', title: '최적 가성비 카페예요', store: mockStores[0]! },
-  { id: 'distance', title: '가장 가까운 검색결과예요', store: mockStores[1]! },
-  { id: 'price', title: '가장 저렴한 카페예요', store: mockStores[2]! },
-]
-
-const cloneStore = (store: StoreListResponse): StoreListResponse => ({
-  ...store,
-  categories: store.categories?.map((category) => ({ ...category })),
-})
-
-const createMockResults = (): RecommendationResult[] =>
-  MOCK_RESULTS_TEMPLATE.map((item, idx) => ({
-    id: `${item.id}-${idx}`,
-    title: item.title,
-    store: cloneStore(item.store),
-  }))
+const GENERIC_SERVER_ERROR = '서버 오류입니다.'
 
 interface NavigationUrls {
   app: string
@@ -89,6 +46,13 @@ const isMobileEnvironment = () => {
   const userAgent = window.navigator?.userAgent ?? ''
   return /iphone|ipad|ipod|android/i.test(userAgent)
 }
+
+const buildRecommendationResults = (stores: StoreListResponse[]): RecommendationResult[] =>
+  stores.map((store, idx) => ({
+    id: `store-${store.storeId}-${idx}`,
+    title: idx === 0 ? 'AI가 선별한 매장이에요' : '다른 추천 매장이에요',
+    store,
+  }))
 
 const openNavigationWithFallback = ({ app, web }: NavigationUrls) => {
   if (typeof window === 'undefined') return
@@ -158,6 +122,7 @@ const toKakaoNavigationUrls = (store: StoreListResponse): NavigationUrls => {
 }
 
 export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetProps) => {
+  const { naverMap, setSearchKeyword, storeSearchParams, setStoreSearchParams, setMapDisplayType } = useMapContext()
   const [transcript, setTranscript] = useState('')
   const [liveTranscript, setLiveTranscript] = useState('')
   const [manualInput, setManualInput] = useState('')
@@ -178,6 +143,9 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
   const aiRequestControllerRef = useRef<AbortController | null>(null)
   const startListeningRef = useRef<() => void>(() => {})
 
+  const SILENCE_AFTER_SPEECH_MS = 3000
+  const SILENCE_WITHOUT_SPEECH_MS = 10000
+
   useEffect(() => {
     transcriptRef.current = transcript
   }, [transcript])
@@ -190,8 +158,6 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
     openRef.current = open
   }, [open])
 
-  const shortQueryGuide = '검색 결과가 없어요\n위치, 시간, 가게 종류를 알려주세요'
-
   const updateTranscript = useCallback((value: SetStateAction<string>) => {
     setTranscript((prev) => {
       const next = typeof value === 'function' ? (value as (val: string) => string)(prev) : value
@@ -202,70 +168,17 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
     liveTranscriptRef.current = ''
   }, [])
 
+  const resetInputFields = useCallback(() => {
+    updateTranscript('')
+    setManualInput('')
+  }, [updateTranscript])
+
   const clearSilenceTimer = useCallback(() => {
     if (silenceTimerRef.current !== null) {
       window.clearTimeout(silenceTimerRef.current)
       silenceTimerRef.current = null
     }
   }, [])
-
-  const handleSearch = useCallback(
-    async (query: string) => {
-      const trimmedQuery = query.trim()
-      if (!trimmedQuery) return
-
-      updateTranscript(trimmedQuery)
-      setError(null)
-      setResults(null)
-      setResultQuery('')
-      setStatusMessage('AI가 요청을 분석 중이에요...')
-      setIsProcessingQuery(true)
-      autoRequestRef.current = false
-      restartOnEndRef.current = false
-
-      aiRequestControllerRef.current?.abort()
-      const controller = new AbortController()
-      aiRequestControllerRef.current = controller
-
-      try {
-        const aiResult = await requestAiRecommendation(trimmedQuery, { signal: controller.signal })
-        const label = formatRecommendationLabel(aiResult)
-        setResultQuery(label)
-        setStatusMessage(null)
-        setResults(createMockResults())
-      } catch (error) {
-        if (controller.signal.aborted) return
-
-        let errorMessage = 'AI 분석 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.'
-        let guideMessage = '잠시 후 다시 말씀해 주세요.'
-
-        if (error instanceof AiRecommendationError) {
-          if (error.code === 'MISSING_DATA') {
-            errorMessage = '장소나 카테고리를 확인할 수 없었어요.'
-            guideMessage = '원하는 지역명과 카테고리를 다시 말씀해 주세요.'
-          } else if (error.code === 'MISSING_TRANSCRIPT') {
-            errorMessage = 'AI가 분석할 문장을 받지 못했어요.'
-            guideMessage = '원하는 내용을 다시 말씀해 주세요.'
-          }
-        }
-
-        setResults(null)
-        setResultQuery('')
-        setError(errorMessage)
-        setStatusMessage(guideMessage)
-
-        if (!isListening && openRef.current) {
-          startListeningRef.current()
-        }
-      } finally {
-        if (aiRequestControllerRef.current === controller) {
-          aiRequestControllerRef.current = null
-        }
-        setIsProcessingQuery(false)
-      }
-    },
-    [isListening, updateTranscript]
-  )
 
   const stopListening = useCallback(
     (options?: { restart?: boolean }) => {
@@ -277,12 +190,137 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
     [clearSilenceTimer]
   )
 
+  const handleSearch = useCallback(
+    async (query: string) => {
+      const trimmedQuery = query.trim()
+      if (!trimmedQuery) return
+      if (isProcessingQuery) return
+
+      stopListening({ restart: false })
+      resetInputFields()
+      updateTranscript(trimmedQuery)
+      setError(null)
+      setResults(null)
+      setResultQuery('')
+      setStatusMessage('AI가 요청을 분석 중이에요...')
+      setIsProcessingQuery(true)
+      autoRequestRef.current = true
+      restartOnEndRef.current = false
+
+      aiRequestControllerRef.current?.abort()
+      const controller = new AbortController()
+      aiRequestControllerRef.current = controller
+
+      try {
+        const aiResult = await requestAiRecommendation(trimmedQuery, { signal: controller.signal })
+        const categoryIds = [aiResult.category.categoryId]
+        const distanceLevel = naverMap.distanceLevel ?? 1
+        const { center } = naverMap.currentMapInfo
+        const targetLat = aiResult.coordinates?.lat ?? center.lat
+        const targetLon = aiResult.coordinates?.lon ?? center.lng
+
+        if (aiResult.coordinates) {
+          naverMap.moveTo({ lat: targetLat, lng: targetLon })
+        }
+
+        const nextStoreParams = {
+          ...storeSearchParams,
+          categoryIds,
+          page: 0,
+        }
+
+        setStoreSearchParams(nextStoreParams)
+        setSearchKeyword(aiResult.query)
+        setMapDisplayType(MapDisplayType.STORE)
+
+        setStatusMessage('추천 매장을 찾고 있어요...')
+
+        const storeRequest: StoreSearchRequest = {
+          distanceLevel,
+          lat: targetLat,
+          lon: targetLon,
+          query: aiResult.query,
+          categoryIds,
+          sort: nextStoreParams.sort,
+          page: 0,
+          ...(typeof nextStoreParams.maxFreeMin === 'number' ? { maxFreeMin: nextStoreParams.maxFreeMin } : {}),
+          ...(typeof nextStoreParams.isOpen === 'boolean' ? { isOpen: nextStoreParams.isOpen } : {}),
+          ...(typeof nextStoreParams.is24Hours === 'boolean' ? { is24Hours: nextStoreParams.is24Hours } : {}),
+          ...(nextStoreParams.checkDayOfWeek ? { checkDayOfWeek: nextStoreParams.checkDayOfWeek } : {}),
+          ...(nextStoreParams.checkTime ? { checkTime: nextStoreParams.checkTime } : {}),
+        }
+
+        const { data: storeResponse } = await storeService.postStoreKeywordSearch(storeRequest)
+        const stores = storeResponse.data?.content ?? []
+
+        if (!stores.length) {
+          setError(ERROR_MESSAGE_BY_CODE.NO_RESULT)
+          setStatusMessage(null)
+          setResultQuery(aiResult.query)
+          resetInputFields()
+          return
+        }
+
+        const topStores = stores.slice(0, 3)
+        setResultQuery(aiResult.query)
+        setStatusMessage(null)
+        setError(null)
+        setResults(buildRecommendationResults(topStores))
+      } catch (error) {
+        if (controller.signal.aborted) return
+
+        stopListening({ restart: false })
+        resetInputFields()
+
+        let errorMessage: string = GENERIC_SERVER_ERROR
+
+        if (error instanceof AiRecommendationError) {
+          if (error.modelCode && ERROR_MESSAGE_BY_CODE[error.modelCode]) {
+            errorMessage = ERROR_MESSAGE_BY_CODE[error.modelCode]
+          } else if (error.code === 'MISSING_TRANSCRIPT') {
+            errorMessage = ERROR_MESSAGE_BY_CODE.NO_RESPONSE
+          } else if (error.reason) {
+            errorMessage = error.reason
+          } else if (error.message) {
+            errorMessage = error.message
+          }
+        }
+
+        setResults(null)
+        setResultQuery('')
+        setError(errorMessage)
+        setStatusMessage(null)
+      } finally {
+        if (aiRequestControllerRef.current === controller) {
+          aiRequestControllerRef.current = null
+        }
+        setIsProcessingQuery(false)
+      }
+    },
+    [
+      isProcessingQuery,
+      naverMap.currentMapInfo.center.lat,
+      naverMap.currentMapInfo.center.lng,
+      naverMap.distanceLevel,
+      naverMap.moveTo,
+      resetInputFields,
+      setMapDisplayType,
+      setSearchKeyword,
+      setStoreSearchParams,
+      stopListening,
+      storeSearchParams,
+      updateTranscript,
+    ]
+  )
+
   const handleSilenceTimeout = useCallback(() => {
+    if (isProcessingQuery) return
+
     const finalText = transcriptRef.current.trim()
     const interimText = liveTranscriptRef.current.trim()
     const candidate = [finalText, interimText].filter(Boolean).join(' ').trim()
 
-    if (candidate.length > 8) {
+    if (candidate.length > 0) {
       setStatusMessage(null)
       setError(null)
       stopListening({ restart: false })
@@ -290,15 +328,19 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
       return
     }
 
-    setStatusMessage(shortQueryGuide)
-    setError(null)
-    stopListening({ restart: true })
-  }, [handleSearch, shortQueryGuide, stopListening])
+    setStatusMessage(null)
+    setError(ERROR_MESSAGE_BY_CODE.NO_RESPONSE)
+    stopListening({ restart: false })
+    resetInputFields()
+  }, [handleSearch, isProcessingQuery, resetInputFields, stopListening])
 
-  const startSilenceTimer = useCallback(() => {
-    clearSilenceTimer()
-    silenceTimerRef.current = window.setTimeout(handleSilenceTimeout, 5000)
-  }, [clearSilenceTimer, handleSilenceTimeout])
+  const startSilenceTimer = useCallback(
+    (timeoutMs: number) => {
+      clearSilenceTimer()
+      silenceTimerRef.current = window.setTimeout(handleSilenceTimeout, timeoutMs)
+    },
+    [clearSilenceTimer, handleSilenceTimeout]
+  )
 
   const ensureRecognition = useCallback(() => {
     if (typeof window === 'undefined') return null
@@ -314,7 +356,7 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
       recognition.onstart = () => {
         setStatusMessage(null)
         setIsListening(true)
-        startSilenceTimer()
+        startSilenceTimer(SILENCE_WITHOUT_SPEECH_MS)
       }
 
       recognition.onresult = (event: any) => {
@@ -339,7 +381,7 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
           liveTranscriptRef.current = interimText
           setError(null)
           setStatusMessage(null)
-          startSilenceTimer()
+          startSilenceTimer(SILENCE_AFTER_SPEECH_MS)
         }
 
         if (finalPieces.length > 0) {
@@ -347,7 +389,7 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
           updateTranscript((prev) => (prev ? `${prev}\n${combined}` : combined))
           setError(null)
           setStatusMessage(null)
-          startSilenceTimer()
+          startSilenceTimer(SILENCE_AFTER_SPEECH_MS)
         }
       }
 
@@ -409,19 +451,14 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
 
       const value = manualInput.trim()
       if (!value) return
-      updateTranscript((prev) => (prev ? `${prev}\n${value}` : value))
+      resetInputFields()
+      updateTranscript(value)
       setError(null)
-      if (value.length <= 8) {
-        setStatusMessage(shortQueryGuide)
-        stopListening({ restart: false })
-        return
-      }
-      setManualInput('')
       setStatusMessage(null)
       stopListening({ restart: false })
       void handleSearch(value)
     },
-    [handleSearch, isProcessingQuery, manualInput, shortQueryGuide, stopListening, updateTranscript]
+    [handleSearch, isProcessingQuery, manualInput, resetInputFields, stopListening, updateTranscript]
   )
 
   const handleManualInputChange = useCallback((value: string) => {
@@ -438,16 +475,13 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
     stopListening({ restart: false })
     setResults(null)
     setResultQuery('')
-    updateTranscript('')
-    setManualInput('')
+    resetInputFields()
     setStatusMessage(null)
     setError(null)
-    setLiveTranscript('')
-    liveTranscriptRef.current = ''
-    autoRequestRef.current = false
+    autoRequestRef.current = true
     restartOnEndRef.current = false
     startListening()
-  }, [startListening, stopListening, updateTranscript])
+  }, [resetInputFields, startListening, stopListening])
 
   const handleClose = useCallback(() => {
     aiRequestControllerRef.current?.abort()
@@ -456,16 +490,13 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
     stopListening({ restart: false })
     setResults(null)
     setResultQuery('')
-    updateTranscript('')
-    setManualInput('')
+    resetInputFields()
     setStatusMessage(null)
     setError(null)
-    setLiveTranscript('')
-    liveTranscriptRef.current = ''
     autoRequestRef.current = false
     restartOnEndRef.current = false
     onClose()
-  }, [onClose, stopListening, updateTranscript])
+  }, [onClose, resetInputFields, stopListening])
 
   useEffect(() => {
     if (!open) {
@@ -476,11 +507,11 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
 
     if (results) return
 
-    if (!autoRequestRef.current) {
+    if (!autoRequestRef.current && !isProcessingQuery) {
       autoRequestRef.current = true
       startListening()
     }
-  }, [open, results, startListening, stopListening])
+  }, [isProcessingQuery, open, results, startListening, stopListening])
 
   useEffect(() => {
     if (results) return
@@ -599,6 +630,10 @@ const VoiceCaptureView = ({
   const combined = [transcript, liveTranscript].filter(Boolean)
   const displayText =
     combined.length > 0 ? combined.join(transcript && liveTranscript ? '\n' : '') : !error ? placeholderTranscript : ''
+  const hasError = Boolean(error)
+  const transcriptContainerClass = `bg-gray-5 flex h-full flex-col items-center justify-center gap-2 rounded-2xl px-6 py-6 text-center ${
+    hasError ? 'border border-red-400 bg-red-50 text-red-600' : ''
+  }`
 
   return (
     <div className="flex h-full flex-col items-center gap-6 py-6">
@@ -631,10 +666,12 @@ const VoiceCaptureView = ({
       </button>
 
       <div className="w-full flex-1 overflow-hidden">
-        <div className="bg-gray-5 flex h-full flex-col items-center justify-center gap-2 rounded-2xl px-6 py-6 text-center">
-          <p className="text-body-3 whitespace-pre-line text-gray-1">{displayText}</p>
+        <div className={transcriptContainerClass}>
+          <p className={`text-body-3 whitespace-pre-line ${hasError ? 'text-red-600' : 'text-gray-1'}`}>
+            {displayText}
+          </p>
           {statusMessage && <p className="text-caption-1 whitespace-pre-line text-gray-3">{statusMessage}</p>}
-          {error && <p className="text-caption-2 text-red-500">{error}</p>}
+          {error && <p className="text-caption-2 font-medium text-red-600">{error}</p>}
         </div>
       </div>
 
@@ -782,19 +819,19 @@ const RecommendationStoreItem = ({ store }: RecommendationStoreItemProps) => {
         </button>
 
         {showNavigationOptions && (
-          <div className="absolute right-0 top-full z-50 mt-2 w-44 rounded-2xl border border-gray-5 bg-white p-3 shadow-lg">
+          <div className="border-gray-5 absolute top-full right-0 z-50 mt-2 w-44 rounded-2xl border bg-white p-3 shadow-lg">
             <p className="mb-2 text-caption-3 text-gray-3">길안내 앱을 선택하세요</p>
             <button
               type="button"
               onClick={() => handleNavigationLaunch('naver')}
-              className="w-full rounded-xl px-3 py-2 text-left text-caption-1 text-gray-1 transition hover:bg-gray-5"
+              className="hover:bg-gray-5 w-full rounded-xl px-3 py-2 text-left text-caption-1 text-gray-1 transition"
             >
               네이버 지도 앱
             </button>
             <button
               type="button"
               onClick={() => handleNavigationLaunch('kakao')}
-              className="mt-1 w-full rounded-xl px-3 py-2 text-left text-caption-1 text-gray-1 transition hover:bg-gray-5"
+              className="hover:bg-gray-5 mt-1 w-full rounded-xl px-3 py-2 text-left text-caption-1 text-gray-1 transition"
             >
               카카오 지도 앱
             </button>
