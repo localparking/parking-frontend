@@ -105,6 +105,11 @@ const openNavigationWithFallback = ({ app, web }: NavigationUrls) => {
     return
   }
 
+  if (!isWebView()) {
+    openExternalUrl(web, { sameWindow: false })
+    return
+  }
+
   const scheduleFallback = (timeout = 1500, onCancel?: () => void) => {
     const handleFallback = () => {
       cleanup()
