@@ -92,6 +92,8 @@ export function MapProvider({ children }: { children: ReactNode }) {
     const handleInteraction = () => {
       if (activeSnapIndex === 0) {
         setActiveSnapIndex(1)
+      } else if (activeSnapIndex === 1) {
+        setActiveSnapIndex(2)
       }
     }
 

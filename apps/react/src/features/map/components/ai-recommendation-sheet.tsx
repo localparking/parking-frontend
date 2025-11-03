@@ -577,7 +577,12 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
             </button>
 
             {hasResults ? (
-              <RecommendationResultsView query={resultQuery} results={results!} onRetry={handleRetry} />
+              <RecommendationResultsView
+                query={resultQuery}
+                results={results!}
+                onRetry={handleRetry}
+                onSelectStore={handleClose}
+              />
             ) : (
               <VoiceCaptureView
                 transcript={transcript}
@@ -705,9 +710,10 @@ interface RecommendationResultsViewProps {
   query: string
   results: RecommendationResult[]
   onRetry: () => void
+  onSelectStore: () => void
 }
 
-const RecommendationResultsView = ({ query, results, onRetry }: RecommendationResultsViewProps) => {
+const RecommendationResultsView = ({ query, results, onRetry, onSelectStore }: RecommendationResultsViewProps) => {
   return (
     <div className="flex h-full flex-col gap-6 py-6">
       <div className="text-center">
@@ -719,7 +725,7 @@ const RecommendationResultsView = ({ query, results, onRetry }: RecommendationRe
         {results.map((item) => (
           <div key={item.id} className="bg-gray-5 rounded-3xl px-5 py-4">
             <p className="mb-3 text-body-4 text-gray-1">{item.title}</p>
-            <RecommendationStoreItem store={item.store} />
+            <RecommendationStoreItem store={item.store} onSelect={onSelectStore} />
           </div>
         ))}
       </div>
@@ -733,9 +739,10 @@ const RecommendationResultsView = ({ query, results, onRetry }: RecommendationRe
 
 interface RecommendationStoreItemProps {
   store: StoreListResponse
+  onSelect: () => void
 }
 
-const RecommendationStoreItem = ({ store }: RecommendationStoreItemProps) => {
+const RecommendationStoreItem = ({ store, onSelect }: RecommendationStoreItemProps) => {
   const { navigateToStoreDetail } = useNavigation()
   const { moveTo } = useMapContext().naverMap
   const [showNavigationOptions, setShowNavigationOptions] = useState(false)
@@ -762,9 +769,10 @@ const RecommendationStoreItem = ({ store }: RecommendationStoreItemProps) => {
 
   const handleSelectStore = useCallback(() => {
     setShowNavigationOptions(false)
+    onSelect()
     moveTo({ lat: store.lat, lng: store.lon })
     navigateToStoreDetail(store.storeId.toString())
-  }, [moveTo, navigateToStoreDetail, store.lat, store.lon, store.storeId])
+  }, [moveTo, navigateToStoreDetail, onSelect, store.lat, store.lon, store.storeId])
 
   const handleGuideStart = useCallback(() => {
     setShowNavigationOptions((prev) => {
