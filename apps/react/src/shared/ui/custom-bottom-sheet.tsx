@@ -16,6 +16,8 @@ export default function BottomSheet() {
   const y = useMotionValue(0)
   const dragControls = useDragControls()
   const mounted = useRef(false)
+  const sheetRef = useRef<HTMLDivElement | null>(null)
+  const isDraggingRef = useRef(false)
 
   // 1) 뷰포트 높이 반영
   useEffect(() => {
@@ -23,6 +25,34 @@ export default function BottomSheet() {
     onResize()
     window.addEventListener('resize', onResize)
     return () => window.removeEventListener('resize', onResize)
+  }, [])
+
+  // iOS Safari에서 드래그 중 바운스/리프레시 방지
+  useEffect(() => {
+    const node = sheetRef.current
+    if (!node) return
+
+    const handleTouchMove = (event: TouchEvent) => {
+      if (isDraggingRef.current) {
+        event.preventDefault()
+      }
+    }
+
+    const resetDragging = () => {
+      isDraggingRef.current = false
+    }
+
+    node.addEventListener('touchmove', handleTouchMove, { passive: false })
+    window.addEventListener('touchend', resetDragging)
+    window.addEventListener('touchcancel', resetDragging)
+    window.addEventListener('pointerup', resetDragging)
+
+    return () => {
+      node.removeEventListener('touchmove', handleTouchMove)
+      window.removeEventListener('touchend', resetDragging)
+      window.removeEventListener('touchcancel', resetDragging)
+      window.removeEventListener('pointerup', resetDragging)
+    }
   }, [])
 
   // 2) 스냅 계산 (translateY 기준)
@@ -51,6 +81,7 @@ export default function BottomSheet() {
   }
 
   const onDragEnd = (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    isDraggingRef.current = false
     const current = y.get()
     const predicted = clamp(current + info.velocity.y * 0.2, 0, travel)
     const dists = snapY.map((v) => Math.abs(v - predicted))
@@ -64,12 +95,16 @@ export default function BottomSheet() {
 
   // 5) 핸들: 항상 스냅 드래그 시작 (자식에 drag 절대 주지 말 것!)
   const onHandlePointerDown = (e: React.PointerEvent) => {
+    isDraggingRef.current = true
     dragControls.start(e)
   }
 
   // 6) 콘텐츠: 최대가 아니면 스냅 드래그 시작, 최대면 스크롤
   const onContentPointerDown = (e: React.PointerEvent) => {
-    if (!isMax) dragControls.start(e)
+    if (!isMax) {
+      isDraggingRef.current = true
+      dragControls.start(e)
+    }
   }
 
   return (
@@ -81,6 +116,7 @@ export default function BottomSheet() {
         'flex min-h-0 flex-col' // 자식 스크롤 허용
       )}
       style={{ height: maxHeight, y }} // 높이는 고정, 이동은 translateY만
+      ref={sheetRef}
       drag="y"
       dragControls={dragControls}
       dragListener={false} // 핸들/콘텐츠에서 수동 시작만
