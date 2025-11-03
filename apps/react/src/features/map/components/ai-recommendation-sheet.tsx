@@ -43,11 +43,19 @@ interface NavigationUrls {
 
 const APP_NAME_FOR_NAVIGATION = 'parking-frontend'
 
-const isMobileEnvironment = () => {
+const isAndroidBrowser = () => {
   if (typeof window === 'undefined') return false
   const userAgent = window.navigator?.userAgent ?? ''
-  return /iphone|ipad|ipod|android/i.test(userAgent)
+  return /android/i.test(userAgent)
 }
+
+const isIOSBrowser = () => {
+  if (typeof window === 'undefined') return false
+  const userAgent = window.navigator?.userAgent ?? ''
+  return /iphone|ipad|ipod/i.test(userAgent)
+}
+
+const isMobileEnvironment = () => isAndroidBrowser() || isIOSBrowser()
 
 const buildRecommendationResults = (stores: StoreListResponse[]): RecommendationResult[] =>
   stores.map((store, idx) => ({
@@ -97,6 +105,37 @@ const openNavigationWithFallback = ({ app, web }: NavigationUrls) => {
     return
   }
 
+  const scheduleFallback = (timeout = 1500, onCancel?: () => void) => {
+    const handleFallback = () => {
+      cleanup()
+      openExternalUrl(web, { sameWindow: true })
+    }
+
+    const cleanup = () => {
+      window.clearTimeout(fallbackTimeout)
+      window.removeEventListener('pagehide', handleCancel)
+      window.removeEventListener('blur', handleCancel)
+      onCancel?.()
+    }
+
+    const handleCancel = () => {
+      cleanup()
+    }
+
+    const fallbackTimeout = window.setTimeout(handleFallback, timeout)
+
+    window.addEventListener('pagehide', handleCancel, { once: true })
+    window.addEventListener('blur', handleCancel, { once: true })
+
+    return handleCancel
+  }
+
+  if (isIOSBrowser()) {
+    scheduleFallback()
+    window.location.href = app
+    return
+  }
+
   if (typeof document === 'undefined') {
     openExternalUrl(web, { sameWindow: true })
     return
@@ -113,11 +152,14 @@ const openNavigationWithFallback = ({ app, web }: NavigationUrls) => {
     iframe = null
   }
 
+  const cancelFallback = scheduleFallback(1200, cleanup)
+
   try {
     document.body.appendChild(iframe)
   } catch {
+    cancelFallback()
     cleanup()
-    openExternalUrl(web)
+    openExternalUrl(web, { sameWindow: true })
     return
   }
 
@@ -169,7 +211,7 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
   const startListeningRef = useRef<() => void>(() => {})
   const skipOnEndProcessingRef = useRef(false)
 
-  const SILENCE_AFTER_SPEECH_MS = 3000
+  const SILENCE_AFTER_SPEECH_MS = isAndroidBrowser() ? 5000 : 3000
   const SILENCE_WITHOUT_SPEECH_MS = 10000
 
   useEffect(() => {
