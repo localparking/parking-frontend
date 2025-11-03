@@ -62,12 +62,20 @@ const isIOSBrowser = () => {
   return /iphone|ipad|ipod/i.test(userAgent)
 }
 
-const openExternalUrl = (url: string) => {
-  const openUsingWindow = () => {
-    const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
-    if (!newWindow) {
-      window.location.href = url
+const openExternalUrl = (url: string, reuseWindow?: Window | null): Window | null => {
+  const openUsingWindow = (targetUrl: string, existingWindow?: Window | null): Window | null => {
+    if (existingWindow && !existingWindow.closed) {
+      existingWindow.location.href = targetUrl
+      existingWindow.focus()
+      return existingWindow
     }
+
+    const newWindow = window.open(targetUrl, '_blank', 'noopener,noreferrer')
+    if (!newWindow) {
+      window.location.href = targetUrl
+      return null
+    }
+    return newWindow
   }
 
   if (isWebView()) {
@@ -83,12 +91,15 @@ const openExternalUrl = (url: string) => {
       bridgeWithPotentialHandlers.openExternal
 
     if (typeof handler === 'function') {
-      Promise.resolve(handler.call(bridge, url)).catch(openUsingWindow)
-      return
+      const handled = Promise.resolve(handler.call(bridge, url)).then(() => reuseWindow?.close?.())
+      handled.catch(() => {
+        openUsingWindow(url, reuseWindow)
+      })
+      return reuseWindow ?? null
     }
   }
 
-  openUsingWindow()
+  return openUsingWindow(url, reuseWindow)
 }
 
 const openNavigationWithFallback = ({ app, web }: NavigationUrls) => {
@@ -104,15 +115,25 @@ const openNavigationWithFallback = ({ app, web }: NavigationUrls) => {
     return
   }
 
+  let pendingWindow: Window | null = null
+
   const scheduleFallback = (timeout = 1500) => {
+    if (!pendingWindow || pendingWindow.closed) {
+      pendingWindow = window.open('', '_blank', 'noopener,noreferrer')
+    }
+
     const fallbackTimeout = window.setTimeout(() => {
-      openExternalUrl(web)
+      pendingWindow = openExternalUrl(web, pendingWindow)
     }, timeout)
 
     const cancelFallback = () => {
       window.clearTimeout(fallbackTimeout)
       window.removeEventListener('pagehide', cancelFallback)
       window.removeEventListener('blur', cancelFallback)
+      if (pendingWindow && !pendingWindow.closed) {
+        pendingWindow.close()
+      }
+      pendingWindow = null
     }
 
     window.addEventListener('pagehide', cancelFallback, { once: true })
@@ -141,8 +162,8 @@ const openNavigationWithFallback = ({ app, web }: NavigationUrls) => {
   try {
     document.body.appendChild(iframe)
   } catch {
-    cleanup()
-    openExternalUrl(web)
+  cleanup()
+    pendingWindow = openExternalUrl(web, pendingWindow)
     return
   }
 
@@ -435,8 +456,8 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
         }
 
         if (finalPieces.length > 0) {
-          const combined = finalPieces.join(' ')
-          updateTranscript((prev) => (prev ? `${prev}\n${combined}` : combined))
+          const combined = (finalPieces[finalPieces.length - 1] ?? '').trim()
+          updateTranscript(combined)
           setError(null)
           setStatusMessage(null)
           startSilenceTimer(SILENCE_AFTER_SPEECH_MS)
@@ -599,7 +620,7 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
 
           <motion.div
             key="ai-sheet"
-            className="fixed bottom-0 left-1/2 z-50 flex w-full max-w-[768px] -translate-x-1/2 flex-col rounded-t-[32px] bg-white px-6 pb-[max(24px,env(safe-area-inset-bottom))]"
+            className="fixed bottom-0 left-1/2 z-50 flex w-full max-w-[768px] -translate-x-1/2 flex-col rounded-t-[32px] bg-white px-2 pb-[max(24px,env(safe-area-inset-bottom))]"
             style={{ height: '80vh' }}
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
@@ -771,7 +792,7 @@ const RecommendationResultsView = ({ query, results, onRetry, onSelectStore }: R
         <p className="mt-1 text-caption-1 text-gray-3">AI가 선별한 맞춤 매장을 확인해 보세요.</p>
       </div>
 
-      <div className="flex-1 space-y-5 overflow-y-auto pr-1">
+      <div className="flex-1 space-y-3 overflow-y-scroll pr-1 scrollbar-hide">
         {results.map((item) => (
           <div key={item.id} className="bg-gray-5 rounded-3xl px-5 py-4">
             <p className="mb-3 text-body-4 text-gray-1">{item.title}</p>
