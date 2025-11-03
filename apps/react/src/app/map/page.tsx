@@ -70,7 +70,7 @@ function Map() {
       )}
 
       {!data && (
-        <div className="fixed bottom-[120px] left-1/2 z-10 w-full max-w-sm -translate-x-1/2 px-6">
+        <div className="fixed bottom-[120px] left-1/2 z-10 w-80 max-w-sm -translate-x-1/2 px-6">
           <Button onClick={() => setAiSheetOpen(true)}>AI 추천 보기</Button>
         </div>
       )}
