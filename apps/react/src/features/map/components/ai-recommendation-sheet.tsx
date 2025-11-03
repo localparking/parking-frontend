@@ -215,9 +215,12 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
   const aiRequestControllerRef = useRef<AbortController | null>(null)
   const startListeningRef = useRef<() => void>(() => {})
   const skipOnEndProcessingRef = useRef(false)
+  const lastSpeechActivityRef = useRef<number>(0)
+  const currentSilenceTimeoutMsRef = useRef<number | null>(null)
 
-  const SILENCE_AFTER_SPEECH_MS = 3000
-  const SILENCE_WITHOUT_SPEECH_MS = 10000
+  const isAndroidEnv = isAndroidBrowser()
+  const SILENCE_AFTER_SPEECH_MS = isAndroidEnv ? 12000 : 3000
+  const SILENCE_WITHOUT_SPEECH_MS = isAndroidEnv ? 20000 : 10000
 
   useEffect(() => {
     transcriptRef.current = transcript
@@ -251,6 +254,7 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
       window.clearTimeout(silenceTimerRef.current)
       silenceTimerRef.current = null
     }
+    currentSilenceTimeoutMsRef.current = null
   }, [])
 
   const stopListening = useCallback(
@@ -394,6 +398,18 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
   const handleSilenceTimeout = useCallback(() => {
     if (isProcessingQuery) return
 
+    const timeoutMs = currentSilenceTimeoutMsRef.current
+    if (timeoutMs !== null && lastSpeechActivityRef.current > 0) {
+      const elapsedSinceLastActivity = Date.now() - lastSpeechActivityRef.current
+      if (elapsedSinceLastActivity + 150 < timeoutMs) {
+        const remaining = Math.max(timeoutMs - elapsedSinceLastActivity, 150)
+        clearSilenceTimer()
+        currentSilenceTimeoutMsRef.current = timeoutMs
+        silenceTimerRef.current = window.setTimeout(handleSilenceTimeout, remaining)
+        return
+      }
+    }
+
     const finalText = transcriptRef.current.trim()
     const interimText = liveTranscriptRef.current.trim()
     const candidate = [finalText, interimText].filter(Boolean).join(' ').trim()
@@ -409,11 +425,12 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
     setError(ERROR_MESSAGE_BY_CODE.NO_RESPONSE)
     stopListening({ restart: false, skipProcess: true })
     resetInputFields()
-  }, [handleSearch, isProcessingQuery, resetInputFields, stopListening])
+  }, [clearSilenceTimer, handleSearch, isProcessingQuery, resetInputFields, stopListening])
 
   const startSilenceTimer = useCallback(
     (timeoutMs: number) => {
       clearSilenceTimer()
+      currentSilenceTimeoutMsRef.current = timeoutMs
       silenceTimerRef.current = window.setTimeout(handleSilenceTimeout, timeoutMs)
     },
     [clearSilenceTimer, handleSilenceTimeout]
@@ -426,7 +443,7 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
 
     if (!recognitionRef.current) {
       const recognition = new SpeechRecognitionCtor()
-      const isAndroid = isAndroidBrowser()
+      const isAndroid = isAndroidEnv
       recognition.lang = 'ko-KR'
       recognition.continuous = true
       recognition.interimResults = true
@@ -434,6 +451,7 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
       recognition.onstart = () => {
         setStatusMessage(null)
         setIsListening(true)
+        lastSpeechActivityRef.current = Date.now()
         if (!isAndroid) {
           startSilenceTimer(SILENCE_WITHOUT_SPEECH_MS)
         } else {
@@ -443,11 +461,13 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
 
       const handleAudioActivityStart = () => {
         if (skipOnEndProcessingRef.current) return
+        lastSpeechActivityRef.current = Date.now()
         clearSilenceTimer()
       }
 
       const handleAudioActivityEnd = () => {
         if (skipOnEndProcessingRef.current) return
+        lastSpeechActivityRef.current = Date.now()
         startSilenceTimer(SILENCE_AFTER_SPEECH_MS)
       }
 
@@ -479,6 +499,7 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
           const interimText = interimPieces.join(' ')
           setLiveTranscript(interimText)
           liveTranscriptRef.current = interimText
+          lastSpeechActivityRef.current = Date.now()
           setError(null)
           setStatusMessage(null)
           startSilenceTimer(SILENCE_AFTER_SPEECH_MS)
@@ -487,6 +508,7 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
         if (finalPieces.length > 0) {
           const combined = (finalPieces[finalPieces.length - 1] ?? '').trim()
           updateTranscript(combined)
+          lastSpeechActivityRef.current = Date.now()
           setError(null)
           setStatusMessage(null)
           startSilenceTimer(SILENCE_AFTER_SPEECH_MS)
@@ -529,7 +551,7 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
     }
 
     return recognitionRef.current
-  }, [clearSilenceTimer, startSilenceTimer, stopListening, updateTranscript])
+  }, [clearSilenceTimer, isAndroidEnv, startSilenceTimer, stopListening, updateTranscript])
 
   const startListening = useCallback(() => {
     const recognition = ensureRecognition()
@@ -538,6 +560,9 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
       return
     }
 
+    clearSilenceTimer()
+    currentSilenceTimeoutMsRef.current = null
+    lastSpeechActivityRef.current = Date.now()
     setError(null)
     setStatusMessage(null)
     restartOnEndRef.current = false
@@ -546,7 +571,7 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
     } catch {
       // 이미 시작된 상태에서 start를 호출하면 예외가 발생할 수 있으므로 무시
     }
-  }, [ensureRecognition])
+  }, [clearSilenceTimer, ensureRecognition])
 
   useEffect(() => {
     startListeningRef.current = startListening
