@@ -62,12 +62,16 @@ const isIOSBrowser = () => {
   return /iphone|ipad|ipod/i.test(userAgent)
 }
 
-const openExternalUrl = (url: string) => {
+const openExternalUrl = (url: string, options?: { sameWindow?: boolean }) => {
+  const sameWindow = options?.sameWindow ?? false
+
   const openUsingWindow = () => {
-    const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
-    if (!newWindow) {
+    if (sameWindow) {
       window.location.href = url
+      return
     }
+
+    window.open(url, '_blank', 'noopener,noreferrer')
   }
 
   if (isWebView()) {
@@ -95,18 +99,18 @@ const openNavigationWithFallback = ({ app, web }: NavigationUrls) => {
   if (typeof window === 'undefined') return
 
   if (!isMobileEnvironment()) {
-    openExternalUrl(web)
+    openExternalUrl(web, { sameWindow: false })
     return
   }
 
   if (typeof document === 'undefined') {
-    openExternalUrl(web)
+    openExternalUrl(web, { sameWindow: true })
     return
   }
 
   const scheduleFallback = (timeout = 1500) => {
     const fallbackTimeout = window.setTimeout(() => {
-      openExternalUrl(web)
+      openExternalUrl(web, { sameWindow: true })
     }, timeout)
 
     const cancelFallback = () => {
