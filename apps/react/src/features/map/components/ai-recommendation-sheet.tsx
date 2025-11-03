@@ -216,7 +216,7 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
   const startListeningRef = useRef<() => void>(() => {})
   const skipOnEndProcessingRef = useRef(false)
 
-  const SILENCE_AFTER_SPEECH_MS = isAndroidBrowser() ? 5000 : 3000
+  const SILENCE_AFTER_SPEECH_MS = 3000
   const SILENCE_WITHOUT_SPEECH_MS = 10000
 
   useEffect(() => {
@@ -436,15 +436,23 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
         startSilenceTimer(SILENCE_WITHOUT_SPEECH_MS)
       }
 
-      recognition.onspeechstart = () => {
+      const handleAudioActivityStart = () => {
         if (skipOnEndProcessingRef.current) return
         clearSilenceTimer()
       }
 
-      recognition.onspeechend = () => {
+      const handleAudioActivityEnd = () => {
         if (skipOnEndProcessingRef.current) return
         startSilenceTimer(SILENCE_AFTER_SPEECH_MS)
       }
+
+      recognition.onaudiostart = handleAudioActivityStart
+      recognition.onaudioend = handleAudioActivityEnd
+      recognition.onsoundstart = handleAudioActivityStart
+      recognition.onsoundend = handleAudioActivityEnd
+
+      recognition.onspeechstart = handleAudioActivityStart
+      recognition.onspeechend = handleAudioActivityEnd
 
       recognition.onresult = (event: any) => {
         const interimPieces: string[] = []
