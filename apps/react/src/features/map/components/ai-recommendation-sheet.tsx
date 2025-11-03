@@ -8,6 +8,8 @@ import {
   type AiModelErrorCode,
 } from '../services/ai-recommendation.service'
 import Button from '@/shared/ui/button'
+import { bridge } from '@/shared/bridge'
+import { isWebView } from '@/shared/utils/webview'
 import { useNavigation, useMapContext, MapDisplayType } from '@/features/map'
 import StatusBadge from '@/shared/ui/status-badge'
 import { StoreCategoryIcon } from '@/shared/ui/custom-icons'
@@ -54,16 +56,72 @@ const buildRecommendationResults = (stores: StoreListResponse[]): Recommendation
     store,
   }))
 
+const isIOSBrowser = () => {
+  if (typeof window === 'undefined') return false
+  const userAgent = window.navigator?.userAgent ?? ''
+  return /iphone|ipad|ipod/i.test(userAgent)
+}
+
+const openExternalUrl = (url: string) => {
+  const openUsingWindow = () => {
+    const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
+    if (!newWindow) {
+      window.location.href = url
+    }
+  }
+
+  if (isWebView()) {
+    const bridgeWithPotentialHandlers = bridge as unknown as {
+      openExternalBrowser?: (targetUrl: string) => unknown
+      openExternalUrl?: (targetUrl: string) => unknown
+      openExternal?: (targetUrl: string) => unknown
+    }
+
+    const handler =
+      bridgeWithPotentialHandlers.openExternalBrowser ??
+      bridgeWithPotentialHandlers.openExternalUrl ??
+      bridgeWithPotentialHandlers.openExternal
+
+    if (typeof handler === 'function') {
+      Promise.resolve(handler.call(bridge, url)).catch(openUsingWindow)
+      return
+    }
+  }
+
+  openUsingWindow()
+}
+
 const openNavigationWithFallback = ({ app, web }: NavigationUrls) => {
   if (typeof window === 'undefined') return
 
   if (!isMobileEnvironment()) {
-    window.open(web, '_blank', 'noopener,noreferrer')
+    openExternalUrl(web)
     return
   }
 
   if (typeof document === 'undefined') {
-    window.location.href = web
+    openExternalUrl(web)
+    return
+  }
+
+  const scheduleFallback = (timeout = 1500) => {
+    const fallbackTimeout = window.setTimeout(() => {
+      openExternalUrl(web)
+    }, timeout)
+
+    const cancelFallback = () => {
+      window.clearTimeout(fallbackTimeout)
+      window.removeEventListener('pagehide', cancelFallback)
+      window.removeEventListener('blur', cancelFallback)
+    }
+
+    window.addEventListener('pagehide', cancelFallback, { once: true })
+    window.addEventListener('blur', cancelFallback, { once: true })
+  }
+
+  if (isIOSBrowser()) {
+    scheduleFallback()
+    window.location.href = app
     return
   }
 
@@ -71,28 +129,20 @@ const openNavigationWithFallback = ({ app, web }: NavigationUrls) => {
   iframe.style.display = 'none'
   iframe.src = app
 
-  let fallbackTimeout = 0
-
   const cleanup = () => {
-    window.clearTimeout(fallbackTimeout)
-    window.removeEventListener('pagehide', cleanup)
-    window.removeEventListener('blur', cleanup)
     if (iframe && iframe.parentNode) {
       iframe.parentNode.removeChild(iframe)
     }
     iframe = null
   }
 
-  fallbackTimeout = window.setTimeout(() => {
-    window.location.href = web
-    cleanup()
-  }, 1200)
+  scheduleFallback(1200)
 
   try {
     document.body.appendChild(iframe)
   } catch {
-    window.location.href = web
     cleanup()
+    openExternalUrl(web)
     return
   }
 
@@ -102,9 +152,9 @@ const openNavigationWithFallback = ({ app, web }: NavigationUrls) => {
 
 const toNaverNavigationUrls = (store: StoreListResponse): NavigationUrls => {
   const encodedName = encodeURIComponent(store.name)
-  const combinedQuery = [store.name, store.address].filter(Boolean).join(' ')
   const encodedAppName = encodeURIComponent(APP_NAME_FOR_NAVIGATION)
-  const fallbackQuery = encodeURIComponent(combinedQuery)
+  const fallbackTarget = store.address || store.name
+  const fallbackQuery = encodeURIComponent(fallbackTarget)
 
   return {
     app: `nmap://route/car?dlat=${store.lat}&dlng=${store.lon}&dname=${encodedName}&appname=${encodedAppName}`,
