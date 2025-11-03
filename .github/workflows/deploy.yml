@@ -49,6 +49,7 @@ jobs:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
           VITE_NAVER_MAP_CLIENT_ID: ${{ secrets.VITE_NAVER_MAP_CLIENT_ID }}
           VITE_TOSS_PAYMENTS_CLIENT_KEY: ${{ secrets.VITE_TOSS_PAYMENTS_CLIENT_KEY }}
+          VITE_OPENAI_API_KEY: ${{ secrets.VITE_OPENAI_API_KEY }}
 
       # AWS 자격 증명 설정
       - name: Configure AWS credentials
