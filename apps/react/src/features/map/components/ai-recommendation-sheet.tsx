@@ -2,6 +2,11 @@ import { useCallback, useEffect, useRef, useState, type FormEvent, type SetState
 import { AnimatePresence, motion } from 'framer-motion'
 import { MapPin, Mic, Send, X } from 'lucide-react'
 import type { StoreListResponse } from '@data/user-api-axios/api'
+import {
+  requestAiRecommendation,
+  AiRecommendationError,
+  formatRecommendationLabel,
+} from '../services/ai-recommendation.service'
 import Button from '@/shared/ui/button'
 import { useNavigation, useMapContext } from '@/features/map'
 import StatusBadge from '@/shared/ui/status-badge'
@@ -161,13 +166,17 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
   const [statusMessage, setStatusMessage] = useState<string | null>(null)
   const [results, setResults] = useState<RecommendationResult[] | null>(null)
   const [resultQuery, setResultQuery] = useState('')
+  const [isProcessingQuery, setIsProcessingQuery] = useState(false)
 
+  const openRef = useRef(open)
   const recognitionRef = useRef<any>(null)
   const silenceTimerRef = useRef<number | null>(null)
   const autoRequestRef = useRef(false)
   const restartOnEndRef = useRef(false)
   const transcriptRef = useRef(transcript)
   const liveTranscriptRef = useRef(liveTranscript)
+  const aiRequestControllerRef = useRef<AbortController | null>(null)
+  const startListeningRef = useRef<() => void>(() => {})
 
   useEffect(() => {
     transcriptRef.current = transcript
@@ -176,6 +185,10 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
   useEffect(() => {
     liveTranscriptRef.current = liveTranscript
   }, [liveTranscript])
+
+  useEffect(() => {
+    openRef.current = open
+  }, [open])
 
   const shortQueryGuide = '검색 결과가 없어요\n위치, 시간, 가게 종류를 알려주세요'
 
@@ -197,19 +210,61 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
   }, [])
 
   const handleSearch = useCallback(
-    (query: string) => {
+    async (query: string) => {
       const trimmedQuery = query.trim()
       if (!trimmedQuery) return
 
       updateTranscript(trimmedQuery)
-      setStatusMessage(null)
       setError(null)
-      setResultQuery(trimmedQuery)
+      setResults(null)
+      setResultQuery('')
+      setStatusMessage('AI가 요청을 분석 중이에요...')
+      setIsProcessingQuery(true)
       autoRequestRef.current = false
       restartOnEndRef.current = false
-      setResults(createMockResults())
+
+      aiRequestControllerRef.current?.abort()
+      const controller = new AbortController()
+      aiRequestControllerRef.current = controller
+
+      try {
+        const aiResult = await requestAiRecommendation(trimmedQuery, { signal: controller.signal })
+        const label = formatRecommendationLabel(aiResult)
+        setResultQuery(label)
+        setStatusMessage(null)
+        setResults(createMockResults())
+      } catch (error) {
+        if (controller.signal.aborted) return
+
+        let errorMessage = 'AI 분석 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.'
+        let guideMessage = '잠시 후 다시 말씀해 주세요.'
+
+        if (error instanceof AiRecommendationError) {
+          if (error.code === 'MISSING_DATA') {
+            errorMessage = '장소나 카테고리를 확인할 수 없었어요.'
+            guideMessage = '원하는 지역명과 카테고리를 다시 말씀해 주세요.'
+          } else if (error.code === 'MISSING_TRANSCRIPT') {
+            errorMessage = 'AI가 분석할 문장을 받지 못했어요.'
+            guideMessage = '원하는 내용을 다시 말씀해 주세요.'
+          }
+        }
+
+        setResults(null)
+        setResultQuery('')
+        setError(errorMessage)
+        setStatusMessage(guideMessage)
+
+        if (!isListening && openRef.current) {
+          startListeningRef.current()
+        }
+      } finally {
+        if (aiRequestControllerRef.current === controller) {
+          aiRequestControllerRef.current = null
+        }
+        setIsProcessingQuery(false)
+      }
     },
-    [updateTranscript]
+    [isListening, updateTranscript]
   )
 
   const stopListening = useCallback(
@@ -231,7 +286,7 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
       setStatusMessage(null)
       setError(null)
       stopListening({ restart: false })
-      handleSearch(candidate)
+      void handleSearch(candidate)
       return
     }
 
@@ -333,17 +388,25 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
     }
   }, [ensureRecognition])
 
+  useEffect(() => {
+    startListeningRef.current = startListening
+  }, [startListening])
+
   const handleToggleListening = useCallback(() => {
+    if (isProcessingQuery) return
+
     if (isListening) {
       stopListening()
     } else {
       startListening()
     }
-  }, [isListening, startListening, stopListening])
+  }, [isListening, isProcessingQuery, startListening, stopListening])
 
   const handleManualSubmit = useCallback(
     (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault()
+      if (isProcessingQuery) return
+
       const value = manualInput.trim()
       if (!value) return
       updateTranscript((prev) => (prev ? `${prev}\n${value}` : value))
@@ -356,9 +419,9 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
       setManualInput('')
       setStatusMessage(null)
       stopListening({ restart: false })
-      handleSearch(value)
+      void handleSearch(value)
     },
-    [handleSearch, manualInput, shortQueryGuide, stopListening, updateTranscript]
+    [handleSearch, isProcessingQuery, manualInput, shortQueryGuide, stopListening, updateTranscript]
   )
 
   const handleManualInputChange = useCallback((value: string) => {
@@ -369,6 +432,9 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
   }, [])
 
   const handleRetry = useCallback(() => {
+    aiRequestControllerRef.current?.abort()
+    aiRequestControllerRef.current = null
+    setIsProcessingQuery(false)
     stopListening({ restart: false })
     setResults(null)
     setResultQuery('')
@@ -384,6 +450,9 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
   }, [startListening, stopListening, updateTranscript])
 
   const handleClose = useCallback(() => {
+    aiRequestControllerRef.current?.abort()
+    aiRequestControllerRef.current = null
+    setIsProcessingQuery(false)
     stopListening({ restart: false })
     setResults(null)
     setResultQuery('')
@@ -423,6 +492,8 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
 
   useEffect(() => {
     return () => {
+      aiRequestControllerRef.current?.abort()
+      aiRequestControllerRef.current = null
       stopListening()
       recognitionRef.current = null
     }
@@ -484,6 +555,7 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
                 statusMessage={statusMessage}
                 error={error}
                 isListening={isListening}
+                isProcessing={isProcessingQuery}
                 manualInput={manualInput}
                 onToggleListening={handleToggleListening}
                 onManualInputChange={handleManualInputChange}
@@ -504,6 +576,7 @@ interface VoiceCaptureViewProps {
   statusMessage: string | null
   error: string | null
   isListening: boolean
+  isProcessing: boolean
   manualInput: string
   onToggleListening: () => void
   onManualInputChange: (value: string) => void
@@ -517,6 +590,7 @@ const VoiceCaptureView = ({
   statusMessage,
   error,
   isListening,
+  isProcessing,
   manualInput,
   onToggleListening,
   onManualInputChange,
@@ -531,14 +605,20 @@ const VoiceCaptureView = ({
       <div className="text-center">
         <h2 className="text-body-3 text-gray-1">목적지를 말씀해주세요</h2>
         <p className="mt-1 text-caption-1 text-gray-3">
-          {isListening ? 'AI가 음성을 듣고 있어요.' : '마이크 아이콘을 눌러 다시 말씀하실 수 있어요.'}
+          {isProcessing
+            ? 'AI가 방금 전 요청을 분석하고 있어요.'
+            : isListening
+              ? 'AI가 음성을 듣고 있어요.'
+              : '마이크 아이콘을 눌러 다시 말씀하실 수 있어요.'}
         </p>
       </div>
 
       <button
         type="button"
         onClick={onToggleListening}
-        className="relative flex h-[160px] w-[160px] items-center justify-center focus:outline-none"
+        disabled={isProcessing}
+        aria-busy={isProcessing}
+        className={`relative flex h-[160px] w-[160px] items-center justify-center focus:outline-none ${isProcessing ? 'cursor-not-allowed opacity-60' : ''}`}
       >
         <span
           className={`absolute inset-0 rounded-full transition ${isListening ? 'animate-ping bg-primary-2/60' : 'bg-primary-2/20'}`}
@@ -560,6 +640,7 @@ const VoiceCaptureView = ({
 
       <form
         onSubmit={onManualSubmit}
+        aria-busy={isProcessing}
         className="bg-gray-5 mt-auto flex w-full items-center gap-3 rounded-full border border-gray-4 px-5 py-3"
       >
         <input
@@ -567,12 +648,13 @@ const VoiceCaptureView = ({
           value={manualInput}
           onChange={(event) => onManualInputChange(event.target.value)}
           placeholder="어떤 장소를 찾으시나요?"
-          className="flex-1 bg-transparent text-body-4 text-gray-1 placeholder:text-gray-3 focus:outline-none"
+          disabled={isProcessing}
+          className="flex-1 bg-transparent text-body-4 text-gray-1 placeholder:text-gray-3 focus:outline-none disabled:text-gray-3"
         />
         <button
           type="submit"
-          className="text-primary-1 transition disabled:text-gray-3"
-          disabled={!manualInput.trim()}
+          className="text-primary-1 transition disabled:cursor-not-allowed disabled:text-gray-3"
+          disabled={isProcessing || !manualInput.trim()}
           aria-label="텍스트로 전달"
         >
           <Send className="h-5 w-5" />
