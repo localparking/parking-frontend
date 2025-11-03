@@ -426,6 +426,7 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
 
     if (!recognitionRef.current) {
       const recognition = new SpeechRecognitionCtor()
+      const isAndroid = isAndroidBrowser()
       recognition.lang = 'ko-KR'
       recognition.continuous = true
       recognition.interimResults = true
@@ -433,7 +434,11 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
       recognition.onstart = () => {
         setStatusMessage(null)
         setIsListening(true)
-        startSilenceTimer(SILENCE_WITHOUT_SPEECH_MS)
+        if (!isAndroid) {
+          startSilenceTimer(SILENCE_WITHOUT_SPEECH_MS)
+        } else {
+          clearSilenceTimer()
+        }
       }
 
       const handleAudioActivityStart = () => {
