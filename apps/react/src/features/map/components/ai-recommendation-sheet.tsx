@@ -62,20 +62,12 @@ const isIOSBrowser = () => {
   return /iphone|ipad|ipod/i.test(userAgent)
 }
 
-const openExternalUrl = (url: string, reuseWindow?: Window | null): Window | null => {
-  const openUsingWindow = (targetUrl: string, existingWindow?: Window | null): Window | null => {
-    if (existingWindow && !existingWindow.closed) {
-      existingWindow.location.href = targetUrl
-      existingWindow.focus()
-      return existingWindow
-    }
-
-    const newWindow = window.open(targetUrl, '_blank', 'noopener,noreferrer')
+const openExternalUrl = (url: string) => {
+  const openUsingWindow = () => {
+    const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
     if (!newWindow) {
-      window.location.href = targetUrl
-      return null
+      window.location.href = url
     }
-    return newWindow
   }
 
   if (isWebView()) {
@@ -91,15 +83,12 @@ const openExternalUrl = (url: string, reuseWindow?: Window | null): Window | nul
       bridgeWithPotentialHandlers.openExternal
 
     if (typeof handler === 'function') {
-      const handled = Promise.resolve(handler.call(bridge, url)).then(() => reuseWindow?.close?.())
-      handled.catch(() => {
-        openUsingWindow(url, reuseWindow)
-      })
-      return reuseWindow ?? null
+      Promise.resolve(handler.call(bridge, url)).catch(openUsingWindow)
+      return
     }
   }
 
-  return openUsingWindow(url, reuseWindow)
+  openUsingWindow()
 }
 
 const openNavigationWithFallback = ({ app, web }: NavigationUrls) => {
@@ -115,25 +104,15 @@ const openNavigationWithFallback = ({ app, web }: NavigationUrls) => {
     return
   }
 
-  let pendingWindow: Window | null = null
-
   const scheduleFallback = (timeout = 1500) => {
-    if (!pendingWindow || pendingWindow.closed) {
-      pendingWindow = window.open('', '_blank', 'noopener,noreferrer')
-    }
-
     const fallbackTimeout = window.setTimeout(() => {
-      pendingWindow = openExternalUrl(web, pendingWindow)
+      openExternalUrl(web)
     }, timeout)
 
     const cancelFallback = () => {
       window.clearTimeout(fallbackTimeout)
       window.removeEventListener('pagehide', cancelFallback)
       window.removeEventListener('blur', cancelFallback)
-      if (pendingWindow && !pendingWindow.closed) {
-        pendingWindow.close()
-      }
-      pendingWindow = null
     }
 
     window.addEventListener('pagehide', cancelFallback, { once: true })
@@ -162,8 +141,8 @@ const openNavigationWithFallback = ({ app, web }: NavigationUrls) => {
   try {
     document.body.appendChild(iframe)
   } catch {
-  cleanup()
-    pendingWindow = openExternalUrl(web, pendingWindow)
+    cleanup()
+    openExternalUrl(web)
     return
   }
 
@@ -213,6 +192,7 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
   const liveTranscriptRef = useRef(liveTranscript)
   const aiRequestControllerRef = useRef<AbortController | null>(null)
   const startListeningRef = useRef<() => void>(() => {})
+  const skipOnEndProcessingRef = useRef(false)
 
   const SILENCE_AFTER_SPEECH_MS = 3000
   const SILENCE_WITHOUT_SPEECH_MS = 10000
@@ -252,9 +232,14 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
   }, [])
 
   const stopListening = useCallback(
-    (options?: { restart?: boolean }) => {
+    (options?: { restart?: boolean; skipProcess?: boolean }) => {
       restartOnEndRef.current = options?.restart ?? false
-      recognitionRef.current?.stop?.()
+      skipOnEndProcessingRef.current = options?.skipProcess ?? false
+      try {
+        recognitionRef.current?.stop?.()
+      } catch {
+        // ignore
+      }
       setIsListening(false)
       clearSilenceTimer()
     },
@@ -267,7 +252,7 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
       if (!trimmedQuery) return
       if (isProcessingQuery) return
 
-      stopListening({ restart: false })
+      stopListening({ restart: false, skipProcess: true })
       resetInputFields()
       updateTranscript(trimmedQuery)
       setError(null)
@@ -340,7 +325,7 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
       } catch (error) {
         if (controller.signal.aborted) return
 
-        stopListening({ restart: false })
+        stopListening({ restart: false, skipProcess: true })
         resetInputFields()
 
         let errorMessage: string = GENERIC_SERVER_ERROR
@@ -394,14 +379,13 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
     if (candidate.length > 0) {
       setStatusMessage(null)
       setError(null)
-      stopListening({ restart: false })
       void handleSearch(candidate)
       return
     }
 
     setStatusMessage(null)
     setError(ERROR_MESSAGE_BY_CODE.NO_RESPONSE)
-    stopListening({ restart: false })
+    stopListening({ restart: false, skipProcess: true })
     resetInputFields()
   }, [handleSearch, isProcessingQuery, resetInputFields, stopListening])
 
@@ -470,11 +454,29 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
         } else if (event.error !== 'no-speech') {
           setError('음성 인식 중 오류가 발생했습니다.')
         }
-        stopListening()
+        stopListening({ restart: false, skipProcess: true })
       }
 
       recognition.onend = () => {
         clearSilenceTimer()
+        const shouldSkip = skipOnEndProcessingRef.current
+        skipOnEndProcessingRef.current = false
+
+        if (!shouldSkip && openRef.current && !isProcessingQuery) {
+          const finalText = transcriptRef.current.trim()
+          const interimText = liveTranscriptRef.current.trim()
+          const candidate = [finalText, interimText].filter(Boolean).join(' ').trim()
+
+          if (candidate) {
+            setStatusMessage(null)
+            setError(null)
+            void handleSearch(candidate)
+          } else {
+            setStatusMessage(null)
+            setError(ERROR_MESSAGE_BY_CODE.NO_RESPONSE)
+          }
+        }
+
         setIsListening(false)
       }
 
@@ -509,7 +511,7 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
     if (isProcessingQuery) return
 
     if (isListening) {
-      stopListening()
+      stopListening({ restart: false, skipProcess: true })
     } else {
       startListening()
     }
@@ -526,7 +528,7 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
       updateTranscript(value)
       setError(null)
       setStatusMessage(null)
-      stopListening({ restart: false })
+      stopListening({ restart: false, skipProcess: true })
       void handleSearch(value)
     },
     [handleSearch, isProcessingQuery, manualInput, resetInputFields, stopListening, updateTranscript]
@@ -543,7 +545,7 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
     aiRequestControllerRef.current?.abort()
     aiRequestControllerRef.current = null
     setIsProcessingQuery(false)
-    stopListening({ restart: false })
+    stopListening({ restart: false, skipProcess: true })
     setResults(null)
     setResultQuery('')
     resetInputFields()
@@ -558,7 +560,7 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
     aiRequestControllerRef.current?.abort()
     aiRequestControllerRef.current = null
     setIsProcessingQuery(false)
-    stopListening({ restart: false })
+    stopListening({ restart: false, skipProcess: true })
     setResults(null)
     setResultQuery('')
     resetInputFields()
@@ -572,7 +574,7 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
   useEffect(() => {
     if (!open) {
       autoRequestRef.current = false
-      stopListening()
+      stopListening({ restart: false, skipProcess: true })
       return
     }
 
@@ -596,7 +598,7 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
     return () => {
       aiRequestControllerRef.current?.abort()
       aiRequestControllerRef.current = null
-      stopListening()
+      stopListening({ restart: false, skipProcess: true })
       recognitionRef.current = null
     }
   }, [stopListening])
