@@ -56,12 +56,6 @@ const buildRecommendationResults = (stores: StoreListResponse[]): Recommendation
     store,
   }))
 
-const isIOSBrowser = () => {
-  if (typeof window === 'undefined') return false
-  const userAgent = window.navigator?.userAgent ?? ''
-  return /iphone|ipad|ipod/i.test(userAgent)
-}
-
 const openExternalUrl = (url: string, options?: { sameWindow?: boolean }) => {
   const sameWindow = options?.sameWindow ?? false
 
@@ -108,27 +102,6 @@ const openNavigationWithFallback = ({ app, web }: NavigationUrls) => {
     return
   }
 
-  const scheduleFallback = (timeout = 1500) => {
-    const fallbackTimeout = window.setTimeout(() => {
-      openExternalUrl(web, { sameWindow: true })
-    }, timeout)
-
-    const cancelFallback = () => {
-      window.clearTimeout(fallbackTimeout)
-      window.removeEventListener('pagehide', cancelFallback)
-      window.removeEventListener('blur', cancelFallback)
-    }
-
-    window.addEventListener('pagehide', cancelFallback, { once: true })
-    window.addEventListener('blur', cancelFallback, { once: true })
-  }
-
-  if (isIOSBrowser()) {
-    scheduleFallback()
-    window.location.href = app
-    return
-  }
-
   let iframe: HTMLIFrameElement | null = document.createElement('iframe')
   iframe.style.display = 'none'
   iframe.src = app
@@ -139,8 +112,6 @@ const openNavigationWithFallback = ({ app, web }: NavigationUrls) => {
     }
     iframe = null
   }
-
-  scheduleFallback(1200)
 
   try {
     document.body.appendChild(iframe)
@@ -416,6 +387,16 @@ export const AiRecommendationSheet = ({ open, onClose }: AiRecommendationSheetPr
         setStatusMessage(null)
         setIsListening(true)
         startSilenceTimer(SILENCE_WITHOUT_SPEECH_MS)
+      }
+
+      recognition.onspeechstart = () => {
+        if (skipOnEndProcessingRef.current) return
+        clearSilenceTimer()
+      }
+
+      recognition.onspeechend = () => {
+        if (skipOnEndProcessingRef.current) return
+        startSilenceTimer(SILENCE_AFTER_SPEECH_MS)
       }
 
       recognition.onresult = (event: any) => {
