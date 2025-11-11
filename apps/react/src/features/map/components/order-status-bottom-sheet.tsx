@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { X, CircleDollarSign, Clock, MapPin } from 'lucide-react'
 import { format } from 'date-fns'
@@ -8,6 +8,8 @@ import Button from '@/shared/ui/button'
 import { ParkingStatusResponseDto } from '@data/user-api-axios/api'
 import { cn } from '@/shared/utils'
 import StatusBadge from '@/shared/ui/status-badge'
+import parkingLotService from '@/shared/services/parking-lot.service'
+import { useRouter } from '@tanstack/react-router'
 
 interface OrderStatusBottomSheetProps {
   data: ParkingStatusResponseDto
@@ -48,6 +50,24 @@ const FeeRow = ({ label, value, price }: { label: string; value?: string; price?
 )
 
 export const OrderStatusBottomSheet: React.FC<OrderStatusBottomSheetProps> = ({ data, onClose }) => {
+  const router = useRouter()
+  const [isProcessingDeparture, setIsProcessingDeparture] = useState(false)
+
+  const handleDeparture = async () => {
+    if (isProcessingDeparture) return
+    setIsProcessingDeparture(true)
+    try {
+      await parkingLotService.processDeparture({ orderId: data.orderId })
+      await router.invalidate({ sync: true })
+      onClose()
+    } catch (error) {
+      console.error('Failed to process departure:', error)
+      window.alert('출차 처리에 실패했습니다. 잠시 후 다시 시도해주세요.')
+    } finally {
+      setIsProcessingDeparture(false)
+    }
+  }
+
   return (
     <motion.div
       initial={{ y: '100%' }}
@@ -93,8 +113,8 @@ export const OrderStatusBottomSheet: React.FC<OrderStatusBottomSheetProps> = ({ 
         </div>
 
         <div className="mt-2 flex gap-3">
-          <Button className="flex-1 bg-gray-3">
-            <p className="text-gray-1">출차 처리하기</p>
+          <Button className="flex-1 bg-gray-3" onClick={handleDeparture} disabled={isProcessingDeparture}>
+            <p className="text-gray-1">{isProcessingDeparture ? '출차 처리 중...' : '출차 처리하기'}</p>
           </Button>
           <Button className="flex-1 bg-gray-1 text-white">입차시간 설정</Button>
         </div>
