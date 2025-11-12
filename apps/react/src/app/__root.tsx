@@ -6,6 +6,7 @@ import { isWebView } from '@/shared/utils/webview'
 import bridge from '@/shared/bridge'
 import { cn } from '@/shared/utils'
 import { useEffect } from 'react'
+import { initializeGA, trackPageView } from '@/shared/libs/ga'
 
 interface RouterContext {
   queryClient: QueryClient
@@ -62,6 +63,14 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 function RootComponent() {
   const { location } = useRouterState()
   const isMapPage = location.pathname.startsWith('/map')
+
+  useEffect(() => {
+    initializeGA()
+  }, [])
+
+  useEffect(() => {
+    trackPageView(location.href)
+  }, [location.href])
 
   useEffect(() => {
     const main = document.querySelector('main')

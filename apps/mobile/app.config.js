@@ -40,6 +40,10 @@ module.exports = () => {
               NSExceptionAllowsInsecureHTTPLoads: true,
               NSIncludesSubdomains: true,
             },
+            'api.openai.com': {
+              NSTemporaryExceptionAllowsInsecureHTTPLoads: false,
+              NSIncludesSubdomains: true,
+            },
           },
         },
       },
